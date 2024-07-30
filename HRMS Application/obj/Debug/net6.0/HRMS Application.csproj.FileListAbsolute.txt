@@ -1,0 +1,8 @@
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.csproj.AssemblyReference.cache
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.AssemblyInfoInputs.cache
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.AssemblyInfo.cs
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.csproj.CoreCompileInputs.cache
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.sourcelink.json

@@ -38,11 +38,11 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public string InsertEmpLeaves([FromBody] EmployeeLeave employeeLeave)
+        public async Task<string> InsertEmpLeaves([FromBody] EmployeeLeave employeeLeave)
         {
             _logger.LogInformation("Insert employee leave method started");
 
-            var status = _employeeleave.InsertEmployeeLeave(employeeLeave);
+            var status = await _employeeleave.InsertEmployeeLeave(employeeLeave);
             return status;
         }
 
@@ -58,10 +58,10 @@ namespace HRMS_Application.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(new[] { "Admin" })]
-        public bool DeleteEmpDetails(int id)
+        public async Task<bool> DeleteEmpDetails(int id)
         {
             _logger.LogInformation("Delete method started");
-            var status = _employeeleave.DeleteEmployeeLeave(id);
+            var status =await _employeeleave.DeleteEmployeeLeave(id);
             return status;
         }
     }
