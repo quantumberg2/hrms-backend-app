@@ -71,3 +71,5 @@ C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\refint\H
 C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.pdb
 C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\HRMS Application.genruntimeconfig.cache
 C:\Users\USER\source\hrms-backend-app\HRMS Application\obj\Debug\net6.0\ref\HRMS Application.dll
+C:\Users\USER\source\hrms-backend-app\HRMS Application\bin\Debug\net6.0\Castle.Core.dll
+C:\Users\USER\source\hrms-backend-app\HRMS Application\bin\Debug\net6.0\Moq.dll
