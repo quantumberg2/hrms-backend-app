@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Controllers\RolesController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class RolesController : ControllerBase
+    {
+        private readonly IRoles _roles;
+        private readonly ILogger&lt;RolesController&gt; _logger;
+
+
+        public RolesController(IRoles roles, ILogger&lt;RolesController&gt; logger)
+        {
+            _roles = roles;
+            _logger = logger;
+        }
+        [HttpGet]
+        //[Authorize(new[] { &quot;Admin&quot;, &quot;Developer&quot; })]
+        public List&lt;Role&gt; GetAllRole()
+        {
+            _logger.LogInformation(&quot;Get all department method started&quot;);
+            var dept = _roles.GetAllRoles();
+            return dept;
+        }
+
+        [HttpPost(&quot;insertEmployees&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;string&gt; InsertRoles([FromBody] Role role)
+        {
+            _logger.LogInformation(&quot;Insert department method started&quot;);
+
+            var status = await _roles.InsertRole(role);
+            return status;
+        }
+
+       /* [HttpPut(&quot;UpdateAll/{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        // [Route(&quot;UpdateAll&quot;)]
+        public Department UpdateDepartment(int id, string? name, int? requestedcompanyId)
+        {
+            _logger.LogInformation(&quot;Update method started&quot;);
+            var status = _department.UpdateDepartment(id, name, requestedcompanyId);
+            return status;
+        }*/
+
+        [HttpDelete(&quot;{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;bool&gt; DeleteRole(int id)
+        {
+            _logger.LogInformation(&quot;Delete method started&quot;);
+            var status = await _roles.deleteRole(id);
+            return status;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,78,1],[17,9,17,10,1],[18,13,18,28,1],[19,13,19,30,1],[20,9,20,10,1],[24,9,24,10,1],[25,13,25,73,1],[26,13,26,45,1],[27,13,27,25,1],[28,9,28,10,1],[33,9,33,10,1],[34,13,34,72,1],[36,13,36,56,1],[37,13,37,27,1],[38,9,38,10,1],[53,9,53,10,1],[54,13,54,61,1],[55,13,55,54,1],[56,13,56,27,1],[57,9,57,10,1]]);
+    </script>
+  </body>
+</html>

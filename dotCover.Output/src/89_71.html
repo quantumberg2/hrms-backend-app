@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\BusinessLogic\Implements\AddressImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class AddressImp : IAddressInfo
+    {
+        private HRMSContext _context;
+        public AddressImp(HRMSContext context)
+        {
+            _context = context;
+        }
+        public bool deleteAddressInfo(int id)
+        {
+            var result = (from row in _context.AddressInfos
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _context.AddressInfos.Remove(result);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public AddressInfo GetAddressInfoById(int id)
+        {
+            var result = (from row in _context.AddressInfos
+                          where row.Id == id
+                          select row).FirstOrDefault();
+
+            return result;
+        }
+
+        public List&lt;AddressInfo&gt; GetAllAddressInfo()
+        {
+            var result = (from row in _context.AddressInfos
+                          select row).ToList();
+            return result;
+        }
+
+        public string InsertAddressInfot(AddressInfo address)
+        {
+            _context.AddressInfos.Add(address);
+            var result = _context.SaveChanges();
+            if (result != 0)
+            {
+                return &quot;new Department inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,47,0],[11,9,11,10,0],[12,13,12,32,0],[13,9,13,10,0],[15,9,15,10,0],[16,13,18,57,0],[19,13,19,50,0],[20,13,20,36,0],[21,13,21,25,0],[22,9,22,10,0],[25,9,25,10,0],[26,13,28,56,0],[30,13,30,27,0],[31,9,31,10,0],[34,9,34,10,0],[35,13,36,48,0],[37,13,37,27,0],[38,9,38,10,0],[41,9,41,10,0],[42,13,42,48,0],[43,13,43,49,0],[44,13,44,29,0],[45,13,45,14,0],[46,17,46,63,0],[50,13,50,14,0],[51,17,51,52,0],[53,9,53,10,0]]);
+    </script>
+  </body>
+</html>

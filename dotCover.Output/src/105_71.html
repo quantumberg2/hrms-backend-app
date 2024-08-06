@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Authorization\JwtUtils.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.DTOs;
+using HRMS_Application.Entities;
+using HRMS_Application.Helpers;
+using HRMS_Application.Models;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace HRMS_Application.Authorization
+{
+    public interface IJwtUtils
+    {
+        //public string GenerateJwtToken(User user);
+        public string GenerateJwtToken(UserDto user);
+        public int? ValidateJwtToken(string token);
+    }
+    public class JwtUtils : IJwtUtils
+    {
+        private readonly AppSettings _appSettings;
+
+        public JwtUtils(IOptions&lt;AppSettings&gt; appSettings)
+        {
+            _appSettings = appSettings.Value;
+        }
+        public string GenerateJwtToken(UserDto user)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+
+            var claims = new List&lt;Claim&gt;
+            {
+                   new Claim(&quot;UserId&quot;, user.UserId.ToString().Trim()),
+                    new Claim(&quot;UserName&quot;, user.UserName.ToString().Trim()),
+                    //new Claim(&quot;Name&quot;, user.Name.ToString().Trim())
+            };
+
+            claims.AddRange(user.Roles.Select(role =&gt; new Claim(&quot;Roles&quot;, role)));
+
+
+
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims.AsEnumerable()),
+                //Subject = new ClaimsIdentity(new[]
+                //{
+                //    new Claim(&quot;UserId&quot;, user.UserId.ToString().Trim()),
+                //    new Claim(&quot;UserName&quot;, user.UserName.ToString().Trim())
+                //}),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public int? ValidateJwtToken(string token)
+        {
+            if (token == null)
+                return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var userId = int.Parse(jwtToken.Claims.First(x =&gt; x.Type == &quot;UserId&quot;).Value);
+
+                // return user id from JWT token if validation successful
+                return userId;
+            }
+            catch
+            {
+                // return null if validation fails
+                return null;
+            }
+
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[23,9,23,59,1],[24,9,24,10,1],[25,13,25,46,1],[26,9,26,10,1],[28,9,28,10,1],[30,13,30,62,1],[31,13,31,68,1],[33,13,38,15,0],[40,13,40,55,0],[40,55,40,79,0],[40,79,40,82,0],[45,13,55,15,0],[56,13,56,67,0],[57,13,57,51,0],[58,9,58,10,0],[61,9,61,10,1],[62,13,62,31,1],[63,17,63,29,0],[65,13,65,62,1],[66,13,66,68,1],[68,13,68,14,0],[69,17,77,54,0],[79,17,79,65,0],[80,17,80,67,0],[80,67,80,85,0],[80,85,80,94,0],[83,17,83,31,0],[85,13,85,18,0],[86,13,86,14,0],[88,17,88,29,0],[91,9,91,10,0]]);
+    </script>
+  </body>
+</html>

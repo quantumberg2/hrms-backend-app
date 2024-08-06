@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\EmpSalaryControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class EmpSalaryControllerTests
+    {
+        private EmpSalaryController _testClass;
+        private Mock&lt;IEmployeeSalary&gt; _empsalry;
+        private Mock&lt;ILogger&lt;EmpSalaryController&gt;&gt; _logger;
+
+        public EmpSalaryControllerTests()
+        {
+            _empsalry = new Mock&lt;IEmployeeSalary&gt;();
+            _logger = new Mock&lt;ILogger&lt;EmpSalaryController&gt;&gt;();
+            _testClass = new EmpSalaryController(_empsalry.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new EmpSalaryController(_empsalry.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllEmpsalary()
+        {
+            // Arrange
+            _empsalry.Setup(mock =&gt; mock.GetAllEmpSalary()).Returns(new List&lt;EmpSalary&gt;());
+
+            // Act
+            var result = _testClass.GetAllEmpsalary();
+
+            // Assert
+            _empsalry.Verify(mock =&gt; mock.GetAllEmpSalary());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertEmpsalary()
+        {
+            // Arrange
+            var empSalary = new EmpSalary
+            {
+                Id = 2109145700,
+                EmployeeCredentialId = 895452728,
+                SalaryRange = &quot;TestValue102697641&quot;,
+                AnnualIncome = 659543281.65M,
+                Loan = 793342292.49M,
+                Insurance = 1857940247.79M,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 488369144,
+                    UserName = &quot;TestValue1475564069&quot;,
+                    Password = &quot;TestValue1621328679&quot;,
+                    Status = (short)1632,
+                    RequestedCompanyId = 1669594796,
+                    Email = &quot;TestValue475867180&quot;,
+                    DefaultPassword = true,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 809414908,
+                        Name = &quot;TestValue1729129865&quot;,
+                        PhoneNumber = &quot;TestValue2099687030&quot;,
+                        DomainName = &quot;TestValue1077165028&quot;,
+                        Status = &quot;TestValue154234404&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1530978005&quot;,
+                        Department = new Department
+                        {
+                            Id = 59880247,
+                            Name = &quot;TestValue74451446&quot;,
+                            RequestedCompanyId = 1495081874,
+                            RequestedCompany = default(RequestedCompanyForm),
+                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                        },
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                }
+            };
+
+            _empsalry.Setup(mock =&gt; mock.InsertEmpSalary(It.IsAny&lt;EmpSalary&gt;())).ReturnsAsync(&quot;TestValue1703460260&quot;);
+
+            // Act
+            var result = await _testClass.InsertEmpsalary(empSalary);
+
+            // Assert
+            _empsalry.Verify(mock =&gt; mock.InsertEmpSalary(It.IsAny&lt;EmpSalary&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteEmpsalary()
+        {
+            // Arrange
+            var id = 126410131;
+
+            _empsalry.Setup(mock =&gt; mock.deleteEmpsalary(It.IsAny&lt;int&gt;())).ReturnsAsync(false);
+
+            // Act
+            var result = await _testClass.DeleteEmpsalary(id);
+
+            // Assert
+            _empsalry.Verify(mock =&gt; mock.deleteEmpsalary(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,42,1],[20,9,20,10,1],[21,13,21,53,1],[22,13,22,64,1],[23,13,23,84,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,86,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,92,1],[43,13,43,55,1],[46,13,46,62,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,105,15,1],[107,13,107,118,1],[110,13,110,70,1],[113,13,113,83,1],[115,13,115,72,1],[120,9,120,10,1],[122,13,122,32,1],[124,13,124,96,1],[127,13,127,63,1],[130,13,130,77,1],[132,13,132,72,1]]);
+    </script>
+  </body>
+</html>

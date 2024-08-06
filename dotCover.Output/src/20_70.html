@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Models\Users\AuthenticateRequestTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Models.Users
+{
+    using System;
+    using HRMS_Application.Models.Users;
+    using Xunit;
+
+    public class AuthenticateRequestTests
+    {
+        private AuthenticateRequest _testClass;
+
+        public AuthenticateRequestTests()
+        {
+            _testClass = new AuthenticateRequest();
+        }
+
+        [Fact]
+        public void CanSetAndGetUsername()
+        {
+            // Arrange
+            var testValue = &quot;TestValue371480443&quot;;
+
+            // Act
+            _testClass.Username = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Username);
+        }
+
+        [Fact]
+        public void CanSetAndGetPassword()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1153580749&quot;;
+
+            // Act
+            _testClass.Password = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Password);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,42,1],[12,9,12,10,1],[13,13,13,52,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,50,1],[23,13,23,45,1],[26,13,26,58,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,45,1],[39,13,39,58,1],[40,9,40,10,1]]);
+    </script>
+  </body>
+</html>

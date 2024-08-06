@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Models\AddressInfoTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.Models;
+    using Moq;
+    using Xunit;
+
+    public partial class AddressInfoTests
+    {
+        private AddressInfo _testClass;
+
+        public AddressInfoTests()
+        {
+            _testClass = new AddressInfo();
+        }
+
+        [Fact]
+        public void CanSetAndGetId()
+        {
+            // Arrange
+            var testValue = 1062111088;
+
+            // Act
+            _testClass.Id = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Id);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeCredentialId()
+        {
+            // Arrange
+            var testValue = 1830491907;
+
+            // Act
+            _testClass.EmployeeCredentialId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmployeeCredentialId);
+        }
+
+        [Fact]
+        public void CanSetAndGetAddressLine1()
+        {
+            // Arrange
+            var testValue = &quot;TestValue479194885&quot;;
+
+            // Act
+            _testClass.AddressLine1 = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AddressLine1);
+        }
+
+        [Fact]
+        public void CanSetAndGetAddressLine2()
+        {
+            // Arrange
+            var testValue = &quot;TestValue714813162&quot;;
+
+            // Act
+            _testClass.AddressLine2 = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AddressLine2);
+        }
+
+        [Fact]
+        public void CanSetAndGetCity()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1862328992&quot;;
+
+            // Act
+            _testClass.City = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.City);
+        }
+
+        [Fact]
+        public void CanSetAndGetState()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1273719158&quot;;
+
+            // Act
+            _testClass.State = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.State);
+        }
+
+        [Fact]
+        public void CanSetAndGetCountry()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1489510107&quot;;
+
+            // Act
+            _testClass.Country = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Country);
+        }
+
+        [Fact]
+        public void CanSetAndGetPinCode()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1651421060&quot;;
+
+            // Act
+            _testClass.PinCode = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PinCode);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeCredential()
+        {
+            // Arrange
+            var testValue = new EmployeeCredential
+            {
+                Id = 104700481,
+                UserName = &quot;TestValue1740299448&quot;,
+                Password = &quot;TestValue390775634&quot;,
+                Status = (short)483,
+                RequestedCompanyId = 271109439,
+                Email = &quot;TestValue101074686&quot;,
+                DefaultPassword = true,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 1829062719,
+                    Name = &quot;TestValue928108703&quot;,
+                    PhoneNumber = &quot;TestValue251474013&quot;,
+                    DomainName = &quot;TestValue1657760650&quot;,
+                    Status = &quot;TestValue227488427&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue774116249&quot;,
+                    Department = new Department
+                    {
+                        Id = 2124833937,
+                        Name = &quot;TestValue1917397213&quot;,
+                        RequestedCompanyId = 145510541,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+            };
+
+            // Act
+            _testClass.EmployeeCredential = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.EmployeeCredential);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,34,1],[14,9,14,10,1],[15,13,15,44,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,40,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,40,1],[38,13,38,57,1],[41,13,41,70,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,50,1],[51,13,51,49,1],[54,13,54,62,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,50,1],[64,13,64,49,1],[67,13,67,62,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,51,1],[77,13,77,41,1],[80,13,80,54,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,87,51,1],[90,13,90,42,1],[93,13,93,55,1],[94,9,94,10,1],[98,9,98,10,1],[100,13,100,51,1],[103,13,103,44,1],[106,13,106,57,1],[107,9,107,10,1],[111,9,111,10,1],[113,13,113,51,1],[116,13,116,44,1],[119,13,119,57,1],[120,9,120,10,1],[124,9,124,10,1],[126,13,167,15,1],[170,13,170,55,1],[173,13,173,67,1],[174,9,174,10,1]]);
+    </script>
+  </body>
+</html>

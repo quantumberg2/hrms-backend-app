@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\RolesControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class RolesControllerTests
+    {
+        private RolesController _testClass;
+        private Mock&lt;IRoles&gt; _roles;
+        private Mock&lt;ILogger&lt;RolesController&gt;&gt; _logger;
+
+        public RolesControllerTests()
+        {
+            _roles = new Mock&lt;IRoles&gt;();
+            _logger = new Mock&lt;ILogger&lt;RolesController&gt;&gt;();
+            _testClass = new RolesController(_roles.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new RolesController(_roles.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllRole()
+        {
+            // Arrange
+            _roles.Setup(mock =&gt; mock.GetAllRoles()).Returns(new List&lt;Role&gt;());
+
+            // Act
+            var result = _testClass.GetAllRole();
+
+            // Assert
+            _roles.Verify(mock =&gt; mock.GetAllRoles());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertRoles()
+        {
+            // Arrange
+            var role = new Role
+            {
+                Id = 78052871,
+                Name = &quot;TestValue1416130903&quot;,
+                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+            };
+
+            _roles.Setup(mock =&gt; mock.InsertRole(It.IsAny&lt;Role&gt;())).ReturnsAsync(&quot;TestValue1169218105&quot;);
+
+            // Act
+            var result = await _testClass.InsertRoles(role);
+
+            // Assert
+            _roles.Verify(mock =&gt; mock.InsertRole(It.IsAny&lt;Role&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteRole()
+        {
+            // Arrange
+            var id = 235964395;
+
+            _roles.Setup(mock =&gt; mock.deleteRole(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+
+            // Act
+            var result = await _testClass.DeleteRole(id);
+
+            // Assert
+            _roles.Verify(mock =&gt; mock.deleteRole(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,38,1],[20,9,20,10,1],[21,13,21,41,1],[22,13,22,60,1],[23,13,23,77,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,79,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,80,1],[43,13,43,50,1],[46,13,46,55,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,60,15,1],[62,13,62,105,1],[65,13,65,61,1],[68,13,68,70,1],[70,13,70,72,1],[75,9,75,10,1],[77,13,77,32,1],[79,13,79,87,1],[82,13,82,58,1],[85,13,85,69,1],[87,13,87,72,1]]);
+    </script>
+  </body>
+</html>

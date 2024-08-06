@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Models\AuditEntry.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Enums;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Newtonsoft.Json;
+
+namespace HRMS_Application.Models
+{
+    public class AuditEntry
+    {
+        public AuditEntry(EntityEntry entry)
+        {
+            Entry = entry;
+        }
+        public EntityEntry? Entry { get; }
+        public int? UserId { get; set; }
+        public string? TableName { get; set; }
+        public Dictionary&lt;string, object&gt; KeyValues { get; } = new Dictionary&lt;string, object&gt;();
+        public Dictionary&lt;string, object&gt; OldValues { get; } = new Dictionary&lt;string, object&gt;();
+        public Dictionary&lt;string, object&gt; NewValues { get; } = new Dictionary&lt;string, object&gt;();
+        public AuditType AuditType { get; set; }
+        public List&lt;string&gt; ChangedColumns { get; } = new List&lt;string&gt;();
+        public Aduit ToAudit()
+        {
+            var audit = new Aduit();
+            audit.UserId = UserId;
+            audit.Type = AuditType.ToString();
+            audit.TableName = TableName;
+            audit.DateTime = DateTime.Now;
+            audit.PrimaryKey = JsonConvert.SerializeObject(KeyValues);
+            audit.OldValues = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues);
+            audit.NewValues = NewValues.Count == 0 ? null : JsonConvert.SerializeObject(NewValues);
+            audit.AffectedColumns = ChangedColumns.Count == 0 ? null : JsonConvert.SerializeObject(ChangedColumns);
+            return audit;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,9,9,45,0],[10,9,10,10,0],[11,13,11,27,0],[12,9,12,10,0],[13,37,13,41,0],[14,30,14,34,0],[14,35,14,39,0],[15,36,15,40,0],[15,41,15,45,0],[16,55,16,59,0],[16,64,16,96,0],[17,55,17,59,0],[17,64,17,96,0],[18,55,18,59,0],[18,64,18,96,0],[19,38,19,42,0],[19,43,19,47,0],[20,46,20,50,0],[20,55,20,73,0],[22,9,22,10,0],[23,13,23,37,0],[24,13,24,35,0],[25,13,25,47,0],[26,13,26,41,0],[27,13,27,43,0],[28,13,28,71,0],[29,13,29,100,0],[30,13,30,100,0],[31,13,31,116,0],[32,13,32,26,0],[33,9,33,10,0]]);
+    </script>
+  </body>
+</html>

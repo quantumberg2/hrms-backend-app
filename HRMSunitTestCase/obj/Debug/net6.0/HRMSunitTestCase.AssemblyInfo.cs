@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HRMSunitTestCase")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b6ce7d41a56cd8e4cbcc7137cad8f92f9c1a130c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a01801e35768fca6d0c43cf12ef48500faf73ed2")]
 [assembly: System.Reflection.AssemblyProductAttribute("HRMSunitTestCase")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HRMSunitTestCase")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

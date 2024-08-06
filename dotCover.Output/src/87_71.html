@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\BusinessLogic\Implements\UserService.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+
+using HRMS_Application.Models.Users;
+using HRMS_Application.Models;
+using HRMS_Application.Authorization;
+using HRMS_Application.Helpers;
+using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using HRMS_Application.DTOs;
+using Microsoft.AspNetCore.Server.IIS.Core;
+//using System.Web.Http.Results;
+using System.Net;
+using Microsoft.AspNetCore.Http;
+
+namespace HRMS_Application.BusinessLogics.Implements
+{
+    public interface IUserService
+    {
+        AuthenticateResponse Authenticate(AuthenticateRequest model);
+        IEnumerable&lt;EmployeeCredential&gt; GetAll();
+        EmployeeCredential GetById(int id);
+    }
+    public class UserService : IUserService
+    {
+        private readonly HRMSContext _hrmsContext;
+        private IJwtUtils _jwtUtils;
+        private readonly AppSettings _appSettings;
+
+        public UserService(HRMSContext hrmsContext, IJwtUtils jwtUtils, IOptions&lt;AppSettings&gt; appSettings)
+        {
+            _hrmsContext = hrmsContext;
+            _jwtUtils = jwtUtils;
+            _appSettings = appSettings.Value;
+        }
+
+        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        {
+            //var user = _CollegeAppContext.Users.SingleOrDefault(x =&gt; x.Username == model.Username);
+
+            //var user = (from u in _CollegeAppContext.UserTables
+            //            join ur in _CollegeAppContext.UserRoleJs on u.Id equals ur.UserId
+            //            join r in _CollegeAppContext.Roles on ur.RoleId equals r.Id
+            //            where u.UserName == model.Username &amp;&amp; u.Password == model.Password
+            //            select new { User = u, UserRole = ur, RoleName = r.RoleName })
+            //                  .SingleOrDefault();
+
+            var objUser = (from row in _hrmsContext.EmployeeCredentials
+                           where row.UserName == model.Username &amp;&amp; row.Password == model.Password
+                           
+                           select new
+                           {
+                              
+                               row.UserName,
+                               row.Id
+                           }).FirstOrDefault();
+            if (objUser == null)
+            {
+                // Return forbidden error
+                //return new StatusCode(StatusCodes.Status401Unauthorized);
+                return null;
+
+            }
+            else
+            {
+
+                var roles = (from rowUserRolesJ in _hrmsContext.UserRolesJs
+                             join rowRoles in _hrmsContext.Roles on rowUserRolesJ.RolesId equals rowRoles.Id
+                             where rowUserRolesJ.EmployeeCredentialId == objUser.Id
+                             select rowRoles.Name).ToList();
+
+                var user = new UserDto
+                {
+                    /*Name = objUser.Name,*/
+                    UserName = objUser.UserName,
+                    UserId = objUser.Id,
+                    Roles = roles
+                    // Roles = new List&lt;string&gt; { &quot;Admin&quot;, &quot;Faculty&quot; }
+                };
+                // authentication successful so generate jwt token
+                var jwtToken = _jwtUtils.GenerateJwtToken(user);
+                return new AuthenticateResponse(user, jwtToken, user.Roles);
+            }
+
+        }
+
+        public IEnumerable&lt;EmployeeCredential&gt; GetAll()
+        {
+            var result = (from row in _hrmsContext.EmployeeDetails
+                          select row).ToList();
+            return (IEnumerable&lt;EmployeeCredential&gt;)result;
+            //return _CollegeAppContext.Users;
+        }
+
+        public EmployeeCredential GetById(int id)
+        {
+            var user = (from row in _hrmsContext.EmployeeCredentials
+                        where row.Id == id
+                        select row).SingleOrDefault();
+
+            if (user == null) throw new KeyNotFoundException(&quot;User not found&quot;);
+            return user;
+        }
+
+       
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[28,9,28,107,0],[29,9,29,10,0],[30,13,30,40,0],[31,13,31,34,0],[32,13,32,46,0],[33,9,33,10,0],[36,9,36,10,0],[46,13,54,48,0],[55,13,55,33,0],[56,13,56,14,0],[59,17,59,29,0],[63,13,63,14,0],[65,17,68,61,0],[70,17,77,19,0],[79,17,79,65,0],[80,17,80,77,0],[83,9,83,10,0],[86,9,86,10,0],[87,13,88,48,0],[89,13,89,60,0],[91,9,91,10,0],[94,9,94,10,0],[95,13,97,55,0],[99,13,99,30,0],[99,31,99,80,0],[100,13,100,25,0],[101,9,101,10,0]]);
+    </script>
+  </body>
+</html>

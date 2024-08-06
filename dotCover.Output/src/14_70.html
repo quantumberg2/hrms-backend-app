@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Models\HolidayTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.Models;
+    using Moq;
+    using Xunit;
+
+    public partial class HolidayTests
+    {
+        private Holiday _testClass;
+
+        public HolidayTests()
+        {
+            _testClass = new Holiday();
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new Holiday();
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanSetAndGetId()
+        {
+            // Arrange
+            var testValue = 923310799;
+
+            // Act
+            _testClass.Id = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Id);
+        }
+
+        [Fact]
+        public void CanSetAndGetOccasion()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2114996258&quot;;
+
+            // Act
+            _testClass.Occasion = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Occasion);
+        }
+
+        [Fact]
+        public void CanSetAndGetDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.Date = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Date);
+        }
+
+        [Fact]
+        public void CanSetAndGetDay()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1750756397&quot;;
+
+            // Act
+            _testClass.Day = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Day);
+        }
+
+        [Fact]
+        public void CanSetAndGetRestrictedHoliday()
+        {
+            // Arrange
+            var testValue = false;
+
+            // Act
+            _testClass.RestrictedHoliday = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RestrictedHoliday);
+        }
+
+        [Fact]
+        public void CanSetAndGetCompanyId()
+        {
+            // Arrange
+            var testValue = 834912486;
+
+            // Act
+            _testClass.CompanyId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.CompanyId);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeecredentialId()
+        {
+            // Arrange
+            var testValue = 2063814342;
+
+            // Act
+            _testClass.EmployeecredentialId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmployeecredentialId);
+        }
+
+        [Fact]
+        public void CanSetAndGetCompany()
+        {
+            // Arrange
+            var testValue = new CompanyDetail
+            {
+                Id = 1529278112,
+                Name = &quot;TestValue1870757587&quot;,
+                Address = &quot;TestValue541720797&quot;,
+                Country = &quot;TestValue1240297431&quot;,
+                States = &quot;TestValue809606035&quot;,
+                Industry = &quot;TestValue2097174501&quot;,
+                TimeZone = &quot;TestValue1463839407&quot;,
+                Currency = &quot;TestValue547148698&quot;,
+                PfNo = &quot;TestValue1031355296&quot;,
+                TanNo = &quot;TestValue1189161047&quot;,
+                EsiNo = &quot;TestValue1359074769&quot;,
+                PanNo = &quot;TestValue535223430&quot;,
+                GstNo = &quot;TestValue1616653540&quot;,
+                RegistrationNo = &quot;TestValue9513341&quot;,
+                Twitter = &quot;TestValue1140514480&quot;,
+                Facebook = &quot;TestValue1848893613&quot;,
+                LinkedIn = &quot;TestValue2135744277&quot;,
+                CompanyLogo = &quot;TestValue414934722&quot;,
+                RequestedCompanyId = 1847840612,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 1544326769,
+                    Name = &quot;TestValue2051576723&quot;,
+                    PhoneNumber = &quot;TestValue1275994410&quot;,
+                    DomainName = &quot;TestValue492554988&quot;,
+                    Status = &quot;TestValue517196856&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1829398091&quot;,
+                    Department = new Department
+                    {
+                        Id = 1958190657,
+                        Name = &quot;TestValue466086484&quot;,
+                        RequestedCompanyId = 27832584,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+            };
+
+            // Act
+            _testClass.Company = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Company);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeecredential()
+        {
+            // Arrange
+            var testValue = new EmployeeCredential
+            {
+                Id = 607708798,
+                UserName = &quot;TestValue243596276&quot;,
+                Password = &quot;TestValue2147345141&quot;,
+                Status = (short)10575,
+                RequestedCompanyId = 1998452821,
+                Email = &quot;TestValue1582247057&quot;,
+                DefaultPassword = true,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 1134911052,
+                    Name = &quot;TestValue757740293&quot;,
+                    PhoneNumber = &quot;TestValue82651548&quot;,
+                    DomainName = &quot;TestValue1322267314&quot;,
+                    Status = &quot;TestValue953368608&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue597133127&quot;,
+                    Department = new Department
+                    {
+                        Id = 1725654271,
+                        Name = &quot;TestValue1541677652&quot;,
+                        RequestedCompanyId = 389432654,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+            };
+
+            // Act
+            _testClass.Employeecredential = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Employeecredential);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeAttendances()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object;
+
+            // Act
+            _testClass.EmployeeAttendances = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.EmployeeAttendances);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,30,1],[14,9,14,10,1],[15,13,15,40,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,42,1],[25,13,25,38,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,39,1],[35,13,35,39,1],[38,13,38,52,1],[39,9,39,10,1],[43,9,43,10,1],[45,13,45,51,1],[48,13,48,45,1],[51,13,51,58,1],[52,9,52,10,1],[56,9,56,10,1],[58,13,58,45,1],[61,13,61,41,1],[64,13,64,54,1],[65,9,65,10,1],[69,9,69,10,1],[71,13,71,51,1],[74,13,74,40,1],[77,13,77,53,1],[78,9,78,10,1],[82,9,82,10,1],[84,13,84,35,1],[87,13,87,54,1],[90,13,90,67,1],[91,9,91,10,1],[95,9,95,10,1],[97,13,97,39,1],[100,13,100,46,1],[103,13,103,59,1],[104,9,104,10,1],[108,9,108,10,1],[110,13,110,40,1],[113,13,113,57,1],[116,13,116,70,1],[117,9,117,10,1],[121,9,121,10,1],[123,13,168,15,1],[171,13,171,44,1],[174,13,174,56,1],[175,9,175,10,1],[179,9,179,10,1],[181,13,222,15,1],[225,13,225,55,1],[228,13,228,67,1],[229,9,229,10,1],[233,9,233,10,1],[235,13,235,80,1],[238,13,238,56,1],[241,13,241,68,1],[242,9,242,10,1]]);
+    </script>
+  </body>
+</html>

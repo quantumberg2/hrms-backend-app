@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Program.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Implements;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.BusinessLogics.Implements;
+using HRMS_Application.Helpers;
+using HRMS_Application.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddDbContext&lt;HRMSContext&gt;(options =&gt;
+options.UseSqlServer(builder.Configuration.GetConnectionString(&quot;connectionString&quot;)));
+builder.Services.AddScoped&lt;IJwtUtils, JwtUtils&gt;();
+builder.Services.Configure&lt;AppSettings&gt;(builder.Configuration.GetSection(&quot;AppSettings&quot;));
+
+builder.Services.AddScoped&lt;IDepartment, DepartmentsImp&gt;();
+builder.Services.AddScoped&lt;IPosition, PositionImp&gt;();
+builder.Services.AddScoped&lt;IEmpCredential, EmpCredentialImp&gt;();
+builder.Services.AddScoped&lt;ICompanyDetails, CompanyDetailsImp&gt;();
+builder.Services.AddScoped&lt;IUserRoles,UserRoleImp&gt;();
+builder.Services.AddScoped&lt;IRoles, RolesImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeSalary, EmployeeSalaryImp&gt;();
+builder.Services.AddScoped&lt;IAccountDetails, AccountDetailsImp&gt;();
+builder.Services.AddScoped&lt;IAddressInfo,AddressImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeSalary, EmployeeSalaryImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeAttendance, EmployeeAttendanceImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeLeave, EmployeeLeaveImp&gt;();
+builder.Services.AddScoped&lt;IHoliday, HolidayImp&gt;();
+builder.Services.AddScoped&lt;ILeaveTypes, LeaveTypesImp&gt;();
+builder.Services.AddScoped&lt;IEmpDetails, EmpDetailsImp&gt;();
+builder.Services.AddScoped&lt;IUserService, UserService&gt;();
+builder.Services.AddScoped&lt;ICompanyRequestedform, CompanyRequestedformImp&gt;();
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddCors(options =&gt;
+{
+    options.AddPolicy(&quot;AllowAllOrigins&quot;,
+        builder =&gt;
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+app.UseCors(&quot;AllowAllOrigins&quot;); // Use the CORS policy
+
+app.MapControllers();
+
+app.Run();
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,1,10,50,0],[14,1,15,1,0],[15,1,15,84,0],[15,84,15,86,0],[16,1,16,51,0],[17,1,17,90,0],[19,1,19,59,0],[20,1,20,54,0],[21,1,21,64,0],[22,1,22,66,0],[23,1,23,54,0],[24,1,24,48,0],[25,1,25,66,0],[26,1,26,66,0],[27,1,27,55,0],[28,1,28,66,0],[29,1,29,74,0],[30,1,30,64,0],[31,1,31,52,0],[32,1,32,58,0],[33,1,33,58,0],[34,1,34,57,0],[35,1,35,78,0],[37,1,37,35,0],[39,1,39,44,0],[40,1,40,34,0],[41,1,41,43,0],[43,1,44,1,0],[44,1,44,2,0],[44,2,45,5,0],[45,5,47,9,0],[47,9,47,10,0],[47,10,48,13,0],[48,13,50,38,0],[50,38,51,9,0],[51,9,51,10,0],[51,10,51,12,0],[51,12,52,1,0],[52,1,52,2,0],[52,2,52,4,0],[54,1,54,27,0],[57,1,57,37,0],[58,1,58,2,0],[59,5,59,22,0],[60,5,60,24,0],[61,1,61,2,0],[63,1,63,27,0],[65,1,65,24,0],[66,1,66,32,0],[68,1,68,22,0],[70,1,70,11,0]]);
+    </script>
+  </body>
+</html>

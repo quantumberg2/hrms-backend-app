@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Controllers\EmpDetailsController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Authorization;
+
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class EmpDetailsController : ControllerBase
+    {
+        private readonly IEmpDetails _Empdetails;
+        private readonly ILogger&lt;EmpDetailsController&gt; _logger;
+
+
+        public EmpDetailsController(IEmpDetails EmpDetails, ILogger&lt;EmpDetailsController&gt; logger)
+        {
+            _Empdetails = EmpDetails;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        [Authorize(new[] { &quot;Admin&quot;,&quot;Developer&quot; })]
+        public List&lt;EmployeeDetail&gt; GetAllEmpDetails()
+        {
+            _logger.LogInformation(&quot;Get all department method started&quot;);
+            var dept = _Empdetails.GetAllUser();
+            return dept;
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        [AllowAnonymous]
+        public EmployeeDetail GetById(int id)
+        {
+           
+            var status = _Empdetails.GetById(id);
+            return status;
+        }
+
+        [HttpPost(&quot;insertEmployees&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;string&gt; InsertEmpDetails([FromBody] EmployeeDetail employeeDetail)
+        {
+            _logger.LogInformation(&quot;Insert Empoyeedetails method started&quot;);
+
+            var status = await _Empdetails.InsertEmployeeDetail(employeeDetail);         
+            return status;
+        }
+
+        [HttpPut(&quot;UpdateAll/{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        // [Route(&quot;UpdateAll&quot;)]
+        public async Task&lt;EmployeeDetail&gt; UpdateEmpDetails(int id, int? depId, string? mobilenumber, string? fname, string? mname, string? lname, int? positionid, string? nickname, string? gender, int? employeecredentialId)
+        {
+            _logger.LogInformation(&quot;Update Empoyeedetails method started&quot;);
+            var status = await _Empdetails.UpdateEmployeeDetail(id, depId, mobilenumber, fname, mname, lname,positionid, nickname, gender, employeecredentialId);
+            return status;
+        }
+
+        [HttpDelete(&quot;{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;bool&gt; DeleteEmpDetails(int id)
+        {
+            _logger.LogInformation(&quot;Delete method started&quot;);
+            var status = await _Empdetails.DeleteEmployeeDetail(id);
+            return status;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,9,18,98,1],[19,9,19,10,1],[20,13,20,38,1],[21,13,21,30,1],[22,9,22,10,1],[27,9,27,10,1],[28,13,28,73,1],[29,13,29,49,1],[30,13,30,25,1],[31,9,31,10,1],[35,9,35,10,1],[37,13,37,50,1],[38,13,38,27,1],[39,9,39,10,1],[44,9,44,10,1],[45,13,45,76,1],[47,13,47,81,1],[48,13,48,27,1],[49,9,49,10,1],[55,9,55,10,1],[56,13,56,76,1],[57,13,57,162,1],[58,13,58,27,1],[59,9,59,10,1],[64,9,64,10,1],[65,13,65,61,1],[66,13,66,69,1],[67,13,67,27,1],[68,9,68,10,1]]);
+    </script>
+  </body>
+</html>

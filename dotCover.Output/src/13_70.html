@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Models\ErrorResponseTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Models
+{
+    using System;
+    using HRMS_Application.Models;
+    using Xunit;
+
+    public class ErrorResponseTests
+    {
+        private ErrorResponse _testClass;
+
+        public ErrorResponseTests()
+        {
+            _testClass = new ErrorResponse();
+        }
+
+        [Fact]
+        public void CanCallToString()
+        {
+            // Act
+            var result = _testClass.ToString();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanSetAndGetStatusCode()
+        {
+            // Arrange
+            var testValue = 916978203;
+
+            // Act
+            _testClass.StatusCode = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.StatusCode);
+        }
+
+        [Fact]
+        public void CanSetAndGetMessage()
+        {
+            // Arrange
+            var testValue = &quot;TestValue145244495&quot;;
+
+            // Act
+            _testClass.Message = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Message);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,36,1],[12,9,12,10,1],[13,13,13,46,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,48,1],[23,13,23,72,1],[28,9,28,10,1],[30,13,30,39,1],[33,13,33,47,1],[36,13,36,60,1],[37,9,37,10,1],[41,9,41,10,1],[43,13,43,50,1],[46,13,46,44,1],[49,13,49,57,1],[50,9,50,10,1]]);
+    </script>
+  </body>
+</html>

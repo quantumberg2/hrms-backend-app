@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Controllers\UserServiceController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogics.Implements;
+using HRMS_Application.Entities;
+using HRMS_Application.Models.Users;
+using HRMS_Application.Entities;
+using HRMS_Application.Models.Users;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Models;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class UserServiceController : ControllerBase
+    {
+        private readonly IUserService _userService;
+        private readonly ILogger&lt;UserServiceController&gt; _logger;
+
+        public UserServiceController(IUserService userService, ILogger&lt;UserServiceController&gt; logger)
+        {
+            _userService = userService;
+            _logger = logger;
+        }
+
+        [AllowAnonymous]
+        [HttpPost(&quot;[action]&quot;)]
+        public IActionResult Authenticate(AuthenticateRequest model)
+        {
+            _logger.LogInformation(&quot;Authenticate method started&quot;);
+            var response = _userService.Authenticate(model);
+            return Ok(response);
+        }
+
+        [Authorize(&quot;Admin&quot;)]
+        //[AllowAnonymous]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            _logger.LogInformation(&quot;Get all method started&quot;);
+            var users = _userService.GetAll();
+            return Ok(users);
+        }
+
+        [HttpGet(&quot;{id:int}&quot;)]
+        public IActionResult GetById(int id)
+        {
+             _logger.LogInformation(&quot;Get by id method started&quot;);
+            // only admins can access other Employee records
+            var currentUser = (EmployeeDetail)HttpContext.Items[&quot;User&quot;];
+            if (id != currentUser.Id)// &amp;&amp; currentUser.Role != Role.Admin)
+                return Unauthorized(new { message = &quot;Unauthorized&quot; });
+
+            var user = _userService.GetById(id);
+            return Ok(user);
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,102,1],[21,9,21,10,1],[22,13,22,40,1],[23,13,23,30,1],[24,9,24,10,1],[29,9,29,10,1],[30,13,30,67,1],[31,13,31,61,1],[32,13,32,33,1],[33,9,33,10,1],[39,9,39,10,1],[40,13,40,62,1],[41,13,41,47,1],[42,13,42,30,1],[43,9,43,10,1],[47,9,47,10,1],[48,14,48,65,1],[50,13,50,73,1],[51,13,51,38,0],[52,17,52,71,0],[54,13,54,49,0],[55,13,55,29,0],[56,9,56,10,0]]);
+    </script>
+  </body>
+</html>

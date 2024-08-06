@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\AddressInfoControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class AddressInfoControllerTests
+    {
+        private AddressInfoController _testClass;
+        private Mock&lt;IAddressInfo&gt; _addressInfo;
+        private Mock&lt;ILogger&lt;AddressInfoController&gt;&gt; _logger;
+
+        public AddressInfoControllerTests()
+        {
+            _addressInfo = new Mock&lt;IAddressInfo&gt;();
+            _logger = new Mock&lt;ILogger&lt;AddressInfoController&gt;&gt;();
+            _testClass = new AddressInfoController(_addressInfo.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new AddressInfoController(_addressInfo.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllAddressInfo()
+        {
+            // Arrange
+            _addressInfo.Setup(mock =&gt; mock.GetAllAddressInfo()).Returns(new List&lt;AddressInfo&gt;());
+
+            // Act
+            var result = _testClass.GetAllAddressInfo();
+
+            // Assert
+            _addressInfo.Verify(mock =&gt; mock.GetAllAddressInfo());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallInsertAddressInfo()
+        {
+            // Arrange
+            var addresinfo = new AddressInfo
+            {
+                Id = 744241382,
+                EmployeeCredentialId = 610367684,
+                AddressLine1 = &quot;TestValue2123419013&quot;,
+                AddressLine2 = &quot;TestValue1161514708&quot;,
+                City = &quot;TestValue1236846703&quot;,
+                State = &quot;TestValue756233329&quot;,
+                Country = &quot;TestValue635753287&quot;,
+                PinCode = &quot;TestValue282742345&quot;,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 409958266,
+                    UserName = &quot;TestValue1415857262&quot;,
+                    Password = &quot;TestValue1305610869&quot;,
+                    Status = (short)10252,
+                    RequestedCompanyId = 1701162570,
+                    Email = &quot;TestValue336203286&quot;,
+                    DefaultPassword = false,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 2068371570,
+                        Name = &quot;TestValue1472003760&quot;,
+                        PhoneNumber = &quot;TestValue1212964884&quot;,
+                        DomainName = &quot;TestValue2031198132&quot;,
+                        Status = &quot;TestValue273809571&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue713678213&quot;,
+                        Department = new Department
+                        {
+                            Id = 1836721459,
+                            Name = &quot;TestValue1431034461&quot;,
+                            RequestedCompanyId = 1189723826,
+                            RequestedCompany = default(RequestedCompanyForm),
+                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                        },
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                }
+            };
+
+            _addressInfo.Setup(mock =&gt; mock.InsertAddressInfot(It.IsAny&lt;AddressInfo&gt;())).Returns(&quot;TestValue394159202&quot;);
+
+            // Act
+            var result = _testClass.InsertAddressInfo(addresinfo);
+
+            // Assert
+            _addressInfo.Verify(mock =&gt; mock.InsertAddressInfot(It.IsAny&lt;AddressInfo&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallDeleteAddressInfo()
+        {
+            // Arrange
+            var id = 39499857;
+
+            _addressInfo.Setup(mock =&gt; mock.deleteAddressInfo(It.IsAny&lt;int&gt;())).Returns(true);
+
+            // Act
+            var result = _testClass.DeleteAddressInfo(id);
+
+            // Assert
+            _addressInfo.Verify(mock =&gt; mock.deleteAddressInfo(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,9,18,44,1],[19,9,19,10,1],[20,13,20,53,1],[21,13,21,66,1],[22,13,22,89,1],[23,9,23,10,1],[27,9,27,10,1],[29,13,29,91,1],[32,13,32,38,1],[33,9,33,10,1],[37,9,37,10,1],[39,13,39,99,1],[42,13,42,57,1],[45,13,45,67,1],[47,13,47,72,1],[52,9,52,10,1],[54,13,106,15,1],[108,13,108,120,1],[111,13,111,67,1],[114,13,114,91,1],[116,13,116,72,1],[121,9,121,10,1],[123,13,123,31,1],[125,13,125,95,1],[128,13,128,59,1],[131,13,131,82,1],[133,13,133,72,1]]);
+    </script>
+  </body>
+</html>

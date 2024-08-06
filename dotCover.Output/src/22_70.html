@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\AccountDetailsControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class AccountDetailsControllerTests
+    {
+        private AccountDetailsController _testClass;
+        private Mock&lt;IAccountDetails&gt; _accountDetails;
+        private Mock&lt;ILogger&lt;AccountDetailsController&gt;&gt; _logger;
+
+        public AccountDetailsControllerTests()
+        {
+            _accountDetails = new Mock&lt;IAccountDetails&gt;();
+            _logger = new Mock&lt;ILogger&lt;AccountDetailsController&gt;&gt;();
+            _testClass = new AccountDetailsController(_accountDetails.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new AccountDetailsController(_accountDetails.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllaccountDetails()
+        {
+            // Arrange
+            _accountDetails.Setup(mock =&gt; mock.GetAllAccountdetails()).Returns(new List&lt;AccountDetail&gt;());
+
+            // Act
+            var result = _testClass.GetAllaccountDetails();
+
+            // Assert
+            _accountDetails.Verify(mock =&gt; mock.GetAllAccountdetails());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallInsertDepartments()
+        {
+            // Arrange
+            var accountDetail = new AccountDetail
+            {
+                Id = 787885911,
+                EmployeeCredentialId = 1190059177,
+                AccountNumber = &quot;TestValue1541684067&quot;,
+                ConfirmAcNo = &quot;TestValue516338179&quot;,
+                IfscCode = &quot;TestValue1211220563&quot;,
+                ConfirmIfsc = &quot;TestValue1723618123&quot;,
+                AccountType = &quot;TestValue564110231&quot;,
+                BankName = &quot;TestValue1658655153&quot;,
+                BranchName = &quot;TestValue1595847639&quot;,
+                AadharNumber = &quot;TestValue90080951&quot;,
+                PfNumber = &quot;TestValue1981112389&quot;,
+                UanNumber = &quot;TestValue1487395658&quot;,
+                PfSchema = &quot;TestValue1924929895&quot;,
+                PfJoiningDate = DateTime.UtcNow,
+                EligibleForPf = true,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 587579403,
+                    UserName = &quot;TestValue874721199&quot;,
+                    Password = &quot;TestValue471501178&quot;,
+                    Status = (short)20415,
+                    RequestedCompanyId = 1992577681,
+                    Email = &quot;TestValue1759346963&quot;,
+                    DefaultPassword = false,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 675390118,
+                        Name = &quot;TestValue987913922&quot;,
+                        PhoneNumber = &quot;TestValue757526099&quot;,
+                        DomainName = &quot;TestValue1642089917&quot;,
+                        Status = &quot;TestValue817061361&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue979376741&quot;,
+                        Department = new Department
+                        {
+                            Id = 2101226194,
+                            Name = &quot;TestValue1682719787&quot;,
+                            RequestedCompanyId = 434332931,
+                            RequestedCompany = default(RequestedCompanyForm),
+                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                        },
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object
+            };
+
+            _accountDetails.Setup(mock =&gt; mock.InsertAccountDetails(It.IsAny&lt;AccountDetail&gt;())).Returns(&quot;TestValue1072122803&quot;);
+
+            // Act
+            var result = _testClass.InsertDepartments(accountDetail);
+
+            // Assert
+            _accountDetails.Verify(mock =&gt; mock.InsertAccountDetails(It.IsAny&lt;AccountDetail&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallDeleteAccountDetails()
+        {
+            // Arrange
+            var id = 1224879060;
+
+            _accountDetails.Setup(mock =&gt; mock.deleteAccountDetails(It.IsAny&lt;int&gt;())).Returns(true);
+
+            // Act
+            var result = _testClass.DeleteAccountDetails(id);
+
+            // Assert
+            _accountDetails.Verify(mock =&gt; mock.deleteAccountDetails(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,9,18,47,1],[19,9,19,10,1],[20,13,20,59,1],[21,13,21,69,1],[22,13,22,95,1],[23,9,23,10,1],[27,9,27,10,1],[29,13,29,97,1],[32,13,32,38,1],[33,9,33,10,1],[37,9,37,10,1],[39,13,39,107,1],[42,13,42,60,1],[45,13,45,73,1],[47,13,47,72,1],[52,9,52,10,1],[54,13,114,15,1],[116,13,116,128,1],[119,13,119,70,1],[122,13,122,98,1],[124,13,124,72,1],[129,9,129,10,1],[131,13,131,33,1],[133,13,133,101,1],[136,13,136,62,1],[139,13,139,88,1],[141,13,141,72,1]]);
+    </script>
+  </body>
+</html>

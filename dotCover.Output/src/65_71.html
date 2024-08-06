@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Middleware\ExceptionMiddleware.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+
+using HRMS_Application.Middleware.Exceptions;
+using HRMS_Application.Models;
+using System.Net;
+
+namespace HRMS_Application.Middleware
+{
+    public class ExceptionMiddleware : IMiddleware
+    {
+        private readonly ILogger&lt;ExceptionMiddleware&gt; _log;
+        public ExceptionMiddleware(ILogger&lt;ExceptionMiddleware&gt; log)
+        {
+            _log = log;
+        }
+
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        {
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(&quot;Exception&quot;, ex.Message + ex.StackTrace + ex.InnerException);
+                await HandleException(context, ex);
+            }
+        }
+        private static Task HandleException(HttpContext context, Exception ex)
+        {
+            int statusCode = StatusCodes.Status500InternalServerError;
+            switch (ex)
+            {
+                case NotFoundException:
+                    statusCode = StatusCodes.Status404NotFound;
+                    break;
+
+                case BadRequestException:
+                    statusCode = StatusCodes.Status400BadRequest;
+                    break;
+
+                case ForbiddenException:
+                    statusCode = StatusCodes.Status403Forbidden;
+                    break;
+
+                case MethodNotAllowedException:
+                    statusCode = StatusCodes.Status405MethodNotAllowed;
+                    break;
+                case NotAcceptableException:
+                    statusCode = StatusCodes.Status406NotAcceptable;
+                    break;
+
+                case UnauthorizedException:
+                    statusCode = StatusCodes.Status401Unauthorized;
+                    break;
+
+                case Exceptions.NotImplementedException:
+                    statusCode = StatusCodes.Status501NotImplemented;
+                    break;
+
+                case NotFoundResultException:
+                    statusCode = StatusCodes.Status404NotFound;
+                    break;
+
+                case ArgumentException:
+                    statusCode = StatusCodes.Status500InternalServerError;
+                    break;
+
+                case DatabaseOperationException:
+                    statusCode = StatusCodes.Status501NotImplemented;
+                    break;
+            }
+            var errorResponse = new ErrorResponse
+            {
+                StatusCode = statusCode,
+                Message = ex.Message
+            };
+            context.Response.ContentType = &quot;application/json&quot;;
+            context.Response.StatusCode = statusCode;
+            return context.Response.WriteAsync(errorResponse.ToString());
+        }
+    }
+
+    //Extension Method For this Middleware
+    public static class ExceptionMiddlewareExtension
+    {
+        public static void ConfigureExceptionMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware&lt;ExceptionMiddleware&gt;();
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,69,0],[12,9,12,10,0],[13,13,13,24,0],[14,9,14,10,0],[17,9,17,10,0],[19,13,19,14,0],[20,17,20,37,0],[21,13,21,14,0],[22,13,22,33,0],[23,13,23,14,0],[24,17,24,92,0],[25,17,25,52,0],[26,13,26,14,0],[27,9,27,10,0],[29,9,29,10,0],[30,13,30,71,0],[31,13,31,24,0],[34,21,34,64,0],[35,21,35,27,0],[38,21,38,66,0],[39,21,39,27,0],[42,21,42,65,0],[43,21,43,27,0],[46,21,46,72,0],[47,21,47,27,0],[49,21,49,69,0],[50,21,50,27,0],[53,21,53,68,0],[54,21,54,27,0],[57,21,57,70,0],[58,21,58,27,0],[61,21,61,64,0],[62,21,62,27,0],[65,21,65,75,0],[66,21,66,27,0],[69,21,69,70,0],[70,21,70,27,0],[72,13,76,15,0],[77,13,77,63,0],[78,13,78,54,0],[79,13,79,74,0],[80,9,80,10,0],[87,9,87,10,0],[88,13,88,54,0],[89,9,89,10,0]]);
+    </script>
+  </body>
+</html>

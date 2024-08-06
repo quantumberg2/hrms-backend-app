@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\BusinessLogic\Implements\DepartmentsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.Models;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class DepartmentsImp : IDepartment
+    {
+        private readonly HRMSContext _hrmsContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly IJwtUtils _jwtUtils;
+        private readonly IUser _user;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public DepartmentsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        {
+            _hrmsContext = hrmsContext;
+           _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _hrmsContext.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; deleteDepartment(int id)
+        {
+            DecodeToken();
+            var result = (from row in _hrmsContext.Departments
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _hrmsContext.Departments.Remove(result);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;Department&gt; GetAllDepartment()
+        {
+            var result = (from row in _hrmsContext.Departments
+                          select row).ToList();
+            return result;
+        }
+
+        public Department GetDepartmentById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task&lt;string&gt; InsertDepartment(Department department)
+        {
+            DecodeToken();
+            _hrmsContext.Departments.Add(department);
+            var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;new Department inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+
+        public async Task&lt;Department&gt; UpdateDepartment(int id, string? name, int? requestedcompanyId)
+        {
+            var result = _hrmsContext.Departments.SingleOrDefault(p =&gt; p.Id == id);
+            if (result == null)
+            {
+                // Handle the case where the user with the specified id doesn&#39;t exist
+                return null;
+            }
+            result.Name = name;
+            result.RequestedCompanyId = requestedcompanyId;
+            _hrmsContext.Departments.Update(result);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return result;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,117,0],[18,9,18,10,0],[19,13,19,40,0],[20,12,20,55,0],[21,13,21,34,0],[22,9,22,10,0],[24,9,24,10,0],[25,13,25,126,0],[26,13,26,45,0],[27,13,27,14,0],[28,17,28,31,0],[29,13,29,14,0],[31,13,31,14,0],[32,17,32,64,0],[33,17,33,37,0],[34,17,34,18,0],[35,21,35,114,0],[36,21,36,45,0],[37,21,37,22,0],[38,25,38,56,0],[39,25,39,71,0],[39,71,39,84,0],[39,84,39,95,0],[40,21,40,22,0],[42,21,42,22,0],[44,25,44,39,0],[45,21,45,22,0],[46,17,46,18,0],[47,13,47,14,0],[48,9,48,10,0],[50,9,50,10,0],[51,13,51,27,0],[52,13,54,57,0],[55,13,55,53,0],[56,13,56,64,0],[57,13,57,25,0],[58,9,58,10,0],[61,9,61,10,0],[62,13,63,48,0],[64,13,64,27,0],[65,9,65,10,0],[68,9,68,10,0],[69,13,69,49,0],[73,9,73,10,0],[74,13,74,27,0],[75,13,75,54,0],[76,13,76,77,0],[77,13,77,29,0],[78,13,78,14,0],[79,17,79,63,0],[83,13,83,14,0],[84,17,84,52,0],[86,9,86,10,0],[89,9,89,10,0],[90,13,90,84,0],[91,13,91,32,0],[92,13,92,14,0],[94,17,94,29,0],[96,13,96,32,0],[97,13,97,60,0],[98,13,98,53,0],[99,13,99,64,0],[100,13,100,27,0],[101,9,101,10,0]]);
+    </script>
+  </body>
+</html>

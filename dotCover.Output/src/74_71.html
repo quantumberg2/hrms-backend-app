@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Controllers\CompanyrequestedController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class CompanyrequestedController : ControllerBase
+    {
+        private readonly ICompanyRequestedform _companyRequested;
+        private readonly ILogger&lt;CompanyrequestedController&gt; _logger;
+        public CompanyrequestedController(ICompanyRequestedform companyRequested, ILogger&lt;CompanyrequestedController&gt; logger)
+        {
+            _companyRequested = companyRequested;
+            _logger = logger;
+        }
+        [HttpGet]
+       // [Authorize(new[] { &quot;Admin&quot; })]
+        public List&lt;RequestedCompanyForm&gt; GetEmpCredential()
+        {
+            _logger.LogInformation(&quot;Get All Employee Credential started&quot;);
+            var result = _companyRequested.GetAllRequestedCompanyForm();
+            return result;
+
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public RequestedCompanyForm GetEmployeeCredentialsById(int id)
+        {
+            _logger.LogInformation(&quot;Getby ID for Employee Credential method started&quot;);
+            var result = _companyRequested.GetById(id);
+            return result;
+        }
+
+        [HttpDelete]
+        //[Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;bool&gt; DeleteRequestedCompanyForm(int id)
+        {
+            _logger.LogInformation(&quot;Delete Employee Credential method was started&quot;);
+            var result = await _companyRequested.DeleteRequestedCompanyForm(id);
+            return result;
+        }
+        [HttpPost]
+        //[Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;string&gt; InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
+        {
+            _logger.LogInformation(&quot;Insert Employee Credential method started&quot;);
+            var result = await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
+            return result;
+
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,126,1],[15,9,15,10,1],[16,13,16,50,1],[17,13,17,30,1],[18,9,18,10,1],[22,9,22,10,1],[23,13,23,75,1],[24,13,24,73,1],[25,13,25,27,1],[27,9,27,10,1],[30,9,30,10,1],[31,13,31,87,1],[32,13,32,56,1],[33,13,33,27,1],[34,9,34,10,1],[39,9,39,10,1],[40,13,40,85,1],[41,13,41,81,1],[42,13,42,27,1],[43,9,43,10,1],[47,9,47,10,1],[48,13,48,81,1],[49,13,49,99,1],[50,13,50,27,1],[52,9,52,10,1]]);
+    </script>
+  </body>
+</html>

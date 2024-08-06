@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\EmpCredentialControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class EmpCredentialControllerTests
+    {
+        private EmpCredentialController _testClass;
+        private Mock&lt;IEmpCredential&gt; _empCredential;
+        private Mock&lt;ILogger&lt;EmpCredentialController&gt;&gt; _logger;
+
+        public EmpCredentialControllerTests()
+        {
+            _empCredential = new Mock&lt;IEmpCredential&gt;();
+            _logger = new Mock&lt;ILogger&lt;EmpCredentialController&gt;&gt;();
+            _testClass = new EmpCredentialController(_empCredential.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new EmpCredentialController(_empCredential.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetEmpCredential()
+        {
+            // Arrange
+            _empCredential.Setup(mock =&gt; mock.GetAllEmpCredential()).Returns(new List&lt;EmployeeCredential&gt;());
+
+            // Act
+            var result = _testClass.GetEmpCredential();
+
+            // Assert
+            _empCredential.Verify(mock =&gt; mock.GetAllEmpCredential());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetEmployeeCredentialsById()
+        {
+            // Arrange
+            var id = 288012199;
+
+            _empCredential.Setup(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;())).Returns(new EmployeeCredential
+            {
+                Id = 2020867561,
+                UserName = &quot;TestValue1613505289&quot;,
+                Password = &quot;TestValue1760715472&quot;,
+                Status = (short)25564,
+                RequestedCompanyId = 287288135,
+                Email = &quot;TestValue313718687&quot;,
+                DefaultPassword = false,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 1603845315,
+                    Name = &quot;TestValue302264749&quot;,
+                    PhoneNumber = &quot;TestValue1803874456&quot;,
+                    DomainName = &quot;TestValue1789257769&quot;,
+                    Status = &quot;TestValue2033820088&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1375335692&quot;,
+                    Department = new Department
+                    {
+                        Id = 1608526868,
+                        Name = &quot;TestValue1574465673&quot;,
+                        RequestedCompanyId = 1890647356,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+            });
+
+            // Act
+            var result = _testClass.GetEmployeeCredentialsById(id);
+
+            // Assert
+            _empCredential.Verify(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteEmpCredential()
+        {
+            // Arrange
+            var id = 940375892;
+
+            _empCredential.Setup(mock =&gt; mock.DeleteEmployeeCredential(It.IsAny&lt;int&gt;())).ReturnsAsync(false);
+
+            // Act
+            var result = await _testClass.DeleteEmpCredential(id);
+
+            // Assert
+            _empCredential.Verify(mock =&gt; mock.DeleteEmployeeCredential(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertemployeeCredential()
+        {
+            // Arrange
+            var employeeCredential = new EmployeeCredential
+            {
+                Id = 300652480,
+                UserName = &quot;TestValue1198234530&quot;,
+                Password = &quot;TestValue1938104773&quot;,
+                Status = (short)28865,
+                RequestedCompanyId = 2124729518,
+                Email = &quot;TestValue1892234424&quot;,
+                DefaultPassword = false,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 571590333,
+                    Name = &quot;TestValue1699537333&quot;,
+                    PhoneNumber = &quot;TestValue1489218501&quot;,
+                    DomainName = &quot;TestValue1592841654&quot;,
+                    Status = &quot;TestValue155118733&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue794194615&quot;,
+                    Department = new Department
+                    {
+                        Id = 451731321,
+                        Name = &quot;TestValue511546267&quot;,
+                        RequestedCompanyId = 1980740639,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+            };
+
+            _empCredential.Setup(mock =&gt; mock.InsertEmployeeCredential(It.IsAny&lt;EmployeeCredential&gt;())).ReturnsAsync(&quot;TestValue1484661364&quot;);
+
+            // Act
+            var result = await _testClass.InsertemployeeCredential(employeeCredential);
+
+            // Assert
+            _empCredential.Verify(mock =&gt; mock.InsertEmployeeCredential(It.IsAny&lt;EmployeeCredential&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallupdateemployeecredential()
+        {
+            // Arrange
+            var id = 1462355039;
+            var username = &quot;TestValue1248996&quot;;
+            var password = &quot;TestValue2068856336&quot;;
+            var status = (short)12552;
+            var requestedCompanyId = 1822884163;
+
+            _empCredential.Setup(mock =&gt; mock.UpdateEmployeeCredentials(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;short?&gt;(), It.IsAny&lt;int?&gt;())).ReturnsAsync(new EmployeeCredential
+            {
+                Id = 2017391256,
+                UserName = &quot;TestValue994442795&quot;,
+                Password = &quot;TestValue933023035&quot;,
+                Status = (short)32409,
+                RequestedCompanyId = 1412681788,
+                Email = &quot;TestValue1036590381&quot;,
+                DefaultPassword = true,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 914688516,
+                    Name = &quot;TestValue1452408505&quot;,
+                    PhoneNumber = &quot;TestValue1851552613&quot;,
+                    DomainName = &quot;TestValue2025596534&quot;,
+                    Status = &quot;TestValue270846404&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1654286441&quot;,
+                    Department = new Department
+                    {
+                        Id = 1079034834,
+                        Name = &quot;TestValue344923178&quot;,
+                        RequestedCompanyId = 82208539,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+            });
+
+            // Act
+            var result = await _testClass.updateemployeecredential(id, username, password, status, requestedCompanyId);
+
+            // Assert
+            _empCredential.Verify(mock =&gt; mock.UpdateEmployeeCredentials(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;short?&gt;(), It.IsAny&lt;int?&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,46,1],[20,9,20,10,1],[21,13,21,57,1],[22,13,22,68,1],[23,13,23,93,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,95,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,110,1],[43,13,43,56,1],[46,13,46,71,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,55,32,1],[57,13,98,16,1],[101,13,101,68,1],[104,13,104,74,1],[106,13,106,72,1],[111,9,111,10,1],[113,13,113,32,1],[115,13,115,110,1],[118,13,118,67,1],[121,13,121,91,1],[123,13,123,72,1],[128,9,128,10,1],[130,13,171,15,1],[173,13,173,141,1],[176,13,176,88,1],[179,13,179,106,1],[181,13,181,72,1],[186,9,186,10,1],[188,13,188,33,1],[189,13,189,47,1],[190,13,190,50,1],[191,13,191,39,1],[192,13,192,49,1],[194,13,235,16,1],[238,13,238,120,1],[241,13,241,170,1],[243,13,243,72,1]]);
+    </script>
+  </body>
+</html>

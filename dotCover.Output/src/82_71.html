@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Controllers\LeaveTypeController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class LeaveTypeController : ControllerBase
+    {
+        private readonly ILeaveTypes _leavetype;
+        private readonly ILogger&lt;LeaveTypeController&gt; _logger;
+        public LeaveTypeController(ILeaveTypes leavetype, ILogger&lt;LeaveTypeController&gt; logger)
+        {
+            _leavetype = leavetype;
+            _logger = logger;
+        }
+        [HttpGet]
+        public List&lt;LeaveType&gt; GetAllLeavetype()
+        {
+            _logger.LogInformation(&quot;get all Holiday details started&quot;);
+            var result = _leavetype.GetAllLeaveType();
+            return result;
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public LeaveType GetleavetypeById(int id)
+        {
+            _logger.LogInformation(&quot;getbyid company details started&quot;);
+            var result = _leavetype.GetLeaveTypeById(id);
+            return result;
+        }
+        [HttpPost]
+        public string InsertLeavetypes([FromBody] LeaveType leaveType)
+        {
+            _logger.LogInformation(&quot;company details insert method started&quot;);
+            var result = _leavetype.InsertLeaveType(leaveType);
+            return result;
+        }
+        [HttpDelete]
+        public bool DeleteLeavetype(int id)
+        {
+            _logger.LogInformation(&quot;company details delete method started&quot;);
+            var result = _leavetype.deleteLeaveType(id);
+            return result;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,95,1],[15,9,15,10,1],[16,13,16,36,1],[17,13,17,30,1],[18,9,18,10,1],[21,9,21,10,1],[22,13,22,71,1],[23,13,23,55,1],[24,13,24,27,1],[25,9,25,10,1],[28,9,28,10,1],[29,13,29,71,1],[30,13,30,58,1],[31,13,31,27,1],[32,9,32,10,1],[35,9,35,10,1],[36,13,36,77,1],[37,13,37,64,1],[38,13,38,27,1],[39,9,39,10,1],[42,9,42,10,1],[43,13,43,77,1],[44,13,44,57,1],[45,13,45,27,1],[46,9,46,10,1]]);
+    </script>
+  </body>
+</html>

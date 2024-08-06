@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\BusinessLogic\Implements\AccountDetailsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Enums;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class AccountDetailsImp : IAccountDetails
+    {
+        private HRMSContext _context;
+        public AccountDetailsImp(HRMSContext context)
+        {
+            _context = context;
+        }
+        public bool deleteAccountDetails(int id)
+        {
+            var result = (from row in _context.AccountDetails
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _context.AccountDetails.Remove(result);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public AccountDetail GetAccountDetailsById(int id)
+        {
+            var result = (from row in _context.AccountDetails
+                          where row.Id == id
+                          select row).FirstOrDefault();
+          
+            return result;
+        }
+
+        public List&lt;AccountDetail&gt; GetAllAccountdetails()
+        {
+            var result = (from row in _context.AccountDetails
+                          select row).ToList();
+            return result;
+        }
+
+        public string InsertAccountDetails(AccountDetail accountDetail)
+        {
+            _context.AccountDetails.Add(accountDetail);
+            var result = _context.SaveChanges();
+            if (result != 0)
+            {
+                return &quot;new Department inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,54,0],[12,9,12,10,0],[13,13,13,32,0],[14,9,14,10,0],[16,9,16,10,0],[17,13,19,57,0],[20,13,20,52,0],[21,13,21,36,0],[22,13,22,25,0],[23,9,23,10,0],[26,9,26,10,0],[27,13,29,56,0],[31,13,31,27,0],[32,9,32,10,0],[35,9,35,10,0],[36,13,37,48,0],[38,13,38,27,0],[39,9,39,10,0],[42,9,42,10,0],[43,13,43,56,0],[44,13,44,49,0],[45,13,45,29,0],[46,13,46,14,0],[47,17,47,63,0],[51,13,51,14,0],[52,17,52,52,0],[54,9,54,10,0]]);
+    </script>
+  </body>
+</html>

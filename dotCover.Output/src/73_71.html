@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Controllers\CompanyDetailsController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class CompanyDetailsController : ControllerBase
+    {
+        private readonly ICompanyDetails _companyDetails;
+        private ILogger&lt;CompanyDetailsController&gt; _logger;
+        public CompanyDetailsController(ICompanyDetails companyDetails, ILogger&lt;CompanyDetailsController&gt; logger)
+        {
+            _companyDetails = companyDetails;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public List&lt;CompanyDetail&gt; GetAllCompanyDetails()
+        {
+            _logger.LogInformation(&quot;get all company details started&quot;);
+            var result = _companyDetails.GetAllCompanyDetails();
+            return result;
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public CompanyDetail GetCompanyDetail(int id)
+        {
+            _logger.LogInformation(&quot;getbyid company details started&quot;);
+            var result = _companyDetails.GetCompanyDetailstById(id);
+            return result;
+        }
+        [HttpPost]
+        public int InsertcompanyDetails([FromBody] CompanyDetail companyDetail)
+        {
+            _logger.LogInformation(&quot;company details insert method started&quot;);
+            var result = _companyDetails.InsertCompanyDetails(companyDetail);
+            return result;
+        }
+        [HttpDelete]
+        public bool DeletecompanyDetails(int id)
+        {
+            _logger.LogInformation(&quot;company details delete method started&quot;);
+            var result = _companyDetails.deleteCompanyDetails(id);
+            return result;
+        }
+        
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,114,1],[15,9,15,10,1],[16,13,16,46,1],[17,13,17,30,1],[18,9,18,10,1],[22,9,22,10,1],[23,13,23,71,1],[24,13,24,65,1],[25,13,25,27,1],[26,9,26,10,1],[29,9,29,10,1],[30,13,30,71,1],[31,13,31,69,1],[32,13,32,27,1],[33,9,33,10,1],[36,9,36,10,1],[37,13,37,77,1],[38,13,38,78,1],[39,13,39,27,1],[40,9,40,10,1],[43,9,43,10,1],[44,13,44,77,1],[45,13,45,67,1],[46,13,46,27,1],[47,9,47,10,1]]);
+    </script>
+  </body>
+</html>

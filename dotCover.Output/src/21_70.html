@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Models\Users\AuthenticateResponseTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Models.Users
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.DTOs;
+    using HRMS_Application.Models.Users;
+    using Xunit;
+
+    public class AuthenticateResponseTests
+    {
+        private AuthenticateResponse _testClass;
+        private UserDto _user;
+        private string _token;
+        private List&lt;string&gt; _roles;
+
+        public AuthenticateResponseTests()
+        {
+            _user = new UserDto
+            {
+                UserName = &quot;TestValue805048537&quot;,
+                UserId = 734981827,
+                Roles = new List&lt;string&gt;()
+            };
+            _token = &quot;TestValue1448166469&quot;;
+            _roles = new List&lt;string&gt;();
+            _testClass = new AuthenticateResponse(_user, _token, _roles);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new AuthenticateResponse(_user, _token, _roles);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanSetAndGetId()
+        {
+            // Arrange
+            var testValue = 429882114;
+
+            // Act
+            _testClass.Id = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Id);
+        }
+
+        [Fact]
+        public void CanSetAndGetName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue337069995&quot;;
+
+            // Act
+            _testClass.Name = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Name);
+        }
+
+        [Fact]
+        public void CanSetAndGetUsername()
+        {
+            // Arrange
+            var testValue = &quot;TestValue521188053&quot;;
+
+            // Act
+            _testClass.Username = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Username);
+        }
+
+        [Fact]
+        public void CanSetAndGetPassword()
+        {
+            // Arrange
+            var testValue = &quot;TestValue672125264&quot;;
+
+            // Act
+            _testClass.Password = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Password);
+        }
+
+        [Fact]
+        public void CanSetAndGetRoles()
+        {
+            // Arrange
+            var testValue = new List&lt;string&gt;();
+
+            // Act
+            _testClass.Roles = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Roles);
+        }
+
+        [Fact]
+        public void CanSetAndGetToken()
+        {
+            // Arrange
+            var testValue = &quot;TestValue291679415&quot;;
+
+            // Act
+            _testClass.Token = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Token);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,43,1],[17,9,17,10,1],[18,13,23,15,1],[24,13,24,44,1],[25,13,25,41,1],[26,13,26,74,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,76,1],[36,13,36,38,1],[37,9,37,10,1],[41,9,41,10,1],[43,13,43,39,1],[46,13,46,39,1],[49,13,49,52,1],[50,9,50,10,1],[54,9,54,10,1],[56,13,56,50,1],[59,13,59,41,1],[62,13,62,54,1],[63,9,63,10,1],[67,9,67,10,1],[69,13,69,50,1],[72,13,72,45,1],[75,13,75,58,1],[76,9,76,10,1],[80,9,80,10,1],[82,13,82,50,1],[85,13,85,45,1],[88,13,88,58,1],[89,9,89,10,1],[93,9,93,10,1],[95,13,95,48,1],[98,13,98,42,1],[101,13,101,54,1],[102,9,102,10,1],[106,9,106,10,1],[108,13,108,50,1],[111,13,111,42,1],[114,13,114,55,1],[115,9,115,10,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\CompanyDetailsControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class CompanyDetailsControllerTests
+    {
+        private CompanyDetailsController _testClass;
+        private Mock&lt;ICompanyDetails&gt; _companyDetails;
+        private Mock&lt;ILogger&lt;CompanyDetailsController&gt;&gt; _logger;
+
+        public CompanyDetailsControllerTests()
+        {
+            _companyDetails = new Mock&lt;ICompanyDetails&gt;();
+            _logger = new Mock&lt;ILogger&lt;CompanyDetailsController&gt;&gt;();
+            _testClass = new CompanyDetailsController(_companyDetails.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new CompanyDetailsController(_companyDetails.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllCompanyDetails()
+        {
+            // Arrange
+            _companyDetails.Setup(mock =&gt; mock.GetAllCompanyDetails()).Returns(new List&lt;CompanyDetail&gt;());
+
+            // Act
+            var result = _testClass.GetAllCompanyDetails();
+
+            // Assert
+            _companyDetails.Verify(mock =&gt; mock.GetAllCompanyDetails());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetCompanyDetail()
+        {
+            // Arrange
+            var id = 417902457;
+
+            _companyDetails.Setup(mock =&gt; mock.GetCompanyDetailstById(It.IsAny&lt;int&gt;())).Returns(new CompanyDetail
+            {
+                Id = 31992526,
+                Name = &quot;TestValue177369969&quot;,
+                Address = &quot;TestValue1709645177&quot;,
+                Country = &quot;TestValue2004613090&quot;,
+                States = &quot;TestValue682690096&quot;,
+                Industry = &quot;TestValue1545536205&quot;,
+                TimeZone = &quot;TestValue1017388910&quot;,
+                Currency = &quot;TestValue1635722783&quot;,
+                PfNo = &quot;TestValue2137831186&quot;,
+                TanNo = &quot;TestValue9345400&quot;,
+                EsiNo = &quot;TestValue336534239&quot;,
+                PanNo = &quot;TestValue615999657&quot;,
+                GstNo = &quot;TestValue1103021389&quot;,
+                RegistrationNo = &quot;TestValue961693879&quot;,
+                Twitter = &quot;TestValue173639346&quot;,
+                Facebook = &quot;TestValue1096502711&quot;,
+                LinkedIn = &quot;TestValue835602918&quot;,
+                CompanyLogo = &quot;TestValue374665789&quot;,
+                RequestedCompanyId = 1333523668,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 1652810864,
+                    Name = &quot;TestValue609285116&quot;,
+                    PhoneNumber = &quot;TestValue1134307283&quot;,
+                    DomainName = &quot;TestValue1206639826&quot;,
+                    Status = &quot;TestValue934927226&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue98462774&quot;,
+                    Department = new Department
+                    {
+                        Id = 1297600527,
+                        Name = &quot;TestValue1078840100&quot;,
+                        RequestedCompanyId = 1397693008,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+            });
+
+            // Act
+            var result = _testClass.GetCompanyDetail(id);
+
+            // Assert
+            _companyDetails.Verify(mock =&gt; mock.GetCompanyDetailstById(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallInsertcompanyDetails()
+        {
+            // Arrange
+            var companyDetail = new CompanyDetail
+            {
+                Id = 462724814,
+                Name = &quot;TestValue1755618276&quot;,
+                Address = &quot;TestValue906379426&quot;,
+                Country = &quot;TestValue318400214&quot;,
+                States = &quot;TestValue341182334&quot;,
+                Industry = &quot;TestValue1716781980&quot;,
+                TimeZone = &quot;TestValue748874874&quot;,
+                Currency = &quot;TestValue1714424477&quot;,
+                PfNo = &quot;TestValue742242545&quot;,
+                TanNo = &quot;TestValue191087620&quot;,
+                EsiNo = &quot;TestValue265259553&quot;,
+                PanNo = &quot;TestValue1039139766&quot;,
+                GstNo = &quot;TestValue1923272308&quot;,
+                RegistrationNo = &quot;TestValue1679420759&quot;,
+                Twitter = &quot;TestValue556503171&quot;,
+                Facebook = &quot;TestValue340541139&quot;,
+                LinkedIn = &quot;TestValue1073678601&quot;,
+                CompanyLogo = &quot;TestValue1040644855&quot;,
+                RequestedCompanyId = 1895601327,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 1830425325,
+                    Name = &quot;TestValue1681210121&quot;,
+                    PhoneNumber = &quot;TestValue2033274703&quot;,
+                    DomainName = &quot;TestValue689931914&quot;,
+                    Status = &quot;TestValue1999958010&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1518595046&quot;,
+                    Department = new Department
+                    {
+                        Id = 1045168890,
+                        Name = &quot;TestValue1118213790&quot;,
+                        RequestedCompanyId = 774717951,
+                        RequestedCompany = default(RequestedCompanyForm),
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                    },
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+            };
+
+            _companyDetails.Setup(mock =&gt; mock.InsertCompanyDetails(It.IsAny&lt;CompanyDetail&gt;())).Returns(1905385001);
+
+            // Act
+            var result = _testClass.InsertcompanyDetails(companyDetail);
+
+            // Assert
+            _companyDetails.Verify(mock =&gt; mock.InsertCompanyDetails(It.IsAny&lt;CompanyDetail&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallDeletecompanyDetails()
+        {
+            // Arrange
+            var id = 1532573216;
+
+            _companyDetails.Setup(mock =&gt; mock.deleteCompanyDetails(It.IsAny&lt;int&gt;())).Returns(false);
+
+            // Act
+            var result = _testClass.DeletecompanyDetails(id);
+
+            // Assert
+            _companyDetails.Verify(mock =&gt; mock.deleteCompanyDetails(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,9,18,47,1],[19,9,19,10,1],[20,13,20,59,1],[21,13,21,69,1],[22,13,22,95,1],[23,9,23,10,1],[27,9,27,10,1],[29,13,29,97,1],[32,13,32,38,1],[33,9,33,10,1],[37,9,37,10,1],[39,13,39,107,1],[42,13,42,60,1],[45,13,45,73,1],[47,13,47,72,1],[52,9,52,10,1],[54,13,54,32,1],[56,13,101,16,1],[104,13,104,58,1],[107,13,107,90,1],[109,13,109,72,1],[114,9,114,10,1],[116,13,161,15,1],[163,13,163,117,1],[166,13,166,73,1],[169,13,169,98,1],[171,13,171,72,1],[176,9,176,10,1],[178,13,178,33,1],[180,13,180,102,1],[183,13,183,62,1],[186,13,186,88,1],[188,13,188,72,1]]);
+    </script>
+  </body>
+</html>

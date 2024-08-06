@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\EmployeeAttendenceControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMSunitTestCase.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class EmployeeAttendenceControllerTests
+    {
+        private EmployeeAttendenceController _testClass;
+        private Mock&lt;IEmployeeAttendance&gt; _employeeAttendence;
+        private Mock&lt;ILogger&lt;EmployeeAttendenceController&gt;&gt; _logger;
+
+        public EmployeeAttendenceControllerTests()
+        {
+            _employeeAttendence = new Mock&lt;IEmployeeAttendance&gt;();
+            _logger = new Mock&lt;ILogger&lt;EmployeeAttendenceController&gt;&gt;();
+            _testClass = new EmployeeAttendenceController(_employeeAttendence.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new EmployeeAttendenceController(_employeeAttendence.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllEmpDetails()
+        {
+            // Arrange
+            _employeeAttendence.Setup(mock =&gt; mock.GetAllEmpAttendence()).Returns(new List&lt;EmployeeAttendance&gt;());
+
+            // Act
+            var result = _testClass.GetAllEmpDetails();
+
+            // Assert
+            _employeeAttendence.Verify(mock =&gt; mock.GetAllEmpAttendence());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetById()
+        {
+            // Arrange
+            var id = 1579319630;
+
+            _employeeAttendence.Setup(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;())).Returns(new EmployeeAttendance
+            {
+                Id = 819346380,
+                EmployeeCredentialId = 349542746,
+                LeaveId = 2088759961,
+                HolidayId = 1119513920,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                Remarks = &quot;TestValue1261353907&quot;,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 507991916,
+                    UserName = &quot;TestValue689552819&quot;,
+                    Password = &quot;TestValue159560518&quot;,
+                    Status = (short)28578,
+                    RequestedCompanyId = 2135791853,
+                    Email = &quot;TestValue1909389351&quot;,
+                    DefaultPassword = false,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1205382964,
+                        Name = &quot;TestValue459077263&quot;,
+                        PhoneNumber = &quot;TestValue225367064&quot;,
+                        DomainName = &quot;TestValue951636036&quot;,
+                        Status = &quot;TestValue214009275&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue752185307&quot;,
+                        Department = new Department
+                        {
+                            Id = 848916173,
+                            Name = &quot;TestValue1636043411&quot;,
+                            RequestedCompanyId = 88793322,
+                            RequestedCompany = default(RequestedCompanyForm),
+                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                        },
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                Holiday = new Holiday
+                {
+                    Id = 1534637623,
+                    Occasion = &quot;TestValue1501711001&quot;,
+                    Date = DateTime.UtcNow,
+                    Day = &quot;TestValue1718546693&quot;,
+                    RestrictedHoliday = true,
+                    CompanyId = 942539919,
+                    EmployeecredentialId = 591362130,
+                    Company = new CompanyDetail
+                    {
+                        Id = 879549752,
+                        Name = &quot;TestValue207168001&quot;,
+                        Address = &quot;TestValue1720849878&quot;,
+                        Country = &quot;TestValue1744230476&quot;,
+                        States = &quot;TestValue1194841482&quot;,
+                        Industry = &quot;TestValue1943442361&quot;,
+                        TimeZone = &quot;TestValue642583985&quot;,
+                        Currency = &quot;TestValue1703129463&quot;,
+                        PfNo = &quot;TestValue894721870&quot;,
+                        TanNo = &quot;TestValue1789313685&quot;,
+                        EsiNo = &quot;TestValue1593662144&quot;,
+                        PanNo = &quot;TestValue764615885&quot;,
+                        GstNo = &quot;TestValue1541754605&quot;,
+                        RegistrationNo = &quot;TestValue979198169&quot;,
+                        Twitter = &quot;TestValue1691552860&quot;,
+                        Facebook = &quot;TestValue1559056457&quot;,
+                        LinkedIn = &quot;TestValue76072918&quot;,
+                        CompanyLogo = &quot;TestValue1961749614&quot;,
+                        RequestedCompanyId = 1310565117,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1264797707,
+                            Name = &quot;TestValue1240255003&quot;,
+                            PhoneNumber = &quot;TestValue1267607098&quot;,
+                            DomainName = &quot;TestValue834408389&quot;,
+                            Status = &quot;TestValue431718800&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue1935457077&quot;,
+                            Department = new Department
+                            {
+                                Id = 2059613243,
+                                Name = &quot;TestValue1520156151&quot;,
+                                RequestedCompanyId = 1297156609,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+                    },
+                    Employeecredential = new EmployeeCredential
+                    {
+                        Id = 1432192404,
+                        UserName = &quot;TestValue995315392&quot;,
+                        Password = &quot;TestValue370213268&quot;,
+                        Status = (short)7582,
+                        RequestedCompanyId = 318813988,
+                        Email = &quot;TestValue2064113433&quot;,
+                        DefaultPassword = false,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 2099876164,
+                            Name = &quot;TestValue152157665&quot;,
+                            PhoneNumber = &quot;TestValue391561377&quot;,
+                            DomainName = &quot;TestValue714547869&quot;,
+                            Status = &quot;TestValue1229227886&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue562798979&quot;,
+                            Department = new Department
+                            {
+                                Id = 903431447,
+                                Name = &quot;TestValue1478128841&quot;,
+                                RequestedCompanyId = 1309805998,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                        AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                        EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                        EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                        EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                        EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                    },
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object
+                },
+                Leave = new LeaveType
+                {
+                    Id = 767830778,
+                    LeaveType1 = &quot;TestValue2135053069&quot;,
+                    Days = 1454645215,
+                    CompanyId = 656845242,
+                    EmployeecredentialId = 544724109,
+                    Company = new CompanyDetail
+                    {
+                        Id = 2123064813,
+                        Name = &quot;TestValue1425638083&quot;,
+                        Address = &quot;TestValue1904280726&quot;,
+                        Country = &quot;TestValue1459490001&quot;,
+                        States = &quot;TestValue1825225859&quot;,
+                        Industry = &quot;TestValue1498590774&quot;,
+                        TimeZone = &quot;TestValue1759426301&quot;,
+                        Currency = &quot;TestValue1520243259&quot;,
+                        PfNo = &quot;TestValue1289131078&quot;,
+                        TanNo = &quot;TestValue1956257046&quot;,
+                        EsiNo = &quot;TestValue1282711886&quot;,
+                        PanNo = &quot;TestValue423286210&quot;,
+                        GstNo = &quot;TestValue1492911023&quot;,
+                        RegistrationNo = &quot;TestValue270937059&quot;,
+                        Twitter = &quot;TestValue2046890125&quot;,
+                        Facebook = &quot;TestValue1419100417&quot;,
+                        LinkedIn = &quot;TestValue1096719695&quot;,
+                        CompanyLogo = &quot;TestValue445801897&quot;,
+                        RequestedCompanyId = 1625124819,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1169195102,
+                            Name = &quot;TestValue1739160343&quot;,
+                            PhoneNumber = &quot;TestValue1406898792&quot;,
+                            DomainName = &quot;TestValue1831995188&quot;,
+                            Status = &quot;TestValue1247201745&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue81337231&quot;,
+                            Department = new Department
+                            {
+                                Id = 701998728,
+                                Name = &quot;TestValue336823556&quot;,
+                                RequestedCompanyId = 1936961904,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+                    },
+                    Employeecredential = new EmployeeCredential
+                    {
+                        Id = 1672086038,
+                        UserName = &quot;TestValue1811371669&quot;,
+                        Password = &quot;TestValue1947887655&quot;,
+                        Status = (short)9230,
+                        RequestedCompanyId = 863310909,
+                        Email = &quot;TestValue752432500&quot;,
+                        DefaultPassword = false,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1717160956,
+                            Name = &quot;TestValue613416189&quot;,
+                            PhoneNumber = &quot;TestValue1184936095&quot;,
+                            DomainName = &quot;TestValue641071776&quot;,
+                            Status = &quot;TestValue565522659&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue198060413&quot;,
+                            Department = new Department
+                            {
+                                Id = 579632905,
+                                Name = &quot;TestValue1010510234&quot;,
+                                RequestedCompanyId = 582787978,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                        AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                        EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                        EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                        EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                        EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                    },
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object
+                }
+            });
+
+            // Act
+            var result = _testClass.GetById(id);
+
+            // Assert
+            _employeeAttendence.Verify(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertEmpAttendence()
+        {
+            // Arrange
+            var employeeAttendance = new EmployeeAttendance
+            {
+                Id = 1217371603,
+                EmployeeCredentialId = 632494388,
+                LeaveId = 1578722363,
+                HolidayId = 2038189228,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                Remarks = &quot;TestValue1818594730&quot;,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 1689251172,
+                    UserName = &quot;TestValue1977004043&quot;,
+                    Password = &quot;TestValue1635133787&quot;,
+                    Status = (short)14541,
+                    RequestedCompanyId = 716166021,
+                    Email = &quot;TestValue1741126542&quot;,
+                    DefaultPassword = true,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1378152770,
+                        Name = &quot;TestValue1123227131&quot;,
+                        PhoneNumber = &quot;TestValue1161767218&quot;,
+                        DomainName = &quot;TestValue1969948044&quot;,
+                        Status = &quot;TestValue1995640868&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1625243056&quot;,
+                        Department = new Department
+                        {
+                            Id = 8369391,
+                            Name = &quot;TestValue677743858&quot;,
+                            RequestedCompanyId = 1707458948,
+                            RequestedCompany = default(RequestedCompanyForm),
+                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                        },
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                Holiday = new Holiday
+                {
+                    Id = 740478523,
+                    Occasion = &quot;TestValue961809468&quot;,
+                    Date = DateTime.UtcNow,
+                    Day = &quot;TestValue329729169&quot;,
+                    RestrictedHoliday = false,
+                    CompanyId = 2059267247,
+                    EmployeecredentialId = 1952213768,
+                    Company = new CompanyDetail
+                    {
+                        Id = 1059602160,
+                        Name = &quot;TestValue971134689&quot;,
+                        Address = &quot;TestValue1159527438&quot;,
+                        Country = &quot;TestValue396388558&quot;,
+                        States = &quot;TestValue1249207210&quot;,
+                        Industry = &quot;TestValue1815365762&quot;,
+                        TimeZone = &quot;TestValue1422879202&quot;,
+                        Currency = &quot;TestValue1632110772&quot;,
+                        PfNo = &quot;TestValue1851812815&quot;,
+                        TanNo = &quot;TestValue358239541&quot;,
+                        EsiNo = &quot;TestValue1781380457&quot;,
+                        PanNo = &quot;TestValue2140260586&quot;,
+                        GstNo = &quot;TestValue258636483&quot;,
+                        RegistrationNo = &quot;TestValue775447632&quot;,
+                        Twitter = &quot;TestValue1375660769&quot;,
+                        Facebook = &quot;TestValue1946868734&quot;,
+                        LinkedIn = &quot;TestValue740445217&quot;,
+                        CompanyLogo = &quot;TestValue2123518061&quot;,
+                        RequestedCompanyId = 2103820855,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1954266972,
+                            Name = &quot;TestValue1665328292&quot;,
+                            PhoneNumber = &quot;TestValue1551239088&quot;,
+                            DomainName = &quot;TestValue375596016&quot;,
+                            Status = &quot;TestValue731475684&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue1532750825&quot;,
+                            Department = new Department
+                            {
+                                Id = 574418587,
+                                Name = &quot;TestValue901575772&quot;,
+                                RequestedCompanyId = 1245966375,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+                    },
+                    Employeecredential = new EmployeeCredential
+                    {
+                        Id = 476893080,
+                        UserName = &quot;TestValue1818168567&quot;,
+                        Password = &quot;TestValue1248993194&quot;,
+                        Status = (short)18805,
+                        RequestedCompanyId = 1906811130,
+                        Email = &quot;TestValue1884521051&quot;,
+                        DefaultPassword = true,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 663999098,
+                            Name = &quot;TestValue1941003622&quot;,
+                            PhoneNumber = &quot;TestValue319777463&quot;,
+                            DomainName = &quot;TestValue491919332&quot;,
+                            Status = &quot;TestValue989196866&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue2102757215&quot;,
+                            Department = new Department
+                            {
+                                Id = 1638600006,
+                                Name = &quot;TestValue1457438050&quot;,
+                                RequestedCompanyId = 1611708503,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                        AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                        EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                        EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                        EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                        EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                    },
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object
+                },
+                Leave = new LeaveType
+                {
+                    Id = 214260411,
+                    LeaveType1 = &quot;TestValue1632466117&quot;,
+                    Days = 1897216555,
+                    CompanyId = 2049779873,
+                    EmployeecredentialId = 331798179,
+                    Company = new CompanyDetail
+                    {
+                        Id = 941093436,
+                        Name = &quot;TestValue221364251&quot;,
+                        Address = &quot;TestValue353694755&quot;,
+                        Country = &quot;TestValue849347020&quot;,
+                        States = &quot;TestValue105000275&quot;,
+                        Industry = &quot;TestValue286885476&quot;,
+                        TimeZone = &quot;TestValue1655846719&quot;,
+                        Currency = &quot;TestValue595538673&quot;,
+                        PfNo = &quot;TestValue428051754&quot;,
+                        TanNo = &quot;TestValue1011121380&quot;,
+                        EsiNo = &quot;TestValue674788623&quot;,
+                        PanNo = &quot;TestValue913789990&quot;,
+                        GstNo = &quot;TestValue176912827&quot;,
+                        RegistrationNo = &quot;TestValue1155217692&quot;,
+                        Twitter = &quot;TestValue33644248&quot;,
+                        Facebook = &quot;TestValue1256729994&quot;,
+                        LinkedIn = &quot;TestValue548875457&quot;,
+                        CompanyLogo = &quot;TestValue233449456&quot;,
+                        RequestedCompanyId = 521599079,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 2005529396,
+                            Name = &quot;TestValue711661671&quot;,
+                            PhoneNumber = &quot;TestValue5865112&quot;,
+                            DomainName = &quot;TestValue420667754&quot;,
+                            Status = &quot;TestValue1631598729&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue1114623989&quot;,
+                            Department = new Department
+                            {
+                                Id = 1998993404,
+                                Name = &quot;TestValue26728286&quot;,
+                                RequestedCompanyId = 93801038,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+                    },
+                    Employeecredential = new EmployeeCredential
+                    {
+                        Id = 911371160,
+                        UserName = &quot;TestValue517215273&quot;,
+                        Password = &quot;TestValue2047768355&quot;,
+                        Status = (short)12583,
+                        RequestedCompanyId = 999279546,
+                        Email = &quot;TestValue914168196&quot;,
+                        DefaultPassword = true,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1596804316,
+                            Name = &quot;TestValue895298439&quot;,
+                            PhoneNumber = &quot;TestValue383157980&quot;,
+                            DomainName = &quot;TestValue1801810855&quot;,
+                            Status = &quot;TestValue1597635575&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue1409038811&quot;,
+                            Department = new Department
+                            {
+                                Id = 68460425,
+                                Name = &quot;TestValue1512951868&quot;,
+                                RequestedCompanyId = 1456139730,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                        AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                        EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                        EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                        EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                        EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                    },
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object
+                }
+            };
+
+            _employeeAttendence.Setup(mock =&gt; mock.InsertEmployeeAttendence(It.IsAny&lt;EmployeeAttendance&gt;())).ReturnsAsync(&quot;TestValue805941676&quot;);
+
+            // Act
+            var result = await _testClass.InsertEmpAttendence(employeeAttendance);
+
+            // Assert
+            _employeeAttendence.Verify(mock =&gt; mock.InsertEmployeeAttendence(It.IsAny&lt;EmployeeAttendance&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmpDetails()
+        {
+            // Arrange
+            var id = 865510575;
+            var Timein = DateTime.UtcNow;
+            var Timeout = DateTime.UtcNow;
+            var Remark = &quot;TestValue1256549929&quot;;
+            var empcredentialId = 69459860;
+
+            _employeeAttendence.Setup(mock =&gt; mock.UpdateEmployeeAttendence(It.IsAny&lt;int&gt;(), It.IsAny&lt;DateTime?&gt;(), It.IsAny&lt;DateTime?&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int&gt;())).ReturnsAsync(new EmployeeAttendance
+            {
+                Id = 1964614356,
+                EmployeeCredentialId = 75406876,
+                LeaveId = 1925844388,
+                HolidayId = 483382314,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                Remarks = &quot;TestValue1423793802&quot;,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 354978509,
+                    UserName = &quot;TestValue1812868601&quot;,
+                    Password = &quot;TestValue1399016661&quot;,
+                    Status = (short)20989,
+                    RequestedCompanyId = 44250477,
+                    Email = &quot;TestValue1767620155&quot;,
+                    DefaultPassword = false,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1948180144,
+                        Name = &quot;TestValue869579673&quot;,
+                        PhoneNumber = &quot;TestValue1882206678&quot;,
+                        DomainName = &quot;TestValue253490518&quot;,
+                        Status = &quot;TestValue260157190&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1562045681&quot;,
+                        Department = new Department
+                        {
+                            Id = 1831651160,
+                            Name = &quot;TestValue2058320127&quot;,
+                            RequestedCompanyId = 1110836672,
+                            RequestedCompany = default(RequestedCompanyForm),
+                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                        },
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                Holiday = new Holiday
+                {
+                    Id = 1997586591,
+                    Occasion = &quot;TestValue2061994091&quot;,
+                    Date = DateTime.UtcNow,
+                    Day = &quot;TestValue1410228278&quot;,
+                    RestrictedHoliday = false,
+                    CompanyId = 584323579,
+                    EmployeecredentialId = 361431555,
+                    Company = new CompanyDetail
+                    {
+                        Id = 165717477,
+                        Name = &quot;TestValue579122248&quot;,
+                        Address = &quot;TestValue1071447151&quot;,
+                        Country = &quot;TestValue596490585&quot;,
+                        States = &quot;TestValue643201246&quot;,
+                        Industry = &quot;TestValue640396891&quot;,
+                        TimeZone = &quot;TestValue1112011671&quot;,
+                        Currency = &quot;TestValue1814468020&quot;,
+                        PfNo = &quot;TestValue1039217113&quot;,
+                        TanNo = &quot;TestValue73149016&quot;,
+                        EsiNo = &quot;TestValue1690829619&quot;,
+                        PanNo = &quot;TestValue817490883&quot;,
+                        GstNo = &quot;TestValue556392651&quot;,
+                        RegistrationNo = &quot;TestValue851830319&quot;,
+                        Twitter = &quot;TestValue648751694&quot;,
+                        Facebook = &quot;TestValue1596551850&quot;,
+                        LinkedIn = &quot;TestValue955029069&quot;,
+                        CompanyLogo = &quot;TestValue1294031688&quot;,
+                        RequestedCompanyId = 748054967,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1796107819,
+                            Name = &quot;TestValue25718766&quot;,
+                            PhoneNumber = &quot;TestValue648434949&quot;,
+                            DomainName = &quot;TestValue1548320337&quot;,
+                            Status = &quot;TestValue1337478385&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue1994476777&quot;,
+                            Department = new Department
+                            {
+                                Id = 384292912,
+                                Name = &quot;TestValue1602115387&quot;,
+                                RequestedCompanyId = 345303058,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+                    },
+                    Employeecredential = new EmployeeCredential
+                    {
+                        Id = 2114511412,
+                        UserName = &quot;TestValue160896432&quot;,
+                        Password = &quot;TestValue515616110&quot;,
+                        Status = (short)15432,
+                        RequestedCompanyId = 839470223,
+                        Email = &quot;TestValue2141030601&quot;,
+                        DefaultPassword = false,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 819894413,
+                            Name = &quot;TestValue304170325&quot;,
+                            PhoneNumber = &quot;TestValue1595243539&quot;,
+                            DomainName = &quot;TestValue1124418909&quot;,
+                            Status = &quot;TestValue294831433&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue836168473&quot;,
+                            Department = new Department
+                            {
+                                Id = 1202595300,
+                                Name = &quot;TestValue842989565&quot;,
+                                RequestedCompanyId = 180341502,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                        AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                        EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                        EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                        EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                        EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                    },
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object
+                },
+                Leave = new LeaveType
+                {
+                    Id = 716811218,
+                    LeaveType1 = &quot;TestValue744554798&quot;,
+                    Days = 1275258509,
+                    CompanyId = 1206489809,
+                    EmployeecredentialId = 462084978,
+                    Company = new CompanyDetail
+                    {
+                        Id = 401034741,
+                        Name = &quot;TestValue1106965022&quot;,
+                        Address = &quot;TestValue116196590&quot;,
+                        Country = &quot;TestValue871363081&quot;,
+                        States = &quot;TestValue935699407&quot;,
+                        Industry = &quot;TestValue335712789&quot;,
+                        TimeZone = &quot;TestValue1664766175&quot;,
+                        Currency = &quot;TestValue1178285558&quot;,
+                        PfNo = &quot;TestValue1881452413&quot;,
+                        TanNo = &quot;TestValue749497455&quot;,
+                        EsiNo = &quot;TestValue258908334&quot;,
+                        PanNo = &quot;TestValue1185765151&quot;,
+                        GstNo = &quot;TestValue766708613&quot;,
+                        RegistrationNo = &quot;TestValue1847440255&quot;,
+                        Twitter = &quot;TestValue878320681&quot;,
+                        Facebook = &quot;TestValue1705016553&quot;,
+                        LinkedIn = &quot;TestValue679381706&quot;,
+                        CompanyLogo = &quot;TestValue2125504307&quot;,
+                        RequestedCompanyId = 562845697,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1352162842,
+                            Name = &quot;TestValue1976340928&quot;,
+                            PhoneNumber = &quot;TestValue1292381525&quot;,
+                            DomainName = &quot;TestValue1507269177&quot;,
+                            Status = &quot;TestValue169612779&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue453223534&quot;,
+                            Department = new Department
+                            {
+                                Id = 959939346,
+                                Name = &quot;TestValue970607113&quot;,
+                                RequestedCompanyId = 1952929031,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object
+                    },
+                    Employeecredential = new EmployeeCredential
+                    {
+                        Id = 1367978835,
+                        UserName = &quot;TestValue620667167&quot;,
+                        Password = &quot;TestValue1249921979&quot;,
+                        Status = (short)19172,
+                        RequestedCompanyId = 395625578,
+                        Email = &quot;TestValue2030701727&quot;,
+                        DefaultPassword = true,
+                        RequestedCompany = new RequestedCompanyForm
+                        {
+                            Id = 1201415057,
+                            Name = &quot;TestValue399419520&quot;,
+                            PhoneNumber = &quot;TestValue140084832&quot;,
+                            DomainName = &quot;TestValue2051254463&quot;,
+                            Status = &quot;TestValue1805317812&quot;,
+                            InsertedDate = DateTime.UtcNow,
+                            UpdatedDate = DateTime.UtcNow,
+                            Email = &quot;TestValue2129868596&quot;,
+                            Department = new Department
+                            {
+                                Id = 1789092502,
+                                Name = &quot;TestValue570201559&quot;,
+                                RequestedCompanyId = 845746084,
+                                RequestedCompany = default(RequestedCompanyForm),
+                                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                            },
+                            CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                            EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                            Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                        },
+                        AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                        AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                        EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                        EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                        EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                        EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                    },
+                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
+                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object
+                }
+            });
+
+            // Act
+            var result = await _testClass.UpdateEmpDetails(id, Timein, Timeout, Remark, empcredentialId);
+
+            // Assert
+            _employeeAttendence.Verify(mock =&gt; mock.UpdateEmployeeAttendence(It.IsAny&lt;int&gt;(), It.IsAny&lt;DateTime?&gt;(), It.IsAny&lt;DateTime?&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteEmpAttendence()
+        {
+            // Arrange
+            var id = 2112152531;
+
+            _employeeAttendence.Setup(mock =&gt; mock.DeleteEmployeeAttendance(It.IsAny&lt;int&gt;())).ReturnsAsync(false);
+
+            // Act
+            var result = await _testClass.DeleteEmpAttendence(id);
+
+            // Assert
+            _employeeAttendence.Verify(mock =&gt; mock.DeleteEmployeeAttendance(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,51,1],[20,9,20,10,1],[21,13,21,67,1],[22,13,22,73,1],[23,13,23,103,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,105,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,115,1],[43,13,43,56,1],[46,13,46,76,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,55,33,1],[57,13,305,16,1],[308,13,308,49,1],[311,13,311,79,1],[313,13,313,72,1],[318,9,318,10,1],[320,13,568,15,1],[570,13,570,145,1],[573,13,573,83,1],[576,13,576,111,1],[578,13,578,72,1],[583,9,583,10,1],[585,13,585,32,1],[586,13,586,42,1],[587,13,587,43,1],[588,13,588,48,1],[589,13,589,44,1],[591,13,839,16,1],[842,13,842,106,1],[845,13,845,179,1],[847,13,847,72,1],[852,9,852,10,1],[854,13,854,33,1],[856,13,856,115,1],[859,13,859,67,1],[862,13,862,96,1],[864,13,864,72,1]]);
+    </script>
+  </body>
+</html>

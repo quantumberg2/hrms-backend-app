@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\hrms-backend-app\HRMS Application\Controllers\HolidaysController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class HolidaysController : ControllerBase
+    {
+        private readonly IHoliday _holiday;
+        private readonly ILogger&lt;HolidaysController&gt; _logger;
+        public HolidaysController(IHoliday holiday, ILogger&lt;HolidaysController&gt; logger)
+        {
+            _holiday = holiday;
+            _logger = logger;
+        }
+        [HttpGet]
+        public List&lt;Holiday&gt; GetAllHolidayDetails()
+        {
+            _logger.LogInformation(&quot;get all Holiday details started&quot;);
+            var result = _holiday.GetHoliday();
+            return result;
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public Holiday GetHoliday(int id)
+        {
+            _logger.LogInformation(&quot;getbyid company details started&quot;);
+            var result = _holiday.GetHolidayById(id);
+            return result;
+        }
+        [HttpPost]
+        public async Task&lt;string&gt; InsertcompanyDetails([FromBody] Holiday holiday)
+        {
+            _logger.LogInformation(&quot;company details insert method started&quot;);
+            var result = await _holiday.InsertHoliday(holiday);
+            return result;
+        }
+        [HttpDelete]
+        public async Task&lt;bool&gt; DeletecompanyDetails(int id)
+        {
+            _logger.LogInformation(&quot;company details delete method started&quot;);
+            var result = await _holiday.deleteHoliday(id);
+            return result;
+        }
+
+
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,88,1],[16,9,16,10,1],[17,13,17,32,1],[18,13,18,30,1],[19,9,19,10,1],[22,9,22,10,1],[23,13,23,71,1],[24,13,24,48,1],[25,13,25,27,1],[26,9,26,10,1],[29,9,29,10,1],[30,13,30,71,1],[31,13,31,54,1],[32,13,32,27,1],[33,9,33,10,1],[36,9,36,10,1],[37,13,37,77,1],[38,13,38,64,1],[39,13,39,27,1],[40,9,40,10,1],[43,9,43,10,1],[44,13,44,77,1],[45,13,45,59,1],[46,13,46,27,1],[47,9,47,10,1]]);
+    </script>
+  </body>
+</html>
