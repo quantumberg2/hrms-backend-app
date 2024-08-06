@@ -79,20 +79,30 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
-        public async Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedcompanyform)
+        public async Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedCompanyForm)
         {
+            // Set default values
+            requestedCompanyForm.InsertedDate = DateTime.UtcNow;
+            requestedCompanyForm.UpdatedDate = DateTime.UtcNow;
+            requestedCompanyForm.Status = "Requested";
+
+            // Decode the token
             DecodeToken();
-            _context.RequestedCompanyForms.Add(requestedcompanyform);
+
+            // Add the entity to the context
+            _context.RequestedCompanyForms.Add(requestedCompanyForm);
+
+            // Save the changes to the database
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
                 return "New company request inserted successfully";
-
             }
             else
             {
-                throw new DatabaseOperationException("Failed to insert Employee credential data");
+                throw new DatabaseOperationException("Failed to insert company request data");
             }
         }
+
     }
 }
