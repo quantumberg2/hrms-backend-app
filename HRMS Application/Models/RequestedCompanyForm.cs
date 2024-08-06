@@ -21,6 +21,7 @@ namespace HRMS_Application.Models
         public string Status { get; set; }
         public DateTime? InsertedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public string Email { get; set; }
 
         public virtual Department Department { get; set; }
         public virtual ICollection<CompanyDetail> CompanyDetails { get; set; }

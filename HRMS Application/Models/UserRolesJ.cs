@@ -8,7 +8,6 @@ namespace HRMS_Application.Models
     public partial class UserRolesJ
     {
         public int Id { get; set; }
-        public int? RoleId { get; set; }
         public int? EmployeeCredentialId { get; set; }
         public int? RolesId { get; set; }
 

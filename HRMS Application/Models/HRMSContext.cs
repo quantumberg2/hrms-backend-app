@@ -465,6 +465,12 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.DefaultPassword).HasColumnName("Default_Password");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Password)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -578,6 +584,8 @@ namespace HRMS_Application.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.EmployeecredentialId).HasColumnName("employeecredentialId");
+
                 entity.Property(e => e.Occasion)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -586,6 +594,11 @@ namespace HRMS_Application.Models
                     .WithMany(p => p.Holidays)
                     .HasForeignKey(d => d.CompanyId)
                     .HasConstraintName("FK__Holidays__Compan__71D1E811");
+
+                entity.HasOne(d => d.Employeecredential)
+                    .WithMany(p => p.Holidays)
+                    .HasForeignKey(d => d.EmployeecredentialId)
+                    .HasConstraintName("FK_Holidays_EmployeeCredentials");
             });
 
             modelBuilder.Entity<LeaveType>(entity =>
@@ -593,6 +606,8 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CompanyId).HasColumnName("Company_id");
+
+                entity.Property(e => e.EmployeecredentialId).HasColumnName("employeecredentialId");
 
                 entity.Property(e => e.LeaveType1)
                     .HasMaxLength(255)
@@ -603,6 +618,11 @@ namespace HRMS_Application.Models
                     .WithMany(p => p.LeaveTypes)
                     .HasForeignKey(d => d.CompanyId)
                     .HasConstraintName("FK__LeaveType__Compa__7C4F7684");
+
+                entity.HasOne(d => d.Employeecredential)
+                    .WithMany(p => p.LeaveTypes)
+                    .HasForeignKey(d => d.EmployeecredentialId)
+                    .HasConstraintName("FK_LeaveTypes_EmployeeCredentials");
             });
 
             modelBuilder.Entity<Position>(entity =>
@@ -633,6 +653,10 @@ namespace HRMS_Application.Models
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("Domain_name");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");
 
@@ -668,8 +692,6 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
-
-                entity.Property(e => e.RoleId).HasColumnName("Role_Id");
 
                 entity.Property(e => e.RolesId).HasColumnName("Roles_Id");
 

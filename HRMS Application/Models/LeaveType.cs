@@ -17,8 +17,10 @@ namespace HRMS_Application.Models
         public string LeaveType1 { get; set; }
         public int? Days { get; set; }
         public int? CompanyId { get; set; }
+        public int? EmployeecredentialId { get; set; }
 
         public virtual CompanyDetail Company { get; set; }
+        public virtual EmployeeCredential Employeecredential { get; set; }
         public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
         public virtual ICollection<EmployeeLeave> EmployeeLeaves { get; set; }
     }

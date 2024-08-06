@@ -18,8 +18,10 @@ namespace HRMS_Application.Models
         public string Day { get; set; }
         public bool? RestrictedHoliday { get; set; }
         public int? CompanyId { get; set; }
+        public int? EmployeecredentialId { get; set; }
 
         public virtual CompanyDetail Company { get; set; }
+        public virtual EmployeeCredential Employeecredential { get; set; }
         public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
     }
 }
