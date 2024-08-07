@@ -3,6 +3,8 @@ using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
+using Microsoft.EntityFrameworkCore;
+using HRMS_Application.DTO;
 namespace HRMS_Application.Controllers
 {
     [Route("api/[controller]")]
@@ -11,13 +13,16 @@ namespace HRMS_Application.Controllers
     {
         private readonly ICompanyRequestedform _companyRequested;
         private readonly ILogger<CompanyrequestedController> _logger;
-        public CompanyrequestedController(ICompanyRequestedform companyRequested, ILogger<CompanyrequestedController> logger)
+        private readonly HRMSContext _context;
+
+        public CompanyrequestedController(ICompanyRequestedform companyRequested, ILogger<CompanyrequestedController> logger, HRMSContext context)
         {
             _companyRequested = companyRequested;
             _logger = logger;
+            _context = context;
         }
         [HttpGet]
-       // [Authorize(new[] { "Admin" })]
+        // [Authorize(new[] { "Admin" })]
         public List<RequestedCompanyForm> GetEmpCredential()
         {
             _logger.LogInformation("Get All Employee Credential started");
@@ -50,5 +55,50 @@ namespace HRMS_Application.Controllers
             return result;
 
         }
+        [HttpPost]
+        [Route("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] OtpEmail request)
+        {
+            var companyForm = await _context.RequestedCompanyForms
+                .FirstOrDefaultAsync(c => c.Email == request.EmailAddress);
+
+            if (companyForm == null)
+            {
+                return NotFound("Company form not found.");
+            }
+
+            var storedOtp = companyForm.GenerateOtp.Trim().ToLower();
+            var providedOtp = request.Otp.Trim().ToLower();
+
+            // Log the OTP values
+            Console.WriteLine($"Stored OTP: {storedOtp}");
+            Console.WriteLine($"Provided OTP: {providedOtp}");
+
+            if (storedOtp != providedOtp)
+            {
+                companyForm.Status = "Rejected";
+                _context.RequestedCompanyForms.Update(companyForm);
+                await _context.SaveChangesAsync();
+
+                return BadRequest("Invalid OTP.");
+            }
+
+            if (companyForm.OtpExpiration < DateTime.UtcNow)
+            {
+                companyForm.Status = "Expired";
+                _context.RequestedCompanyForms.Update(companyForm);
+                await _context.SaveChangesAsync();
+
+                return BadRequest("OTP has expired.");
+            }
+
+            companyForm.Status = "Verified";
+            _context.RequestedCompanyForms.Update(companyForm);
+            await _context.SaveChangesAsync();
+
+            return Ok("New company request Is Verified.");
+        }
+
+
     }
 }

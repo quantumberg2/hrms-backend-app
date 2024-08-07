@@ -658,11 +658,20 @@ namespace HRMS_Application.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.GenerateOtp)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("Generate_OTP");
+
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.OtpExpiration)
+                    .HasColumnType("datetime")
+                    .HasColumnName("Otp_Expiration");
 
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(20)
