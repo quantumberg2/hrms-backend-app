@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
 using System.Xml.Linq;
+using HRMS_Application.DTO;
 
 namespace HRMS_Application.Controllers
 {
@@ -44,7 +45,7 @@ namespace HRMS_Application.Controllers
             return result;
         }
         [HttpPost]
-        [Authorize(new[] { "Admin" })]
+        //[Authorize(new[] { "Admin" })]
         public async Task<string> InsertemployeeCredential([FromBody] EmployeeCredential employeeCredential)
         {
             _logger.LogInformation("Insert Employee Credential method started");
@@ -60,5 +61,25 @@ namespace HRMS_Application.Controllers
             var result = await _empCredential.UpdateEmployeeCredentials(id, username,password,status,requestedCompanyId);
             return result;
         }
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Request cannot be null.");
+            }
+
+            var result = await _empCredential.UpdateEmployeePassword(request.Email, request.OldPassword, request.NewPassword);
+
+            if (result == "Password updated successfully.")
+            {
+                return Ok(new { Message = result });
+            }
+            else
+            {
+                return BadRequest(new { Message = result });
+            }
+        }
+
     }
 }

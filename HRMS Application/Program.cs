@@ -34,6 +34,7 @@ builder.Services.AddScoped<IEmpDetails, EmpDetailsImp>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICompanyRequestedform, CompanyRequestedformImp>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailPassword, EmailPasswordImp>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

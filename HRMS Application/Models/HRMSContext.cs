@@ -68,7 +68,7 @@ namespace HRMS_Application.Models
                                 auditEntry.AuditType = Enums.AuditType.Update;
                                 auditEntry.OldValues[propertyName] = property.OriginalValue;
                                 auditEntry.NewValues[propertyName] = property.CurrentValue;
-                            }
+                            } 
                             break;
                     }
                 }
