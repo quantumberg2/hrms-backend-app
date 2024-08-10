@@ -68,7 +68,7 @@ namespace HRMS_Application.Models
                                 auditEntry.AuditType = Enums.AuditType.Update;
                                 auditEntry.OldValues[propertyName] = property.OriginalValue;
                                 auditEntry.NewValues[propertyName] = property.CurrentValue;
-                            } 
+                            }
                             break;
                     }
                 }
@@ -493,14 +493,22 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Designation)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
+
+                entity.Property(e => e.EmployeeNumber)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Gender)
-                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.LastName)
@@ -508,14 +516,6 @@ namespace HRMS_Application.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.MiddleName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MobileNumber)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NickName)
                     .HasMaxLength(255)
                     .IsUnicode(false);
 

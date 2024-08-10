@@ -103,13 +103,13 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             // Update only the fields that have non-null values passed to the method
             result.DeptId = depId ?? result.DeptId;
-            result.MobileNumber = mobilenumber ?? result.MobileNumber;
+            //result.MobileNumber = mobilenumber ?? result.MobileNumber;
             result.FirstName = fname ?? result.FirstName;
             result.MiddleName = mname ?? result.MiddleName;
             result.LastName = lname ?? result.LastName;
             result.PositionId = positionid ?? result.PositionId;
-            result.NickName = nickname ?? result.NickName;
-            result.Gender = gender ?? result.Gender;
+            //result.NickName = nickname ?? result.NickName;
+            //result.Gender = gender ?? result.Gender;
            result.EmployeeCredentialId = employeecredentialId ?? result.EmployeeCredentialId;
             _hrmsContext.EmployeeDetails.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);

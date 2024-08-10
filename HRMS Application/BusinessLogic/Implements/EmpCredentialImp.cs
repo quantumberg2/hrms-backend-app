@@ -190,7 +190,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         private string GeneratePassword(int length = 12)
         {
-            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-";
+            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
             var random = new Random();
             return new string(Enumerable.Repeat(validChars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
