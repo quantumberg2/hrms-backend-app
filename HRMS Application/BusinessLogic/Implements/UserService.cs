@@ -50,7 +50,10 @@ namespace HRMS_Application.BusinessLogics.Implements
                            {
                               
                                row.UserName,
-                               row.Id
+                               row.Id,
+                               row.Email,
+                               row.RequestedCompanyId,
+
                            }).FirstOrDefault();
             if (objUser == null)
             {
@@ -72,6 +75,8 @@ namespace HRMS_Application.BusinessLogics.Implements
                     /*Name = objUser.Name,*/
                     UserName = objUser.UserName,
                     UserId = objUser.Id,
+                    Email = objUser.Email,
+                    RequestedCompanyId = objUser.RequestedCompanyId,
                     Roles = roles
                     // Roles = new List<string> { "Admin", "Faculty" }
                 };

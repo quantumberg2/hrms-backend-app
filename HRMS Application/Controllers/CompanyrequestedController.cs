@@ -95,10 +95,36 @@ namespace HRMS_Application.Controllers
             companyForm.Status = "Verified";
             _context.RequestedCompanyForms.Update(companyForm);
             await _context.SaveChangesAsync();
+            if (companyForm.Status == "Verified")
+            {
+                // Create and save EmployeeCredential if status is Verified
+                var employeeCredential = new EmployeeCredential
+                {
+                    UserName = companyForm.Name,
+                    Email = companyForm.Email,
+                    Password = GeneratePassword(),
+                    DefaultPassword = true,
+                    RequestedCompanyId = companyForm.Id,
+                    Status = 1,
+                };
+
+                _context.EmployeeCredentials.Add(employeeCredential);
+                await _context.SaveChangesAsync();
+            }
 
             return Ok("New company request Is Verified.");
         }
 
-
+        private string GeneratePassword()
+        {
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            var res = new char[8];
+            var rnd = new Random();
+            for (int i = 0; i < res.Length; i++)
+            {
+                res[i] = valid[rnd.Next(valid.Length)];
+            }
+            return new string(res);
+        }
     }
 }

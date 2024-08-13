@@ -110,6 +110,12 @@ namespace HRMS_Application.BusinessLogic.Implements
           }*/
         public async Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedCompanyForm)
         {
+
+            if (!IsValidPhoneNumber(requestedCompanyForm.PhoneNumber))
+            {
+                return "Invalid phone number. The phone number must be exactly 10 digits.";
+            }
+
             // Set default values
             requestedCompanyForm.InsertedDate = DateTime.UtcNow;
             requestedCompanyForm.UpdatedDate = DateTime.UtcNow;
@@ -146,6 +152,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 _context.RequestedCompanyForms.Add(requestedCompanyForm);
             }
 
+           
             // Save the changes to the database
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
@@ -164,6 +171,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 throw new DatabaseOperationException("Failed to insert company request data");
             }
+          
         }
 
         private string GenerateOtp()
@@ -172,6 +180,10 @@ namespace HRMS_Application.BusinessLogic.Implements
             return random.Next(100000, 999999).ToString(); // Generate a 6-digit OTP
         }
 
-
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            return !string.IsNullOrEmpty(phoneNumber) && phoneNumber.All(char.IsDigit) && phoneNumber.Length == 10;
+        }
     }
+       
 }

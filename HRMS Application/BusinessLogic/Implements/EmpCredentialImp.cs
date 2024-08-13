@@ -16,7 +16,6 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly IEmailPassword _emailService;
 
         private readonly IJwtUtils _jwtUtils;
-        private readonly IUser _user;
         private List<string>? dToken;
         private int? _decodedToken;
         public EmpCredentialImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IEmailPassword emailService)

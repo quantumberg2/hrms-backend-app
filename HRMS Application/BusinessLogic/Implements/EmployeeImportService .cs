@@ -22,7 +22,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             _emailPasswordService = emailPasswordService;
         }
 
-        public async Task ImportEmployeesFromExcelAsync(Stream excelStream)
+        public async Task<(int Inserted, int Rejected, List<string> Errors)> ImportEmployeesFromExcelAsync(Stream excelStream)
         {
             // Set the license context
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -32,19 +32,30 @@ namespace HRMS_Application.BusinessLogic.Implements
             var rowCount = worksheet.Dimension.Rows;
 
             var employees = new List<EmployeeDto>();
-            var existingUsernames = new HashSet<string>();
-            var existingEmails = new HashSet<string>();
+            var errors = new List<string>();
+            int insertedCount = 0;
+            int rejectedCount = 0;
 
             // Read the data starting from row 2, assuming row 1 has headings
             for (int row = 2; row <= rowCount; row++)
             {
                 // Extract data from cells
                 var employeeNumber = worksheet.Cells[row, 1].Text;
-                var email = worksheet.Cells[row, 6].Text;
                 var firstName = worksheet.Cells[row, 2].Text;
                 var middleName = worksheet.Cells[row, 3].Text;
                 var lastName = worksheet.Cells[row, 4].Text;
                 var designation = worksheet.Cells[row, 5].Text;
+                var email = worksheet.Cells[row, 6].Text;
+
+                // Validate fields
+                if (string.IsNullOrWhiteSpace(employeeNumber) || string.IsNullOrWhiteSpace(firstName) ||
+                    string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) ||
+                    !IsValidEmail(email))
+                {
+                    errors.Add($"Row {row}: Invalid data. Ensure all required fields are filled correctly.");
+                    rejectedCount++;
+                    continue;
+                }
 
                 // Handle departmentId and positionId as null
                 int? deptId = null;
@@ -54,10 +65,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var employee = new EmployeeDto
                 {
                     EmployeeNumber = employeeNumber,
-                    Email = email,
                     FirstName = firstName,
                     MiddleName = middleName,
                     LastName = lastName,
+                    Email = email,
                     DeptId = deptId,
                     PositionId = positionId,
                     Designation = designation
@@ -73,15 +84,17 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var existingEmail = await _context.EmployeeCredentials
                     .SingleOrDefaultAsync(e => e.Email == employeeDto.Email);
 
-                if (existingUserName != null)
+               /* if (existingUserName != null)
                 {
-                    Console.WriteLine($"Username '{employeeDto.FirstName}' is already in use.");
+                    errors.Add($"Username '{employeeDto.FirstName}' is already in use.");
+                    rejectedCount++;
                     continue; // Skip this record
-                }
+                }*/
 
                 if (existingEmail != null)
                 {
-                    Console.WriteLine($"Email '{employeeDto.Email}' is already in use.");
+                    errors.Add($"Email '{employeeDto.Email}' is already in use.");
+                    rejectedCount++;
                     continue; // Skip this record
                 }
 
@@ -119,9 +132,25 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Password = employeeCredential.Password,
                     UserName = employeeCredential.UserName
                 });
+
+                insertedCount++;
             }
+
+            return (Inserted: insertedCount, Rejected: rejectedCount, Errors: errors);
         }
 
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private string GeneratePassword()
         {

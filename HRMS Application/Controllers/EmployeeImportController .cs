@@ -8,7 +8,6 @@ namespace HRMS_Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
     public class EmployeeImportController : ControllerBase
     {
         private readonly IEmployeeImportService _employeeImportService;
@@ -28,10 +27,15 @@ namespace HRMS_Application.Controllers
 
             using (var stream = file.OpenReadStream())
             {
-                await _employeeImportService.ImportEmployeesFromExcelAsync(stream);
+                var result = await _employeeImportService.ImportEmployeesFromExcelAsync(stream);
+                return Ok(new
+                {
+                    Message = "File imported successfully.",
+                    Inserted = result.Inserted,
+                    Rejected = result.Rejected,
+                    Errors = result.Errors
+                });
             }
-
-            return Ok("File imported successfully.");
         }
     }
 }
