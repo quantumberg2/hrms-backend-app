@@ -22,7 +22,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             _emailPasswordService = emailPasswordService;
         }
 
-        public async Task<(int Inserted, int Rejected, List<string> Errors)> ImportEmployeesFromExcelAsync(Stream excelStream, int companyId)
+        public async Task<(int Inserted, int Rejected, List<string> Errors)> ImportEmployeesFromExcelAsync(Stream excelStream)
         {
             // Set the license context
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -78,13 +78,22 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             foreach (var employeeDto in employees)
             {
-                // Check if the email already exists for the same company
+                // Check if the username or email already exists
+                var existingUserName = await _context.EmployeeCredentials
+                    .SingleOrDefaultAsync(e => e.UserName == employeeDto.FirstName);
                 var existingEmail = await _context.EmployeeCredentials
-                    .SingleOrDefaultAsync(e => e.Email == employeeDto.Email && e.RequestedCompanyId == companyId);
+                    .SingleOrDefaultAsync(e => e.Email == employeeDto.Email);
+
+               /* if (existingUserName != null)
+                {
+                    errors.Add($"Username '{employeeDto.FirstName}' is already in use.");
+                    rejectedCount++;
+                    continue; // Skip this record
+                }*/
 
                 if (existingEmail != null)
                 {
-                    errors.Add($"Email '{employeeDto.Email}' is already in use for company ID '{companyId}'.");
+                    errors.Add($"Email '{employeeDto.Email}' is already in use.");
                     rejectedCount++;
                     continue; // Skip this record
                 }
@@ -94,8 +103,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     UserName = employeeDto.FirstName,
                     Email = employeeDto.Email,
                     Password = GeneratePassword(),
-                    DefaultPassword = true,
-                    RequestedCompanyId = companyId
+                    DefaultPassword = true
                 };
 
                 _context.EmployeeCredentials.Add(employeeCredential);
@@ -111,21 +119,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Email = employeeDto.Email,
                     Designation = employeeDto.Designation,
                     EmployeeNumber = employeeDto.EmployeeNumber,
-                    PositionId = employeeDto.PositionId,
-                    RequestCompanyId = companyId 
+                    PositionId = employeeDto.PositionId
                 };
 
                 _context.EmployeeDetails.Add(employeeDetail);
-                await _context.SaveChangesAsync();
-
-                // Assign "User" role to the employee
-                var userRole = new UserRolesJ
-                {
-                    EmployeeCredentialId = employeeCredential.Id,
-                    RolesId = 2 
-                };
-
-                _context.UserRolesJs.Add(userRole);
                 await _context.SaveChangesAsync();
 
                 // Send email with username and password

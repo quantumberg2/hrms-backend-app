@@ -17,7 +17,6 @@ namespace HRMS_Application.Models
         public string Designation { get; set; }
         public string EmployeeNumber { get; set; }
         public string Email { get; set; }
-        public int? RequestCompanyId { get; set; }
 
         public virtual Department Dept { get; set; }
         public virtual EmployeeCredential EmployeeCredential { get; set; }

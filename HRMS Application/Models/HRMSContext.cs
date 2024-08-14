@@ -519,8 +519,6 @@ namespace HRMS_Application.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RequestCompanyId).HasColumnName("Request_Company_Id");
-
                 entity.HasOne(d => d.Dept)
                     .WithMany(p => p.EmployeeDetails)
                     .HasForeignKey(d => d.DeptId)

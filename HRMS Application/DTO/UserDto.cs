@@ -6,8 +6,7 @@
         public string UserName { get; set; }
         public int UserId { get; set; }
         public string Email { get; set; }
-        public int? RequestedCompanyId { get; set; } // List of company IDs
-        //public List<string> CompanyNames { get; set; } // List of company names
+        public int? RequestedCompanyId { get; set; }
 
         // public string Password { get; set; }
         public List<string> Roles { get; set; }

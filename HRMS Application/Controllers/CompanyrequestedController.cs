@@ -115,7 +115,7 @@ namespace HRMS_Application.Controllers
             return Ok("New company request Is Verified.");
         }
 
-         private string GeneratePassword()
+        private string GeneratePassword()
         {
             const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             var res = new char[8];
