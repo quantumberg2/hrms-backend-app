@@ -13,6 +13,8 @@ namespace HRMS_Application.Models.Users
         public string Password { get; set; }
         public string Email { get; set; }
         public int? CompanyRequestId { get; set; }
+        public List<string> CompanyNames { get; set; } // Add this field to hold company names
+
         // public List<string> Roles { get; set; }
         public List<string> Roles { get; set; }
         public string Token { get; set; }
@@ -23,6 +25,7 @@ namespace HRMS_Application.Models.Users
             Username = user.UserName;
             Email = user.Email;
             CompanyRequestId = user.RequestedCompanyId;
+            //CompanyNames = user.CompanyNames;
             Roles = roles;
             Token = token;
         }

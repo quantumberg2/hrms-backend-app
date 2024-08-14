@@ -9,5 +9,8 @@ namespace HRMS_Application.Models.Users
 
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        public string CompanyName { get; set; } 
     }
 }
