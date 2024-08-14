@@ -100,7 +100,7 @@ namespace HRMS_Application.BusinessLogics.Implements
                                empCred.Id,
                                empCred.Email,
                                empCred.RequestedCompanyId,
-                           }).FirstOrDefault();
+                           }).FirstOrDefault();/**/
 
             if (objUser == null)
             {
