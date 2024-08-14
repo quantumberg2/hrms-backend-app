@@ -32,39 +32,83 @@ namespace HRMS_Application.BusinessLogics.Implements
             _appSettings = appSettings.Value;
         }
 
+        /* public AuthenticateResponse Authenticate(AuthenticateRequest model)
+         {
+             //var user = _CollegeAppContext.Users.SingleOrDefault(x => x.Username == model.Username);
+
+             //var user = (from u in _CollegeAppContext.UserTables
+             //            join ur in _CollegeAppContext.UserRoleJs on u.Id equals ur.UserId
+             //            join r in _CollegeAppContext.Roles on ur.RoleId equals r.Id
+             //            where u.UserName == model.Username && u.Password == model.Password
+             //            select new { User = u, UserRole = ur, RoleName = r.RoleName })
+             //                  .SingleOrDefault();
+
+             var objUser = (from row in _hrmsContext.EmployeeCredentials
+                            where row.UserName == model.Username && row.Password == model.Password
+
+                            select new
+                            {
+
+                                row.UserName,
+                                row.Id,
+                                row.Email,
+                                row.RequestedCompanyId,
+
+                            }).FirstOrDefault();
+             if (objUser == null)
+             {
+                 // Return forbidden error
+                 //return new StatusCode(StatusCodes.Status401Unauthorized);
+                 return null;
+
+             }
+             else
+             {
+
+                 var roles = (from rowUserRolesJ in _hrmsContext.UserRolesJs
+                              join rowRoles in _hrmsContext.Roles on rowUserRolesJ.RolesId equals rowRoles.Id
+                              where rowUserRolesJ.EmployeeCredentialId == objUser.Id
+                              select rowRoles.Name).ToList();
+
+                 var user = new UserDto
+                 {
+                     *//*Name = objUser.Name,*//*
+                     UserName = objUser.UserName,
+                     UserId = objUser.Id,
+                     Email = objUser.Email,
+                     RequestedCompanyId = objUser.RequestedCompanyId,
+                     Roles = roles
+                     // Roles = new List<string> { "Admin", "Faculty" }
+                 };
+                 // authentication successful so generate jwt token
+                 var jwtToken = _jwtUtils.GenerateJwtToken(user);
+                 return new AuthenticateResponse(user, jwtToken, user.Roles);
+             }
+
+         }*/
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            //var user = _CollegeAppContext.Users.SingleOrDefault(x => x.Username == model.Username);
-
-            //var user = (from u in _CollegeAppContext.UserTables
-            //            join ur in _CollegeAppContext.UserRoleJs on u.Id equals ur.UserId
-            //            join r in _CollegeAppContext.Roles on ur.RoleId equals r.Id
-            //            where u.UserName == model.Username && u.Password == model.Password
-            //            select new { User = u, UserRole = ur, RoleName = r.RoleName })
-            //                  .SingleOrDefault();
-
-            var objUser = (from row in _hrmsContext.EmployeeCredentials
-                           where row.UserName == model.Username && row.Password == model.Password
-                           
+            var objUser = (from empCred in _hrmsContext.EmployeeCredentials
+                           join reqComp in _hrmsContext.RequestedCompanyForms
+                           on empCred.RequestedCompanyId equals reqComp.Id
+                           where empCred.UserName == model.Username
+                                 && empCred.Password == model.Password
+                                 && reqComp.Name == model.CompanyName
                            select new
                            {
-                              
-                               row.UserName,
-                               row.Id,
-                               row.Email,
-                               row.RequestedCompanyId,
-
+                               empCred.UserName,
+                               empCred.Id,
+                               empCred.Email,
+                               empCred.RequestedCompanyId,
                            }).FirstOrDefault();
+
             if (objUser == null)
             {
                 // Return forbidden error
-                //return new StatusCode(StatusCodes.Status401Unauthorized);
                 return null;
-
             }
             else
             {
-
                 var roles = (from rowUserRolesJ in _hrmsContext.UserRolesJs
                              join rowRoles in _hrmsContext.Roles on rowUserRolesJ.RolesId equals rowRoles.Id
                              where rowUserRolesJ.EmployeeCredentialId == objUser.Id
@@ -72,20 +116,19 @@ namespace HRMS_Application.BusinessLogics.Implements
 
                 var user = new UserDto
                 {
-                    /*Name = objUser.Name,*/
                     UserName = objUser.UserName,
                     UserId = objUser.Id,
                     Email = objUser.Email,
                     RequestedCompanyId = objUser.RequestedCompanyId,
                     Roles = roles
-                    // Roles = new List<string> { "Admin", "Faculty" }
                 };
+
                 // authentication successful so generate jwt token
                 var jwtToken = _jwtUtils.GenerateJwtToken(user);
                 return new AuthenticateResponse(user, jwtToken, user.Roles);
             }
-
         }
+
 
         public IEnumerable<EmployeeCredential> GetAll()
         {

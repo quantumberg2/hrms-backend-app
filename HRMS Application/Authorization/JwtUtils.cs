@@ -36,6 +36,7 @@ namespace HRMS_Application.Authorization
                     new Claim("UserName", user.UserName.ToString().Trim()),
                     new Claim ("Email",user.Email.ToString().Trim()),
                     new Claim("CompanyId", user.RequestedCompanyId.ToString().Trim()),
+                    //new Claim ("CompanyNames", user.CompanyNames.ToString().Trim()),
                     //new Claim("Name", user.Name.ToString().Trim())
             };
 

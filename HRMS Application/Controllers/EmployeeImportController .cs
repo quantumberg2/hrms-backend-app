@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Threading.Tasks;
 using HRMS_Application.BusinessLogic.Interface;
 
@@ -25,9 +27,15 @@ namespace HRMS_Application.Controllers
                 return BadRequest("No file uploaded.");
             }
 
+            // Extract companyId from the token
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var companyId = int.Parse(jwtToken.Claims.First(claim => claim.Type == "CompanyId").Value);
+
             using (var stream = file.OpenReadStream())
             {
-                var result = await _employeeImportService.ImportEmployeesFromExcelAsync(stream);
+                var result = await _employeeImportService.ImportEmployeesFromExcelAsync(stream, companyId);
                 return Ok(new
                 {
                     Message = "File imported successfully.",
