@@ -6,6 +6,8 @@ using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogics.Interface;
 using Microsoft.EntityFrameworkCore;
 using HRMS_Application.DTO;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -258,7 +260,45 @@ namespace HRMS_Application.BusinessLogic.Implements
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public async Task<string> UpdatePassword(string email, string otp, string newPassword)
+        /* public async Task<string> UpdatePassword(string email, string otp, string newPassword)
+         {
+             // Check if the email and OTP match and are valid
+             var existingCompanyForm = await _context.EmployeeCredentials
+                 .FirstOrDefaultAsync(c => c.Email == email && c.GenerateOtp == otp);
+
+             if (existingCompanyForm == null || existingCompanyForm.OtpExpiration < DateTime.UtcNow)
+             {
+                 return "Invalid or expired OTP.";
+             }
+
+             // Update the password in EmployeeCredentials
+             var employeeCredential = await _context.EmployeeCredentials
+                 .FirstOrDefaultAsync(e => e.Email == email);//&& e.RequestedCompanyId == existingCompanyForm.Id
+
+             if (employeeCredential == null)
+             {
+                 return "User not found.";
+             }
+
+             employeeCredential.Password = newPassword;
+                        employeeCredential.DefaultPassword = false;
+                       _context.EmployeeCredentials.Update(employeeCredential);
+
+
+                         _context.EmployeeCredentials.Update(existingCompanyForm);
+
+             // Save the changes to the database
+             var result = await _context.SaveChangesAsync(_decodedToken);
+             if (result != 0)
+             {
+                 return "Password updated successfully.";
+             }
+             else
+             {
+                 throw new DatabaseOperationException("Failed to update password.");
+             }
+         }*/
+        public async Task<string> UpdatePassword(string email, string otp, string newPassword, string confirmPassword)
         {
             // Check if the email and OTP match and are valid
             var existingCompanyForm = await _context.EmployeeCredentials
@@ -269,21 +309,27 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "Invalid or expired OTP.";
             }
 
+            // Validate that newPassword and confirmPassword match
+            if (newPassword != confirmPassword)
+            {
+                return "Passwords do not match.";
+            }
+
             // Update the password in EmployeeCredentials
             var employeeCredential = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == email);//&& e.RequestedCompanyId == existingCompanyForm.Id
+                .FirstOrDefaultAsync(e => e.Email == email);
 
             if (employeeCredential == null)
             {
                 return "User not found.";
             }
 
-            employeeCredential.Password = newPassword;
-                       employeeCredential.DefaultPassword = false;
-                      _context.EmployeeCredentials.Update(employeeCredential);
+            // Hash the new password before storing it
+            employeeCredential.Password = HashPassword(newPassword);
+            employeeCredential.DefaultPassword = false;
 
-
-                        _context.EmployeeCredentials.Update(existingCompanyForm);
+            _context.EmployeeCredentials.Update(employeeCredential);
+            _context.EmployeeCredentials.Update(existingCompanyForm);
 
             // Save the changes to the database
             var result = await _context.SaveChangesAsync(_decodedToken);
@@ -296,5 +342,25 @@ namespace HRMS_Application.BusinessLogic.Implements
                 throw new DatabaseOperationException("Failed to update password.");
             }
         }
+
+        // Method to hash the password
+        private string HashPassword(string password)
+        {
+            byte[] salt = new byte[128 / 8];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8));
+
+            return $"{Convert.ToBase64String(salt)}:{hashed}";
+        }
+
     }
 }

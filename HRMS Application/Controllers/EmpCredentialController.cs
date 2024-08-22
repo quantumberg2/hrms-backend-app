@@ -63,7 +63,7 @@ namespace HRMS_Application.Controllers
             return result;
         }
         [HttpPost("update-password")]
-        public async Task<IActionResult> UpdatePasswords([FromBody] UpdatePasswordRequest request)
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
         {
             if (request == null)
             {
@@ -107,14 +107,14 @@ namespace HRMS_Application.Controllers
         public async Task<IActionResult> UpdatePassword([FromBody] ForgotpasswordRequest updatePasswordRequest)
         {
             if (updatePasswordRequest == null || string.IsNullOrEmpty(updatePasswordRequest.Email) ||
-                string.IsNullOrEmpty(updatePasswordRequest.Otp) || string.IsNullOrEmpty(updatePasswordRequest.NewPassword))
+                string.IsNullOrEmpty(updatePasswordRequest.Otp) || string.IsNullOrEmpty(updatePasswordRequest.NewPassword) || string.IsNullOrEmpty(updatePasswordRequest.ConfirmPassword))
             {
                 return BadRequest("Email, OTP, and new password are required.");
             }
 
             try
             {
-                var result = await _empCredential.UpdatePassword(updatePasswordRequest.Email, updatePasswordRequest.Otp, updatePasswordRequest.NewPassword);
+                var result = await _empCredential.UpdatePassword(updatePasswordRequest.Email, updatePasswordRequest.Otp, updatePasswordRequest.NewPassword, updatePasswordRequest.ConfirmPassword);
                 return Ok(new { message = result });
             }
             catch (NotFoundException ex)
