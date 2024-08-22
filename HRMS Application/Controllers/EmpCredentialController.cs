@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
 using System.Xml.Linq;
 using HRMS_Application.DTO;
+using HRMS_Application.Middleware.Exceptions;
 
 namespace HRMS_Application.Controllers
 {
@@ -62,7 +63,7 @@ namespace HRMS_Application.Controllers
             return result;
         }
         [HttpPost("update-password")]
-        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
+        public async Task<IActionResult> UpdatePasswords([FromBody] UpdatePasswordRequest request)
         {
             if (request == null)
             {
@@ -78,6 +79,51 @@ namespace HRMS_Application.Controllers
             else
             {
                 return BadRequest(new { Message = result });
+            }
+        }
+        [HttpPost("generate-otp")]
+        public async Task<IActionResult> GenerateAndSendOtp([FromBody] OtpRequest otpRequest)
+        {
+            if (otpRequest == null || string.IsNullOrEmpty(otpRequest.Email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            try
+            {
+                var result = await _empCredential.GenerateAndSendOtp(otpRequest.Email);
+                return Ok(new { message = result });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (DatabaseOperationException ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+        [HttpPost("Forgot-Password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] ForgotpasswordRequest updatePasswordRequest)
+        {
+            if (updatePasswordRequest == null || string.IsNullOrEmpty(updatePasswordRequest.Email) ||
+                string.IsNullOrEmpty(updatePasswordRequest.Otp) || string.IsNullOrEmpty(updatePasswordRequest.NewPassword))
+            {
+                return BadRequest("Email, OTP, and new password are required.");
+            }
+
+            try
+            {
+                var result = await _empCredential.UpdatePassword(updatePasswordRequest.Email, updatePasswordRequest.Otp, updatePasswordRequest.NewPassword);
+                return Ok(new { message = result });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (DatabaseOperationException ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
             }
         }
 

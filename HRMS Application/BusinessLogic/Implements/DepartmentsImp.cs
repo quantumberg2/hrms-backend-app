@@ -9,9 +9,7 @@ namespace HRMS_Application.BusinessLogic.Implements
     {
         private readonly HRMSContext _hrmsContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
         private readonly IJwtUtils _jwtUtils;
-        private readonly IUser _user;
         private List<string>? dToken;
         private int? _decodedToken;
         public DepartmentsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)

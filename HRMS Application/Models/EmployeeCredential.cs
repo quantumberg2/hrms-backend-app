@@ -28,6 +28,8 @@ namespace HRMS_Application.Models
         public int? RequestedCompanyId { get; set; }
         public string Email { get; set; }
         public bool? DefaultPassword { get; set; }
+        public string GenerateOtp { get; set; }
+        public DateTime? OtpExpiration { get; set; }
 
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
         public virtual ICollection<AccountDetail> AccountDetails { get; set; }

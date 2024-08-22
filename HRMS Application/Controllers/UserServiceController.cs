@@ -2,11 +2,11 @@
 using HRMS_Application.BusinessLogics.Implements;
 using HRMS_Application.Entities;
 using HRMS_Application.Models.Users;
-using HRMS_Application.Entities;
-using HRMS_Application.Models.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Models;
+using HRMS_Application.DTO;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -16,11 +16,13 @@ namespace HRMS_Application.Controllers
     {
         private readonly IUserService _userService;
         private readonly ILogger<UserServiceController> _logger;
+        
 
         public UserServiceController(IUserService userService, ILogger<UserServiceController> logger)
         {
             _userService = userService;
             _logger = logger;
+           
         }
 
         [AllowAnonymous]
@@ -53,6 +55,21 @@ namespace HRMS_Application.Controllers
 
             var user = _userService.GetById(id);
             return Ok(user);
+        }
+     
+        [HttpPost("select-company")]
+        public IActionResult SelectCompany([FromBody] SelectCompanyRequest model)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            var Userid = int.Parse(jwtToken.Claims.First(claim => claim.Type == "UserId").Value);
+            var response = _userService.SelectCompany(model,Userid);
+
+            if (response == null)
+                return Unauthorized(new { message = "Invalid company selection" });
+
+            return Ok(response);
         }
     }
 }

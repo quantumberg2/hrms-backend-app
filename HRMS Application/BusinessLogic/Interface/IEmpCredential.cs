@@ -10,5 +10,8 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<EmployeeCredential> UpdateEmployeeCredentials(int id, string? username, string? password, short? status, int? requestedCompanyId);
         public Task<string> UpdateEmployeePassword(string email, string oldPassword, string newPassword);
         public Task<bool> DeleteEmployeeCredential(int id);
+        public Task<string> GenerateAndSendOtp(string email);
+        public Task<string> UpdatePassword(string email, string otp, string newPassword);
+
     }
 }
