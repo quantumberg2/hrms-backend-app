@@ -325,7 +325,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
 
             // Hash the new password before storing it
-            employeeCredential.Password = HashPassword(newPassword);
+            employeeCredential.Password = newPassword;
             employeeCredential.DefaultPassword = false;
 
             _context.EmployeeCredentials.Update(employeeCredential);
@@ -344,7 +344,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
 
         // Method to hash the password
-        private string HashPassword(string password)
+        /*private string HashPassword(string password)
         {
             byte[] salt = new byte[128 / 8];
             using (var rng = RandomNumberGenerator.Create())
@@ -360,7 +360,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 numBytesRequested: 256 / 8));
 
             return $"{Convert.ToBase64String(salt)}:{hashed}";
-        }
+        }*/
 
     }
 }
