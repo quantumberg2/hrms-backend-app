@@ -9,19 +9,15 @@ namespace HRMS_Application.Models
     {
         public LeaveType()
         {
-            EmployeeAttendances = new HashSet<EmployeeAttendance>();
-            EmployeeLeaves = new HashSet<EmployeeLeave>();
+            EmployeeLeaveAllocations = new HashSet<EmployeeLeaveAllocation>();
         }
 
         public int Id { get; set; }
-        public string LeaveType1 { get; set; }
+        public string Type { get; set; }
         public int? Days { get; set; }
         public int? CompanyId { get; set; }
-        public int? EmployeecredentialId { get; set; }
 
-        public virtual CompanyDetail Company { get; set; }
-        public virtual EmployeeCredential Employeecredential { get; set; }
-        public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
-        public virtual ICollection<EmployeeLeave> EmployeeLeaves { get; set; }
+        public virtual RequestedCompanyForm Company { get; set; }
+        public virtual ICollection<EmployeeLeaveAllocation> EmployeeLeaveAllocations { get; set; }
     }
 }

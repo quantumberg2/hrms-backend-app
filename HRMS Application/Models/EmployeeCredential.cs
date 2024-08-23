@@ -11,13 +11,13 @@ namespace HRMS_Application.Models
         {
             AccountDetails = new HashSet<AccountDetail>();
             AddressInfos = new HashSet<AddressInfo>();
+            Attendences = new HashSet<Attendence>();
+            DeviceTables = new HashSet<DeviceTable>();
             EmpPersonalInfos = new HashSet<EmpPersonalInfo>();
             EmpSalaries = new HashSet<EmpSalary>();
-            EmployeeAttendances = new HashSet<EmployeeAttendance>();
             EmployeeDetails = new HashSet<EmployeeDetail>();
-            EmployeeLeaves = new HashSet<EmployeeLeave>();
-            Holidays = new HashSet<Holiday>();
-            LeaveTypes = new HashSet<LeaveType>();
+            EmployeeLeaveAllocations = new HashSet<EmployeeLeaveAllocation>();
+            LeaveTrackings = new HashSet<LeaveTracking>();
             UserRolesJs = new HashSet<UserRolesJ>();
         }
 
@@ -34,13 +34,13 @@ namespace HRMS_Application.Models
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
         public virtual ICollection<AccountDetail> AccountDetails { get; set; }
         public virtual ICollection<AddressInfo> AddressInfos { get; set; }
+        public virtual ICollection<Attendence> Attendences { get; set; }
+        public virtual ICollection<DeviceTable> DeviceTables { get; set; }
         public virtual ICollection<EmpPersonalInfo> EmpPersonalInfos { get; set; }
         public virtual ICollection<EmpSalary> EmpSalaries { get; set; }
-        public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
         public virtual ICollection<EmployeeDetail> EmployeeDetails { get; set; }
-        public virtual ICollection<EmployeeLeave> EmployeeLeaves { get; set; }
-        public virtual ICollection<Holiday> Holidays { get; set; }
-        public virtual ICollection<LeaveType> LeaveTypes { get; set; }
+        public virtual ICollection<EmployeeLeaveAllocation> EmployeeLeaveAllocations { get; set; }
+        public virtual ICollection<LeaveTracking> LeaveTrackings { get; set; }
         public virtual ICollection<UserRolesJ> UserRolesJs { get; set; }
     }
 }

@@ -11,6 +11,8 @@ namespace HRMS_Application.Models
         {
             CompanyDetails = new HashSet<CompanyDetail>();
             EmployeeCredentials = new HashSet<EmployeeCredential>();
+            Holidays = new HashSet<Holiday>();
+            LeaveTypes = new HashSet<LeaveType>();
             Positions = new HashSet<Position>();
         }
 
@@ -26,6 +28,8 @@ namespace HRMS_Application.Models
         public virtual Department Department { get; set; }
         public virtual ICollection<CompanyDetail> CompanyDetails { get; set; }
         public virtual ICollection<EmployeeCredential> EmployeeCredentials { get; set; }
+        public virtual ICollection<Holiday> Holidays { get; set; }
+        public virtual ICollection<LeaveType> LeaveTypes { get; set; }
         public virtual ICollection<Position> Positions { get; set; }
     }
 }

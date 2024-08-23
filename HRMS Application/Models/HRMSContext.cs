@@ -79,15 +79,18 @@ namespace HRMS_Application.Models
                 Aduits.Add(auditEntry.ToAudit());
             }
         }
+        public virtual DbSet<Attendence> Attendences { get; set; }
         public virtual DbSet<CompanyDetail> CompanyDetails { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<DeviceTable> DeviceTables { get; set; }
         public virtual DbSet<EmpPersonalInfo> EmpPersonalInfos { get; set; }
         public virtual DbSet<EmpSalary> EmpSalaries { get; set; }
-        public virtual DbSet<EmployeeAttendance> EmployeeAttendances { get; set; }
         public virtual DbSet<EmployeeCredential> EmployeeCredentials { get; set; }
         public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
-        public virtual DbSet<EmployeeLeave> EmployeeLeaves { get; set; }
+        public virtual DbSet<EmployeeLeaveAllocation> EmployeeLeaveAllocations { get; set; }
+        public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
+        public virtual DbSet<LeaveTracking> LeaveTrackings { get; set; }
         public virtual DbSet<LeaveType> LeaveTypes { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<RequestedCompanyForm> RequestedCompanyForms { get; set; }
@@ -236,6 +239,26 @@ namespace HRMS_Application.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<Attendence>(entity =>
+            {
+                entity.ToTable("Attendence");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.NumberOfHours).HasColumnName("Number_of_hours");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.Attendences)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_Attendence_Employee_Credential");
+            });
+
             modelBuilder.Entity<CompanyDetail>(entity =>
             {
                 entity.ToTable("Company_Details");
@@ -341,6 +364,26 @@ namespace HRMS_Application.Models
                     .HasConstraintName("FK__Departmen__Reque__5DCAEF64");
             });
 
+            modelBuilder.Entity<DeviceTable>(entity =>
+            {
+                entity.ToTable("DeviceTable");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.InsertedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.TimeIn).HasColumnType("datetime");
+
+                entity.Property(e => e.TimeOut).HasColumnType("datetime");
+
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.DeviceTables)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_DeviceTable_Employee_Credential");
+            });
+
             modelBuilder.Entity<EmpPersonalInfo>(entity =>
             {
                 entity.ToTable("EmpPersonal_Info");
@@ -423,42 +466,6 @@ namespace HRMS_Application.Models
                     .HasConstraintName("FK__EmpSalary__Emplo__17F790F9");
             });
 
-            modelBuilder.Entity<EmployeeAttendance>(entity =>
-            {
-                entity.ToTable("EmployeeAttendance");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
-
-                entity.Property(e => e.HolidayId).HasColumnName("Holiday_id");
-
-                entity.Property(e => e.LeaveId).HasColumnName("Leave_id");
-
-                entity.Property(e => e.Remarks)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TimeIn).HasColumnType("datetime");
-
-                entity.Property(e => e.TimeOut).HasColumnType("datetime");
-
-                entity.HasOne(d => d.EmployeeCredential)
-                    .WithMany(p => p.EmployeeAttendances)
-                    .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmployeeA__Emplo__1AD3FDA4");
-
-                entity.HasOne(d => d.Holiday)
-                    .WithMany(p => p.EmployeeAttendances)
-                    .HasForeignKey(d => d.HolidayId)
-                    .HasConstraintName("FK__EmployeeA__Holid__1CBC4616");
-
-                entity.HasOne(d => d.Leave)
-                    .WithMany(p => p.EmployeeAttendances)
-                    .HasForeignKey(d => d.LeaveId)
-                    .HasConstraintName("FK__EmployeeA__Leave__1BC821DD");
-            });
-
             modelBuilder.Entity<EmployeeCredential>(entity =>
             {
                 entity.ToTable("Employee_Credential");
@@ -480,9 +487,7 @@ namespace HRMS_Application.Models
                     .HasColumnType("datetime")
                     .HasColumnName("Otp_Expiration");
 
-                entity.Property(e => e.Password)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                entity.Property(e => e.Password).HasMaxLength(256);
 
                 entity.Property(e => e.RequestedCompanyId).HasColumnName("Requested_Company_id");
 
@@ -546,70 +551,92 @@ namespace HRMS_Application.Models
                     .HasConstraintName("FK__Employee___Posit__6477ECF3");
             });
 
-            modelBuilder.Entity<EmployeeLeave>(entity =>
+            modelBuilder.Entity<EmployeeLeaveAllocation>(entity =>
             {
-                entity.ToTable("EmployeeLeave");
+                entity.ToTable("Employee_Leave_Allocation");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Contact)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
 
-                entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
+                entity.Property(e => e.LeaveType).HasColumnName("Leave_Type");
 
-                entity.Property(e => e.EndDate).HasColumnType("date");
+                entity.Property(e => e.NumberOfLeaves).HasColumnName("Number_of_Leaves");
 
-                entity.Property(e => e.LeaveId).HasColumnName("Leave_id");
+                entity.Property(e => e.RemainingLeave).HasColumnName("Remaining_Leave");
 
-                entity.Property(e => e.ReasonForLeave)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.EmployeeLeaveAllocations)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_Employee_Leave_Allocation_Emp_credential");
 
-                entity.Property(e => e.Session)
+                entity.HasOne(d => d.LeaveTypeNavigation)
+                    .WithMany(p => p.EmployeeLeaveAllocations)
+                    .HasForeignKey(d => d.LeaveType)
+                    .HasConstraintName("FK_Employee_Leave_Allocation_Leave_Type");
+            });
+
+            modelBuilder.Entity<File>(entity =>
+            {
+                entity.Property(e => e.FileUrl).IsUnicode(false);
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
+                entity.Property(e => e.ObjectName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.StartDate).HasColumnType("date");
-
-                entity.HasOne(d => d.EmployeeCredential)
-                    .WithMany(p => p.EmployeeLeaves)
-                    .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmployeeL__Emplo__7F2BE32F");
-
-                entity.HasOne(d => d.Leave)
-                    .WithMany(p => p.EmployeeLeaves)
-                    .HasForeignKey(d => d.LeaveId)
-                    .HasConstraintName("FK__EmployeeL__Leave__00200768");
+                entity.Property(e => e.Tags).IsUnicode(false);
             });
 
             modelBuilder.Entity<Holiday>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.CompanyId).HasColumnName("Company_id");
+                entity.Property(e => e.CompanyId).HasColumnName("Company_Id");
 
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.Date).HasColumnType("datetime");
 
-                entity.Property(e => e.Day)
-                    .HasMaxLength(50)
+                entity.Property(e => e.Occation)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.EmployeecredentialId).HasColumnName("employeecredentialId");
-
-                entity.Property(e => e.Occasion)
+                entity.Property(e => e.Type)
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.Holidays)
                     .HasForeignKey(d => d.CompanyId)
-                    .HasConstraintName("FK__Holidays__Compan__71D1E811");
+                    .HasConstraintName("FK_Holiday_Company");
+            });
 
-                entity.HasOne(d => d.Employeecredential)
-                    .WithMany(p => p.Holidays)
-                    .HasForeignKey(d => d.EmployeecredentialId)
-                    .HasConstraintName("FK_Holidays_EmployeeCredentials");
+            modelBuilder.Entity<LeaveTracking>(entity =>
+            {
+                entity.ToTable("LeaveTracking");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Applied).HasColumnType("datetime");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.Enddate).HasColumnType("datetime");
+
+                entity.Property(e => e.Files)
+                    .IsUnicode(false)
+                    .HasColumnName("files");
+
+                entity.Property(e => e.Startdate).HasColumnType("datetime");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.LeaveTrackings)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_LeaveTracking_Employee_Credential");
             });
 
             modelBuilder.Entity<LeaveType>(entity =>
@@ -618,22 +645,14 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.CompanyId).HasColumnName("Company_id");
 
-                entity.Property(e => e.EmployeecredentialId).HasColumnName("employeecredentialId");
-
-                entity.Property(e => e.LeaveType1)
+                entity.Property(e => e.Type)
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("LeaveType");
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.LeaveTypes)
                     .HasForeignKey(d => d.CompanyId)
-                    .HasConstraintName("FK__LeaveType__Compa__7C4F7684");
-
-                entity.HasOne(d => d.Employeecredential)
-                    .WithMany(p => p.LeaveTypes)
-                    .HasForeignKey(d => d.EmployeecredentialId)
-                    .HasConstraintName("FK_LeaveTypes_EmployeeCredentials");
+                    .HasConstraintName("FK_LeaveTypes_Company");
             });
 
             modelBuilder.Entity<Position>(entity =>

@@ -7,21 +7,12 @@ namespace HRMS_Application.Models
 {
     public partial class Holiday
     {
-        public Holiday()
-        {
-            EmployeeAttendances = new HashSet<EmployeeAttendance>();
-        }
-
         public int Id { get; set; }
-        public string Occasion { get; set; }
         public DateTime? Date { get; set; }
-        public string Day { get; set; }
-        public bool? RestrictedHoliday { get; set; }
+        public string Type { get; set; }
         public int? CompanyId { get; set; }
-        public int? EmployeecredentialId { get; set; }
+        public string Occation { get; set; }
 
-        public virtual CompanyDetail Company { get; set; }
-        public virtual EmployeeCredential Employeecredential { get; set; }
-        public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
+        public virtual RequestedCompanyForm Company { get; set; }
     }
 }
