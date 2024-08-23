@@ -11,7 +11,6 @@ namespace HRMS_Application.BusinessLogic.Implements
         private HRMSContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
-        private readonly IUser _user;
         private List<string>? dToken;
         private int? _decodedToken;
         public RolesImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
@@ -75,7 +74,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<string> InsertRole(Role role)
         {
-            _context.Roles.Add(role);
+           await _context.Roles.AddAsync(role);
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {

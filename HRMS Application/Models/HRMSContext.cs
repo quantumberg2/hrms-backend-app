@@ -68,7 +68,7 @@ namespace HRMS_Application.Models
                                 auditEntry.AuditType = Enums.AuditType.Update;
                                 auditEntry.OldValues[propertyName] = property.OriginalValue;
                                 auditEntry.NewValues[propertyName] = property.CurrentValue;
-                            } 
+                            }
                             break;
                     }
                 }
@@ -471,6 +471,15 @@ namespace HRMS_Application.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.GenerateOtp)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("Generate_OTP");
+
+                entity.Property(e => e.OtpExpiration)
+                    .HasColumnType("datetime")
+                    .HasColumnName("Otp_Expiration");
+
                 entity.Property(e => e.Password)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -493,14 +502,22 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.Designation)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
+
+                entity.Property(e => e.EmployeeNumber)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Gender)
-                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.LastName)
@@ -511,13 +528,7 @@ namespace HRMS_Application.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.MobileNumber)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NickName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.RequestCompanyId).HasColumnName("Request_Company_Id");
 
                 entity.HasOne(d => d.Dept)
                     .WithMany(p => p.EmployeeDetails)
@@ -658,20 +669,11 @@ namespace HRMS_Application.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.GenerateOtp)
-                    .HasMaxLength(20)
-                    .IsUnicode(false)
-                    .HasColumnName("Generate_OTP");
-
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.Property(e => e.OtpExpiration)
-                    .HasColumnType("datetime")
-                    .HasColumnName("Otp_Expiration");
 
                 entity.Property(e => e.PhoneNumber)
                     .HasMaxLength(20)

@@ -1,4 +1,7 @@
-﻿using HRMS_Application.BusinessLogic.Interface;
+﻿using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.DTO;
 using MailKit.Security;
 using MimeKit;
@@ -15,14 +18,19 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task SendOtpEmailAsync(Generatepassword generatepassword)
         {
+            if (!IsValidEmail(generatepassword.EmailAddress))
+            {
+                throw new ArgumentException("Invalid email address.");
+            }
+
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress(_fromName, _fromEmail));
             email.To.Add(MailboxAddress.Parse(generatepassword.EmailAddress));
-            email.Subject = "Your Username and Password";
+            email.Subject = "Your UserName and Password";
 
             var builder = new BodyBuilder
             {
-                HtmlBody = $"Your Username is: {generatepassword.UserName}<br>Your Password is: {generatepassword.Password}"
+                HtmlBody = $"Your Password code is: {generatepassword.Password}<br/>Your Username is: {generatepassword.UserName}"
             };
             email.Body = builder.ToMessageBody();
 
@@ -31,6 +39,25 @@ namespace HRMS_Application.BusinessLogic.Implements
             smtp.Authenticate(_fromEmail, _password);
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
+
+            try
+            {
+                // Use MailboxAddress.Parse to validate the email address
+                var address = MailboxAddress.Parse(email);
+                return address.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

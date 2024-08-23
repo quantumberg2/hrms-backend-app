@@ -7,12 +7,10 @@ namespace HRMS_Application.BusinessLogic.Implements
 {
     public class UserRoleImp : IUserRoles
     {
-        private HRMSContext _context;
+        private readonly HRMSContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
         private readonly IJwtUtils _jwtUtils;
-        private readonly IUser _user;
-        private List<string>? dToken;
+        public List<string>? dToken;
         private int? _decodedToken;
         public UserRoleImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
@@ -77,7 +75,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<string> InsertuserRoles(UserRolesJ userRolesJ)
         {
             DecodeToken();
-            _context.UserRolesJs.Add(userRolesJ);
+            await _context.UserRolesJs.AddAsync(userRolesJ);
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {

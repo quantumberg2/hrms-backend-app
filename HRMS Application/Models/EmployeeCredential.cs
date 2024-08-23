@@ -16,7 +16,6 @@ namespace HRMS_Application.Models
             EmployeeAttendances = new HashSet<EmployeeAttendance>();
             EmployeeDetails = new HashSet<EmployeeDetail>();
             EmployeeLeaves = new HashSet<EmployeeLeave>();
-            Holidays = new HashSet<Holiday>();
             LeaveTypes = new HashSet<LeaveType>();
             UserRolesJs = new HashSet<UserRolesJ>();
         }
@@ -28,6 +27,8 @@ namespace HRMS_Application.Models
         public int? RequestedCompanyId { get; set; }
         public string Email { get; set; }
         public bool? DefaultPassword { get; set; }
+        public string GenerateOtp { get; set; }
+        public DateTime? OtpExpiration { get; set; }
 
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
         public virtual ICollection<AccountDetail> AccountDetails { get; set; }
@@ -37,7 +38,6 @@ namespace HRMS_Application.Models
         public virtual ICollection<EmployeeAttendance> EmployeeAttendances { get; set; }
         public virtual ICollection<EmployeeDetail> EmployeeDetails { get; set; }
         public virtual ICollection<EmployeeLeave> EmployeeLeaves { get; set; }
-        public virtual ICollection<Holiday> Holidays { get; set; }
         public virtual ICollection<LeaveType> LeaveTypes { get; set; }
         public virtual ICollection<UserRolesJ> UserRolesJs { get; set; }
     }

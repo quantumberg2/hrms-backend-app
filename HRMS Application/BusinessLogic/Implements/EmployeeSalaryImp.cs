@@ -76,7 +76,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<string> InsertEmpSalary(EmpSalary empSalary)
         {
             _context.EmpSalaries.Add(empSalary);
-            var result = _context.SaveChanges();
+            var result = await _context.SaveChangesAsync();
             if (result != 0)
             {
                 return "new Department inserted successfully";

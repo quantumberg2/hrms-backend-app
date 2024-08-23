@@ -7,7 +7,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 {
     public class AccountDetailsImp : IAccountDetails
     {
-        private HRMSContext _context;
+        private readonly HRMSContext _context;
         public AccountDetailsImp(HRMSContext context)
         {
             _context = context;

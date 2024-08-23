@@ -6,6 +6,8 @@ using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogics.Interface;
 using Microsoft.EntityFrameworkCore;
 using HRMS_Application.DTO;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -14,17 +16,19 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly HRMSContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailPassword _emailService;
+        private readonly IEmailService _emailotpService;
+
 
         private readonly IJwtUtils _jwtUtils;
-        private readonly IUser _user;
         private List<string>? dToken;
         private int? _decodedToken;
-        public EmpCredentialImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IEmailPassword emailService)
+        public EmpCredentialImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IEmailPassword emailService, IEmailService emailotpService)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _jwtUtils = jwtUtils;
             _emailService = emailService;
+            _emailotpService = emailotpService;
         }
         private void DecodeToken()
         {
@@ -54,9 +58,9 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         public async Task<bool> DeleteEmployeeCredential(int id)
         {
-            var result = (from row in _context.EmployeeCredentials
+            var result = await (from row in _context.EmployeeCredentials
                           where row.Id == id
-                          select row).SingleOrDefault();
+                          select row).SingleOrDefaultAsync();
             _context.EmployeeCredentials.Remove(result);
             await _context.SaveChangesAsync(_decodedToken);
             return true;
@@ -111,7 +115,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             employeeCredential.DefaultPassword = true;
 
             // Add the entity to the context
-            _context.EmployeeCredentials.Add(employeeCredential);
+            await _context.EmployeeCredentials.AddAsync(employeeCredential);
 
             // Save the changes to the database
             var result = await _context.SaveChangesAsync(_decodedToken);
@@ -187,14 +191,176 @@ namespace HRMS_Application.BusinessLogic.Implements
                 throw new DatabaseOperationException("Failed to update password.");
             }
         }
+        public async Task<string> GenerateAndSendOtp(string email)
+        {
+            // Check if the email already exists
+            var existingCompanyForm = await _context.RequestedCompanyForms
+                .FirstOrDefaultAsync(c => c.Email == email);
 
+            var employeeCredential = await _context.EmployeeCredentials
+               .FirstOrDefaultAsync(e => e.Email == email);
+
+            string generatedOtp;
+
+            if (existingCompanyForm != null)
+            {
+                // Update the existing record with new OTP and expiration time
+                generatedOtp = GenerateOtp();
+                employeeCredential.GenerateOtp = generatedOtp;
+                employeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
+                existingCompanyForm.UpdatedDate = DateTime.UtcNow;
+
+                // Save the changes to the database
+                _context.RequestedCompanyForms.Update(existingCompanyForm);
+            }
+            else
+            {
+                return "Email not found.";
+            }
+
+            // Save the changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                // Send OTP via email
+                var otpEmail = new OtpEmail
+                {
+                    EmailAddress = email,
+                    Otp = generatedOtp
+                };
+                await _emailotpService.SendOtpEmailAsync(otpEmail);
+
+                return "OTP sent to the provided email address.";
+            }
+            else
+            {
+                throw new DatabaseOperationException("Failed to update company request data.");
+            }
+        }
+        public async Task SendOtpEmailAsync(string email, string otp)
+        {
+            var otpEmail = new OtpEmail
+            {
+                EmailAddress = email,
+                Otp = otp
+            };
+            await _emailotpService.SendOtpEmailAsync(otpEmail);
+        }
+
+        private string GenerateOtp()
+        {
+            var random = new Random();
+            return random.Next(100000, 999999).ToString(); // Generate a 6-digit OTP
+        }
         private string GeneratePassword(int length = 12)
         {
-            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?_-";
+            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@";
             var random = new Random();
             return new string(Enumerable.Repeat(validChars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        /* public async Task<string> UpdatePassword(string email, string otp, string newPassword)
+         {
+             // Check if the email and OTP match and are valid
+             var existingCompanyForm = await _context.EmployeeCredentials
+                 .FirstOrDefaultAsync(c => c.Email == email && c.GenerateOtp == otp);
+
+             if (existingCompanyForm == null || existingCompanyForm.OtpExpiration < DateTime.UtcNow)
+             {
+                 return "Invalid or expired OTP.";
+             }
+
+             // Update the password in EmployeeCredentials
+             var employeeCredential = await _context.EmployeeCredentials
+                 .FirstOrDefaultAsync(e => e.Email == email);//&& e.RequestedCompanyId == existingCompanyForm.Id
+
+             if (employeeCredential == null)
+             {
+                 return "User not found.";
+             }
+
+             employeeCredential.Password = newPassword;
+                        employeeCredential.DefaultPassword = false;
+                       _context.EmployeeCredentials.Update(employeeCredential);
+
+
+                         _context.EmployeeCredentials.Update(existingCompanyForm);
+
+             // Save the changes to the database
+             var result = await _context.SaveChangesAsync(_decodedToken);
+             if (result != 0)
+             {
+                 return "Password updated successfully.";
+             }
+             else
+             {
+                 throw new DatabaseOperationException("Failed to update password.");
+             }
+         }*/
+        public async Task<string> UpdatePassword(string email, string otp, string newPassword, string confirmPassword)
+        {
+            // Check if the email and OTP match and are valid
+            var existingCompanyForm = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(c => c.Email == email && c.GenerateOtp == otp);
+
+            if (existingCompanyForm == null || existingCompanyForm.OtpExpiration < DateTime.UtcNow)
+            {
+                return "Invalid or expired OTP.";
+            }
+
+            // Validate that newPassword and confirmPassword match
+            if (newPassword != confirmPassword)
+            {
+                return "Passwords do not match.";
+            }
+
+            // Update the password in EmployeeCredentials
+            var employeeCredential = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e => e.Email == email);
+
+            if (employeeCredential == null)
+            {
+                return "User not found.";
+            }
+
+            // Hash the new password before storing it
+            employeeCredential.Password = newPassword;
+            employeeCredential.DefaultPassword = false;
+
+            _context.EmployeeCredentials.Update(employeeCredential);
+            _context.EmployeeCredentials.Update(existingCompanyForm);
+
+            // Save the changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return "Password updated successfully.";
+            }
+            else
+            {
+                throw new DatabaseOperationException("Failed to update password.");
+            }
+        }
+
+        // Method to hash the password
+        /*private string HashPassword(string password)
+        {
+            byte[] salt = new byte[128 / 8];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8));
+
+            return $"{Convert.ToBase64String(salt)}:{hashed}";
+        }*/
 
     }
 }

@@ -10,7 +10,6 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly HRMSContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
-        private readonly IUser _user;
         private List<string>? dToken;
         private int? _decodedToken;
         public HolidayImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)

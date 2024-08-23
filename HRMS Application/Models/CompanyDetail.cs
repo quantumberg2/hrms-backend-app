@@ -9,7 +9,6 @@ namespace HRMS_Application.Models
     {
         public CompanyDetail()
         {
-            Holidays = new HashSet<Holiday>();
             LeaveTypes = new HashSet<LeaveType>();
         }
 
@@ -34,7 +33,6 @@ namespace HRMS_Application.Models
         public int? RequestedCompanyId { get; set; }
 
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
-        public virtual ICollection<Holiday> Holidays { get; set; }
         public virtual ICollection<LeaveType> LeaveTypes { get; set; }
     }
 }

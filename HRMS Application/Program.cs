@@ -1,4 +1,3 @@
-using Azure.Storage.Blobs;
 using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Implements;
 using HRMS_Application.BusinessLogic.Interface;
@@ -10,22 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connectionString = builder.Configuration.GetValue<bool>("DatabaseSettings:UseLocalDatabase")
-    ? builder.Configuration.GetConnectionString("LocalConnection")
-    : builder.Configuration.GetConnectionString("DeployedConnection");
+// Add services to the container.
 
 builder.Services.AddDbContext<HRMSContext>(options =>
-options.UseSqlServer(connectionString));
-
-builder.Services.AddScoped(_ =>
-{
-    return new BlobServiceClient(builder.Configuration.GetConnectionString("AsureBlobStorage"));
-
-});
-
-/*builder.Services.AddDbContext<HRMSContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString")));
-*/
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
@@ -48,9 +35,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICompanyRequestedform, CompanyRequestedformImp>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEmailPassword, EmailPasswordImp>();
-builder.Services.AddScoped<IFileUpload, FileUploadImp>();
-builder.Services.AddScoped<ILocalStorageOperations, LocalStorageOperationsImp>();
-builder.Services.AddScoped<IAzureOperations, AzureOperationsImp>();
+builder.Services.AddScoped<IEmployeeImportService, EmployeeImportService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

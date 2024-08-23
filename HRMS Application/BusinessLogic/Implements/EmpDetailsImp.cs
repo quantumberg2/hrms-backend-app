@@ -12,8 +12,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly HRMSContext _hrmsContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
-        private readonly IUser _user;
-        private List<string>? dToken;
+        public List<string>? dToken;
         private int? _decodedToken;
         public EmpDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
@@ -76,7 +75,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<string> InsertEmployeeDetail(EmployeeDetail employeeDetail)
         {
             DecodeToken();
-            _hrmsContext.EmployeeDetails.Add(employeeDetail);
+            await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
             var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
@@ -103,13 +102,13 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             // Update only the fields that have non-null values passed to the method
             result.DeptId = depId ?? result.DeptId;
-            result.MobileNumber = mobilenumber ?? result.MobileNumber;
+            //result.MobileNumber = mobilenumber ?? result.MobileNumber;
             result.FirstName = fname ?? result.FirstName;
             result.MiddleName = mname ?? result.MiddleName;
             result.LastName = lname ?? result.LastName;
             result.PositionId = positionid ?? result.PositionId;
-            result.NickName = nickname ?? result.NickName;
-            result.Gender = gender ?? result.Gender;
+            //result.NickName = nickname ?? result.NickName;
+            //result.Gender = gender ?? result.Gender;
            result.EmployeeCredentialId = employeecredentialId ?? result.EmployeeCredentialId;
             _hrmsContext.EmployeeDetails.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
