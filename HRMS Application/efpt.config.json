@@ -27,11 +27,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Attendence]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Company_Details]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Department]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceTable]",
          "ObjectType": 0
       },
       {
@@ -43,11 +51,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[EmployeeAttendance]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[EmployeeLeave]",
+         "Name": "[dbo].[Employee_Leave_Allocation]",
          "ObjectType": 0
       },
       {
@@ -64,6 +68,10 @@
       },
       {
          "Name": "[dbo].[Holidays]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[LeaveTracking]",
          "ObjectType": 0
       },
       {

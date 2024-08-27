@@ -12,14 +12,11 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             _context = context;
         }
-        public bool deleteAccountDetails(int id)
+        public List<AccountDetail> GetAllAccountdetails()
         {
             var result = (from row in _context.AccountDetails
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _context.AccountDetails.Remove(result);
-            _context.SaveChanges();
-            return true;
+                          select row).ToList();
+            return result;
         }
 
         public AccountDetail GetAccountDetailsById(int id)
@@ -31,11 +28,13 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public List<AccountDetail> GetAllAccountdetails()
+
+        public AccountDetail GetAccountDetailsByAccNumber(string accountNumber)
         {
-            var result = (from row in _context.AccountDetails
-                          select row).ToList();
-            return result;
+            var details = (from row in _context.AccountDetails
+                           where row.AccountNumber == accountNumber
+                           select row).FirstOrDefault();
+            return details;
         }
 
         public string InsertAccountDetails(AccountDetail accountDetail)
@@ -52,5 +51,16 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "failed to insert new data";
             }
         }
+
+        public bool deleteAccountDetails(int id)
+        {
+            var result = (from row in _context.AccountDetails
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _context.AccountDetails.Remove(result);
+            _context.SaveChanges();
+            return true;
+        }
+
     }
 }

@@ -30,6 +30,14 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
+        public AddressInfo GetAddressInfoByEmpCredId(int empCredId)
+        {
+            var Info = (from row in _context.AddressInfos
+                        where row.EmployeeCredentialId == empCredId
+                        select row).FirstOrDefault();
+            return Info;
+        }
+
         public List<AddressInfo> GetAllAddressInfo()
         {
             var result = (from row in _context.AddressInfos

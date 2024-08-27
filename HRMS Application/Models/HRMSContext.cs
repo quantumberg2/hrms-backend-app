@@ -75,16 +75,18 @@ namespace HRMS_Application.Models
                 }
             }
         }
+        public virtual DbSet<Attendence> Attendences { get; set; }
         public virtual DbSet<CompanyDetail> CompanyDetails { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<DeviceTable> DeviceTables { get; set; }
         public virtual DbSet<EmpPersonalInfo> EmpPersonalInfos { get; set; }
         public virtual DbSet<EmpSalary> EmpSalaries { get; set; }
-        public virtual DbSet<EmployeeAttendance> EmployeeAttendances { get; set; }
         public virtual DbSet<EmployeeCredential> EmployeeCredentials { get; set; }
         public virtual DbSet<EmployeeDetail> EmployeeDetails { get; set; }
-        public virtual DbSet<EmployeeLeave> EmployeeLeaves { get; set; }
+        public virtual DbSet<EmployeeLeaveAllocation> EmployeeLeaveAllocations { get; set; }
         public virtual DbSet<File> Files { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
+        public virtual DbSet<LeaveTracking> LeaveTrackings { get; set; }
         public virtual DbSet<LeaveType> LeaveTypes { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<RequestedCompanyForm> RequestedCompanyForms { get; set; }
@@ -158,7 +160,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.AccountDetails)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__AccountDe__Emplo__6B24EA82");
+                    .HasConstraintName("FK__AccountDe__Emplo__6EF57B66");
             });
 
             modelBuilder.Entity<AddressInfo>(entity =>
@@ -197,7 +199,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.AddressInfos)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__AddressIn__Emplo__6C190EBB");
+                    .HasConstraintName("FK__AddressIn__Emplo__6FE99F9F");
             });
 
             modelBuilder.Entity<Aduit>(entity =>
@@ -231,6 +233,26 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Type)
                     .HasMaxLength(200)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Attendence>(entity =>
+            {
+                entity.ToTable("Attendence");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.NumberOfHours).HasColumnName("Number_of_hours");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.Attendences)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_Attendence_Employee_Credential");
             });
 
             modelBuilder.Entity<CompanyDetail>(entity =>
@@ -314,14 +336,14 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.RequestedCompany)
                     .WithMany(p => p.CompanyDetails)
                     .HasForeignKey(d => d.RequestedCompanyId)
-                    .HasConstraintName("FK__Company_D__Reque__6D0D32F4");
+                    .HasConstraintName("FK__Company_D__Reque__71D1E811");
             });
 
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.ToTable("Department");
 
-                entity.HasIndex(e => e.RequestedCompanyId, "UQ__Departme__E20112F66B20A0D2")
+                entity.HasIndex(e => e.RequestedCompanyId, "UQ__Departme__E20112F6711C14BA")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -335,7 +357,27 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.RequestedCompany)
                     .WithOne(p => p.Department)
                     .HasForeignKey<Department>(d => d.RequestedCompanyId)
-                    .HasConstraintName("FK__Departmen__Reque__6E01572D");
+                    .HasConstraintName("FK__Departmen__Reque__72C60C4A");
+            });
+
+            modelBuilder.Entity<DeviceTable>(entity =>
+            {
+                entity.ToTable("DeviceTable");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.InsertedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.TimeIn).HasColumnType("datetime");
+
+                entity.Property(e => e.TimeOut).HasColumnType("datetime");
+
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.DeviceTables)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_DeviceTable_Employee_Credential");
             });
 
             modelBuilder.Entity<EmpPersonalInfo>(entity =>
@@ -386,12 +428,12 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.Account)
                     .WithMany(p => p.EmpPersonalInfos)
                     .HasForeignKey(d => d.AccountId)
-                    .HasConstraintName("FK__EmpPerson__Accou__778AC167");
+                    .HasConstraintName("FK__EmpPerson__Accou__7A672E12");
 
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.EmpPersonalInfos)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmpPerson__Emplo__787EE5A0");
+                    .HasConstraintName("FK__EmpPerson__Emplo__7B5B524B");
             });
 
             modelBuilder.Entity<EmpSalary>(entity =>
@@ -417,43 +459,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.EmpSalaries)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmpSalary__Emplo__797309D9");
-            });
-
-            modelBuilder.Entity<EmployeeAttendance>(entity =>
-            {
-                entity.ToTable("EmployeeAttendance");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
-
-                entity.Property(e => e.HolidayId).HasColumnName("Holiday_id");
-
-                entity.Property(e => e.LeaveId).HasColumnName("Leave_id");
-
-                entity.Property(e => e.Remarks)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TimeIn).HasColumnType("datetime");
-
-                entity.Property(e => e.TimeOut).HasColumnType("datetime");
-
-                entity.HasOne(d => d.EmployeeCredential)
-                    .WithMany(p => p.EmployeeAttendances)
-                    .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmployeeA__Emplo__72C60C4A");
-
-                entity.HasOne(d => d.Holiday)
-                    .WithMany(p => p.EmployeeAttendances)
-                    .HasForeignKey(d => d.HolidayId)
-                    .HasConstraintName("FK__EmployeeA__Holid__73BA3083");
-
-                entity.HasOne(d => d.Leave)
-                    .WithMany(p => p.EmployeeAttendances)
-                    .HasForeignKey(d => d.LeaveId)
-                    .HasConstraintName("FK__EmployeeA__Leave__74AE54BC");
+                    .HasConstraintName("FK__EmpSalary__Emplo__7C4F7684");
             });
 
             modelBuilder.Entity<EmployeeCredential>(entity =>
@@ -488,7 +494,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.RequestedCompany)
                     .WithMany(p => p.EmployeeCredentials)
                     .HasForeignKey(d => d.RequestedCompanyId)
-                    .HasConstraintName("FK__Employee___Reque__6EF57B66");
+                    .HasConstraintName("FK__Employee___Reque__74AE54BC");
             });
 
             modelBuilder.Entity<EmployeeDetail>(entity =>
@@ -528,54 +534,42 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.Dept)
                     .WithMany(p => p.EmployeeDetails)
                     .HasForeignKey(d => d.DeptId)
-                    .HasConstraintName("FK__Employee___DeptI__6FE99F9F");
+                    .HasConstraintName("FK__Employee___DeptI__75A278F5");
 
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.EmployeeDetails)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__Employee___Emplo__70DDC3D8");
+                    .HasConstraintName("FK__Employee___Emplo__76969D2E");
 
                 entity.HasOne(d => d.Position)
                     .WithMany(p => p.EmployeeDetails)
                     .HasForeignKey(d => d.PositionId)
-                    .HasConstraintName("FK__Employee___Posit__71D1E811");
+                    .HasConstraintName("FK__Employee___Posit__778AC167");
             });
 
-            modelBuilder.Entity<EmployeeLeave>(entity =>
+            modelBuilder.Entity<EmployeeLeaveAllocation>(entity =>
             {
-                entity.ToTable("EmployeeLeave");
+                entity.ToTable("Employee_Leave_Allocation");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Contact)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
 
-                entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
+                entity.Property(e => e.LeaveType).HasColumnName("Leave_Type");
 
-                entity.Property(e => e.EndDate).HasColumnType("date");
+                entity.Property(e => e.NumberOfLeaves).HasColumnName("Number_of_Leaves");
 
-                entity.Property(e => e.LeaveId).HasColumnName("Leave_id");
+                entity.Property(e => e.RemainingLeave).HasColumnName("Remaining_Leave");
 
-                entity.Property(e => e.ReasonForLeave)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.EmployeeLeaveAllocations)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_Employee_Leave_Allocation_Emp_credential");
 
-                entity.Property(e => e.Session)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.StartDate).HasColumnType("date");
-
-                entity.HasOne(d => d.EmployeeCredential)
-                    .WithMany(p => p.EmployeeLeaves)
-                    .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmployeeL__Emplo__75A278F5");
-
-                entity.HasOne(d => d.Leave)
-                    .WithMany(p => p.EmployeeLeaves)
-                    .HasForeignKey(d => d.LeaveId)
-                    .HasConstraintName("FK__EmployeeL__Leave__76969D2E");
+                entity.HasOne(d => d.LeaveTypeNavigation)
+                    .WithMany(p => p.EmployeeLeaveAllocations)
+                    .HasForeignKey(d => d.LeaveType)
+                    .HasConstraintName("FK_Employee_Leave_Allocation_Leave_Type");
             });
 
             modelBuilder.Entity<File>(entity =>
@@ -595,12 +589,12 @@ namespace HRMS_Application.Models
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.CompanyId).HasColumnName("Company_id");
+                entity.Property(e => e.CompanyId).HasColumnName("Company_Id");
 
-                entity.Property(e => e.Date).HasColumnType("date");
+                entity.Property(e => e.Date).HasColumnType("datetime");
 
-                entity.Property(e => e.Occasion)
-                    .HasMaxLength(255)
+                entity.Property(e => e.Occation)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Type)
@@ -613,28 +607,53 @@ namespace HRMS_Application.Models
                     .HasConstraintName("FK_Holiday_Company");
             });
 
+            modelBuilder.Entity<LeaveTracking>(entity =>
+            {
+                entity.ToTable("LeaveTracking");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Applied).HasColumnType("datetime");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.Enddate).HasColumnType("datetime");
+
+                entity.Property(e => e.Files)
+                    .IsUnicode(false)
+                    .HasColumnName("files");
+
+                entity.Property(e => e.Startdate).HasColumnType("datetime");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.LeaveTrackings)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_LeaveTracking_Employee_Credential");
+
+                entity.HasOne(d => d.LeaveType)
+                    .WithMany(p => p.LeaveTrackings)
+                    .HasForeignKey(d => d.LeaveTypeId)
+                    .HasConstraintName("FK_LeaveTracking_LeaveTypes");
+            });
+
             modelBuilder.Entity<LeaveType>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CompanyId).HasColumnName("Company_id");
 
-                entity.Property(e => e.EmployeecredentialId).HasColumnName("employeecredentialId");
-
-                entity.Property(e => e.LeaveType1)
+                entity.Property(e => e.Type)
                     .HasMaxLength(255)
-                    .IsUnicode(false)
-                    .HasColumnName("LeaveType");
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Company)
                     .WithMany(p => p.LeaveTypes)
                     .HasForeignKey(d => d.CompanyId)
-                    .HasConstraintName("FK__LeaveType__Compa__7B5B524B");
-
-                entity.HasOne(d => d.Employeecredential)
-                    .WithMany(p => p.LeaveTypes)
-                    .HasForeignKey(d => d.EmployeecredentialId)
-                    .HasConstraintName("FK_LeaveTypes_EmployeeCredentials");
+                    .HasConstraintName("FK_LeaveTypes_Company");
             });
 
             modelBuilder.Entity<Position>(entity =>
@@ -652,7 +671,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.RequestedCompany)
                     .WithMany(p => p.Positions)
                     .HasForeignKey(d => d.RequestedCompanyId)
-                    .HasConstraintName("FK__Position__Reques__7D439ABD");
+                    .HasConstraintName("FK__Position__Reques__01142BA1");
             });
 
             modelBuilder.Entity<RequestedCompanyForm>(entity =>
@@ -710,7 +729,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.UserRolesJs)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__User_Role__Emplo__7E37BEF6");
+                    .HasConstraintName("FK__User_Role__Emplo__02084FDA");
 
                 entity.HasOne(d => d.Roles)
                     .WithMany(p => p.UserRolesJs)
