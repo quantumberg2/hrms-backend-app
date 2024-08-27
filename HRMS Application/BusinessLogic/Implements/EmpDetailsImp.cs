@@ -103,6 +103,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             // Set the EmployeeCredentialId in EmployeeDetail
             employeeDetail.EmployeeCredentialId = employeeCredential.Id;
             employeeDetail.RequestCompanyId = companyId;
+            employeeDetail.DeptId = null;
+            employeeDetail.PositionId = null;
 
             _hrmsContext.EmployeeDetails.Add(employeeDetail);
             await _hrmsContext.SaveChangesAsync();
@@ -142,7 +144,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
 
 
-        public async Task<EmployeeDetail> UpdateEmployeeDetail(int id, int? depId, string? mobilenumber, string? fname, string? mname, string? lname, int? positionid, string? nickname, string? gender, int? employeecredentialId)
+        public async Task<EmployeeDetail> UpdateEmployeeDetail(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
         {
             DecodeToken();
             var result = _hrmsContext.EmployeeDetails.SingleOrDefault(p => p.Id == id);
@@ -154,14 +156,16 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             // Update only the fields that have non-null values passed to the method
             result.DeptId = depId ?? result.DeptId;
-            //result.MobileNumber = mobilenumber ?? result.MobileNumber;
             result.FirstName = fname ?? result.FirstName;
             result.MiddleName = mname ?? result.MiddleName;
             result.LastName = lname ?? result.LastName;
             result.PositionId = positionid ?? result.PositionId;
-            //result.NickName = nickname ?? result.NickName;
-            //result.Gender = gender ?? result.Gender;
-           result.EmployeeCredentialId = employeecredentialId ?? result.EmployeeCredentialId;
+            result.EmployeeCredentialId = employeecredentialId ?? result.EmployeeCredentialId;
+            result.Designation = Designation ?? result.Designation;
+            result.Email = Email ?? result.Email;
+            result.EmployeeNumber = EmployeeNumber ?? result.EmployeeNumber;
+            result.RequestCompanyId = requsetCompanyId ?? result.RequestCompanyId;
+             
             _hrmsContext.EmployeeDetails.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;
