@@ -8,7 +8,7 @@ namespace HRMS_Application.BusinessLogic.Implements
     public class FileStorageImp : IFileStorage
     {
         private readonly IAzureOperations _azureOperations;
-        private readonly ILocalStorageOperations _localStorageOperations;
+        private readonly ILocalStorageOperations _localStorageOperations;   
         private readonly IConfiguration _configuration;
         private readonly HRMSContext _hRMSContext;
 
@@ -47,7 +47,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             Models.File objnewFile = new Models.File
             {
                 ObjectId = files.ObjectId,
-                ObjectTypeId = files.ObjectTypeId,
+                ObjectName = files.ObjectName,
                 Tags = files.Tags,
                 IsActive = files.IsActive,
                 FileUrl = url
@@ -87,7 +87,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
 
             file.ObjectId = files?.ObjectId??file.ObjectId;
-            file.ObjectTypeId = files?.ObjectTypeId??file.ObjectTypeId;
+            file.ObjectName = files?.ObjectName ??file.ObjectName;
             file.Tags = files?.Tags??file.Tags;
             file.FileUrl = url;
 

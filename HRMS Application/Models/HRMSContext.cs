@@ -18,7 +18,6 @@ namespace HRMS_Application.Models
         {
         }
 
-
         public virtual DbSet<AccountDetail> AccountDetails { get; set; }
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
         public virtual DbSet<Aduit> Aduits { get; set; }
@@ -585,7 +584,7 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
 
-                entity.Property(e => e.ObjectTypeId)
+                entity.Property(e => e.ObjectName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 

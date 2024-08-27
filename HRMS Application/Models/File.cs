@@ -10,7 +10,7 @@ namespace HRMS_Application.Models
         public int Id { get; set; }
         public string FileUrl { get; set; }
         public int? ObjectId { get; set; }
-        public string ObjectTypeId { get; set; }
+        public string ObjectName { get; set; }
         public bool? IsActive { get; set; }
         public string Tags { get; set; }
     }

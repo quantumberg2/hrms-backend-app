@@ -37,7 +37,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPut]
         public string UpdateFile(int id,[FromForm] FileStorageDTO files)
-        {
+        {       
             _logger.LogInformation("Update file method started");
             var res = _fileStorage.UpdateFile(id, files);
             return res;
