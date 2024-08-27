@@ -39,7 +39,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public LeaveType GetLeaveTypeByType(string Type)
         {
             var result = (from row in _context.LeaveTypes
-                          where row.LeaveType1 == Type
+                          where row.Type == Type
                           select row).FirstOrDefault();
             return result;
         }

@@ -4,6 +4,7 @@ using HRMS_Application.Authorization;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -40,14 +41,46 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public async Task<string> InsertEmpDetails([FromBody] EmployeeDetail employeeDetail)
+        public async Task<IActionResult> InsertEmployee([FromBody] EmployeeDetail employeeDetail)
         {
-            _logger.LogInformation("Insert Empoyeedetails method started");
+            if (employeeDetail == null)
+            {
+                _logger.LogError("Employee detail is null.");
+                return BadRequest("Employee detail is null.");
+            }
 
-            var status = await _Empdetails.InsertEmployeeDetail(employeeDetail);         
-            return status;
+            // Extract the companyId from the JWT token
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                _logger.LogError("Authorization token is missing.");
+                return Unauthorized("Authorization token is missing.");
+            }
+
+            int companyId;
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+                companyId = int.Parse(jwtToken.Claims.First(claim => claim.Type == "CompanyId").Value);
+            }
+            catch
+            {
+                _logger.LogError("Invalid token or companyId claim.");
+                return Unauthorized("Invalid token or companyId claim.");
+            }
+
+            _logger.LogInformation("Inserting employee...");
+            var result = await _Empdetails.InsertEmployeeAsync(employeeDetail, companyId);
+
+            if (result.Contains("successfully"))
+            {
+                return Ok(result);
+            }
+
+            _logger.LogError(result);
+            return BadRequest(result);
         }
-
         [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]
         // [Route("UpdateAll")]

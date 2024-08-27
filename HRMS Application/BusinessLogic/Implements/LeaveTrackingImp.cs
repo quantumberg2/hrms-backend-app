@@ -4,15 +4,14 @@ using HRMS_Application.Models;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
-
-    public class EmployeeLeaveImp : IEmployeeLeave
+    public class LeaveTrackingImp : ILeaveTracking
     {
         private readonly HRMSContext _hrmsContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
         private List<string>? dToken;
         private int? _decodedToken;
-        public EmployeeLeaveImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        public LeaveTrackingImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
             _hrmsContext = hrmscontext;
             _httpContextAccessor = httpContextAccessor;
@@ -44,45 +43,56 @@ namespace HRMS_Application.BusinessLogic.Implements
                 }
             }
         }
-        public async Task<bool> DeleteEmployeeLeave(int id)
-        {
-            DecodeToken();
-            var result = (from row in _hrmsContext.EmployeeLeaves
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _hrmsContext.EmployeeLeaves.Remove(result);
-            await _hrmsContext.SaveChangesAsync(_decodedToken);
-            return true;
-        }
 
-        public List<EmployeeLeave> GetAllEmpLeave()
+        public async Task<IEnumerable<LeaveTracking>> GetAllAsync()
         {
-            var result = (from row in _hrmsContext.EmployeeLeaves
-                          select row).ToList();
+            var result = _hrmsContext.LeaveTrackings.ToList();
             return result;
         }
 
-        public EmployeeLeave GetByEmpLeavebyId(int id)
+        public async Task<LeaveTracking> GetByIdAsync(int id)
         {
-            var res = (from row in _hrmsContext.EmployeeLeaves
+            var res = (from row in _hrmsContext.LeaveTrackings
                        where row.Id == id
                        select row).FirstOrDefault();
             return res;
         }
 
-        public async Task<string> InsertEmployeeLeave(EmployeeLeave employeeLeave)
+        public async Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking)
         {
-            _hrmsContext.EmployeeLeaves.Add(employeeLeave);
+            _hrmsContext.LeaveTrackings.Add(leaveTracking);
             var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
+
             if (result != 0)
             {
-                return "new Employeeleave inserted successfully";
-
+                return leaveTracking; // Return the inserted LeaveTracking object
             }
             else
             {
-                return "failed to insert new data";
+                // Handle failure case, e.g., throw an exception or return null
+                throw new Exception("Failed to insert new employee leave");
             }
+        }
+
+
+        public async Task<LeaveTracking> UpdateAsync(LeaveTracking leaveTracking)
+        {
+            _hrmsContext.LeaveTrackings.Update(leaveTracking);
+            await _hrmsContext.SaveChangesAsync();
+            return leaveTracking;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var leaveTracking = await _hrmsContext.LeaveTrackings.FindAsync(id);
+            if (leaveTracking == null)
+            {
+                return false;
+            }
+
+            _hrmsContext.LeaveTrackings.Remove(leaveTracking);
+            await _hrmsContext.SaveChangesAsync();
+            return true;
         }
     }
 }
