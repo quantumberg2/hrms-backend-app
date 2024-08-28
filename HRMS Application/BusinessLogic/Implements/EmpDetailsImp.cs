@@ -79,6 +79,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<string> InsertEmployeeAsync(EmployeeDetail employeeDetail, int companyId)
         {
+            DecodeToken();
             // Check if the email already exists for the same company
             var existingEmail = await _hrmsContext.EmployeeCredentials
                 .SingleOrDefaultAsync(e => e.Email == employeeDetail.Email && e.RequestedCompanyId == companyId);
@@ -98,7 +99,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             };
 
             _hrmsContext.EmployeeCredentials.Add(employeeCredential);
-            await _hrmsContext.SaveChangesAsync();
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             // Set the EmployeeCredentialId in EmployeeDetail
             employeeDetail.EmployeeCredentialId = employeeCredential.Id;
@@ -107,7 +108,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             employeeDetail.PositionId = null;
 
             _hrmsContext.EmployeeDetails.Add(employeeDetail);
-            await _hrmsContext.SaveChangesAsync();
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             // Assign "User" role to the employee
             var userRole = new UserRolesJ
@@ -117,7 +118,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             };
 
             _hrmsContext.UserRolesJs.Add(userRole);
-            await _hrmsContext.SaveChangesAsync();
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             // Send email with username and password
             await _emailPasswordService.SendOtpEmailAsync(new Generatepassword

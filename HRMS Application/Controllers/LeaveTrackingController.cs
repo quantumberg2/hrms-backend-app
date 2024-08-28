@@ -3,6 +3,9 @@ using HRMS_Application.BusinessLogic.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using HRMS_Application.Authorization;
+using HRMS_Application.DTO;
 
 namespace HRMS_Application.Controllers
 {
@@ -36,15 +39,51 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] LeaveTracking leaveTracking)
+        [Authorize(new[] { "Admin", "User" })]
+        public async Task<IActionResult> CreateLeaveTracking([FromBody] LeaveTrackingDTO leaveTrackingDto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
-            }
+                // Extract the token from the Authorization header
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
-            var createdLeaveTracking = await _leaveTracking.CreateAsync(leaveTracking);
-            return CreatedAtAction(nameof(GetById), new { id = createdLeaveTracking.Id }, createdLeaveTracking);
+                // Decode the JWT token to extract claims
+                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+                var empCredentialIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+                if (empCredentialIdClaim == null)
+                {
+                    return Unauthorized("Employee credential ID not found in token.");
+                }
+
+                // Parse the empCredentialId from the claim
+                int empCredentialId = int.Parse(empCredentialIdClaim.Value);
+
+                // Map the DTO to the entity model
+                var leaveTracking = new LeaveTracking
+                {
+                    LeaveTypeId = leaveTrackingDto.LeaveTypeId,
+                    Startdate = leaveTrackingDto.StartDate,
+                    Enddate = leaveTrackingDto.EndDate,
+                    ReasonForLeave = leaveTrackingDto.ReasonForLeave,
+                    EmpCredentialId = leaveTrackingDto.EmpCredentialId,
+                    Applied = leaveTrackingDto.Applied,
+                    Status = "Pending",
+                    Files= leaveTrackingDto.Files,
+                    Session = leaveTrackingDto.Session,
+                    Contact = leaveTrackingDto.Contact,
+                    // Map other necessary fields here
+                };
+
+                // Call the service to create the leave tracking record
+                var result = await _leaveTracking.CreateAsync(leaveTracking, empCredentialId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
         }
 
         [HttpPut("{id}")]

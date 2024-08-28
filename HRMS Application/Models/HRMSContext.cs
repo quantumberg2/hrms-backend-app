@@ -619,6 +619,10 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Applied).HasColumnType("datetime");
 
+                entity.Property(e => e.Contact)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
 
                 entity.Property(e => e.Enddate).HasColumnType("datetime");
@@ -626,6 +630,14 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Files)
                     .IsUnicode(false)
                     .HasColumnName("files");
+
+                entity.Property(e => e.ReasonForLeave)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Session)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Startdate).HasColumnType("datetime");
 
@@ -637,6 +649,11 @@ namespace HRMS_Application.Models
                     .WithMany(p => p.LeaveTrackings)
                     .HasForeignKey(d => d.EmpCredentialId)
                     .HasConstraintName("FK_LeaveTracking_Employee_Credential");
+
+                entity.HasOne(d => d.LeaveType)
+                    .WithMany(p => p.LeaveTrackings)
+                    .HasForeignKey(d => d.LeaveTypeId)
+                    .HasConstraintName("FK_LeaveTracking_LeaveTypes");
             });
 
             modelBuilder.Entity<LeaveType>(entity =>

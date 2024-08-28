@@ -2,6 +2,7 @@
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
 
 namespace HRMS_Application.Controllers
 {
@@ -19,28 +20,31 @@ namespace HRMS_Application.Controllers
         [HttpGet]
         public List<LeaveType> GetAllLeavetype()
         {
-            _logger.LogInformation("get all Holiday details started");
+            _logger.LogInformation("get all leavetypes details started");
             var result = _leavetype.GetAllLeaveType();
             return result;
         }
         [HttpGet("GetById")]
         public LeaveType GetleavetypeById(int id)
         {
-            _logger.LogInformation("getbyid company details started");
+            _logger.LogInformation("getbyid leavetypes details started");
             var result = _leavetype.GetLeaveTypeById(id);
             return result;
         }
+       
         [HttpPost]
-        public string InsertLeavetypes([FromBody] LeaveType leaveType)
+        [Authorize(new[] { "Admin" })]
+
+        public async Task<string> InsertLeavetypes([FromBody] LeaveType leaveType)
         {
-            _logger.LogInformation("company details insert method started");
-            var result = _leavetype.InsertLeaveType(leaveType);
+            _logger.LogInformation("leavetypes details insert method started");
+            var result = await _leavetype.InsertLeaveType(leaveType);
             return result;
         }
         [HttpDelete]
         public bool DeleteLeavetype(int id)
         {
-            _logger.LogInformation("company details delete method started");
+            _logger.LogInformation("leavetypes details delete method started");
             var result = _leavetype.deleteLeaveType(id);
             return result;
         }

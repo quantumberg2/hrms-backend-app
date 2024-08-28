@@ -1,6 +1,7 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -33,11 +34,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                     if (userDetails != null)
                     {
                         _decodedToken = userDetails.Id;
-                        dToken = userDetails.UserRolesJs.Select(ur => ur.Roles.Name).ToList(); // Assuming you want role names
+                        dToken = userDetails.UserRolesJs.Select(ur => ur.Roles.Name).ToList();
                     }
                     else
                     {
-                        // Handle the case where the user is not found in the database
                         dToken = null;
                     }
                 }
@@ -58,40 +58,38 @@ namespace HRMS_Application.BusinessLogic.Implements
             return res;
         }
 
-        public async Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking)
+        public async Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId)
         {
-            _hrmsContext.LeaveTrackings.Add(leaveTracking);
-            var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
+            DecodeToken();
+            leaveTracking.EmpCredentialId = empCredentialId;
 
-            if (result != 0)
-            {
-                return leaveTracking; // Return the inserted LeaveTracking object
-            }
-            else
-            {
-                // Handle failure case, e.g., throw an exception or return null
-                throw new Exception("Failed to insert new employee leave");
-            }
+            // Add to the database
+            _hrmsContext.LeaveTrackings.Add(leaveTracking);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+            return leaveTracking;
         }
 
 
         public async Task<LeaveTracking> UpdateAsync(LeaveTracking leaveTracking)
         {
+            DecodeToken();
             _hrmsContext.LeaveTrackings.Update(leaveTracking);
-            await _hrmsContext.SaveChangesAsync();
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
             return leaveTracking;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
+            DecodeToken();
             var leaveTracking = await _hrmsContext.LeaveTrackings.FindAsync(id);
             if (leaveTracking == null)
             {
                 return false;
             }
 
-            _hrmsContext.LeaveTrackings.Remove(leaveTracking);
-            await _hrmsContext.SaveChangesAsync();
+             _hrmsContext.LeaveTrackings.Remove(leaveTracking);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
             return true;
         }
     }

@@ -86,7 +86,7 @@ namespace HRMS_Application.Controllers
         // [Route("UpdateAll")]
         public async Task<EmployeeDetail> UpdateEmployeeDetails(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
         {
-            _logger.LogInformation("Update Empoyeedetails method started");
+            _logger.LogInformation("Update Employeedetails method started");
             var status = await _Empdetails.UpdateEmployeeDetail(id,depId,fname,mname,lname,positionid,Designation,Email,employeecredentialId,EmployeeNumber,requsetCompanyId);
             return status;
         }
