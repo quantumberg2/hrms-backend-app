@@ -1,10 +1,12 @@
-﻿using HRMS_Application.Models;
+﻿using HRMS_Application.DTO;
+using HRMS_Application.Models;
 
 namespace HRMS_Application.BusinessLogic.Interface
 {
     public interface ILeaveTracking
     {
-     public Task<IEnumerable<LeaveTracking>> GetAllAsync();
+        public Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status);
+        public Task<IEnumerable<LeaveTracking>> GetAllAsync();
      public Task<LeaveTracking> GetByIdAsync(int id);
      public Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId);
      public Task<LeaveTracking> UpdateAsync(LeaveTracking leaveTracking);

@@ -1,5 +1,6 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
 using HRMS_Application.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -88,9 +89,30 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return false;
             }
 
-             _hrmsContext.LeaveTrackings.Remove(leaveTracking);
+            _hrmsContext.LeaveTrackings.Remove(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return true;
         }
+        public async Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status)
+        {
+            var leaves = await (from leave in _hrmsContext.LeaveTrackings
+                                join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
+                                join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                where leave.Status == status
+                                select new LeaveApprovalDTO
+                                {
+                                    EmployeeNumber = emp.EmployeeNumber,
+                                    Name = $"{emp.FirstName} {emp.LastName}",
+                                    LeaveType = leaveType.Type, // Assuming 'Name' is a property of LeaveType
+                                    StartDate = leave.Startdate ?? DateTime.MinValue,
+                                    EndDate = leave.Enddate ?? DateTime.MinValue,
+                                    NoofDays = (leave.Enddate.HasValue && leave.Startdate.HasValue)
+                                ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1 // Include both start and end dates
+                                : 0
+                                }).ToListAsync();
+
+            return leaves;
+        }
+
     }
 }

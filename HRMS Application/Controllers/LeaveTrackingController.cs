@@ -119,5 +119,17 @@ namespace HRMS_Application.Controllers
 
             return NoContent();
         }
+        [HttpGet("leaves/{status}")]
+        public async Task<ActionResult<List<LeaveApprovalDTO>>> GetLeavesByStatus(string status)
+        {
+            var leaves = await _leaveTracking.GetLeavesByStatusAsync(status);
+
+            if (leaves == null || !leaves.Any())
+            {
+                return NotFound("No leave records found with the given status.");
+            }
+
+            return Ok(leaves);
+        }
     }
 }
