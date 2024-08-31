@@ -6,6 +6,7 @@ namespace HRMS_Application.BusinessLogic.Interface
     {
         public List<AccountDetail> GetAllAccountdetails();
         public AccountDetail GetAccountDetailsById(int id);
+        public AccountDetail GetAccountDetailsByAccNumber(string accountNumber);
         public string InsertAccountDetails(AccountDetail accountDetail);
        // public AccountDetail UpdateAccountDetails(int id, string? name, int? requestedcompanyId);
         public bool deleteAccountDetails(int id);

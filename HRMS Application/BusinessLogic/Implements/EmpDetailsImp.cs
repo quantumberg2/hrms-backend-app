@@ -1,9 +1,7 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.BusinessLogics.Interface;
-using HRMS_Application.DTO;
 using HRMS_Application.Models;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
 
@@ -16,14 +14,11 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly IJwtUtils _jwtUtils;
         public List<string>? dToken;
         private int? _decodedToken;
-        private readonly IEmailPassword _emailPasswordService;
-
-        public EmpDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils,IEmailPassword emailPasswordService)
+        public EmpDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
             _hrmsContext = hrmsContext;
             _httpContextAccessor = httpContextAccessor;
             _jwtUtils = jwtUtils;
-            _emailPasswordService = emailPasswordService;
         }
         private void DecodeToken()
         {
@@ -77,67 +72,20 @@ namespace HRMS_Application.BusinessLogic.Implements
             return res;
         }
 
-        public async Task<string> InsertEmployeeAsync(EmployeeDetail employeeDetail, int companyId)
+        public async Task<string> InsertEmployeeDetail(EmployeeDetail employeeDetail)
         {
-            // Check if the email already exists for the same company
-            var existingEmail = await _hrmsContext.EmployeeCredentials
-                .SingleOrDefaultAsync(e => e.Email == employeeDetail.Email && e.RequestedCompanyId == companyId);
-
-            if (existingEmail != null)
+            DecodeToken();
+            await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
+            var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
+            if (result != 0)
             {
-                return $"Email '{employeeDetail.Email}' is already in use for company ID '{companyId}'.";
+                return "new Employee inserted successfully";
+
             }
-
-            var employeeCredential = new EmployeeCredential
+            else
             {
-                UserName = employeeDetail.Email, // Username is set to the email address
-                Email = employeeDetail.Email,
-                Password = GeneratePassword(),
-                DefaultPassword = true,
-                RequestedCompanyId = companyId
-            };
-
-            _hrmsContext.EmployeeCredentials.Add(employeeCredential);
-            await _hrmsContext.SaveChangesAsync();
-
-            // Set the EmployeeCredentialId in EmployeeDetail
-            employeeDetail.EmployeeCredentialId = employeeCredential.Id;
-            employeeDetail.RequestCompanyId = companyId;
-
-            _hrmsContext.EmployeeDetails.Add(employeeDetail);
-            await _hrmsContext.SaveChangesAsync();
-
-            // Assign "User" role to the employee
-            var userRole = new UserRolesJ
-            {
-                EmployeeCredentialId = employeeCredential.Id,
-                RolesId = 2 // Assuming "2" is the ID for the "User" role
-            };
-
-            _hrmsContext.UserRolesJs.Add(userRole);
-            await _hrmsContext.SaveChangesAsync();
-
-            // Send email with username and password
-            await _emailPasswordService.SendOtpEmailAsync(new Generatepassword
-            {
-                EmailAddress = employeeCredential.Email,
-                Password = employeeCredential.Password,
-                UserName = employeeCredential.UserName
-            });
-
-            return "Employee inserted successfully and credentials sent via email.";
-        }
-
-        private string GeneratePassword()
-        {
-            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-            var res = new char[8];
-            var rnd = new Random();
-            for (int i = 0; i < res.Length; i++)
-            {
-                res[i] = valid[rnd.Next(valid.Length)];
+                return "failed to insert new data";
             }
-            return new string(res);
         }
 
 

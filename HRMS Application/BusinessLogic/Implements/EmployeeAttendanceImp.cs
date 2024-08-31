@@ -1,4 +1,5 @@
-﻿using HRMS_Application.Authorization;
+﻿
+using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.BusinessLogics.Interface;
 using HRMS_Application.Models;
@@ -93,10 +94,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                 // Handle the case where the user with the specified id doesn't exist
                 return null;
             }
-           /* result.TimeIn = Timein;
-            result.TimeOut = Timeout;
-            result.Remarks = Remark;*/
-            result.EmpCredentialId= empcredentialId;
+            /* result.TimeIn = Timein;
+             result.TimeOut = Timeout;
+             result.Remarks = Remark;*/
+            result.EmpCredentialId = empcredentialId;
             _hrmsContext.Attendences.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;

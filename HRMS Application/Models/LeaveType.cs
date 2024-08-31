@@ -10,14 +10,17 @@ namespace HRMS_Application.Models
         public LeaveType()
         {
             EmployeeLeaveAllocations = new HashSet<EmployeeLeaveAllocation>();
+            LeaveTrackings = new HashSet<LeaveTracking>();
         }
 
         public int Id { get; set; }
         public string Type { get; set; }
         public int? Days { get; set; }
         public int? CompanyId { get; set; }
+        public int? Year { get; set; }
 
         public virtual RequestedCompanyForm Company { get; set; }
         public virtual ICollection<EmployeeLeaveAllocation> EmployeeLeaveAllocations { get; set; }
+        public virtual ICollection<LeaveTracking> LeaveTrackings { get; set; }
     }
 }

@@ -35,14 +35,21 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public CompanyDetail GetCompanyDetailstById(int id)
+        public List<CompanyDetail> GetCompanyDetailstById(int id)
         {
             var result = (from row in _context.CompanyDetails
                           where row.Id == id
-                          select row).SingleOrDefault();
+                          select row).ToList();
             return result;
         }
 
+        public List<CompanyDetail> GetCompanyDetailstByName(string companyName)
+        {
+            var info = (from row in _context.CompanyDetails
+                        where row.Name == companyName
+                        select row).ToList();
+            return info;
+        }
         public int InsertCompanyDetails(CompanyDetail companyDetail)
         {
             try

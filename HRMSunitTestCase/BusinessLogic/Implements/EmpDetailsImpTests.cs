@@ -83,11 +83,13 @@ namespace HRMSunitTestCase.BusinessLogic.Implements
             {
                 Id = 1454825110,
                 DeptId = 594645805,
+                MobileNumber = "TestValue899908576",
                 FirstName = "TestValue1732315602",
                 MiddleName = "TestValue229594932",
                 LastName = "TestValue174734760",
                 PositionId = 1297286957,
-                
+                NickName = "TestValue960965723",
+                Gender = "TestValue728403121",
                 EmployeeCredentialId = 25911671,
                 Dept = new Department
                 {
