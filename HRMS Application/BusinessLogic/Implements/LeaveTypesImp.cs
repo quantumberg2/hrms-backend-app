@@ -1,4 +1,5 @@
-﻿using HRMS_Application.BusinessLogic.Interface;
+﻿using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -6,13 +7,47 @@ namespace HRMS_Application.BusinessLogic.Implements
     public class LeaveTypesImp : ILeaveTypes
     {
         private HRMSContext _context;
-        public LeaveTypesImp(HRMSContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        public List<string>? dToken;
+        private int? _decodedToken;
+        public LeaveTypesImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+            
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e => e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur => ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
         }
 
         public bool deleteLeaveType(int id)
         {
+            DecodeToken();
             var result = (from row in _context.LeaveTypes
                           where row.Id == id
                           select row).SingleOrDefault();
@@ -44,10 +79,11 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public string InsertLeaveType(LeaveType leaveType)
+        public async Task <string> InsertLeaveType(LeaveType leaveType)
         {
-            _context.LeaveTypes.Add(leaveType);
-            var result = _context.SaveChanges();
+            DecodeToken();
+           await _context.LeaveTypes.AddAsync(leaveType);
+            var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
                 return "new leavetype inserted successfully";

@@ -45,13 +45,15 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public string InsertAddressInfot(AddressInfo address)
+        public string InsertAddressInfot(AddressInfo address, int empCredentialId)
         {
+            address.EmployeeCredentialId = empCredentialId;
+
             _context.AddressInfos.Add(address);
             var result = _context.SaveChanges();
             if (result != 0)
             {
-                return "new Department inserted successfully";
+                return "new Address inserted successfully";
 
             }
             else

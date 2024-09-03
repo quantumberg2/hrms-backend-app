@@ -11,7 +11,7 @@ namespace HRMS_Application.Models
         public int? EmpCredentialId { get; set; }
         public DateTime? Startdate { get; set; }
         public DateTime? Enddate { get; set; }
-        public DateTime? Applied { get; set; }
+        public DateTime? AppliedDate { get; set; }
         public string Status { get; set; }
         public string Files { get; set; }
         public int? LeaveTypeId { get; set; }

@@ -11,7 +11,7 @@ namespace HRMS_Application.Models
         public DateTime? Date { get; set; }
         public string Type { get; set; }
         public int? CompanyId { get; set; }
-        public string Occation { get; set; }
+        public string Occasion { get; set; }
 
         public virtual RequestedCompanyForm Company { get; set; }
     }

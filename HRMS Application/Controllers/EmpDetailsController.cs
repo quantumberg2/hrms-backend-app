@@ -51,10 +51,10 @@ namespace HRMS_Application.Controllers
         [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]
         // [Route("UpdateAll")]
-        public async Task<EmployeeDetail> UpdateEmpDetails(int id, int? depId, string? mobilenumber, string? fname, string? mname, string? lname, int? positionid, string? nickname, string? gender, int? employeecredentialId)
+        public async Task<EmployeeDetail> UpdateEmployeeDetails(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
         {
-            _logger.LogInformation("Update Empoyeedetails method started");
-            var status = await _Empdetails.UpdateEmployeeDetail(id, depId, mobilenumber, fname, mname, lname,positionid, nickname, gender, employeecredentialId);
+            _logger.LogInformation("Update Employeedetails method started");
+            var status = await _Empdetails.UpdateEmployeeDetail(id,depId,fname,mname,lname,positionid,Designation,Email,employeecredentialId,EmployeeNumber,requsetCompanyId);
             return status;
         }
 
@@ -68,3 +68,4 @@ namespace HRMS_Application.Controllers
         }
     }
 }
+/**/

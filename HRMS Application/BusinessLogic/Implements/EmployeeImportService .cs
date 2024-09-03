@@ -109,7 +109,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                     MiddleName = employeeDto.MiddleName,
                     LastName = employeeDto.LastName,
                     Email = employeeDto.Email,
-                    Designation = employeeDto.Designation,
                     EmployeeNumber = employeeDto.EmployeeNumber,
                     PositionId = employeeDto.PositionId,
                     RequestCompanyId = companyId 
