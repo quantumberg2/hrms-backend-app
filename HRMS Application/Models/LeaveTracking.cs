@@ -11,13 +11,14 @@ namespace HRMS_Application.Models
         public int? EmpCredentialId { get; set; }
         public DateTime? Startdate { get; set; }
         public DateTime? Enddate { get; set; }
-        public DateTime? Applied { get; set; }
+        public DateTime? AppliedDate { get; set; }
         public string Status { get; set; }
         public string Files { get; set; }
         public int? LeaveTypeId { get; set; }
         public string Session { get; set; }
         public string Contact { get; set; }
         public string ReasonForLeave { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual EmployeeCredential EmpCredential { get; set; }
         public virtual LeaveType LeaveType { get; set; }

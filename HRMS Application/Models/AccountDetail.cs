@@ -22,6 +22,7 @@ namespace HRMS_Application.Models
         public string PfSchema { get; set; }
         public DateTime? PfJoiningDate { get; set; }
         public bool? EligibleForPf { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual EmployeeCredential EmployeeCredential { get; set; }
     }

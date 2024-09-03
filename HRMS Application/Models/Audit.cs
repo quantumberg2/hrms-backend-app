@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace HRMS_Application.Models
 {
-    public partial class Aduit
+    public partial class Audit
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
@@ -16,5 +16,6 @@ namespace HRMS_Application.Models
         public string NewValues { get; set; }
         public string AffectedColumns { get; set; }
         public string PrimaryKey { get; set; }
+        public short? IsActive { get; set; }
     }
 }

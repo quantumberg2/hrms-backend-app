@@ -10,6 +10,7 @@ namespace HRMS_Application.Models
         public RequestedCompanyForm()
         {
             CompanyDetails = new HashSet<CompanyDetail>();
+            Departments = new HashSet<Department>();
             EmployeeCredentials = new HashSet<EmployeeCredential>();
             Holidays = new HashSet<Holiday>();
             LeaveTypes = new HashSet<LeaveType>();
@@ -24,9 +25,10 @@ namespace HRMS_Application.Models
         public DateTime? InsertedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string Email { get; set; }
+        public short? IsActive { get; set; }
 
-        public virtual Department Department { get; set; }
         public virtual ICollection<CompanyDetail> CompanyDetails { get; set; }
+        public virtual ICollection<Department> Departments { get; set; }
         public virtual ICollection<EmployeeCredential> EmployeeCredentials { get; set; }
         public virtual ICollection<Holiday> Holidays { get; set; }
         public virtual ICollection<LeaveType> LeaveTypes { get; set; }

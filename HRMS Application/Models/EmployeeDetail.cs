@@ -14,10 +14,10 @@ namespace HRMS_Application.Models
         public string LastName { get; set; }
         public int? PositionId { get; set; }
         public int? EmployeeCredentialId { get; set; }
-        public string Designation { get; set; }
         public string EmployeeNumber { get; set; }
         public string Email { get; set; }
         public int? RequestCompanyId { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual Department Dept { get; set; }
         public virtual EmployeeCredential EmployeeCredential { get; set; }

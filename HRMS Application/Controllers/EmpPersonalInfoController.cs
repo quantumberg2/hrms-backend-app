@@ -28,7 +28,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost]
         [Authorize(new[] {"Admin","User"})]
-        public IActionResult InsertEmpPersonalInfo(EmpPersonalInfoDTO empPersonalInfo)
+        public IActionResult InsertEmpPersonalInfo(EmpPersonalInfoDTO empPersonalInfo, int empCredentialId)
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
@@ -42,11 +42,13 @@ namespace HRMS_Application.Controllers
             }
 
             // Parse the empCredentialId from the claim
-            int empCredentialId = int.Parse(empCredentialIdClaim.Value);
+            empCredentialId = int.Parse(empCredentialIdClaim.Value);
             _logger.LogInformation("Insert Employee personal info method started");
+            var res = _empPersonalInfo.InsertEmpPersonalInfo(empPersonalInfo, empCredentialId);
+            return Ok(res);
 
             // Create EmpPersonalInfo object from DTO
-            var employeepersonal = new EmpPersonalInfo
+         /*   var employeepersonal = new EmpPersonalInfo
             {
                 BloodGroup = empPersonalInfo.BloodGroup,
                 EmployeeCredentialId = empCredentialId,
@@ -66,8 +68,8 @@ namespace HRMS_Application.Controllers
             var result = _empPersonalInfo.InsertEmpPersonalInfo(employeepersonal, empCredentialId);
 
             // Retrieve the EmployeeDetail record to check if it exists
-           /* var employeeDetail = _context.EmployeeDetails
-                                        .FirstOrDefault(detail => detail.EmployeeCredentialId == empCredentialId);*/
+           *//* var employeeDetail = _context.EmployeeDetails
+                                        .FirstOrDefault(detail => detail.EmployeeCredentialId == empCredentialId);*//*
            var employeeDetail = ( from row in _context.EmployeeDetails
                                   where row.EmployeeCredentialId == empCredentialId
                                   select row).FirstOrDefault();
@@ -93,7 +95,7 @@ namespace HRMS_Application.Controllers
             }
 
             _logger.LogError("Failed to insert employee details. EmployeeDetail record not found.");
-            return BadRequest("Failed to insert employee details.");
+            return BadRequest("Failed to insert employee details.");*/
         }
 
 

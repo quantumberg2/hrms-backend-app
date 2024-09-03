@@ -26,6 +26,7 @@ namespace HRMS_Application.Models
         public string LinkedIn { get; set; }
         public string CompanyLogo { get; set; }
         public int? RequestedCompanyId { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
     }

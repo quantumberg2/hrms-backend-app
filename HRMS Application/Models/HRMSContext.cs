@@ -20,7 +20,9 @@ namespace HRMS_Application.Models
 
         public virtual DbSet<AccountDetail> AccountDetails { get; set; }
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
-        public virtual DbSet<Aduit> Aduits { get; set; }
+        public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<Audit> Audits { get; set; }
+
         public virtual async Task<int> SaveChangesAsync(int? userId = null)
         {
             OnBeforeSaveChanges(userId);
@@ -34,7 +36,7 @@ namespace HRMS_Application.Models
             var auditEntries = new List<AuditEntry>();
             foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is Aduit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                if (entry.Entity is Audit || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                     continue;
 
                 var auditEntry = new AuditEntry(entry);
@@ -74,7 +76,6 @@ namespace HRMS_Application.Models
                 }
             }
         }
-        public virtual DbSet<Attendence> Attendences { get; set; }
         public virtual DbSet<CompanyDetail> CompanyDetails { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<DeviceTable> DeviceTables { get; set; }
@@ -137,6 +138,8 @@ namespace HRMS_Application.Models
                     .IsUnicode(false)
                     .HasColumnName("IFSC_Code");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.PfJoiningDate)
                     .HasColumnType("date")
                     .HasColumnName("PF_joiningDate");
@@ -186,6 +189,8 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.PinCode)
                     .HasMaxLength(10)
                     .IsUnicode(false)
@@ -201,9 +206,29 @@ namespace HRMS_Application.Models
                     .HasConstraintName("FK__AddressIn__Emplo__6FE99F9F");
             });
 
-            modelBuilder.Entity<Aduit>(entity =>
+            modelBuilder.Entity<Attendance>(entity =>
             {
-                entity.ToTable("Aduit");
+                entity.ToTable("Attendance");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.NumberOfHours).HasColumnName("Number_of_hours");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.EmpCredential)
+                    .WithMany(p => p.Attendances)
+                    .HasForeignKey(d => d.EmpCredentialId)
+                    .HasConstraintName("FK_Attendence_Employee_Credential");
+            });
+
+            modelBuilder.Entity<Audit>(entity =>
+            {
+                entity.ToTable("Audit");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -212,6 +237,8 @@ namespace HRMS_Application.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.DateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.NewValues)
                     .IsUnicode(false)
@@ -232,26 +259,6 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Type)
                     .HasMaxLength(200)
                     .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<Attendence>(entity =>
-            {
-                entity.ToTable("Attendence");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
-
-                entity.Property(e => e.NumberOfHours).HasColumnName("Number_of_hours");
-
-                entity.Property(e => e.Status)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.EmpCredential)
-                    .WithMany(p => p.Attendences)
-                    .HasForeignKey(d => d.EmpCredentialId)
-                    .HasConstraintName("FK_Attendence_Employee_Credential");
             });
 
             modelBuilder.Entity<CompanyDetail>(entity =>
@@ -289,6 +296,8 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Industry)
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.LinkedIn)
                     .HasMaxLength(255)
@@ -342,10 +351,9 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Department");
 
-                entity.HasIndex(e => e.RequestedCompanyId, "UQ__Departme__E20112F6711C14BA")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(255)
@@ -354,8 +362,8 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.RequestedCompanyId).HasColumnName("Requested_Company_id");
 
                 entity.HasOne(d => d.RequestedCompany)
-                    .WithOne(p => p.Department)
-                    .HasForeignKey<Department>(d => d.RequestedCompanyId)
+                    .WithMany(p => p.Departments)
+                    .HasForeignKey(d => d.RequestedCompanyId)
                     .HasConstraintName("FK__Departmen__Reque__72C60C4A");
             });
 
@@ -371,6 +379,8 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.LateIn).HasColumnName("Late_In");
 
                 entity.Property(e => e.Name)
@@ -379,6 +389,10 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Remark)
                     .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.EmpCredential)
@@ -420,6 +434,8 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.MaritalStatus)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -452,6 +468,8 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Insurance).HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.Loan).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.SalaryRange)
@@ -481,6 +499,8 @@ namespace HRMS_Application.Models
                     .IsUnicode(false)
                     .HasColumnName("Generate_OTP");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.OtpExpiration)
                     .HasColumnType("datetime")
                     .HasColumnName("Otp_Expiration");
@@ -503,11 +523,10 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Employee_Detail");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635989E9F235D")
+                    .IsUnique();
 
-                entity.Property(e => e.Designation)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(100)
@@ -522,6 +541,8 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(255)
                     .IsUnicode(false);
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.LastName)
                     .HasMaxLength(255)
@@ -556,6 +577,8 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.LeaveType).HasColumnName("Leave_Type");
 
@@ -595,7 +618,9 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Date).HasColumnType("datetime");
 
-                entity.Property(e => e.Occation)
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
+                entity.Property(e => e.Occasion)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
@@ -615,7 +640,9 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Applied).HasColumnType("datetime");
+                entity.Property(e => e.AppliedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("Applied_Date");
 
                 entity.Property(e => e.Contact)
                     .HasMaxLength(50)
@@ -628,6 +655,8 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Files)
                     .IsUnicode(false)
                     .HasColumnName("files");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.ReasonForLeave)
                     .HasMaxLength(255)
@@ -660,6 +689,8 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.CompanyId).HasColumnName("Company_id");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.Type)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -675,6 +706,8 @@ namespace HRMS_Application.Models
                 entity.ToTable("Position");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(255)
@@ -705,6 +738,8 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -725,6 +760,8 @@ namespace HRMS_Application.Models
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -737,6 +774,8 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.RolesId).HasColumnName("Roles_Id");
 
@@ -751,6 +790,7 @@ namespace HRMS_Application.Models
                     .HasConstraintName("FK_Roles");
             });
 
+            OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingPartial(modelBuilder);
         }
 
