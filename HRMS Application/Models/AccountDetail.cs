@@ -7,11 +7,6 @@ namespace HRMS_Application.Models
 {
     public partial class AccountDetail
     {
-        public AccountDetail()
-        {
-            EmpPersonalInfos = new HashSet<EmpPersonalInfo>();
-        }
-
         public int Id { get; set; }
         public int? EmployeeCredentialId { get; set; }
         public string AccountNumber { get; set; }
@@ -29,6 +24,5 @@ namespace HRMS_Application.Models
         public bool? EligibleForPf { get; set; }
 
         public virtual EmployeeCredential EmployeeCredential { get; set; }
-        public virtual ICollection<EmpPersonalInfo> EmpPersonalInfos { get; set; }
     }
 }

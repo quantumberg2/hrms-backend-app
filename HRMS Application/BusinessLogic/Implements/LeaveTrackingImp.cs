@@ -113,6 +113,79 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return leaves;
         }
+        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
+        {
+            // Fetch all leave details for the employee
+            var allLeaveDetails = await _hrmsContext.LeaveTrackings
+                .Where(l => l.EmpCredentialId == employeeCredentialId)
+                .ToListAsync();
+
+            // Calculate global counts
+            var totalApprovedCount = allLeaveDetails.Count(l => l.Status == "Approved");
+            var totalPendingCount = allLeaveDetails.Count(l => l.Status == "Pending");
+            var totalRejectedCount = allLeaveDetails.Count(l => l.Status == "Rejected");
+
+            // Fetch leave allocations
+            var leaveAllocations = await _hrmsContext.EmployeeLeaveAllocations
+                .Where(e => e.EmpCredentialId == employeeCredentialId)
+                .ToListAsync();
+
+            // Prepare the summary for individual leave types
+            var leaveSummaries = leaveAllocations.Select(allocation => new LeaveSummaryDTO
+            {
+                LeaveType = _hrmsContext.LeaveTypes.FirstOrDefault(lt => lt.Id == allocation.LeaveType)?.Type ?? "Unknown",
+                TotalAllocatedLeaves = allocation.NumberOfLeaves ?? 0,
+                ApprovedLeaves = allLeaveDetails
+                    .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Approved")
+                    .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
+                            ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                            : 0),
+                PendingLeaves = allLeaveDetails
+                    .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Pending")
+                    .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
+                            ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                            : 0),
+                RejectedLeaves = allLeaveDetails
+                    .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Rejected")
+                    .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
+                            ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                            : 0),
+                RemainingLeaves = allocation.NumberOfLeaves.HasValue
+                    ? allocation.NumberOfLeaves.Value - allLeaveDetails
+                        .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Approved")
+                        .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
+                                ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                                : 0)
+                    : 0,
+                ApprovedCount = totalApprovedCount,
+                PendingCount = totalPendingCount,
+                RejectedCount = totalRejectedCount
+            }).ToList();
+
+            // Calculate the aggregated totals for all leave types
+            var totalAllocatedLeaves = leaveSummaries.Sum(x => x.TotalAllocatedLeaves);
+            var totalApprovedLeaves = leaveSummaries.Sum(x => x.ApprovedLeaves);
+            var totalPendingLeaves = leaveSummaries.Sum(x => x.PendingLeaves);
+            var totalRejectedLeaves = leaveSummaries.Sum(x => x.RejectedLeaves);
+            var totalRemainingLeaves = leaveSummaries.Sum(x => x.RemainingLeaves);
+
+            // Return aggregated summary along with individual leave type details
+            return new LeaveSummaryDTO
+            {
+                LeaveType = "All Leave Types", // Label for aggregated summary
+                TotalAllocatedLeaves = totalAllocatedLeaves,
+                ApprovedLeaves = totalApprovedLeaves,
+                PendingLeaves = totalPendingLeaves,
+                RejectedLeaves = totalRejectedLeaves,
+                RemainingLeaves = totalRemainingLeaves,
+                ApprovedCount = totalApprovedCount,
+                PendingCount = totalPendingCount,
+                RejectedCount = totalRejectedCount,
+                LeaveSummaries = leaveSummaries // Include individual summaries
+            };
+        }
+
+
 
     }
 }

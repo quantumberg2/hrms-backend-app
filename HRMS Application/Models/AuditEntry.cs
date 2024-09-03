@@ -18,9 +18,9 @@ namespace HRMS_Application.Models
         public Dictionary<string, object> NewValues { get; } = new Dictionary<string, object>();
         public AuditType AuditType { get; set; }
         public List<string> ChangedColumns { get; } = new List<string>();
-        public Aduit ToAudit()
+        public Audit ToAudit()
         {
-            var audit = new Aduit();
+            var audit = new Audit();
             audit.UserId = UserId;
             audit.Type = AuditType.ToString();
             audit.TableName = TableName;

@@ -162,7 +162,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             result.LastName = lname ?? result.LastName;
             result.PositionId = positionid ?? result.PositionId;
             result.EmployeeCredentialId = employeecredentialId ?? result.EmployeeCredentialId;
-            result.Designation = Designation ?? result.Designation;
             result.Email = Email ?? result.Email;
             result.EmployeeNumber = EmployeeNumber ?? result.EmployeeNumber;
             result.RequestCompanyId = requsetCompanyId ?? result.RequestCompanyId;

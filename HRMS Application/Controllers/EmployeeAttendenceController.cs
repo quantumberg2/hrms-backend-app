@@ -20,7 +20,7 @@ namespace HRMS_Application.Controllers
         }
         [HttpGet]
         [Authorize(new[] { "Admin", "Developer" })]
-        public List<Attendence> GetAllEmpDetails()
+        public List<Attendance> GetAllEmpDetails()
         {
             _logger.LogInformation("Get all department method started");
             var dept = _employeeAttendence.GetAllEmpAttendence();
@@ -28,7 +28,7 @@ namespace HRMS_Application.Controllers
         }
         [HttpGet("GetById")]
         [AllowAnonymous]
-        public Attendence GetById(int id)
+        public Attendance GetById(int id)
         {
 
             var status = _employeeAttendence.GetById(id);
@@ -37,7 +37,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public async Task<string> InsertEmpAttendence([FromBody] Attendence employeeAttendance)
+        public async Task<string> InsertEmpAttendence([FromBody] Attendance employeeAttendance)
         {
             _logger.LogInformation("Insert Empoyeedetails method started");
 
@@ -48,7 +48,7 @@ namespace HRMS_Application.Controllers
         [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]
         // [Route("UpdateAll")]
-        public async Task<Attendence> UpdateEmpDetails(int id, DateTime? Timein, DateTime? Timeout, string? Remark, int empcredentialId)
+        public async Task<Attendance> UpdateEmpDetails(int id, DateTime? Timein, DateTime? Timeout, string? Remark, int empcredentialId)
         {
             _logger.LogInformation("Update Empoyeedetails method started");
             var status = await _employeeAttendence.UpdateEmployeeAttendence(id, Timein, Timeout, Remark, empcredentialId);

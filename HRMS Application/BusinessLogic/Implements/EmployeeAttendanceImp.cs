@@ -47,33 +47,33 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<bool> DeleteEmployeeAttendance(int id)
         {
             DecodeToken();
-            var result = (from row in _hrmsContext.Attendences
+            var result = (from row in _hrmsContext.Attendances
                           where row.Id == id
                           select row).SingleOrDefault();
-            _hrmsContext.Attendences.Remove(result);
+            _hrmsContext.Attendances.Remove(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return true;
         }
 
-        public List<Attendence> GetAllEmpAttendence()
+        public List<Attendance> GetAllEmpAttendence()
         {
-            var result = (from row in _hrmsContext.Attendences
+            var result = (from row in _hrmsContext.Attendances
                           select row).ToList();
             return result;
         }
 
-        public Attendence GetById(int id)
+        public Attendance GetById(int id)
         {
-            var res = (from row in _hrmsContext.Attendences
+            var res = (from row in _hrmsContext.Attendances
                        where row.Id == id
                        select row).FirstOrDefault();
             return res;
         }
 
-        public async Task<string> InsertEmployeeAttendence(Attendence employeeAttendence)
+        public async Task<string> InsertEmployeeAttendence(Attendance employeeAttendence)
         {
             DecodeToken();
-            _hrmsContext.Attendences.Add(employeeAttendence);
+            _hrmsContext.Attendances.Add(employeeAttendence);
             var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
@@ -85,9 +85,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "failed to insert new data";
             }
         }
-        public async Task<Attendence> UpdateEmployeeAttendence(int id, DateTime? Timein, DateTime? Timeout, string? Remark, int empcredentialId)
+        public async Task<Attendance> UpdateEmployeeAttendence(int id, DateTime? Timein, DateTime? Timeout, string? Remark, int empcredentialId)
         {
-            var result = _hrmsContext.Attendences.SingleOrDefault(p => p.Id == id);
+            var result = _hrmsContext.Attendances.SingleOrDefault(p => p.Id == id);
             if (result == null)
             {
                 // Handle the case where the user with the specified id doesn't exist
@@ -97,7 +97,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             result.TimeOut = Timeout;
             result.Remarks = Remark;*/
             result.EmpCredentialId= empcredentialId;
-            _hrmsContext.Attendences.Update(result);
+            _hrmsContext.Attendances.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;
         }

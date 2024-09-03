@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace HRMS_Application.Models
 {
-    public partial class Attendence
+    public partial class Attendance
     {
         public int Id { get; set; }
         public int? EmpCredentialId { get; set; }

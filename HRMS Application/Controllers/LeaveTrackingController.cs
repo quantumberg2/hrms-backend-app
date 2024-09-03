@@ -67,7 +67,7 @@ namespace HRMS_Application.Controllers
                     Enddate = leaveTrackingDto.EndDate,
                     ReasonForLeave = leaveTrackingDto.ReasonForLeave,
                     EmpCredentialId = leaveTrackingDto.EmpCredentialId,
-                    Applied = leaveTrackingDto.Applied,
+                    AppliedDate = leaveTrackingDto.Applied,
                     Status = "Pending",
                     Files= leaveTrackingDto.Files,
                     Session = leaveTrackingDto.Session,
@@ -130,6 +130,31 @@ namespace HRMS_Application.Controllers
             }
 
             return Ok(leaves);
+        }
+
+        [HttpGet("summary")]
+        [Authorize(new[] { "Admin", "User" })]
+
+        public async Task<IActionResult> GetLeaveSummary()
+        {
+            try
+            {
+                // Extract employee credential ID from the JWT token
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+                var employeeCredentialId = int.Parse(jwtToken.Claims.First(c => c.Type == "UserId").Value); // Replace 'employee_id' with the actual claim name
+
+                // Assume leave type is passed as a query parameter
+               // int leaveTypeId = int.Parse(Request.Query["leaveTypeId"]);
+
+                var leaveSummary = await _leaveTracking.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
+
+                return Ok(leaveSummary);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

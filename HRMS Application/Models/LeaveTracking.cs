@@ -2,8 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 
 namespace HRMS_Application.Models
 {
@@ -13,7 +11,7 @@ namespace HRMS_Application.Models
         public int? EmpCredentialId { get; set; }
         public DateTime? Startdate { get; set; }
         public DateTime? Enddate { get; set; }
-        public DateTime? Applied { get; set; }
+        public DateTime? AppliedDate { get; set; }
         public string Status { get; set; }
         public string Files { get; set; }
         public int? LeaveTypeId { get; set; }
@@ -21,10 +19,7 @@ namespace HRMS_Application.Models
         public string Contact { get; set; }
         public string ReasonForLeave { get; set; }
 
-
-        [JsonIgnore] // Ignore the circular reference
         public virtual EmployeeCredential EmpCredential { get; set; }
-        [JsonIgnore] // Ignore the circular reference
         public virtual LeaveType LeaveType { get; set; }
     }
 }
