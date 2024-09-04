@@ -93,6 +93,22 @@
       {
          "Name": "[dbo].[User_Roles_J]",
          "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AttendanceStatusUpdate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateAttendance]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateAttendanceStatu]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[UpdateAttendanceStatus]",
+         "ObjectType": 1
       }
    ],
    "UiHint": "desktop-i5h6434\\sqlexpress.HRMS.dbo",
