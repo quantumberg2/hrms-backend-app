@@ -2,6 +2,7 @@
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.DTO;
 using HRMS_Application.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -11,7 +12,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly HRMSContext _hrmsContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
-        public  List<string>? dToken;
+        private List<string>? dToken;
         private int? _decodedToken;
         public LeaveTrackingImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
@@ -47,13 +48,13 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<IEnumerable<LeaveTracking>> GetAllAsync()
         {
-            var result = await _hrmsContext.LeaveTrackings.ToListAsync();
+            var result = _hrmsContext.LeaveTrackings.ToList();
             return result;
         }
 
         public async Task<LeaveTracking> GetByIdAsync(int id)
         {
-            var res =  (from row in _hrmsContext.LeaveTrackings
+            var res = (from row in _hrmsContext.LeaveTrackings
                        where row.Id == id
                        select row).FirstOrDefault();
             return res;
@@ -65,7 +66,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             leaveTracking.EmpCredentialId = empCredentialId;
 
             // Add to the database
-            await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+            _hrmsContext.LeaveTrackings.Add(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             return leaveTracking;
@@ -74,9 +75,27 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<LeaveTracking> UpdateAsync(LeaveTracking leaveTracking)
         {
-            DecodeToken();
+             DecodeToken();
+
             _hrmsContext.LeaveTrackings.Update(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return leaveTracking;
+        }
+
+
+
+        public async Task<LeaveTracking> UpdateLeaveAsync(int empCredId, string newStatus)
+        {
+            var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
+                                       where row.EmpCredentialId == empCredId
+                                       select row).FirstOrDefaultAsync();
+
+            if (leaveTracking != null)
+            {
+                leaveTracking.Status = newStatus;
+
+                await _hrmsContext.SaveChangesAsync();
+            }
             return leaveTracking;
         }
 
@@ -184,6 +203,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 LeaveSummaries = leaveSummaries // Include individual summaries
             };
         }
+
+
 
     }
 }

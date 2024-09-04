@@ -7,6 +7,7 @@ using HRMS_Application.Helpers;
 using HRMS_Application.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +46,7 @@ builder.Services.AddScoped<IAccountDetails, AccountDetailsImp>();
 builder.Services.AddScoped<IAddressInfo,AddressImp>();
 builder.Services.AddScoped<IEmployeeSalary, EmployeeSalaryImp>();
 builder.Services.AddScoped<IEmployeeAttendance, EmployeeAttendanceImp>();
-builder.Services.AddScoped<EmpLeaveAllocationImp, EmpLeaveAllocationImp>();
+builder.Services.AddScoped<IEmpLeaveAllocation, EmpLeaveAllocationImp>();
 builder.Services.AddScoped<IHoliday, HolidayImp>();
 builder.Services.AddScoped<ILeaveTypes, LeaveTypesImp>();
 builder.Services.AddScoped<IEmpDetails, EmpDetailsImp>();
@@ -59,6 +60,7 @@ builder.Services.AddScoped<IAzureOperations, AzureOperationsImp>();
 builder.Services.AddScoped<ILocalStorageOperations, LocalStorageOperationsImp>();
 builder.Services.AddScoped<IDeviceOperations, DeviceOperationsImp>();
 builder.Services.AddScoped<IEmpPersonalInfo , EmpPersonalInfoImp>();
+builder.Services.AddScoped<ILeaveTracking, LeaveTrackingImp>();
 
 builder.Services.AddScoped(_ =>
 {

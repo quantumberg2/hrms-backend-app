@@ -6,6 +6,7 @@ using HRMS_Application.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.Controllers
 {
@@ -15,11 +16,13 @@ namespace HRMS_Application.Controllers
     {
         private readonly IEmpLeaveAllocation _employeeLeaveService;
         private readonly ILogger<EmpLeaveAllocationController> _logger;
+        private readonly HRMSContext _context;
 
-        public EmpLeaveAllocationController(IEmpLeaveAllocation employeeLeaveService, ILogger<EmpLeaveAllocationController> logger)
+        public EmpLeaveAllocationController(IEmpLeaveAllocation employeeLeaveService, ILogger<EmpLeaveAllocationController> logger, HRMSContext context)
         {
             _employeeLeaveService = employeeLeaveService;
             _logger = logger;
+            _context = context;
         }
 
         [HttpGet]
@@ -29,6 +32,45 @@ namespace HRMS_Application.Controllers
             _logger.LogInformation("Get all employee leave method started");
             var dept = _employeeLeaveService.GetAllEmpLeave();
             return Ok(dept);
+        }
+
+        [HttpGet("CalculateLeaves/{empCredentialId}")]
+        public IActionResult CalculateLeaves(int empCredentialId)
+        {
+            var leaveAllocations = _context.EmployeeLeaveAllocations
+                .Where(e => e.EmpCredentialId == empCredentialId)
+                .ToList();
+
+            if (leaveAllocations == null || !leaveAllocations.Any())
+            {
+                return NotFound("Leave allocation not found for the specified employee and year.");
+            }
+
+            var leaveTypes = _context.LeaveTypes.ToList();
+            var leaveTrackings = _context.LeaveTrackings
+                .Where(l => l.EmpCredentialId == empCredentialId )
+                .ToList();
+
+            var result = leaveAllocations.Select(leaveAllocation =>
+            {
+                var totalLeaves = leaveTypes.FirstOrDefault(lt => lt.Id == leaveAllocation.LeaveType)?.Days ?? 0;
+                var usedLeaves = leaveTrackings
+                    .Where(lt => lt.LeaveTypeId == leaveAllocation.LeaveType)
+                    .Sum(lt => EF.Functions.DateDiffDay(lt.Startdate.Value, lt.Enddate.Value) + 1);
+
+                leaveAllocation.NumberOfLeaves = totalLeaves;
+                leaveAllocation.RemainingLeave = totalLeaves - usedLeaves;
+
+                return new
+                {
+                    LeaveType = leaveAllocation.LeaveTypeNavigation.Type,  // Corrected to use 'Type'
+                    TotalLeaves = totalLeaves,
+                    UsedLeaves = usedLeaves,
+                    RemainingLeaves = leaveAllocation.RemainingLeave
+                };
+            }).ToList();
+
+            return Ok(result);
         }
 
         [HttpGet("GetById/{id}")]

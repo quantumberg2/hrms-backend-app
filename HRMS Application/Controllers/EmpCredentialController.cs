@@ -52,8 +52,8 @@ namespace HRMS_Application.Controllers
             _logger.LogInformation("Insert Employee Credential method started");
             var result = await _empCredential.InsertEmployeeCredential(employeeCredential);
                 return result;
-
         }
+
         [HttpPut]
         [Authorize(new[] { "Admin" })]
         public async Task<EmployeeCredential> updateemployeecredential(int id, string? username, string? password, short? status, int? requestedCompanyId)
@@ -62,6 +62,7 @@ namespace HRMS_Application.Controllers
             var result = await _empCredential.UpdateEmployeeCredentials(id, username,password,status,requestedCompanyId);
             return result;
         }
+
         [HttpPost("update-password")]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
         {
