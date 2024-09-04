@@ -119,6 +119,7 @@ namespace HRMS_Application.Controllers
 
             return NoContent();
         }
+
         [HttpGet("leaves/{status}")]
         public async Task<ActionResult<List<LeaveApprovalDTO>>> GetLeavesByStatus(string status)
         {
