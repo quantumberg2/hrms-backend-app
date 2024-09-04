@@ -13,6 +13,7 @@ namespace HRMS_Application.Models
         public decimal? AnnualIncome { get; set; }
         public decimal? Loan { get; set; }
         public decimal? Insurance { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual EmployeeCredential EmployeeCredential { get; set; }
     }

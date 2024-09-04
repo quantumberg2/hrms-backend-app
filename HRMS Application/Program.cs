@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Implements;
 using HRMS_Application.BusinessLogic.Interface;
@@ -6,13 +7,31 @@ using HRMS_Application.Helpers;
 using HRMS_Application.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
+var useLocalDatabase = builder.Configuration.GetValue<bool>("DatabaseSettings:UseLocalDatabase");
+
+// Retrieve the connection string based on the flag
+var connectionString = useLocalDatabase
+    ? builder.Configuration.GetConnectionString("LocalDatabase")
+    : builder.Configuration.GetConnectionString("DeployedDatabase");
+
+// Ensure the connection string is not null or empty
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("The connection string is missing or empty.");
+}
+
+// Add DbContext with the correct connection string
 builder.Services.AddDbContext<HRMSContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString")));
+    options.UseSqlServer(connectionString));
+
+
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
@@ -27,6 +46,7 @@ builder.Services.AddScoped<IAccountDetails, AccountDetailsImp>();
 builder.Services.AddScoped<IAddressInfo,AddressImp>();
 builder.Services.AddScoped<IEmployeeSalary, EmployeeSalaryImp>();
 builder.Services.AddScoped<IEmployeeAttendance, EmployeeAttendanceImp>();
+builder.Services.AddScoped<IEmpLeaveAllocation, EmpLeaveAllocationImp>();
 builder.Services.AddScoped<IHoliday, HolidayImp>();
 builder.Services.AddScoped<ILeaveTypes, LeaveTypesImp>();
 builder.Services.AddScoped<IEmpDetails, EmpDetailsImp>();
@@ -35,9 +55,18 @@ builder.Services.AddScoped<ICompanyRequestedform, CompanyRequestedformImp>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IEmailPassword, EmailPasswordImp>();
 builder.Services.AddScoped<IEmployeeImportService, EmployeeImportService>();
+builder.Services.AddScoped<IFileStorage, FileStorageImp>();
+builder.Services.AddScoped<IAzureOperations, AzureOperationsImp>();
+builder.Services.AddScoped<ILocalStorageOperations, LocalStorageOperationsImp>();
+builder.Services.AddScoped<IDeviceOperations, DeviceOperationsImp>();
+builder.Services.AddScoped<IEmpPersonalInfo , EmpPersonalInfoImp>();
 builder.Services.AddScoped<ILeaveTracking, LeaveTrackingImp>();
-builder.Services.AddScoped<EmpLeaveAllocationImp, EmpLeaveAllocationImp>();
 
+builder.Services.AddScoped(_ =>
+{
+    return new BlobServiceClient(builder.Configuration.GetConnectionString("AsureBlobStorage"));
+
+});
 
 builder.Services.AddControllers();
     /* .AddJsonOptions(options =>

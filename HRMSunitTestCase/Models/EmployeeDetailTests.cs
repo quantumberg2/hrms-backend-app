@@ -41,7 +41,7 @@ namespace HRMSunitTestCase.Models
             Assert.Equal(testValue, _testClass.DeptId);
         }
 
-       /* [Fact]
+        [Fact]
         public void CanSetAndGetMobileNumber()
         {
             // Arrange
@@ -52,7 +52,7 @@ namespace HRMSunitTestCase.Models
 
             // Assert
             Assert.Equal(testValue, _testClass.MobileNumber);
-        }*/
+        }
 
         [Fact]
         public void CanSetAndGetFirstName()
@@ -106,7 +106,7 @@ namespace HRMSunitTestCase.Models
             Assert.Equal(testValue, _testClass.PositionId);
         }
 
-       /* [Fact]
+        [Fact]
         public void CanSetAndGetNickName()
         {
             // Arrange
@@ -118,8 +118,8 @@ namespace HRMSunitTestCase.Models
             // Assert
             Assert.Equal(testValue, _testClass.NickName);
         }
-*/
-       /* [Fact]
+
+        [Fact]
         public void CanSetAndGetGender()
         {
             // Arrange
@@ -130,7 +130,7 @@ namespace HRMSunitTestCase.Models
 
             // Assert
             Assert.Equal(testValue, _testClass.Gender);
-        }*/
+        }
 
         [Fact]
         public void CanSetAndGetEmployeeCredentialId()

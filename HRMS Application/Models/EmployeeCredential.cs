@@ -30,6 +30,7 @@ namespace HRMS_Application.Models
         public bool? DefaultPassword { get; set; }
         public string GenerateOtp { get; set; }
         public DateTime? OtpExpiration { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
         public virtual ICollection<AccountDetail> AccountDetails { get; set; }

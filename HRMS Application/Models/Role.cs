@@ -14,6 +14,7 @@ namespace HRMS_Application.Models
 
         public int Id { get; set; }
         public string Name { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual ICollection<UserRolesJ> UserRolesJs { get; set; }
     }
