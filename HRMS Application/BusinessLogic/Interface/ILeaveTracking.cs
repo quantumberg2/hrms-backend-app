@@ -10,6 +10,7 @@ namespace HRMS_Application.BusinessLogic.Interface
      public Task<LeaveTracking> GetByIdAsync(int id);
      public Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId);
      public Task<LeaveTracking> UpdateAsync(LeaveTracking leaveTracking);
+     public Task<LeaveTracking> UpdateLeaveAsync(int empCredId, string newStatus);
      public Task<bool> DeleteAsync(int id);
      public Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId);
 

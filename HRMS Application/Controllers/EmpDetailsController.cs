@@ -38,15 +38,15 @@ namespace HRMS_Application.Controllers
             return status;
         }
 
-        [HttpPost("insertEmployees")]
+/*        [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
         public async Task<string> InsertEmpDetails([FromBody] EmployeeDetail employeeDetail)
         {
             _logger.LogInformation("Insert Empoyeedetails method started");
 
-            var status = await _Empdetails.InsertEmployeeDetail(employeeDetail);         
+            var status = await _Empdetails.InsertEmployeeDetail(employeeDetail);
             return status;
-        }
+        }*/
 
         [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]

@@ -14,15 +14,18 @@ namespace HRMS_Application.Controllers
     public class LeaveTrackingController : ControllerBase
     {
         private readonly ILeaveTracking _leaveTracking;
+        private readonly ILogger<LeaveTrackingController> _logger;
 
-        public LeaveTrackingController(ILeaveTracking leaveTracking)
+        public LeaveTrackingController(ILeaveTracking leaveTracking, ILogger<LeaveTrackingController> logger)
         {
             _leaveTracking = leaveTracking;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            _logger.LogInformation("Get all leaves method started");
             var leaveTrackings = await _leaveTracking.GetAllAsync();
             return Ok(leaveTrackings);
         }
@@ -30,6 +33,8 @@ namespace HRMS_Application.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
+            _logger.LogInformation("Get leaves by Id method started");
+
             var leaveTracking = await _leaveTracking.GetByIdAsync(id);
             if (leaveTracking == null)
             {
@@ -42,6 +47,8 @@ namespace HRMS_Application.Controllers
         [Authorize(new[] { "Admin", "User" })]
         public async Task<IActionResult> CreateLeaveTracking([FromBody] LeaveTrackingDTO leaveTrackingDto)
         {
+            _logger.LogInformation("Apply leave method started");
+
             try
             {
                 // Extract the token from the Authorization header
@@ -89,6 +96,8 @@ namespace HRMS_Application.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] LeaveTracking leaveTracking)
         {
+            _logger.LogInformation("Update leaves method started");
+
             if (id != leaveTracking.Id)
             {
                 return BadRequest("ID mismatch");
@@ -108,9 +117,22 @@ namespace HRMS_Application.Controllers
             return Ok(updatedLeaveTracking);
         }
 
+        [HttpPut("statusUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public async Task<IActionResult> UpdateLeaveAsync(int empCredentialId, string newStatus)
+        {
+            _logger.LogInformation("update leave status method started");
+
+            var status =await _leaveTracking.UpdateLeaveAsync(empCredentialId,newStatus);
+            return Ok(status);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation("delete leaves method started");
+
             var result = await _leaveTracking.DeleteAsync(id);
             if (!result)
             {
@@ -122,6 +144,8 @@ namespace HRMS_Application.Controllers
         [HttpGet("leaves/{status}")]
         public async Task<ActionResult<List<LeaveApprovalDTO>>> GetLeavesByStatus(string status)
         {
+            _logger.LogInformation("Get leaves by status method started");
+
             var leaves = await _leaveTracking.GetLeavesByStatusAsync(status);
 
             if (leaves == null || !leaves.Any())
@@ -137,6 +161,8 @@ namespace HRMS_Application.Controllers
 
         public async Task<IActionResult> GetLeaveSummary()
         {
+            _logger.LogInformation("Get leave summary method started");
+
             try
             {
                 // Extract employee credential ID from the JWT token

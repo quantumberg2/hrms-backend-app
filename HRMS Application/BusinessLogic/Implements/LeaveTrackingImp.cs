@@ -2,6 +2,7 @@
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.DTO;
 using HRMS_Application.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -74,9 +75,27 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<LeaveTracking> UpdateAsync(LeaveTracking leaveTracking)
         {
-            DecodeToken();
+             DecodeToken();
+
             _hrmsContext.LeaveTrackings.Update(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return leaveTracking;
+        }
+
+
+
+        public async Task<LeaveTracking> UpdateLeaveAsync(int empCredId, string newStatus)
+        {
+            var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
+                                       where row.EmpCredentialId == empCredId
+                                       select row).FirstOrDefaultAsync();
+
+            if (leaveTracking != null)
+            {
+                leaveTracking.Status = newStatus;
+
+                await _hrmsContext.SaveChangesAsync();
+            }
             return leaveTracking;
         }
 
