@@ -12,6 +12,7 @@ namespace HRMS_Application.Models
         public string Type { get; set; }
         public int? CompanyId { get; set; }
         public string Occasion { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual RequestedCompanyForm Company { get; set; }
     }

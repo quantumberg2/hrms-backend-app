@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USER\\source\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj": {}
+    "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USER\\source\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
+    "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\source\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
         "projectName": "HRMS Application",
-        "projectPath": "C:\\Users\\USER\\source\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
+        "projectPath": "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
         "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\source\\hrms-backend-app\\HRMS Application\\obj\\",
+        "outputPath": "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMS Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -39,17 +39,16 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.21.2, )"
+            },
             "EPPlus": {
               "target": "Package",
               "version": "[7.2.2, )"
@@ -102,18 +101,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\USER\\source\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj": {
+    "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\source\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj",
         "projectName": "HRMSunitTestCase",
-        "projectPath": "C:\\Users\\USER\\source\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj",
+        "projectPath": "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMSunitTestCase\\HRMSunitTestCase.csproj",
         "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\source\\hrms-backend-app\\HRMSunitTestCase\\obj\\",
+        "outputPath": "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMSunitTestCase\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -135,8 +134,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\USER\\source\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
-                "projectPath": "C:\\Users\\USER\\source\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj"
+              "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
+                "projectPath": "C:\\Users\\USER\\source\\repos\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj"
               }
             }
           }
@@ -145,21 +144,12 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
-            "Microsoft.AspNetCore.Authentication.Cookies": {
-              "target": "Package",
-              "version": "[2.2.0, )"
-            },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
               "version": "[17.5.0, )"
@@ -197,7 +187,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

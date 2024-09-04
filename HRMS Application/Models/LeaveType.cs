@@ -18,6 +18,7 @@ namespace HRMS_Application.Models
         public int? Days { get; set; }
         public int? CompanyId { get; set; }
         public int? Year { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual RequestedCompanyForm Company { get; set; }
         public virtual ICollection<EmployeeLeaveAllocation> EmployeeLeaveAllocations { get; set; }

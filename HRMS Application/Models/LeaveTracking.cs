@@ -18,6 +18,7 @@ namespace HRMS_Application.Models
         public string Session { get; set; }
         public string Contact { get; set; }
         public string ReasonForLeave { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual EmployeeCredential EmpCredential { get; set; }
         public virtual LeaveType LeaveType { get; set; }

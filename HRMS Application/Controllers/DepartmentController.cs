@@ -29,6 +29,14 @@ namespace HRMS_Application.Controllers
             return dept;
         }
 
+        [HttpGet("GetDeptByName")]
+        public List<Department> GetDepartmentsByName(string name)
+        {
+            _logger.LogInformation("Get dept info by name method started");
+            var res = _department.GetDepartmentsByName(name);
+            return res;
+        }
+
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
         public async Task<string> InsertDepartments([FromBody] Department department)

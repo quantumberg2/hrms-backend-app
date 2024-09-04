@@ -15,6 +15,7 @@ namespace HRMS_Application.Models
         public string State { get; set; }
         public string Country { get; set; }
         public string PinCode { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual EmployeeCredential EmployeeCredential { get; set; }
     }
