@@ -193,34 +193,29 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         public async Task<string> GenerateAndSendOtp(string email)
         {
-            // Check if the email exists in either RequestedCompanyForms or EmployeeCredentials
+            // Check if the email already exists
             var existingCompanyForm = await _context.RequestedCompanyForms
                 .FirstOrDefaultAsync(c => c.Email == email);
 
             var employeeCredential = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == email);
+               .FirstOrDefaultAsync(e => e.Email == email);
 
-            string generatedOtp = GenerateOtp(); // Generate a 6-digit OTP
+            string generatedOtp;
 
-            if (employeeCredential != null)
+            if (existingCompanyForm != null)
             {
-                // User exists in EmployeeCredentials, update the existing OTP and expiration time
+                // Update the existing record with new OTP and expiration time
+                generatedOtp = GenerateOtp();
                 employeeCredential.GenerateOtp = generatedOtp;
                 employeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
+                existingCompanyForm.UpdatedDate = DateTime.UtcNow;
 
-                // Update the existing record in RequestedCompanyForms
-                if (existingCompanyForm != null)
-                {
-                    existingCompanyForm.UpdatedDate = DateTime.UtcNow;
-                    _context.RequestedCompanyForms.Update(existingCompanyForm);
-                }
-
-                // Update the EmployeeCredentials with new OTP and expiration time
-                _context.EmployeeCredentials.Update(employeeCredential);
+                // Save the changes to the database
+                _context.RequestedCompanyForms.Update(existingCompanyForm);
             }
             else
             {
-                return "Email Not Found";
+                return "Email not found.";
             }
 
             // Save the changes to the database
@@ -228,12 +223,18 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (result != 0)
             {
                 // Send OTP via email
-                await SendOtpEmailAsync(email, generatedOtp);
+                var otpEmail = new OtpEmail
+                {
+                    EmailAddress = email,
+                    Otp = generatedOtp
+                };
+                await _emailotpService.SendOtpEmailAsync(otpEmail);
+
                 return "OTP sent to the provided email address.";
             }
             else
             {
-                throw new DatabaseOperationException("Failed to update or create company request data.");
+                throw new DatabaseOperationException("Failed to update company request data.");
             }
         }
         public async Task SendOtpEmailAsync(string email, string otp)

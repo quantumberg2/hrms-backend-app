@@ -13,6 +13,7 @@ namespace HRMS_Application.Models
         public int? NumberOfLeaves { get; set; }
         public int? RemainingLeave { get; set; }
         public int? LeaveType { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual EmployeeCredential EmpCredential { get; set; }
         public virtual LeaveType LeaveTypeNavigation { get; set; }

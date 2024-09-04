@@ -30,6 +30,14 @@ namespace HRMS_Application.Controllers
             return res;
         }
 
+        [HttpGet("GetByEmpCredId")]
+        public AddressInfo GetAddressInfoByEmpCredId(int empCredId)
+        {
+            _logger.LogInformation("get address info by empployee credential id");
+             var res =  _addresInfo.GetAddressInfoByEmpCredId(empCredId);
+            return res;
+        }
+
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
         public IActionResult InsertAddressInfo([FromBody] AddressInfo addresinfo)

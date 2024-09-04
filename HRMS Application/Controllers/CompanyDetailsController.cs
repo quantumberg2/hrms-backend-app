@@ -25,12 +25,21 @@ namespace HRMS_Application.Controllers
             return result;
         }
         [HttpGet("GetById")]
-        public CompanyDetail GetCompanyDetail(int id)
+        public List<CompanyDetail> GetCompanyDetail(int id)
         {
             _logger.LogInformation("getbyid company details started");
             var result = _companyDetails.GetCompanyDetailstById(id);
             return result;
         }
+
+        [HttpGet("GetDetailsByName")]
+        public List<CompanyDetail> GetCompanyDetailstByName(string companyName)
+        {
+            _logger.LogInformation("Get Company details by name method started");
+            var res = _companyDetails.GetCompanyDetailstByName(companyName);
+            return res;
+        }
+
         [HttpPost]
         public int InsertcompanyDetails([FromBody] CompanyDetail companyDetail)
         {

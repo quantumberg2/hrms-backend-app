@@ -1,9 +1,7 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.BusinessLogics.Interface;
-using HRMS_Application.DTO;
 using HRMS_Application.Models;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
 
@@ -16,14 +14,11 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly IJwtUtils _jwtUtils;
         public List<string>? dToken;
         private int? _decodedToken;
-        private readonly IEmailPassword _emailPasswordService;
-
-        public EmpDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils,IEmailPassword emailPasswordService)
+        public EmpDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
             _hrmsContext = hrmsContext;
             _httpContextAccessor = httpContextAccessor;
             _jwtUtils = jwtUtils;
-            _emailPasswordService = emailPasswordService;
         }
         private void DecodeToken()
         {
@@ -77,8 +72,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             return res;
         }
 
-        public async Task<string> InsertEmployeeAsync(EmployeeDetail employeeDetail, int companyId)
+        public async Task<string> InsertEmployeeDetail(EmployeeDetail employeeDetail)
         {
+            DecodeToken();
+            await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
+            var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
+            if (result != 0)
             DecodeToken();
             // Check if the email already exists for the same company
             var existingEmail = await _hrmsContext.EmployeeCredentials
@@ -91,6 +90,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             var employeeCredential = new EmployeeCredential
             {
+                return "new Employee inserted successfully";
                 UserName = employeeDetail.Email, // Username is set to the email address
                 Email = employeeDetail.Email,
                 Password = GeneratePassword(),
@@ -117,6 +117,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 RolesId = 2 // Assuming "2" is the ID for the "User" role
             };
 
+            }
+            else
             _hrmsContext.UserRolesJs.Add(userRole);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
@@ -138,9 +140,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             var rnd = new Random();
             for (int i = 0; i < res.Length; i++)
             {
-                res[i] = valid[rnd.Next(valid.Length)];
+                return "failed to insert new data";
             }
-            return new string(res);
         }
 
 

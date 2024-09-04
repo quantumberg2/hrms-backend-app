@@ -79,7 +79,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
-                return "new Holiday inserted successfully";
+                return "new Department inserted successfully";
 
             }
             else

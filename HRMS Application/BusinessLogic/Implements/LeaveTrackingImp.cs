@@ -11,7 +11,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly HRMSContext _hrmsContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
-        private List<string>? dToken;
+        public  List<string>? dToken;
         private int? _decodedToken;
         public LeaveTrackingImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
@@ -47,13 +47,13 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<IEnumerable<LeaveTracking>> GetAllAsync()
         {
-            var result = _hrmsContext.LeaveTrackings.ToList();
+            var result = await _hrmsContext.LeaveTrackings.ToListAsync();
             return result;
         }
 
         public async Task<LeaveTracking> GetByIdAsync(int id)
         {
-            var res = (from row in _hrmsContext.LeaveTrackings
+            var res =  (from row in _hrmsContext.LeaveTrackings
                        where row.Id == id
                        select row).FirstOrDefault();
             return res;
@@ -65,7 +65,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             leaveTracking.EmpCredentialId = empCredentialId;
 
             // Add to the database
-            _hrmsContext.LeaveTrackings.Add(leaveTracking);
+            await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             return leaveTracking;
@@ -184,8 +184,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 LeaveSummaries = leaveSummaries // Include individual summaries
             };
         }
-
-
 
     }
 }

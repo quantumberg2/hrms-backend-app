@@ -10,19 +10,3 @@
 /.vs/HRMS Application/v17/DocumentLayout.json
 /.gitignore
 /.vs/HRMS Application/v17/.suo
-# Ignore all .dll files
-*.dll
-
-# Optionally, ignore common directories where .dll files are generated
-bin/
-obj/
-
-# Ignore Visual Studio and build-related files
-.vscode/
-.vs/
-*.user
-*.suo
-*.cache
-*.log
-*.pdb
-

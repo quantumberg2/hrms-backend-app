@@ -15,6 +15,7 @@ namespace HRMS_Application.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int? RequestedCompanyId { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
         public virtual ICollection<EmployeeDetail> EmployeeDetails { get; set; }
