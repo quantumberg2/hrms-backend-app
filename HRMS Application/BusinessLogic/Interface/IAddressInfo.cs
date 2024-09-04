@@ -6,7 +6,7 @@ namespace HRMS_Application.BusinessLogic.Interface
     {
         public List<AddressInfo> GetAllAddressInfo();
         public AddressInfo GetAddressInfoById(int id);
-        public string InsertAddressInfot(AddressInfo address);
+        public string InsertAddressInfot(AddressInfo address, int empCredentialId);
         //public AddressInfo UpdateAddressInfo(int id, string? name, int? requestedcompanyId);
         public bool deleteAddressInfo(int id);
     }

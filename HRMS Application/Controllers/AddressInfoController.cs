@@ -40,7 +40,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public IActionResult InsertAddressInfo([FromBody] AddressInfo addresinfo)
+        public IActionResult InsertAddressInfo([FromBody] AddressInfo addresinfo, int empCredentialId)
         {
             try
             {
@@ -56,10 +56,10 @@ namespace HRMS_Application.Controllers
                 }
 
                 // Parse the empCredentialId from the claim
-                int empCredentialId = int.Parse(empCredentialIdClaim.Value);
+                int empCredentialID = int.Parse(empCredentialIdClaim.Value);
                 _logger.LogInformation("Insert department method started");
 
-                var status = _addresInfo.InsertAddressInfot(addresinfo, empCredentialId);
+                var status = _addresInfo.InsertAddressInfot(addresinfo, empCredentialID);
                 return Ok(status);
             }
             catch (Exception ex)
