@@ -98,7 +98,7 @@ namespace HRMS_Application.Controllers
             return BadRequest("Failed to insert employee details.");*/
         }
 
-        [HttpPut("SoftUpdate")]
+        [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
 
         public bool SoftDelete(int id, short isActive)

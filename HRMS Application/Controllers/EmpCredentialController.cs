@@ -128,7 +128,7 @@ namespace HRMS_Application.Controllers
             }
         }
 
-        [HttpPut("SoftUpdate")]
+        [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
 
         public bool SoftDelete(int id, short isActive)

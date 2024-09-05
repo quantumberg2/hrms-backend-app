@@ -88,7 +88,7 @@ namespace HRMS_Application.Controllers
             return status;
         }
 
-        [HttpPut("SoftUpdate")]
+        [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
 
         public bool SoftDelete(int id, short isActive)

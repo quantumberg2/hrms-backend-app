@@ -15,11 +15,9 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<AccountDetail> GetAllAccountdetails()
         {
             var result = (from row in _context.AccountDetails
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _context.AccountDetails.Remove(result);
-            _context.SaveChanges();
-            return true;
+                          where row.IsActive == 1
+                          select row).ToList();
+            return result;
         }
 
         public AccountDetail GetAccountDetailsById(int id)
@@ -35,7 +33,8 @@ namespace HRMS_Application.BusinessLogic.Implements
         public AccountDetail GetAccountDetailsByAccNumber(string accountNumber)
         {
             var result = (from row in _context.AccountDetails
-                          select row).ToList();
+                          where row.AccountNumber == accountNumber && row.IsActive == 1
+                          select row).FirstOrDefault();
             return result;
         }
 
@@ -54,5 +53,33 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
+        public bool deleteAccountDetails(int id)
+        {
+           var res = (from row in _context.AccountDetails
+                      where row.Id == id
+                      select row).FirstOrDefault();
+            if(res != null)
+            {
+                _context.Remove(res);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res  = (from row in _context.AccountDetails
+                        where row.Id == id
+                        select row).FirstOrDefault();
+            if(res!=null)
+            {
+                res.IsActive = isActive;
+                _context.AccountDetails.Update(res);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
     }
 }
