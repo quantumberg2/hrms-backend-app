@@ -48,5 +48,16 @@ namespace HRMS_Application.Controllers
             var result = _leavetype.deleteLeaveType(id);
             return result;
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update leave type method started");
+            var res = _leavetype.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

@@ -8,5 +8,6 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Role GetRolesById(int id);
         public Task<string> InsertRole(Role role);
         public Task<bool> deleteRole(int id);
+        public bool SoftDelete(int id, short isActive);
     }
 }

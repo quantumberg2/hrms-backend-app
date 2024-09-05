@@ -182,5 +182,16 @@ namespace HRMS_Application.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Leave tracking method started");
+            var res = _leaveTracking.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

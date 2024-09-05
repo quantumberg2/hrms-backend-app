@@ -13,6 +13,7 @@ namespace HRMS_Application.BusinessLogic.Interface
      public Task<LeaveTracking> UpdateLeaveAsync(int empCredId, string newStatus);
      public Task<bool> DeleteAsync(int id);
      public Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId);
+     public bool SoftDelete(int id, short isActive);
 
     }
 }

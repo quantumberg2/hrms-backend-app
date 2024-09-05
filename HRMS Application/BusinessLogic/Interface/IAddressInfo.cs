@@ -9,5 +9,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public string InsertAddressInfot(AddressInfo address, int empCredentialId);
         //public AddressInfo UpdateAddressInfo(int id, string? name, int? requestedcompanyId);
         public bool deleteAddressInfo(int id);
+        public bool SoftDelete(int id, short isActive);
+
     }
 }

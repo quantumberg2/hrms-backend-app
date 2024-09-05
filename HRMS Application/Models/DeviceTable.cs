@@ -19,6 +19,7 @@ namespace HRMS_Application.Models
         public TimeSpan? LateIn { get; set; }
         public string Name { get; set; }
         public string Status { get; set; }
+        public short? IsActive { get; set; }
 
         public virtual EmployeeCredential EmpCredential { get; set; }
     }

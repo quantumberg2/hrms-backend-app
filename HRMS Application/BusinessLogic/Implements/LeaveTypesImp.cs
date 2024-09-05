@@ -59,6 +59,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<LeaveType> GetAllLeaveType()
         {
             var result = (from row in _context.LeaveTypes
+                          where row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -66,7 +67,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public LeaveType GetLeaveTypeById(int id)
         {
             var result = (from row in _context.LeaveTypes
-                          where row.Id == id
+                          where row.Id == id && row.IsActive == 1
                           select row).FirstOrDefault();
             return result;
         }
@@ -74,7 +75,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public LeaveType GetLeaveTypeByType(string Type)
         {
             var result = (from row in _context.LeaveTypes
-                          where row.Type == Type
+                          where row.Type == Type && row.IsActive == 1
                           select row).FirstOrDefault();
             return result;
         }
@@ -98,6 +99,22 @@ namespace HRMS_Application.BusinessLogic.Implements
         public LeaveType UpdateLeaveType(int id, string? name, int? requestedcompanyId)
         {
             throw new NotImplementedException();
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.LeaveTypes
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.LeaveTypes.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
     }
 }

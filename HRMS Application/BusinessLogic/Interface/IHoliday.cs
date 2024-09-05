@@ -9,5 +9,6 @@ namespace HRMS_Application.BusinessLogic.Interface
       public Task<string> InsertHoliday(Holiday holiday);
       //public LeaveType UpdateLeaveType(int id, string? name, int? requestedcompanyId);
         public Task<bool> deleteHoliday(int id);
+        public bool SoftDelete(int id, short isActive);
     }
 }

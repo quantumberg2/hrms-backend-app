@@ -10,5 +10,6 @@ namespace HRMS_Application.BusinessLogic.Interface
         public int InsertCompanyDetails(CompanyDetail companyDetail);
         //public CompanyDetail UpdateDepartment(int id, string? name, int? requestedcompanyId);
         public bool deleteCompanyDetails(int id);
+        public bool SoftDelete(int id, short isActive);
     }
 }

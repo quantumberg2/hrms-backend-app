@@ -66,5 +66,16 @@ namespace HRMS_Application.Controllers
             var status = await _department.deleteDepartment(id);
             return status;
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update department method started");
+            var res = _department.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

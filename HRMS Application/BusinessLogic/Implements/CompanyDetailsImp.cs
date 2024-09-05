@@ -31,6 +31,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<CompanyDetail> GetAllCompanyDetails()
         {
             var result = (from row in _context.CompanyDetails
+                          where  row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -38,7 +39,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<CompanyDetail> GetCompanyDetailstById(int id)
         {
             var result = (from row in _context.CompanyDetails
-                          where row.Id == id
+                          where row.Id == id && row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -46,7 +47,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<CompanyDetail> GetCompanyDetailstByName(string companyName)
         {
             var info = (from row in _context.CompanyDetails
-                        where row.Name == companyName
+                        where row.Name == companyName && row.IsActive == 1
                         select row).ToList();
             return info;
         }
@@ -69,6 +70,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 throw new DatabaseOperationException("Failed to insert CompanyDetails data");
             }
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.CompanyDetails
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if(res!=null)
+            {
+                res.IsActive = isActive;
+                _context.CompanyDetails.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
     }
 }

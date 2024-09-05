@@ -1,4 +1,5 @@
-﻿using HRMS_Application.BusinessLogic.Interface;
+﻿using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,17 @@ namespace HRMS_Application.Controllers
             var result = _companyDetails.deleteCompanyDetails(id);
             return result;
         }
-        
+
+        [HttpPut("SoftUpdate")]
+/*        [Authorize(new[] { "Admin" })]
+*/
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Company details method started");
+            var res = _companyDetails.SoftDelete(id, isActive);
+            return res;
+
+        }
+
     }
 }

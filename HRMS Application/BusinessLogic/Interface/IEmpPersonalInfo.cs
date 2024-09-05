@@ -9,5 +9,6 @@ namespace HRMS_Application.BusinessLogic.Interface
         public string InsertEmpPersonalInfo(EmpPersonalInfoDTO empPersonalInfo, int empCredentialId);
         public string UpdateEmpPersonalInfo(EmpPersonalInfo empPersonalInfo, EmpPersonalInfoDTO name);
         public string DeleteEmpPersonalInfo(int Id);
+        public bool SoftDelete(int id, short isActive);
     }
 }

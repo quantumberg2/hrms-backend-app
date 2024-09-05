@@ -59,6 +59,18 @@ namespace HRMS_Application.Controllers
             return result;
 
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update company request method started");
+            var res = _companyRequested.SoftDelete(id, isActive);
+            return res;
+
+        }
+
         [HttpPost]
         [Route("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromBody] OtpEmail request)

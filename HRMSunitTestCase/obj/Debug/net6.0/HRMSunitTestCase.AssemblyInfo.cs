@@ -14,7 +14,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HRMSunitTestCase")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ba0418b5af71345d22a19ec9cac0b31e2c532aa")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+>>>>>>> Srii2
 [assembly: System.Reflection.AssemblyProductAttribute("HRMSunitTestCase")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HRMSunitTestCase")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
