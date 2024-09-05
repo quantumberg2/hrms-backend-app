@@ -57,5 +57,16 @@ namespace HRMS_Application.Controllers
             var status = await  _position.deletePosition(id);
             return status;
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update position method started");
+            var res = _position.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

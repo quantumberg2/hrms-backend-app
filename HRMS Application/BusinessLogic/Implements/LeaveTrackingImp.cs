@@ -48,14 +48,16 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<IEnumerable<LeaveTracking>> GetAllAsync()
         {
-            var result = _hrmsContext.LeaveTrackings.ToList();
+            var result = await (from row in _hrmsContext.LeaveTrackings
+                                where row.IsActive == 1
+                                select row).ToListAsync();
             return result;
         }
 
         public async Task<LeaveTracking> GetByIdAsync(int id)
         {
             var res = (from row in _hrmsContext.LeaveTrackings
-                       where row.Id == id
+                       where row.Id == id && row.IsActive == 1
                        select row).FirstOrDefault();
             return res;
         }
@@ -205,6 +207,20 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
 
 
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.LeaveTrackings
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.LeaveTrackings.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
 
+            }
+            return false;
+        }
     }
 }

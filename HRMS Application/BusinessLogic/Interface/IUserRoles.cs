@@ -9,5 +9,6 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<string> InsertuserRoles(UserRolesJ userRolesJ);
        // public Department UpdateDepartment(int id, string? name, int? requestedcompanyId);
         public Task<bool> deleteUserRole(int id);
+        public bool SoftDelete(int id, short isActive);
     }
 }

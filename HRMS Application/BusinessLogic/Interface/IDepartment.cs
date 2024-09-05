@@ -10,5 +10,6 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<string> InsertDepartment(Department department);
         public Task<Department> UpdateDepartment(int id, string? name, int? requestedcompanyId);
         public Task<bool> deleteDepartment(int id);
+        public bool SoftDelete(int id, short isActive);
     }
 }

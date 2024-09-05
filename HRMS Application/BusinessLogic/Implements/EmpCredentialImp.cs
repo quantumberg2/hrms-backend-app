@@ -70,6 +70,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<EmployeeCredential> GetAllEmpCredential()
         {
             var result = (from row in _context.EmployeeCredentials
+                          where row.IsActive == 1
                           select row).ToList();
             return result;
             
@@ -78,7 +79,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public EmployeeCredential GetById(int id)
         {
             var result = (from row in _context.EmployeeCredentials
-                          where row.Id == id
+                          where row.Id == id && row.IsActive == 1
                           select row).SingleOrDefault();
             if (result != null)
             {
@@ -343,6 +344,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.EmployeeCredentials
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.EmployeeCredentials.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
         // Method to hash the password
         /*private string HashPassword(string password)
         {

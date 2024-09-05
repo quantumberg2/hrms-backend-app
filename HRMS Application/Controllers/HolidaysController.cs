@@ -1,4 +1,5 @@
-﻿using HRMS_Application.BusinessLogic.Interface;
+﻿using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,16 @@ namespace HRMS_Application.Controllers
             return result;
         }
 
+        [HttpPut("SoftUpdate")]
+/*        [Authorize(new[] { "Admin" })]
+*/
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update holiday method started");
+            var res = _holiday.SoftDelete(id, isActive);
+            return res;
+
+        }
 
 
     }

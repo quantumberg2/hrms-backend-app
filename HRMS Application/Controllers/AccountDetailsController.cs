@@ -46,7 +46,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public string InsertDepartments([FromBody] AccountDetail accountDetail)
+        public string InsertAccountDetails(AccountDetail accountDetail)
         {
             _logger.LogInformation("Insert department method started");
 
@@ -72,6 +72,17 @@ namespace HRMS_Application.Controllers
             _logger.LogInformation("Delete method started");
             var status = _accountDetails.deleteAccountDetails(id);
             return status;
+        }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Account details method started");
+            var res = _accountDetails.SoftDelete(id, isActive);
+            return res;
+
         }
     }
 }

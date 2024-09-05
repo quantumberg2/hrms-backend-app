@@ -65,6 +65,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<EmployeeDetail> GetAllUser()
         {
             var result = (from row in _hrmsContext.EmployeeDetails
+                          where  row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -72,7 +73,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public EmployeeDetail GetById(int id)
         {
             var res = (from row in _hrmsContext.EmployeeDetails
-                       where row.Id == id
+                       where row.Id == id && row.IsActive == 1
                        select row).FirstOrDefault();
             return res;
         }
@@ -169,6 +170,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             _hrmsContext.EmployeeDetails.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.EmployeeDetails
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.EmployeeDetails.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
     }
 }

@@ -14,7 +14,10 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         public List<EmpPersonalInfo> GetAll()
         {
-            throw new NotImplementedException();
+            var res = (from row in _context.EmpPersonalInfos
+                       where  row.IsActive == 1
+                       select row).ToList();
+            return res;
         }
 
         public string InsertEmpPersonalInfo(EmpPersonalInfoDTO empPersonalInfo, int empCredentialId)
@@ -117,11 +120,26 @@ namespace HRMS_Application.BusinessLogic.Implements
         public string UpdateEmpPersonalInfo(EmpPersonalInfo empPersonalInfo, EmpPersonalInfoDTO name)
         {
             throw new NotImplementedException();
-
         }
         public string DeleteEmpPersonalInfo(int Id)
         {
             throw new NotImplementedException();
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.EmpPersonalInfos
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+               _context.EmpPersonalInfos.Update(res);
+               _context.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
 
     }

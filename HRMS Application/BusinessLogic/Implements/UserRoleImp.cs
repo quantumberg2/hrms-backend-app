@@ -59,6 +59,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<UserRolesJ> GetAlluserRole()
         {
             var result = (from row in _context.UserRolesJs
+                          where row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -66,7 +67,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public UserRolesJ GetuserRoleById(int id)
         {
             var result = (from row in _context.UserRolesJs
-                          where row.Id == id
+                          where row.Id == id && row.IsActive == 1
                           select row).FirstOrDefault();
            
             return result;
@@ -86,6 +87,21 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 return "failed to insert new data";
             }
+        }
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.UserRolesJs
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.UserRolesJs.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
     }
 }

@@ -15,6 +15,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<AccountDetail> GetAllAccountdetails()
         {
             var result = (from row in _context.AccountDetails
+                          where row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -22,7 +23,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public AccountDetail GetAccountDetailsById(int id)
         {
             var result = (from row in _context.AccountDetails
-                          where row.Id == id
+                          where row.Id == id && row.IsActive == 1
                           select row).FirstOrDefault();
           
             return result;
@@ -32,7 +33,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public AccountDetail GetAccountDetailsByAccNumber(string accountNumber)
         {
             var details = (from row in _context.AccountDetails
-                           where row.AccountNumber == accountNumber
+                           where row.AccountNumber == accountNumber && row.IsActive == 1
                            select row).FirstOrDefault();
             return details;
         }
@@ -60,6 +61,21 @@ namespace HRMS_Application.BusinessLogic.Implements
             _context.AccountDetails.Remove(result);
             _context.SaveChanges();
             return true;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.AccountDetails
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if(res != null)
+            {
+                res.IsActive = isActive;
+                _context.AccountDetails.Update(res);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
     }

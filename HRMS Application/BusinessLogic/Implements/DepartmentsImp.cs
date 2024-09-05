@@ -2,6 +2,7 @@
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.BusinessLogics.Interface;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -58,6 +59,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<Department> GetAllDepartment()
         {
             var result = (from row in _hrmsContext.Departments
+                          where  row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -70,7 +72,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<Department> GetDepartmentsByName(string name)
         {
             var dept = (from row in _hrmsContext.Departments
-                        where row.Name == name  
+                        where row.Name == name && row.IsActive == 1
                         select row).ToList();
             return dept;
         }
@@ -104,6 +106,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             _hrmsContext.Departments.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.Departments
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.Departments.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
     }
 }

@@ -87,5 +87,16 @@ namespace HRMS_Application.Controllers
             var status = _addresInfo.deleteAddressInfo(id);
             return status;
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Address info method started");
+            var res = _addresInfo.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

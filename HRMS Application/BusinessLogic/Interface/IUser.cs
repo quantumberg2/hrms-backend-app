@@ -11,6 +11,7 @@ namespace HRMS_Application.BusinessLogics.Interface
         public string InsertUser(EmployeeCredential employeeCredential);
         public string UpdateUsers(int id, EmployeeCredential employeeCredential);
         public bool DeleteUsers(int id);
+        public bool SoftDelete(int id, short isActive);
 
     }
 }

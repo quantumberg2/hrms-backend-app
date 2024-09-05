@@ -112,5 +112,15 @@ namespace HRMS_Application.Controllers
             }
             return NoContent();
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Employee leave method started");
+            var res = _employeeLeaveService.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

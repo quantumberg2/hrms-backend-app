@@ -60,6 +60,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<EmpSalary> GetAllEmpSalary()
         {
             var result = (from row in _context.EmpSalaries
+                          where row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -67,7 +68,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public EmpSalary GetEmpSalaryById(int id)
         {
             var result = (from row in _context.EmpSalaries
-                          where row.Id == id
+                          where row.Id == id && row.IsActive == 1
                           select row).FirstOrDefault();
 
             return result;
@@ -86,6 +87,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 return "failed to insert new data";
             }
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.EmpSalaries
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.EmpSalaries.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
     }
 }

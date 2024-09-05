@@ -128,5 +128,15 @@ namespace HRMS_Application.Controllers
             }
         }
 
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Employee Credentials method started");
+            var res = _empCredential.SoftDelete(id, isActive);
+            return res;
+        }
+
     }
 }

@@ -98,6 +98,17 @@ namespace HRMS_Application.Controllers
             return BadRequest("Failed to insert employee details.");*/
         }
 
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Employee Personal info method started");
+            var res = _empPersonalInfo.SoftDelete(id, isActive);
+            return res;
+
+        }
+
 
     }
 }

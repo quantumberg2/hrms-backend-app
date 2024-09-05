@@ -67,6 +67,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<Position> GetPositions()
         {
             var result = (from row in _hrmsContext.Positions
+                          where row.IsActive == 1
                           select row).ToList();
             return result;
         }
@@ -109,6 +110,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             _hrmsContext.Positions.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.Positions
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.Positions.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
+
+            }
+            return false;
         }
     }
 }

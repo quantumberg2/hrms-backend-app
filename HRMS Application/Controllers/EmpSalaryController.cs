@@ -56,5 +56,16 @@ namespace HRMS_Application.Controllers
             var status = await _empsalary.deleteEmpsalary(id);
             return status;
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update Employee salary method started");
+            var res = _empsalary.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

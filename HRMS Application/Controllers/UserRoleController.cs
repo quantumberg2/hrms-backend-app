@@ -56,5 +56,16 @@ namespace HRMS_Application.Controllers
             var status = await _userRole.deleteUserRole(id);
             return status;
         }
+
+        [HttpPut("SoftUpdate")]
+        [Authorize(new[] { "Admin" })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation("Soft update user roles method started");
+            var res = _userRole.SoftDelete(id, isActive);
+            return res;
+
+        }
     }
 }

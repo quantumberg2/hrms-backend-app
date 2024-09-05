@@ -8,5 +8,6 @@ namespace HRMS_Application.BusinessLogic.Interface
         public EmployeeLeaveAllocation GetByEmpLeavebyId(int id);
         public Task<string> InsertEmployeeLeave(EmployeeLeaveAllocation employeeLeave);
         public Task<bool> DeleteEmployeeLeave(int id);
+        public bool SoftDelete(int id, short isActive);
     }
 }
