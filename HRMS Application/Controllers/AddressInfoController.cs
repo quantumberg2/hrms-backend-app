@@ -40,7 +40,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public IActionResult InsertAddressInfo([FromBody] AddressInfo addresinfo, int empCredentialId)
+        public IActionResult InsertAddressInfo([FromBody] AddressInfo addresinfo)
         {
             try
             {
