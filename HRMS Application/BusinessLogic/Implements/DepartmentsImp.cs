@@ -69,14 +69,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             throw new NotImplementedException();
         }
 
-        public List<Department> GetDepartmentsByName(string name)
-        {
-            var dept = (from row in _hrmsContext.Departments
-                        where row.Name == name && row.IsActive == 1
-                        select row).ToList();
-            return dept;
-        }
-
         public async Task<string> InsertDepartment(Department department)
         {
             DecodeToken();
