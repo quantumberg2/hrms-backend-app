@@ -7,7 +7,6 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime Applied { get; set; }
-        public string Status { get; set; }
         public string Files { get; set; }
         public int LeaveTypeId { get; set; }
         public string Session { get; set; }

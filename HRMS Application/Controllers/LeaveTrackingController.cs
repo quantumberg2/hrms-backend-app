@@ -79,6 +79,7 @@ namespace HRMS_Application.Controllers
                     Files= leaveTrackingDto.Files,
                     Session = leaveTrackingDto.Session,
                     Contact = leaveTrackingDto.Contact,
+                    IsActive = 1,
                     // Map other necessary fields here
                 };
 
