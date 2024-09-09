@@ -222,5 +222,17 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             return false;
         }
+
+        public async Task<LeaveTracking> ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId)
+        {
+            DecodeToken();
+            leaveTracking.EmpCredentialId = empCredentialId;
+
+            // Add to the database
+            _hrmsContext.LeaveTrackings.Add(leaveTracking);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+            return leaveTracking;
+        }
     }
 }

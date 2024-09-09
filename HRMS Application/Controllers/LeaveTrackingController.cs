@@ -106,6 +106,43 @@ namespace HRMS_Application.Controllers
             }
         }
 
+        [HttpPost("Apply_Behalf")]
+       // [Authorize(new[] { "Admin", "User" })]
+        public async Task<IActionResult> ApllyLeaveBehalf([FromBody] LeaveTrackingDTO leaveTrackingDto, int empCredentialId)
+        {
+            _logger.LogInformation("Apply leave method started");
+
+            try
+            {
+               
+
+                // Map the DTO to the entity model
+                var leaveTracking = new LeaveTracking
+                {
+                    LeaveTypeId = leaveTrackingDto.LeaveTypeId,
+                    Startdate = leaveTrackingDto.StartDate,
+                    Enddate = leaveTrackingDto.EndDate,
+                    ReasonForLeave = leaveTrackingDto.ReasonForLeave,
+                    EmpCredentialId = empCredentialId,
+                    AppliedDate = leaveTrackingDto.Applied,
+                    Status = "Approved",
+                    Files = leaveTrackingDto.Files,
+                    Session = leaveTrackingDto.Session,
+                    Contact = leaveTrackingDto.Contact,
+                    IsActive = 1,
+                    // Map other necessary fields here
+                };
+
+                // Call the service to create the leave tracking record
+                var result = await _leaveTracking.ApllyLeaveBehalf(leaveTracking, empCredentialId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] LeaveTracking leaveTracking)
