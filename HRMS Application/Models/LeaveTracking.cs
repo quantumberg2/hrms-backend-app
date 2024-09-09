@@ -2,6 +2,8 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+
 
 namespace HRMS_Application.Models
 {
@@ -20,6 +22,7 @@ namespace HRMS_Application.Models
         public string ReasonForLeave { get; set; }
         public short? IsActive { get; set; }
 
+        [JsonIgnore]
         public virtual EmployeeCredential EmpCredential { get; set; }
         public virtual LeaveType LeaveType { get; set; }
     }

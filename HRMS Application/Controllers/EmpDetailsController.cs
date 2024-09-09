@@ -4,6 +4,7 @@ using HRMS_Application.Authorization;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.DTO;
 
 namespace HRMS_Application.Controllers
 {
@@ -76,6 +77,13 @@ namespace HRMS_Application.Controllers
             var res = _Empdetails.SoftDelete(id, isActive);
             return res;
 
+        }
+        [HttpGet("EmployeeInfo")]
+        public ActionResult<IEnumerable<EmployeeView>> GetAllEmployees()
+        {
+            var employees = _Empdetails.GetAllEmployees();
+
+            return Ok(employees);
         }
     }
 }

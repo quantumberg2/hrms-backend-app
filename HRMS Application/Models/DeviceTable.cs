@@ -9,14 +9,14 @@ namespace HRMS_Application.Models
     {
         public int Id { get; set; }
         public int? EmpCredentialId { get; set; }
-        public TimeSpan? TimeIn { get; set; }
-        public TimeSpan? TimeOut { get; set; }
+        public DateTime? TimeIn { get; set; }
+        public DateTime? TimeOut { get; set; }
         public DateTime? InsertedDate { get; set; }
-        public TimeSpan? WorkTime { get; set; }
-        public TimeSpan? OverTime { get; set; }
+        public DateTime? WorkTime { get; set; }
+        public DateTime? OverTime { get; set; }
         public string Remark { get; set; }
-        public TimeSpan? ErlOut { get; set; }
-        public TimeSpan? LateIn { get; set; }
+        public DateTime? ErlOut { get; set; }
+        public DateTime? LateIn { get; set; }
         public string Name { get; set; }
         public string Status { get; set; }
         public short? IsActive { get; set; }

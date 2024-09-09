@@ -52,11 +52,23 @@ namespace HRMS_Application.Controllers
             try
             {
                 // Extract the token from the Authorization header
-                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+                // Check if the token is present
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization header is missing or token is empty.");
+                }
 
                 // Decode the JWT token to extract claims
-                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-                var empCredentialIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId");
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized("Invalid token format.");
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+                var empCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId");
 
                 if (empCredentialIdClaim == null)
                 {
@@ -73,10 +85,10 @@ namespace HRMS_Application.Controllers
                     Startdate = leaveTrackingDto.StartDate,
                     Enddate = leaveTrackingDto.EndDate,
                     ReasonForLeave = leaveTrackingDto.ReasonForLeave,
-                    EmpCredentialId = leaveTrackingDto.EmpCredentialId,
+                    EmpCredentialId = empCredentialId,
                     AppliedDate = leaveTrackingDto.Applied,
                     Status = "Pending",
-                    Files= leaveTrackingDto.Files,
+                    Files = leaveTrackingDto.Files,
                     Session = leaveTrackingDto.Session,
                     Contact = leaveTrackingDto.Contact,
                     IsActive = 1,
@@ -93,6 +105,7 @@ namespace HRMS_Application.Controllers
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] LeaveTracking leaveTracking)

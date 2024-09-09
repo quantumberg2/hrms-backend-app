@@ -187,5 +187,27 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             return false;
         }
+        public IEnumerable<EmployeeView> GetAllEmployees()
+        {
+            var employees = _hrmsContext.EmployeeDetails
+                .Include(e => e.EmployeeCredential)
+                .Include(e => e.Position)
+                .Include(e => e.Dept)
+                .Include(e => e.EmployeeCredential.AddressInfos)
+                .Include(e => e.EmployeeCredential.EmpPersonalInfos)
+                .ToList();
+
+            return employees.Select(employee => new EmployeeView
+            {
+                EmployeeId = employee.Id,
+                EmployeeName = $"{employee.FirstName} {employee.MiddleName} {employee.LastName}",
+                Address = employee.EmployeeCredential.AddressInfos.FirstOrDefault()?.AddressLine1,
+                Gender = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Gender,
+                DOB = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Dob.ToString(),
+                Designation = employee.Position?.Name,
+               // Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m => m.Id == employee.ManagerId.Value)?.FirstName : "N/A"
+               Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m => m.EmployeeCredentialId == employee.ManagerId.Value)?.FirstName : "N/A"
+            }).ToList();
+        }
     }
 }
