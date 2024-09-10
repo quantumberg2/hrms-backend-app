@@ -22,7 +22,6 @@ namespace HRMS_Application.Models
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Audit> Audits { get; set; }
-
         public virtual async Task<int> SaveChangesAsync(int? userId = null)
         {
             OnBeforeSaveChanges(userId);
@@ -91,6 +90,8 @@ namespace HRMS_Application.Models
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<RequestedCompanyForm> RequestedCompanyForms { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<ShiftRoster> ShiftRosters { get; set; }
+        public virtual DbSet<ShiftRosterType> ShiftRosterTypes { get; set; }
         public virtual DbSet<UserRolesJ> UserRolesJs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -375,17 +376,23 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
 
-                entity.Property(e => e.ErlOut).HasColumnName("Erl_out");
+                entity.Property(e => e.ErlOut)
+                    .HasColumnType("datetime")
+                    .HasColumnName("Erl_out");
 
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
 
-                entity.Property(e => e.LateIn).HasColumnName("Late_In");
+                entity.Property(e => e.LateIn)
+                    .HasColumnType("datetime")
+                    .HasColumnName("Late_In");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(30)
                     .IsUnicode(false);
+
+                entity.Property(e => e.OverTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Remark)
                     .HasMaxLength(50)
@@ -394,6 +401,12 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Status)
                     .HasMaxLength(20)
                     .IsUnicode(false);
+
+                entity.Property(e => e.TimeIn).HasColumnType("datetime");
+
+                entity.Property(e => e.TimeOut).HasColumnType("datetime");
+
+                entity.Property(e => e.WorkTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.EmpCredential)
                     .WithMany(p => p.DeviceTables)
@@ -434,6 +447,10 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.EmployeeCredentialId).HasColumnName("Employee_Credential_Id");
 
+                entity.Property(e => e.Gender)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.MaritalStatus)
@@ -451,13 +468,13 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.EmpPersonalInfos)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmpPerson__Emplo__7B5B524B");
+                    .HasConstraintName("FK__EmpPerson__Emplo__7A672E12");
             });
 
             modelBuilder.Entity<EmpSalary>(entity =>
             {
                 entity.ToTable("EmpSalary");
-
+                    
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.AnnualIncome)
@@ -479,7 +496,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.EmpSalaries)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__EmpSalary__Emplo__7C4F7684");
+                    .HasConstraintName("FK__EmpSalary__Emplo__7B5B524B");
             });
 
             modelBuilder.Entity<EmployeeCredential>(entity =>
@@ -523,7 +540,7 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Employee_Detail");
 
-                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635989E9F235D")
+                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635989BA0CC78")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -718,7 +735,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.RequestedCompany)
                     .WithMany(p => p.Positions)
                     .HasForeignKey(d => d.RequestedCompanyId)
-                    .HasConstraintName("FK__Position__Reques__01142BA1");
+                    .HasConstraintName("FK__Position__Reques__00200768");
             });
 
             modelBuilder.Entity<RequestedCompanyForm>(entity =>
@@ -767,6 +784,41 @@ namespace HRMS_Application.Models
                     .IsUnicode(false);
             });
 
+            modelBuilder.Entity<ShiftRoster>(entity =>
+            {
+                entity.ToTable("ShiftRoster");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.Enddate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("enddate");
+
+                entity.Property(e => e.Startdate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("startdate");
+
+                entity.HasOne(d => d.ShiftRosterType)
+                    .WithMany(p => p.ShiftRosters)
+                    .HasForeignKey(d => d.ShiftRosterTypeId)
+                    .HasConstraintName("FK__ShiftRost__Shift__17F790F9");
+            });
+
+            modelBuilder.Entity<ShiftRosterType>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.TimeRange)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<UserRolesJ>(entity =>
             {
                 entity.ToTable("User_Roles_J");
@@ -782,7 +834,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.EmployeeCredential)
                     .WithMany(p => p.UserRolesJs)
                     .HasForeignKey(d => d.EmployeeCredentialId)
-                    .HasConstraintName("FK__User_Role__Emplo__02084FDA");
+                    .HasConstraintName("FK__User_Role__Emplo__01142BA1");
 
                 entity.HasOne(d => d.Roles)
                     .WithMany(p => p.UserRolesJs)

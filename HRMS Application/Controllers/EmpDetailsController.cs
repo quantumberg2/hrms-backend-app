@@ -4,6 +4,9 @@ using HRMS_Application.Authorization;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.DTO;
+using HRMS_Application.GlobalSearch;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -38,15 +41,56 @@ namespace HRMS_Application.Controllers
             return status;
         }
 
-/*        [HttpPost("insertEmployees")]
+        [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public async Task<string> InsertEmpDetails([FromBody] EmployeeDetail employeeDetail)
+        public async Task<IActionResult> InsertEmployee([FromBody] EmployeeDetail employeeDetail)
         {
-            _logger.LogInformation("Insert Empoyeedetails method started");
+            if (employeeDetail == null)
+            {
+                return BadRequest("Employee details are required.");
+            }
 
-            var status = await _Empdetails.InsertEmployeeDetail(employeeDetail);
-            return status;
-        }*/
+            try
+            {
+                // Extract the JWT token from the Authorization header
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to get the company ID
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                // Parse the company ID from the claim
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                // Call the service to insert the employee
+                string result = await _Empdetails.InsertEmployeeAsync(employeeDetail, companyId);
+
+                if (result.Contains("already in use"))
+                {
+                    return Conflict(result); // Return 409 Conflict if email already exists
+                }
+
+                return Ok(result); // Return 200 OK if employee is inserted successfully
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]
@@ -67,7 +111,7 @@ namespace HRMS_Application.Controllers
             return status;
         }
 
-        [HttpPut("SoftUpdate")]
+        [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
 
         public bool SoftDelete(int id, short isActive)
@@ -76,6 +120,23 @@ namespace HRMS_Application.Controllers
             var res = _Empdetails.SoftDelete(id, isActive);
             return res;
 
+        }
+        [HttpGet("EmployeeInfo")]
+        public ActionResult<IEnumerable<EmployeeView>> GetAllEmployees()
+        {
+            var employees = _Empdetails.GetAllEmployees();
+
+            return Ok(employees);
+        }
+
+
+        [HttpGet("EmployeeSearch/")]
+
+        public IActionResult Get([FromQuery] GlobalsearchEmp globalsearch)
+        {
+            var model = _Empdetails.GetFilters(globalsearch);
+
+            return Ok(model);
         }
     }
 }

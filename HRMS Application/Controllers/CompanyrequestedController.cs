@@ -60,7 +60,7 @@ namespace HRMS_Application.Controllers
 
         }
 
-        [HttpPut("SoftUpdate")]
+        [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
 
         public bool SoftDelete(int id, short isActive)
@@ -124,15 +124,15 @@ namespace HRMS_Application.Controllers
                 return NotFound("Employee credential not found.");
             }
 
-            // Send email with username and password
+          /*  // Send email with username and password
             await _emailPasswordService.SendOtpEmailAsync(new Generatepassword
             {
                 EmailAddress = employeeCredential.Email,
                 Password = employeeCredential.Password,
                 UserName = employeeCredential.UserName
-            });
+            });*/
 
-            return Ok("New company request is verified and email sent with credentials.");
+            return Ok("Recieved your request Admin will get back to you shortly");
         }
 
 

@@ -9,6 +9,7 @@ namespace HRMS_Application.BusinessLogic.Interface
      public Task<IEnumerable<LeaveTracking>> GetAllAsync();
      public Task<LeaveTracking> GetByIdAsync(int id);
      public Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId);
+     public Task<LeaveTracking> ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId);
      public Task<LeaveTracking> UpdateAsync(LeaveTracking leaveTracking);
      public Task<LeaveTracking> UpdateLeaveAsync(int id, string newStatus);
      public Task<bool> DeleteAsync(int id);

@@ -4,48 +4,47 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
 
-
 namespace HRMS_Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PositionController : ControllerBase
+    public class ShiftRosterTypeController : ControllerBase
     {
-        private readonly IPosition _position;
-        private readonly ILogger<PositionController> _logger;
+        private readonly IShiftRostertype _shiftRostertype;
+        private readonly ILogger<ShiftRosterTypeController> _logger;
 
 
-        public PositionController(IPosition position, ILogger<PositionController> logger)
+        public ShiftRosterTypeController(IShiftRostertype shiftRostetype, ILogger<ShiftRosterTypeController> logger)
         {
-            _position = position;
+            _shiftRostertype = shiftRostetype;
             _logger = logger;
         }
         [HttpGet]
         [Authorize(new[] { "Admin" })]
-        public List<Position> GetAllPositions()
+        public List<ShiftRosterType> GetAllShiftRosterType()
         {
             _logger.LogInformation("Getall positions method started");
-            var dept = _position.GetPositions();
+            var dept = _shiftRostertype.GetAllShiftRosterType();
             return dept;
         }
 
-        [HttpPost("insertEmployees")]
+        [HttpPost]
         [Authorize(new[] { "Admin" })]
-        public async Task<string> InsertPositions([FromBody] Position position)
+        public async Task<string> InsertPositions([FromBody] ShiftRosterType shiftRosterType)
         {
             _logger.LogInformation("Insert Positions method started");
 
-            var status = await _position.InsertPositions(position);
+            var status = await _shiftRostertype.InsertShiftRosterType(shiftRosterType);
             return status;
         }
 
         [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]
         // [Route("UpdateAll")]
-        public async Task<Position> UpdatePosition(int id, string? name, int? requestedcompanyId)
+        public async Task<ShiftRosterType> UpdatePosition(int id, string? Type, string? TimeRange)
         {
             _logger.LogInformation("Update Positions method started");
-            var status = await _position.updateposition(id, name, requestedcompanyId);
+            var status = await _shiftRostertype.updateShiftRosterType(id, Type, TimeRange);
             return status;
         }
 
@@ -54,19 +53,8 @@ namespace HRMS_Application.Controllers
         public async Task<bool> DeletePosition(int id)
         {
             _logger.LogInformation("Delete method started");
-            var status = await  _position.deletePosition(id);
+            var status = await _shiftRostertype.deleteShiftRosterType(id);
             return status;
-        }
-
-        [HttpPut("SoftDelete")]
-        [Authorize(new[] { "Admin" })]
-
-        public bool SoftDelete(int id, short isActive)
-        {
-            _logger.LogInformation("Soft update position method started");
-            var res = _position.SoftDelete(id, isActive);
-            return res;
-
         }
     }
 }

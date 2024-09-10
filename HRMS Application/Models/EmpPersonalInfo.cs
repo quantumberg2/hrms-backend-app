@@ -21,6 +21,7 @@ namespace HRMS_Application.Models
         public bool? PhysicallyChallenged { get; set; }
         public string EmergencyContact { get; set; }
         public short? IsActive { get; set; }
+        public string Gender { get; set; }
 
         public virtual EmployeeCredential EmployeeCredential { get; set; }
     }

@@ -32,10 +32,10 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public AccountDetail GetAccountDetailsByAccNumber(string accountNumber)
         {
-            var details = (from row in _context.AccountDetails
-                           where row.AccountNumber == accountNumber && row.IsActive == 1
-                           select row).FirstOrDefault();
-            return details;
+            var result = (from row in _context.AccountDetails
+                          where row.AccountNumber == accountNumber && row.IsActive == 1
+                          select row).FirstOrDefault();
+            return result;
         }
 
         public string InsertAccountDetails(AccountDetail accountDetail)
@@ -55,20 +55,24 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public bool deleteAccountDetails(int id)
         {
-            var result = (from row in _context.AccountDetails
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _context.AccountDetails.Remove(result);
-            _context.SaveChanges();
-            return true;
+           var res = (from row in _context.AccountDetails
+                      where row.Id == id
+                      select row).FirstOrDefault();
+            if(res != null)
+            {
+                _context.Remove(res);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public bool SoftDelete(int id, short isActive)
         {
-            var res = (from row in _context.AccountDetails
-                       where row.Id == id
-                       select row).FirstOrDefault();
-            if(res != null)
+            var res  = (from row in _context.AccountDetails
+                        where row.Id == id
+                        select row).FirstOrDefault();
+            if(res!=null)
             {
                 res.IsActive = isActive;
                 _context.AccountDetails.Update(res);
@@ -77,6 +81,5 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             return false;
         }
-
     }
 }

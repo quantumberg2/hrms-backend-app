@@ -52,11 +52,23 @@ namespace HRMS_Application.Controllers
             try
             {
                 // Extract the token from the Authorization header
-                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+                // Check if the token is present
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization header is missing or token is empty.");
+                }
 
                 // Decode the JWT token to extract claims
-                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-                var empCredentialIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId");
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized("Invalid token format.");
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+                var empCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId");
 
                 if (empCredentialIdClaim == null)
                 {
@@ -73,17 +85,56 @@ namespace HRMS_Application.Controllers
                     Startdate = leaveTrackingDto.StartDate,
                     Enddate = leaveTrackingDto.EndDate,
                     ReasonForLeave = leaveTrackingDto.ReasonForLeave,
-                    EmpCredentialId = leaveTrackingDto.EmpCredentialId,
+                    EmpCredentialId = empCredentialId,
                     AppliedDate = leaveTrackingDto.Applied,
                     Status = "Pending",
-                    Files= leaveTrackingDto.Files,
+                    Files = leaveTrackingDto.Files,
                     Session = leaveTrackingDto.Session,
                     Contact = leaveTrackingDto.Contact,
+                    IsActive = 1,
                     // Map other necessary fields here
                 };
 
                 // Call the service to create the leave tracking record
                 var result = await _leaveTracking.CreateAsync(leaveTracking, empCredentialId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("Apply_Behalf")]
+        [Authorize(new[] { "Admin" })]
+        public async Task<IActionResult> ApllyLeaveBehalf([FromBody] LeaveTrackingDTO leaveTrackingDto, int empCredentialId)
+        {
+            _logger.LogInformation("Apply leave method started");
+
+            try
+            {
+               
+
+                // Map the DTO to the entity model
+                var leaveTracking = new LeaveTracking
+                {
+                    LeaveTypeId = leaveTrackingDto.LeaveTypeId,
+                    Startdate = leaveTrackingDto.StartDate,
+                    Enddate = leaveTrackingDto.EndDate,
+                    ReasonForLeave = leaveTrackingDto.ReasonForLeave,
+                    EmpCredentialId = empCredentialId,
+                    AppliedDate = leaveTrackingDto.Applied,
+                    Status = "Approved",
+                    Files = leaveTrackingDto.Files,
+                    Session = leaveTrackingDto.Session,
+                    Contact = leaveTrackingDto.Contact,
+                    IsActive = 1,
+                    // Map other necessary fields here
+                };
+
+                // Call the service to create the leave tracking record
+                var result = await _leaveTracking.ApllyLeaveBehalf(leaveTracking, empCredentialId);
 
                 return Ok(result);
             }
@@ -183,7 +234,7 @@ namespace HRMS_Application.Controllers
             }
         }
 
-        [HttpPut("SoftUpdate")]
+        [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
 
         public bool SoftDelete(int id, short isActive)

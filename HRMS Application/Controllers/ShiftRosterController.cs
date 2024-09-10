@@ -3,43 +3,41 @@ using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
-
-
 namespace HRMS_Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PositionController : ControllerBase
+    public class ShiftRosterController : ControllerBase
     {
-        private readonly IPosition _position;
-        private readonly ILogger<PositionController> _logger;
+        private readonly IShiftRoster _shiftRoster;
+        private readonly ILogger<ShiftRosterController> _logger;
 
 
-        public PositionController(IPosition position, ILogger<PositionController> logger)
+        public ShiftRosterController(IShiftRoster shiftRoster, ILogger<ShiftRosterController> logger)
         {
-            _position = position;
             _logger = logger;
+            _shiftRoster = shiftRoster;
         }
         [HttpGet]
         [Authorize(new[] { "Admin" })]
-        public List<Position> GetAllPositions()
+        public List<ShiftRoster> GetAllShiftRoster()
         {
             _logger.LogInformation("Getall positions method started");
-            var dept = _position.GetPositions();
+            var dept = _shiftRoster.GetAllShiftRoster();
             return dept;
         }
 
-        [HttpPost("insertEmployees")]
+        [HttpPost]
         [Authorize(new[] { "Admin" })]
-        public async Task<string> InsertPositions([FromBody] Position position)
+        public async Task<string> InsertShiftRoster([FromBody] ShiftRoster shiftRoster)
         {
             _logger.LogInformation("Insert Positions method started");
 
-            var status = await _position.InsertPositions(position);
+            var status = await _shiftRoster.InsertShiftRoster(shiftRoster);
             return status;
         }
 
-        [HttpPut("UpdateAll/{id}")]
+      /*  [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]
         // [Route("UpdateAll")]
         public async Task<Position> UpdatePosition(int id, string? name, int? requestedcompanyId)
@@ -47,26 +45,15 @@ namespace HRMS_Application.Controllers
             _logger.LogInformation("Update Positions method started");
             var status = await _position.updateposition(id, name, requestedcompanyId);
             return status;
-        }
+        }*/
 
         [HttpDelete("{id}")]
         [Authorize(new[] { "Admin" })]
-        public async Task<bool> DeletePosition(int id)
+        public async Task<bool> DeleteShiftRoster(int id)
         {
             _logger.LogInformation("Delete method started");
-            var status = await  _position.deletePosition(id);
+            var status = await _shiftRoster.deleteShiftRoster(id);
             return status;
-        }
-
-        [HttpPut("SoftDelete")]
-        [Authorize(new[] { "Admin" })]
-
-        public bool SoftDelete(int id, short isActive)
-        {
-            _logger.LogInformation("Soft update position method started");
-            var res = _position.SoftDelete(id, isActive);
-            return res;
-
         }
     }
 }

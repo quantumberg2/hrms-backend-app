@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using HRMS_Application.DTO;
 
 namespace HRMS_Application.Controllers
 {
@@ -113,7 +114,7 @@ namespace HRMS_Application.Controllers
             return NoContent();
         }
 
-        [HttpPut("SoftUpdate")]
+        [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
         public bool SoftDelete(int id, short isActive)
         {
@@ -122,5 +123,53 @@ namespace HRMS_Application.Controllers
             return res;
 
         }
+        [HttpPost("GrantLeave")]
+        public IActionResult SaveEmployeeLeaveAllocation([FromBody] EmployeeLeaveAllocationRequest request)
+        {
+            if (request == null || (request.EmpCredentialIds == null && request.EmpCredentialId == null))
+            {
+                return BadRequest("Invalid input data.");
+            }
+
+            try
+            {
+                // Check if it's a single credential ID request
+                if (request.EmpCredentialId.HasValue)
+                {
+                    SaveLeaveAllocation(request.EmpCredentialId.Value, request);
+                }
+                // Handle multiple credential IDs
+                else if (request.EmpCredentialIds != null && request.EmpCredentialIds.Any())
+                {
+                    foreach (var credentialId in request.EmpCredentialIds)
+                    {
+                        SaveLeaveAllocation(credentialId, request);
+                    }
+                }
+
+                return Ok("Leave allocation saved successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        private void SaveLeaveAllocation(int empCredentialId, EmployeeLeaveAllocationRequest request)
+        {
+            var leaveAllocation = new EmployeeLeaveAllocation
+            {
+                Year = request.Year,
+                EmpCredentialId = empCredentialId,
+                NumberOfLeaves = request.NumberOfLeaves,
+                RemainingLeave = request.NumberOfLeaves, // Default to NumberOfLeaves if not specified
+                LeaveType = request.LeaveType, // Default to 1 or any default LeaveType ID you have
+                IsActive = 1 // Default to 1
+            };
+
+            _context.EmployeeLeaveAllocations.Add(leaveAllocation);
+            _context.SaveChanges();
+        }
+
     }
 }
