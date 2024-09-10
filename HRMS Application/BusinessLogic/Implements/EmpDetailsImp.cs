@@ -2,6 +2,7 @@
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.BusinessLogics.Interface;
 using HRMS_Application.DTO;
+using HRMS_Application.GlobalSearch;
 using HRMS_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -107,7 +108,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             employeeDetail.RequestCompanyId = companyId;
             employeeDetail.DeptId = null;
             employeeDetail.PositionId = null;
-
+            employeeDetail.IsActive = 1;
             _hrmsContext.EmployeeDetails.Add(employeeDetail);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
@@ -115,7 +116,9 @@ namespace HRMS_Application.BusinessLogic.Implements
             var userRole = new UserRolesJ
             {
                 EmployeeCredentialId = employeeCredential.Id,
-                RolesId = 2 // Assuming "2" is the ID for the "User" role
+                RolesId = 2 ,// Assuming "2" is the ID for the "User" role
+                IsActive =1
+                
             };
 
             _hrmsContext.UserRolesJs.Add(userRole);
@@ -208,6 +211,23 @@ namespace HRMS_Application.BusinessLogic.Implements
                // Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m => m.Id == employee.ManagerId.Value)?.FirstName : "N/A"
                Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m => m.EmployeeCredentialId == employee.ManagerId.Value)?.FirstName : "N/A"
             }).ToList();
+        }
+
+        public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch)
+        {
+            List<EmployeeDetail> mm = new List<EmployeeDetail>();
+            var filterby = globalSearch.FilterBy.Trim().ToLowerInvariant();
+            if (!string.IsNullOrEmpty(filterby))
+            {
+                var query = _hrmsContext.EmployeeDetails.Where(f => f.FirstName.ToLower().Contains(filterby)
+                || f.LastName.ToLower().Contains(filterby)
+                || f.MiddleName.ToLower().Contains(filterby)
+                || f.Email.ToLower().Contains(filterby)
+                ||f.EmployeeNumber.ToLower().Contains(filterby)
+                ||f.EmployeeCredentialId.ToString().Contains(filterby));
+                mm = query.ToList();
+            }
+            return mm;
         }
     }
 }

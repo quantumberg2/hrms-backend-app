@@ -90,6 +90,8 @@ namespace HRMS_Application.Models
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<RequestedCompanyForm> RequestedCompanyForms { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<ShiftRoster> ShiftRosters { get; set; }
+        public virtual DbSet<ShiftRosterType> ShiftRosterTypes { get; set; }
         public virtual DbSet<UserRolesJ> UserRolesJs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -472,7 +474,7 @@ namespace HRMS_Application.Models
             modelBuilder.Entity<EmpSalary>(entity =>
             {
                 entity.ToTable("EmpSalary");
-
+                    
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.AnnualIncome)
@@ -778,6 +780,41 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
 
                 entity.Property(e => e.Name)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ShiftRoster>(entity =>
+            {
+                entity.ToTable("ShiftRoster");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.Enddate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("enddate");
+
+                entity.Property(e => e.Startdate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("startdate");
+
+                entity.HasOne(d => d.ShiftRosterType)
+                    .WithMany(p => p.ShiftRosters)
+                    .HasForeignKey(d => d.ShiftRosterTypeId)
+                    .HasConstraintName("FK__ShiftRost__Shift__17F790F9");
+            });
+
+            modelBuilder.Entity<ShiftRosterType>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.TimeRange)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Type)
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });
