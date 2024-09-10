@@ -120,11 +120,11 @@ namespace HRMS_Application.Controllers
         [HttpPut("statusUpdate")]
         [Authorize(new[] { "Admin" })]
 
-        public async Task<IActionResult> UpdateLeaveAsync(int empCredentialId, string newStatus)
+        public async Task<IActionResult> UpdateLeaveAsync(int id, string newStatus)
         {
             _logger.LogInformation("update leave status method started");
 
-            var status =await _leaveTracking.UpdateLeaveAsync(empCredentialId,newStatus);
+            var status =await _leaveTracking.UpdateLeaveAsync(id,newStatus);
             return Ok(status);
         }
 

@@ -86,10 +86,10 @@ namespace HRMS_Application.BusinessLogic.Implements
 
 
 
-        public async Task<LeaveTracking> UpdateLeaveAsync(int empCredId, string newStatus)
+        public async Task<LeaveTracking> UpdateLeaveAsync(int id, string newStatus)
         {
             var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
-                                       where row.EmpCredentialId == empCredId
+                                       where row.Id == id
                                        select row).FirstOrDefaultAsync();
 
             if (leaveTracking != null)
