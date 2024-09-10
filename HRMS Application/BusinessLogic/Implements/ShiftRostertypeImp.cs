@@ -9,7 +9,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly HRMSContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
-        public List<string>? dToken;
+        private List<string>? dToken;
         private int? _decodedToken;
         public ShiftRostertypeImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {

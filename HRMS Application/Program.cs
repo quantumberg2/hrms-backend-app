@@ -61,6 +61,8 @@ builder.Services.AddScoped<ILocalStorageOperations, LocalStorageOperationsImp>()
 builder.Services.AddScoped<IDeviceOperations, DeviceOperationsImp>();
 builder.Services.AddScoped<IEmpPersonalInfo , EmpPersonalInfoImp>();
 builder.Services.AddScoped<ILeaveTracking, LeaveTrackingImp>();
+builder.Services.AddScoped<IShiftRoster, ShiftRosterImp>();
+builder.Services.AddScoped<IShiftRostertype, ShiftRostertypeImp>();
 
 builder.Services.AddScoped(_ =>
 {
