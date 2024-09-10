@@ -1,6 +1,6 @@
 ﻿using HRMS_Application.DTO;
+using HRMS_Application.GlobalSearch;
 using HRMS_Application.Models;
-
 namespace HRMS_Application.BusinessLogic.Interface
 {
     public interface IEmpDetails
@@ -13,6 +13,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public bool SoftDelete(int id, short isActive);
         public IEnumerable<EmployeeView> GetAllEmployees();
 
+        public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch);
     }
 
 }

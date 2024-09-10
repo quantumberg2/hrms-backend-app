@@ -91,6 +91,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[ShiftRoster]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ShiftRosterTypes]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[User_Roles_J]",
          "ObjectType": 0
       }
