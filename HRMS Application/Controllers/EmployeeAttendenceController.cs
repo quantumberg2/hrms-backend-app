@@ -27,6 +27,16 @@ namespace HRMS_Application.Controllers
             var dept = _employeeAttendence.GetAllEmpAttendence();
             return dept;
         }
+
+        [HttpGet]
+        [Authorize(new[] { "Admin", "Developer" })]
+        public List<Attendance> GetAttendanceByCredId(int empCredId)
+        {
+            _logger.LogInformation("Get Attendance details by Employee Credential Id method started ");
+            var res = _employeeAttendence.GetAttendanceByCredId(empCredId);
+            return res;
+        }
+
         [HttpGet("GetById")]
         [AllowAnonymous]
         public Attendance GetById(int id)

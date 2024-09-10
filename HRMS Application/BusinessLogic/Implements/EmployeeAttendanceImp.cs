@@ -63,6 +63,13 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
+        public List<Attendance> GetAttendanceByCredId(int empCredId)
+        {
+            var res = (from row in _hrmsContext.Attendances
+                       where row.EmpCredentialId ==  empCredId
+                       select row).ToList();
+            return res;
+        }
         public Attendance GetById(int id)
         {
             var res = (from row in _hrmsContext.Attendances

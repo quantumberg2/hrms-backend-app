@@ -6,6 +6,7 @@ namespace HRMS_Application.BusinessLogic.Interface
     {
         public List<Attendance> GetAllEmpAttendence();
         public Attendance  GetById(int id);
+        public List<Attendance> GetAttendanceByCredId(int empCredId);
         public  Task<string> InsertEmployeeAttendence(Attendance employeeAttendence);
         public Task<Attendance> UpdateEmployeeAttendence(int id, DateTime? Timein, DateTime? Timeout, string? Remark, int empcredentialId);
         public Task<bool> DeleteEmployeeAttendance(int id);
