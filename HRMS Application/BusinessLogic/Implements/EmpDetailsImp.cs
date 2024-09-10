@@ -97,7 +97,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                 Email = employeeDetail.Email,
                 Password = GeneratePassword(),
                 DefaultPassword = true,
-                RequestedCompanyId = companyId
+                RequestedCompanyId = companyId,
+                IsActive = 1
+                
             };
 
             _hrmsContext.EmployeeCredentials.Add(employeeCredential);
@@ -107,7 +109,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             employeeDetail.EmployeeCredentialId = employeeCredential.Id;
             employeeDetail.RequestCompanyId = companyId;
             employeeDetail.DeptId = null;
-            employeeDetail.PositionId = null;
             employeeDetail.IsActive = 1;
             _hrmsContext.EmployeeDetails.Add(employeeDetail);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
