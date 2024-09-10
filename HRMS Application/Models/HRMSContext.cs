@@ -22,6 +22,7 @@ namespace HRMS_Application.Models
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Audit> Audits { get; set; }
+
         public virtual async Task<int> SaveChangesAsync(int? userId = null)
         {
             OnBeforeSaveChanges(userId);
@@ -474,7 +475,7 @@ namespace HRMS_Application.Models
             modelBuilder.Entity<EmpSalary>(entity =>
             {
                 entity.ToTable("EmpSalary");
-                    
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.AnnualIncome)
@@ -540,7 +541,7 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Employee_Detail");
 
-                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635989BA0CC78")
+                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635986A1F7877")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -803,7 +804,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.ShiftRosterType)
                     .WithMany(p => p.ShiftRosters)
                     .HasForeignKey(d => d.ShiftRosterTypeId)
-                    .HasConstraintName("FK__ShiftRost__Shift__17F790F9");
+                    .HasConstraintName("FK__ShiftRost__Shift__236943A5");
             });
 
             modelBuilder.Entity<ShiftRosterType>(entity =>
