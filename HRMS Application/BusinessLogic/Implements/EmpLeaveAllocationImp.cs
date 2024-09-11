@@ -73,7 +73,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<string> InsertEmployeeLeave(EmployeeLeaveAllocation employeeLeave)
         {
-            _hrmsContext.EmployeeLeaveAllocations.Add(employeeLeave);
+            await _hrmsContext.EmployeeLeaveAllocations.AddAsync(employeeLeave);
             var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
