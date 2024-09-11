@@ -15,15 +15,13 @@ namespace HRMS_Application.Controllers
         private readonly ICompanyRequestedform _companyRequested;
         private readonly ILogger<CompanyrequestedController> _logger;
         private readonly HRMSContext _context;
-        private readonly IEmailPassword _emailPasswordService;
 
 
-        public CompanyrequestedController(ICompanyRequestedform companyRequested, ILogger<CompanyrequestedController> logger, HRMSContext context, IEmailPassword emailPasswordService)
+        public CompanyrequestedController(ICompanyRequestedform companyRequested, ILogger<CompanyrequestedController> logger, HRMSContext context)
         {
             _companyRequested = companyRequested;
             _logger = logger;
             _context = context;
-            _emailPasswordService = emailPasswordService;
         }
         [HttpGet]
         // [Authorize(new[] { "Admin" })]
@@ -124,47 +122,17 @@ namespace HRMS_Application.Controllers
                 return NotFound("Employee credential not found.");
             }
 
-          /*  // Send email with username and password
-            await _emailPasswordService.SendOtpEmailAsync(new Generatepassword
-            {
-                EmailAddress = employeeCredential.Email,
-                Password = employeeCredential.Password,
-                UserName = employeeCredential.UserName
-            });*/
 
             return Ok("Recieved your request Admin will get back to you shortly");
         }
 
 
-        /*[HttpPost("update-password")]
-        public async Task<IActionResult> UpdatePassword([FromBody] ForgotpasswordRequest updatePasswordRequest)
-        {
-            if (updatePasswordRequest == null || string.IsNullOrEmpty(updatePasswordRequest.Email) ||
-                string.IsNullOrEmpty(updatePasswordRequest.Otp) || string.IsNullOrEmpty(updatePasswordRequest.NewPassword))
-            {
-                return BadRequest("Email, OTP, and new password are required.");
-            }
-
-            try
-            {
-                var result = await _companyRequested.UpdatePassword(updatePasswordRequest.Email, updatePasswordRequest.Otp, updatePasswordRequest.NewPassword);
-                return Ok(new { message = result });
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (DatabaseOperationException ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
-        }*/
     }
 
 }
 public class OtpRequest
 {
-    public string Email { get; set; }
+    public string? Email { get; set; }
 }
 
 

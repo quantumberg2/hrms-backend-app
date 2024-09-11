@@ -68,7 +68,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             leaveTracking.EmpCredentialId = empCredentialId;
 
             // Add to the database
-            _hrmsContext.LeaveTrackings.Add(leaveTracking);
+            await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             return leaveTracking;
@@ -134,7 +134,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return leaves;
         }
-        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
+        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId, int year)
         {
             // Fetch all leave details for the employee
             var allLeaveDetails = await _hrmsContext.LeaveTrackings
@@ -148,7 +148,8 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             // Fetch leave allocations
             var leaveAllocations = await _hrmsContext.EmployeeLeaveAllocations
-                .Where(e => e.EmpCredentialId == employeeCredentialId)
+                .Where(e => e.EmpCredentialId == employeeCredentialId
+                             && e.Year == year)
                 .ToListAsync();
 
             // Prepare the summary for individual leave types
@@ -229,7 +230,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             leaveTracking.EmpCredentialId = empCredentialId;
 
             // Add to the database
-            _hrmsContext.LeaveTrackings.Add(leaveTracking);
+            await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             return leaveTracking;
