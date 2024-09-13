@@ -154,7 +154,7 @@ namespace HRMS_Application.Controllers
                 return BadRequest("ID mismatch");
             }
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid)  
             {
                 return BadRequest(ModelState);
             }

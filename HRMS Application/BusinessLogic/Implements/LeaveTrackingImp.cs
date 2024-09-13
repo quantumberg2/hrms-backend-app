@@ -96,7 +96,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 leaveTracking.Status = newStatus;
 
-                await _hrmsContext.SaveChangesAsync();
+                await _hrmsContext.SaveChangesAsync(); 
             }
             return leaveTracking;
         }
