@@ -74,6 +74,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             try
             {
                 DecodeToken();
+               // position.RequestedCompanyId = companyID;
                 await _hrmsContext.Positions.AddAsync(position);
                 var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
                 if (result != 0)

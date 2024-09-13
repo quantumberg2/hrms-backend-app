@@ -22,14 +22,12 @@ namespace HRMS_Application.Models
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Audit> Audits { get; set; }
-
         public virtual async Task<int> SaveChangesAsync(int? userId = null)
         {
             OnBeforeSaveChanges(userId);
             var result = await base.SaveChangesAsync();
             return result;
         }
-
         private void OnBeforeSaveChanges(int? userId)
         {
             ChangeTracker.DetectChanges();

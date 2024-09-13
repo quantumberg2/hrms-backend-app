@@ -4,6 +4,7 @@ namespace HRMS_Application.DTO
 {
     public class LeaveApprovalDTO
     {
+        public int Id { get; set; }
         public string EmployeeNumber { get; set; }
         public string Name { get; set; }
         public string LeaveType { get; set; }

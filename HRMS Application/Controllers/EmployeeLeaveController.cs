@@ -126,7 +126,7 @@ namespace HRMS_Application.Controllers
         [HttpPost("GrantLeave")]
         public IActionResult SaveEmployeeLeaveAllocation([FromBody] EmployeeLeaveAllocationRequest request)
         {
-            if (request == null || (request.EmpCredentialIds == null && request.EmpCredentialId == null))
+            if (request == null || (request.EmpCredentialId == null))
             {
                 return BadRequest("Invalid input data.");
             }
@@ -138,14 +138,7 @@ namespace HRMS_Application.Controllers
                 {
                     SaveLeaveAllocation(request.EmpCredentialId.Value, request);
                 }
-                // Handle multiple credential IDs
-                else if (request.EmpCredentialIds != null && request.EmpCredentialIds.Any())
-                {
-                    foreach (var credentialId in request.EmpCredentialIds)
-                    {
-                        SaveLeaveAllocation(credentialId, request);
-                    }
-                }
+              
 
                 return Ok("Leave allocation saved successfully.");
             }

@@ -63,6 +63,7 @@ builder.Services.AddScoped<IEmpPersonalInfo , EmpPersonalInfoImp>();
 builder.Services.AddScoped<ILeaveTracking, LeaveTrackingImp>();
 builder.Services.AddScoped<IShiftRoster, ShiftRosterImp>();
 builder.Services.AddScoped<IShiftRostertype, ShiftRostertypeImp>();
+builder.Services.AddScoped<IOrgChartService, OrgChartServiceImp>();
 
 builder.Services.AddScoped(_ =>
 {

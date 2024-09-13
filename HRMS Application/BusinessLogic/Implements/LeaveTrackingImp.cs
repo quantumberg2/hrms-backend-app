@@ -122,6 +122,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                 where leave.Status == status
                                 select new LeaveApprovalDTO
                                 {
+                                    Id = leave.Id,
                                     EmployeeNumber = emp.EmployeeNumber,
                                     Name = $"{emp.FirstName} {emp.LastName}",
                                     LeaveType = leaveType.Type, // Assuming 'Name' is a property of LeaveType
@@ -134,7 +135,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return leaves;
         }
-        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId, int year)
+        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
         {
             // Fetch all leave details for the employee
             var allLeaveDetails = await _hrmsContext.LeaveTrackings
@@ -148,8 +149,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             // Fetch leave allocations
             var leaveAllocations = await _hrmsContext.EmployeeLeaveAllocations
-                .Where(e => e.EmpCredentialId == employeeCredentialId
-                             && e.Year == year)
+                .Where(e => e.EmpCredentialId == employeeCredentialId)
                 .ToListAsync();
 
             // Prepare the summary for individual leave types
