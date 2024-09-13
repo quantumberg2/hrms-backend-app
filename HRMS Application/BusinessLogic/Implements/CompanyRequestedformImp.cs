@@ -105,75 +105,18 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
-        /*public async Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedCompanyForm)
+       
+        public async Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedcompanyform)
         {
-            if (!IsValidPhoneNumber(requestedCompanyForm.PhoneNumber))
+            if (!IsValidPhoneNumber(requestedcompanyform.PhoneNumber))
             {
                 return "Invalid phone number. The phone number must be exactly 10 digits.";
             }
 
             // Set default values
-            requestedCompanyForm.InsertedDate = DateTime.UtcNow;
-            requestedCompanyForm.UpdatedDate = DateTime.UtcNow;
-            requestedCompanyForm.Status = "Requested";
-
-            // Decode the token
-            DecodeToken();
-
-            // Check if the email already exists
-            var existingCompanyForm = await _context.RequestedCompanyForms
-                .FirstOrDefaultAsync(c => c.Email == requestedCompanyForm.Email);
-
-            string generatedOtp;
-
-            if (existingCompanyForm != null)
-            {
-                // Update the existing record with new OTP and expiration time
-                generatedOtp = GenerateOtp();
-                existingCompanyForm.GenerateOtp = generatedOtp;
-                existingCompanyForm.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
-                existingCompanyForm.UpdatedDate = DateTime.UtcNow;
-
-                // Save the changes to the database
-                _context.RequestedCompanyForms.Update(existingCompanyForm);
-            }
-            else
-            {
-                // Generate OTP
-                generatedOtp = GenerateOtp();
-                requestedCompanyForm.GenerateOtp = generatedOtp;
-                requestedCompanyForm.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
-
-                // Add the new entity to the context
-                _context.RequestedCompanyForms.Add(requestedCompanyForm);
-            }
-
-            // Save the changes to the database
-            var result = await _context.SaveChangesAsync(_decodedToken);
-            if (result != 0)
-            {
-                // Send OTP via email
-                await SendOtpEmailAsync(requestedCompanyForm.Email, generatedOtp);
-
-                return "OTP sent to the provided email address.";
-            }
-            else
-            {
-                throw new DatabaseOperationException("Failed to insert company request data");
-            }
-        }
-*/
-        public async Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedCompanyForm)
-        {
-            if (!IsValidPhoneNumber(requestedCompanyForm.PhoneNumber))
-            {
-                return "Invalid phone number. The phone number must be exactly 10 digits.";
-            }
-
-            // Set default values
-            requestedCompanyForm.InsertedDate = DateTime.UtcNow;
-            requestedCompanyForm.UpdatedDate = DateTime.UtcNow;
-            requestedCompanyForm.Status = "Requested";
+            requestedcompanyform.InsertedDate = DateTime.UtcNow;
+            requestedcompanyform.UpdatedDate = DateTime.UtcNow;
+            requestedcompanyform.Status = "Requested";
 
             // Decode the token
             DecodeToken();
@@ -183,7 +126,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             // Check if the email already exists in the RequestedCompanyForm table
             var existingCompanyForm = await _context.RequestedCompanyForms
-                .FirstOrDefaultAsync(c => c.Email == requestedCompanyForm.Email);
+                .FirstOrDefaultAsync(c => c.Email == requestedcompanyform.Email);
 
             if (existingCompanyForm != null)
             {
@@ -196,16 +139,16 @@ namespace HRMS_Application.BusinessLogic.Implements
             else
             {
                 // Add the new RequestedCompanyForm entity to the context
-                _context.RequestedCompanyForms.Add(requestedCompanyForm);
+                await _context.RequestedCompanyForms.AddAsync(requestedcompanyform);
                 await _context.SaveChangesAsync(_decodedToken); // Save the new RequestedCompanyForm
 
                 // Retrieve the newly added RequestedCompanyForm with its ID
-                existingCompanyForm = requestedCompanyForm; // Now it has a valid ID
+                existingCompanyForm = requestedcompanyform; // Now it has a valid ID
             }
 
             // Handle the EmployeeCredential record
             var existingEmployeeCredential = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == requestedCompanyForm.Email);
+                .FirstOrDefaultAsync(e => e.Email == requestedcompanyform.Email);
 
             if (existingEmployeeCredential != null)
             {
@@ -223,9 +166,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                 // Create a new EmployeeCredential record
                 var newEmployeeCredential = new EmployeeCredential
                 {
-                    UserName = requestedCompanyForm.Email, // Use email as username
+                    UserName = requestedcompanyform.Email, // Use email as username
                     Password = GeneratePassword(), // Generate a default password
-                    Email = requestedCompanyForm.Email,
+                    Email = requestedcompanyform.Email,
                     DefaultPassword = true,
                     GenerateOtp = generatedOtp,
                     OtpExpiration = DateTime.UtcNow.AddMinutes(10), // OTP valid for 10 minutes
@@ -233,7 +176,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Status = 1 // Assuming 1 means active, change as needed
                 };
 
-                _context.EmployeeCredentials.Add(newEmployeeCredential);
+                await _context.EmployeeCredentials.AddAsync(newEmployeeCredential);
             }
 
             // Save all changes to the database
@@ -241,7 +184,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (result != 0)
             {
                 // Send OTP via email
-                await SendOtpEmailAsync(requestedCompanyForm.Email, generatedOtp);
+                await SendOtpEmailAsync(requestedcompanyform.Email, generatedOtp);
 
                 return "OTP sent to the provided email address.";
             }
@@ -251,53 +194,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
-
-        /* public async Task<string> GenerateAndSendOtp(string email)
-         {
-             // Check if the email already exists
-             var existingCompanyForm = await _context.RequestedCompanyForms
-                 .FirstOrDefaultAsync(c => c.Email == email);
-
-             var employeeCredential = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == email);
-
-             string generatedOtp;
-
-             if (existingCompanyForm != null)
-             {
-                 // Update the existing record with new OTP and expiration time
-                 generatedOtp = GenerateOtp();
-                 employeeCredential.GenerateOtp = generatedOtp;
-                 employeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
-                 existingCompanyForm.UpdatedDate = DateTime.UtcNow;
-
-                 // Save the changes to the database
-                 _context.RequestedCompanyForms.Update(existingCompanyForm);
-             }
-             else
-             {
-                 return "Email not found.";
-             }
-
-             // Save the changes to the database
-             var result = await _context.SaveChangesAsync(_decodedToken);
-             if (result != 0)
-             {
-                 // Send OTP via email
-                 var otpEmail = new OtpEmail
-                 {
-                     EmailAddress = email,
-                     Otp = generatedOtp
-                 };
-                 await _emailService.SendOtpEmailAsync(otpEmail);
-
-                 return "OTP sent to the provided email address.";
-             }
-             else
-             {
-                 throw new DatabaseOperationException("Failed to update company request data.");
-             }
-         }*/
         private async Task SendOtpEmailAsync(string email, string otp)
         {
             var otpEmail = new OtpEmail
@@ -307,45 +203,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             };
             await _emailService.SendOtpEmailAsync(otpEmail);
         }
-       /* public async Task<string> UpdatePassword(string email, string otp, string newPassword)
-        {
-            // Check if the email and OTP match and are valid
-            var existingCompanyForm = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(c => c.Email == email && c.GenerateOtp == otp);
-
-            if (existingCompanyForm == null || existingCompanyForm.OtpExpiration < DateTime.UtcNow)
-            {
-                return "Invalid or expired OTP.";
-            }
-
-            // Update the password in EmployeeCredentials
-            var employeeCredential = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == email && e.RequestedCompanyId == existingCompanyForm.Id);
-
-            if (employeeCredential == null)
-            {
-                return "User not found.";
-            }
-
-            employeeCredential.Password = newPassword;
-*//*            employeeCredential.DefaultPassword = false;
-*//*            _context.EmployeeCredentials.Update(employeeCredential);
-
-           
-            _context.EmployeeCredentials.Update(existingCompanyForm);
-
-            // Save the changes to the database
-            var result = await _context.SaveChangesAsync(_decodedToken);
-            if (result != 0)
-            {
-                return "Password updated successfully.";
-            }
-            else
-            {
-                throw new DatabaseOperationException("Failed to update password.");
-            }
-        }*/
-
+     
         private string GenerateOtp()
         {
             var random = new Random();

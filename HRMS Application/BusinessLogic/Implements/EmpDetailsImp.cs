@@ -102,7 +102,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 
             };
 
-            _hrmsContext.EmployeeCredentials.Add(employeeCredential);
+            await _hrmsContext.EmployeeCredentials.AddAsync(employeeCredential);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             // Set the EmployeeCredentialId in EmployeeDetail
@@ -110,7 +110,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             employeeDetail.RequestCompanyId = companyId;
             employeeDetail.DeptId = null;
             employeeDetail.IsActive = 1;
-            _hrmsContext.EmployeeDetails.Add(employeeDetail);
+            await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             // Assign "User" role to the employee
@@ -122,7 +122,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 
             };
 
-            _hrmsContext.UserRolesJs.Add(userRole);
+            await _hrmsContext.UserRolesJs.AddAsync(userRole);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             // Send email with username and password
@@ -153,7 +153,8 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<EmployeeDetail> UpdateEmployeeDetail(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
         {
             DecodeToken();
-            var result = _hrmsContext.EmployeeDetails.SingleOrDefault(p => p.Id == id);
+            var result = await _hrmsContext.EmployeeDetails.SingleOrDefaultAsync(p => p.Id == id);
+
             if (result == null)
             {
                 // Handle the case where the user with the specified id doesn't exist

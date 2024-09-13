@@ -81,7 +81,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<string> InsertEmployeeAttendence(Attendance employeeAttendence)
         {
             DecodeToken();
-            _hrmsContext.Attendances.Add(employeeAttendence);
+            await _hrmsContext.Attendances.AddAsync(employeeAttendence);
             var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
@@ -101,14 +101,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                 // Handle the case where the user with the specified id doesn't exist
                 return null;
             }
-            /* result.TimeIn = Timein;
-             result.TimeOut = Timeout;
-             result.Remarks = Remark;*/
+            
             result.EmpCredentialId = empcredentialId;
             _hrmsContext.Attendances.Update(result);
-           /* result.TimeIn = Timein;
-            result.TimeOut = Timeout;
-            result.Remarks = Remark;*/
+          
             result.EmpCredentialId= empcredentialId;
             _hrmsContext.Attendances.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);

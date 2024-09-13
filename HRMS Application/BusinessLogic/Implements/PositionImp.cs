@@ -59,10 +59,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
-        /*public Position GetPositionById(int id)
-        {
-            throw new NotImplementedException();
-        }*/
+      
 
         public List<Position> GetPositions()
         {
@@ -77,7 +74,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             try
             {
                 DecodeToken();
-                _hrmsContext.Positions.Add(position);
+                await _hrmsContext.Positions.AddAsync(position);
                 var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
                 if (result != 0)
                 {

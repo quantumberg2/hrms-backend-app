@@ -98,7 +98,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     RequestedCompanyId = companyId
                 };
 
-                _context.EmployeeCredentials.Add(employeeCredential);
+                await _context.EmployeeCredentials.AddAsync(employeeCredential);
                 await _context.SaveChangesAsync();
 
                 var employeeDetail = new EmployeeDetail
@@ -124,7 +124,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     RolesId = 2 
                 };
 
-                _context.UserRolesJs.Add(userRole);
+                await _context.UserRolesJs.AddAsync(userRole);
                 await _context.SaveChangesAsync();
 
                 // Send email with username and password
