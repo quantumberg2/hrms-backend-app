@@ -254,7 +254,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     NickName = updateEmployeeInfo.NickName,
                     Email = updateEmployeeInfo.EmailAddress,
                     MobileNumber = updateEmployeeInfo.MobileNumber,
-                    Extension = updateEmployeeInfo.Extension
+                    Extension = updateEmployeeInfo.Extension,
+                    IsActive =1,
                 };
                 await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
             }
@@ -287,7 +288,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeepersonalinfo = new EmpPersonalInfo
                 {
                     EmployeeCredentialId = updateEmployeeInfo.EmployeeCredentialId,
-                    Gender = updateEmployeeInfo.gender
+                    Gender = updateEmployeeInfo.gender,
+                    IsActive = 1
                 };
                 await _hrmsContext.EmpPersonalInfos.AddAsync(employeepersonalinfo);
             }
@@ -327,7 +329,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                     LastName = empPersonalInfo.LastName,
                     Email = empPersonalInfo.EmailId,
                     MobileNumber = empPersonalInfo.Contact,
-                    EmployeeCredentialId = empPersonalInfo.EmployeeCredentialId
+                    EmployeeCredentialId = empPersonalInfo.EmployeeCredentialId,
+                    IsActive =1
+                    
                 };
                 await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
             }
@@ -372,7 +376,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     BloodGroup = empPersonalInfo.BloodGroup,
                     SpouseName = empPersonalInfo.SpouseName,
                     PhysicallyChallenged = empPersonalInfo.PhysicallyChallenged,
-                    EmergencyContact = empPersonalInfo.EmergencyContact
+                    EmergencyContact = empPersonalInfo.EmergencyContact,
+                    IsActive =1
                 };
                 await _hrmsContext.EmpPersonalInfos.AddAsync(employeepersonalinfo);
             }
@@ -419,7 +424,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     City = addressInfo.City,
                     State = addressInfo.State,
                     Country = addressInfo.Country,
-                    PinCode = addressInfo.PinCode
+                    PinCode = addressInfo.PinCode,
+                    IsActive =1
                 };
 
                 await _hrmsContext.AddressInfos.AddAsync(employeeAddress); // Insert new record
@@ -465,7 +471,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 existingAccountDetail.Pin = accountDetail.Pin ?? existingAccountDetail.Pin;
                 existingAccountDetail.EligibleForPf = accountDetail.EligibleForPf ?? existingAccountDetail.EligibleForPf;
                 existingAccountDetail.IfscCode = accountDetail.IfscCode ?? existingAccountDetail.IfscCode;
-
+                
                 _hrmsContext.AccountDetails.Update(existingAccountDetail);
             }
             // If account does not exist, create a new one
@@ -487,7 +493,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     PfJoiningDate = accountDetail.PfJoiningDate,
                     Pin = accountDetail.Pin,
                     EligibleForPf = accountDetail.EligibleForPf,
-                    IfscCode = accountDetail.IfscCode
+                    IfscCode = accountDetail.IfscCode,
+                    IsActive =1
                 };
 
                 await _hrmsContext.AccountDetails.AddAsync(newAccountDetail);
