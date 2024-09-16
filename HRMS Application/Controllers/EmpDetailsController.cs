@@ -196,7 +196,7 @@ namespace HRMS_Application.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
+            }/**/
 
             var result = await _Empdetails.UpdateEmployeeAccountInfoAsync(accountDetail);
 
