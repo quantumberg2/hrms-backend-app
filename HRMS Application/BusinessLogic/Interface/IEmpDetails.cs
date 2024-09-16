@@ -14,6 +14,14 @@ namespace HRMS_Application.BusinessLogic.Interface
         public IEnumerable<EmployeeView> GetAllEmployees();
 
         public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch);
+        public Task<bool> UpdateEmployeeInfoAsync(UpdateEmployeeInfoDTO updateEmployeeInfo);
+        public Task<bool> UpdateEmployeepersonalInfoAsync(EmpPersonalInfoDTO empPersonalInfo);
+        public Task<bool> UpdateEmployeeAddresslInfoAsync(AddressInfoDTO addressInfo);
+        public Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetail accountDetail);
+
+
+
+
     }
 
 }

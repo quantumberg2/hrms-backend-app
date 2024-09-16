@@ -28,6 +28,7 @@ namespace HRMS_Application.Models
             var result = await base.SaveChangesAsync();
             return result;
         }
+
         private void OnBeforeSaveChanges(int? userId)
         {
             ChangeTracker.DetectChanges();
@@ -119,15 +120,13 @@ namespace HRMS_Application.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ConfirmAcNo)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Confirm_Ac_No");
+                entity.Property(e => e.City)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.ConfirmIfsc)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("Confirm_IFSC");
+                entity.Property(e => e.Country)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.EligibleForPf).HasColumnName("EligibleForPF");
 
@@ -149,10 +148,11 @@ namespace HRMS_Application.Models
                     .IsUnicode(false)
                     .HasColumnName("PF_Number");
 
-                entity.Property(e => e.PfSchema)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("PF_Schema");
+                entity.Property(e => e.Pin).HasColumnName("PIN");
+
+                entity.Property(e => e.State)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.UanNumber)
                     .HasMaxLength(50)
@@ -456,6 +456,11 @@ namespace HRMS_Application.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Pan)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .HasColumnName("PAN");
+
                 entity.Property(e => e.PersonalEmail)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -510,6 +515,11 @@ namespace HRMS_Application.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.EmployeeLoginName)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("Employee_Login_Name");
+
                 entity.Property(e => e.GenerateOtp)
                     .HasMaxLength(20)
                     .IsUnicode(false)
@@ -539,7 +549,7 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Employee_Detail");
 
-                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635986A1F7877")
+                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635989BA0CC78")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -554,6 +564,10 @@ namespace HRMS_Application.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Extension)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -566,6 +580,14 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.MiddleName)
                     .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.MobileNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NickName)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.RequestCompanyId).HasColumnName("Request_Company_Id");
@@ -802,7 +824,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.ShiftRosterType)
                     .WithMany(p => p.ShiftRosters)
                     .HasForeignKey(d => d.ShiftRosterTypeId)
-                    .HasConstraintName("FK__ShiftRost__Shift__236943A5");
+                    .HasConstraintName("FK__ShiftRost__Shift__17F790F9");
             });
 
             modelBuilder.Entity<ShiftRosterType>(entity =>

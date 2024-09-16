@@ -6,6 +6,7 @@ using HRMS_Application.GlobalSearch;
 using HRMS_Application.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using OfficeOpenXml.FormulaParsing;
 using System.Xml.Linq;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -231,5 +232,142 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             return mm;
         }
+        public async Task<bool> UpdateEmployeeInfoAsync(UpdateEmployeeInfoDTO updateEmployeeInfo)
+        {
+            var employeeDetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(e => e.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId);
+
+            var employeeCredential = await _hrmsContext.EmployeeCredentials
+                .FirstOrDefaultAsync(ec => ec.Id == updateEmployeeInfo.EmployeeCredentialId);
+
+            var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId);
+            if (employeeDetail == null || employeeCredential == null || employeepersonalinfo == null)
+            {
+                return false; // Employee or credential not found
+            }
+
+            // Update only the fields provided in the DTO, keeping other values unchanged.
+            employeeDetail.FirstName = updateEmployeeInfo.EmployeeName ?? employeeDetail.FirstName;
+            employeeDetail.NickName = updateEmployeeInfo.NickName ?? employeeDetail.NickName;
+            employeeDetail.Email = updateEmployeeInfo.EmailAddress ?? employeeDetail.Email;
+            employeeDetail.MobileNumber = updateEmployeeInfo.MobileNumber ?? employeeDetail.MobileNumber;
+            employeeDetail.Extension = updateEmployeeInfo.Extension ?? employeeDetail.Extension;
+            
+            employeeCredential.EmployeeLoginName = updateEmployeeInfo.EmpLoginName ?? employeeCredential.EmployeeLoginName;
+            employeeCredential.Email = updateEmployeeInfo.EmailAddress ?? employeeCredential.Email;
+
+            employeepersonalinfo.Gender = updateEmployeeInfo.gender ?? employeepersonalinfo.Gender;
+
+            // Save changes to the database
+            _hrmsContext.EmployeeDetails.Update(employeeDetail);
+            _hrmsContext.EmployeeCredentials.Update(employeeCredential);
+            _hrmsContext.EmpPersonalInfos.Update(employeepersonalinfo);
+
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UpdateEmployeepersonalInfoAsync(EmpPersonalInfoDTO empPersonalInfo)
+        {
+            var employeeDetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(e => e.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
+
+            var employeeCredential = await _hrmsContext.EmployeeCredentials
+                .FirstOrDefaultAsync(ec => ec.Id == empPersonalInfo.EmployeeCredentialId);
+
+            var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
+            if (employeeDetail == null || employeeCredential == null || employeepersonalinfo == null)
+            {
+                return false; // Employee or credential not found
+            }
+
+            // Update only the fields provided in the DTO, keeping other values unchanged.
+            employeeDetail.FirstName = empPersonalInfo.FirstName ?? employeeDetail.FirstName;
+            employeeDetail.NickName = empPersonalInfo.MiddleName ?? employeeDetail.MiddleName;
+            employeeDetail.LastName = empPersonalInfo.LastName ?? employeeDetail.LastName;
+            employeeDetail.Email = empPersonalInfo.EmailId ?? employeeDetail.Email;
+            employeeDetail.MobileNumber = empPersonalInfo.Contact ?? employeeDetail.MobileNumber;
+
+            employeeCredential.Email = empPersonalInfo.EmailId ?? employeeCredential.Email;
+
+            employeepersonalinfo.Gender = empPersonalInfo.Gender ?? employeepersonalinfo.Gender;
+            employeepersonalinfo.EmailId = employeepersonalinfo.EmailId ?? employeepersonalinfo.EmailId;
+            employeepersonalinfo.PersonalEmail = employeepersonalinfo.PersonalEmail ?? employeepersonalinfo.PersonalEmail;
+            employeepersonalinfo.Dob = employeepersonalinfo.Dob ?? employeepersonalinfo.Dob;
+            employeepersonalinfo.DateOfJoining = employeepersonalinfo.DateOfJoining ?? employeepersonalinfo.DateOfJoining;
+            employeepersonalinfo.ConfirmDate = employeepersonalinfo.ConfirmDate ?? employeepersonalinfo.ConfirmDate;
+            employeepersonalinfo.EmpStatus = employeepersonalinfo.EmpStatus ?? employeepersonalinfo.EmpStatus;
+            employeepersonalinfo.Pan = employeepersonalinfo.Pan ?? employeepersonalinfo.Pan;
+            employeepersonalinfo.MaritalStatus = employeepersonalinfo.MaritalStatus ?? employeepersonalinfo.MaritalStatus;
+            employeepersonalinfo.BloodGroup = employeepersonalinfo.BloodGroup ?? employeepersonalinfo.BloodGroup;
+            employeepersonalinfo.SpouseName = employeepersonalinfo.SpouseName ?? employeepersonalinfo.SpouseName;
+            employeepersonalinfo.PhysicallyChallenged = employeepersonalinfo.PhysicallyChallenged ?? employeepersonalinfo.PhysicallyChallenged;
+            employeepersonalinfo.EmergencyContact = employeepersonalinfo.EmergencyContact ?? employeepersonalinfo.EmergencyContact;
+            // Save changes to the database
+            _hrmsContext.EmployeeDetails.Update(employeeDetail);
+            _hrmsContext.EmployeeCredentials.Update(employeeCredential);
+            _hrmsContext.EmpPersonalInfos.Update(employeepersonalinfo);
+
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+        public async Task<bool> UpdateEmployeeAddresslInfoAsync(AddressInfoDTO addressInfo)
+        {
+            var employeeDetail = await _hrmsContext.AddressInfos
+                .FirstOrDefaultAsync(e => e.EmployeeCredentialId == addressInfo.EmployeeCredentialId);
+            if (employeeDetail == null)
+            {
+                return false; // Employee or credential not found
+            }
+            employeeDetail.AddressLine1 = addressInfo.AddressLine1 ?? employeeDetail.AddressLine1;
+            employeeDetail.AddressLine2 = addressInfo.AddressLine2 ?? employeeDetail.AddressLine2;
+            employeeDetail.City = addressInfo.City ?? employeeDetail.City;
+            employeeDetail.State = addressInfo.State ?? employeeDetail.State;
+            employeeDetail.Country = addressInfo.Country ?? employeeDetail.Country;
+            employeeDetail.PinCode = addressInfo.PinCode ?? employeeDetail.PinCode;
+            
+            _hrmsContext.AddressInfos.Update(employeeDetail);
+
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+         public async Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetail accountDetail)
+        {
+
+            var employeeDetail = await _hrmsContext.AccountDetails
+                .FirstOrDefaultAsync(e => e.EmployeeCredentialId == accountDetail.EmployeeCredentialId);
+            if (employeeDetail == null)
+            {
+                return false; // Employee or credential not found
+            }
+           // employeeDetail.AddressLine1 = addressInfo.AddressLine1 ?? employeeDetail.AddressLine1;
+            employeeDetail.AadharNumber = accountDetail.AadharNumber ?? employeeDetail.AadharNumber;
+            employeeDetail.AccountNumber = accountDetail.AccountNumber ?? employeeDetail.AccountNumber;
+            employeeDetail.PfNumber = accountDetail.PfNumber ?? employeeDetail.PfNumber;
+            employeeDetail.UanNumber = accountDetail.UanNumber ?? employeeDetail.UanNumber;
+            employeeDetail.BankName = accountDetail.BankName ?? employeeDetail.BankName;
+            employeeDetail.AccountType = accountDetail.AccountType ?? employeeDetail.AccountType;
+            employeeDetail.BranchName = accountDetail.BranchName ?? employeeDetail.BranchName;
+            employeeDetail.City = accountDetail.City ?? employeeDetail.City;
+            employeeDetail.Country = accountDetail.Country ?? accountDetail.Country;
+            employeeDetail.State = accountDetail.State ?? employeeDetail.State;
+            employeeDetail.PfJoiningDate = accountDetail.PfJoiningDate ?? employeeDetail.PfJoiningDate;
+            employeeDetail.Pin = accountDetail.Pin ?? employeeDetail.Pin;
+            employeeDetail.EligibleForPf = accountDetail.EligibleForPf ?? employeeDetail.EligibleForPf;
+            employeeDetail.IfscCode = accountDetail.IfscCode ?? employeeDetail.IfscCode;
+            _hrmsContext.AccountDetails.Update(employeeDetail);
+
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+        
+
+
     }
 }

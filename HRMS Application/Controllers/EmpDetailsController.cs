@@ -138,5 +138,74 @@ namespace HRMS_Application.Controllers
 
             return Ok(model);
         }
+
+        [HttpPut("updatedetails")]
+        public async Task<IActionResult> UpdateEmployeeInfo([FromBody] UpdateEmployeeInfoDTO updateEmployeeInfo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _Empdetails.UpdateEmployeeInfoAsync(updateEmployeeInfo);
+
+            if (!result)
+            {
+                return NotFound("Employee with given credential ID not found.");
+            }
+
+            return Ok("Employee information updated successfully.");
+        }
+        [HttpPut("PersonalDetails")]
+        public async Task<IActionResult> UpdateEmployeePersonalInfo([FromBody] EmpPersonalInfoDTO empPersonalInfoDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _Empdetails.UpdateEmployeepersonalInfoAsync(empPersonalInfoDTO);
+
+            if (!result)
+            {
+                return NotFound("Employee with given credential ID not found.");
+            }
+
+            return Ok("Employee information updated successfully.");
+        }
+        [HttpPut("AddressDetail")]
+        public async Task<IActionResult> UpdateEmployeeAddressInfo([FromBody] AddressInfoDTO addressInfo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _Empdetails.UpdateEmployeeAddresslInfoAsync(addressInfo);
+
+            if (!result)
+            {
+                return NotFound("Employee with given credential ID not found.");
+            }
+
+            return Ok("Employee information updated successfully.");
+        }
+        [HttpPut("AccountDetail")]
+        public async Task<IActionResult> UpdateEmployeeAccountInfo([FromBody] AccountDetail accountDetail)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _Empdetails.UpdateEmployeeAccountInfoAsync(accountDetail);
+
+            if (!result)
+            {
+                return NotFound("Employee with given credential ID not found.");
+            }
+
+            return Ok("Employee information updated successfully.");
+        }
     }
 }

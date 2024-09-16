@@ -22,6 +22,7 @@ namespace HRMS_Application.Models
         public string EmergencyContact { get; set; }
         public short? IsActive { get; set; }
         public string Gender { get; set; }
+        public string Pan { get; set; }
 
         public virtual EmployeeCredential EmployeeCredential { get; set; }
     }

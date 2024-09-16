@@ -17,5 +17,8 @@
         public string SpouseName { get; set; }
         public bool? PhysicallyChallenged { get; set; }
         public string EmergencyContact { get; set; }
+        public string PAN {  get; set; }
+        public string Gender { get; set; }
+        public string Contact { get; set; }
     }
 }
