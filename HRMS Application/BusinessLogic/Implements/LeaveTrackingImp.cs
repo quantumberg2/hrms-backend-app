@@ -259,5 +259,18 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return pendingLeaves;
         }
+        public async Task<LeaveTracking> UpdateLeaveAsyncchanges(int employeeCredentialId, int id, string newStatus)
+        {
+            var leaveTracking = await _hrmsContext.LeaveTrackings
+                .FirstOrDefaultAsync(lt => lt.EmpCredentialId == employeeCredentialId && lt.Id == id);
+
+            if (leaveTracking != null)
+            {
+                leaveTracking.Status = newStatus;
+                await _hrmsContext.SaveChangesAsync();
+            }
+
+            return leaveTracking;
+        }
     }
 }
