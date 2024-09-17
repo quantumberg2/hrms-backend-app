@@ -2,6 +2,7 @@
 using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.DTO;
 using HRMS_Application.Models;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -61,6 +62,43 @@ namespace HRMS_Application.BusinessLogic.Implements
             var result = (from row in _hrmsContext.Attendances
                           select row).ToList();
             return result;
+        }
+
+        public List<AttendanceDTO> GetAttendanceByCredId(int empCredId)
+        {
+            var res = (from row in _hrmsContext.Attendances
+                       where row.EmpCredentialId == empCredId
+                       select row).FirstOrDefault();
+
+            var loginInfo = (from row in _hrmsContext.DeviceTables
+                             where row.EmpCredentialId == empCredId
+                             select row).FirstOrDefault();
+
+            if (res != null && loginInfo != null)
+            {
+                AttendanceDTO objAttendanceInfo = new AttendanceDTO();
+
+                if (res.Status == "Present")
+                {
+                    objAttendanceInfo.TimeIn = loginInfo.TimeIn;
+                    objAttendanceInfo.TimeOut = loginInfo.TimeOut;
+                }
+                else
+                {
+                    objAttendanceInfo.TimeIn = null;
+                    objAttendanceInfo.TimeOut = null;
+                }
+
+                objAttendanceInfo.Status = res.Status;
+
+
+
+                return new List<AttendanceDTO> { objAttendanceInfo };
+            }
+            else
+            {
+                return new List<AttendanceDTO>();
+            }
         }
 
         public Attendance GetById(int id)
