@@ -4,6 +4,8 @@ using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using HRMS_Application.DTO;
 
 namespace HRMS_Application.Controllers
 {
@@ -27,6 +29,30 @@ namespace HRMS_Application.Controllers
             var dept = _employeeAttendence.GetAllEmpAttendence();
             return dept;
         }
+
+        [HttpGet("GetByEmpCredId")]
+        [AllowAnonymous]
+        public IActionResult GetAttendanceByCredId()
+        {
+            _logger.LogInformation("Get Attendance details by Employee Credential Id method started ");
+
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+
+            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var empCredentialIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "UserId");
+
+            if (empCredentialIdClaim == null)
+            {
+                return Unauthorized("Employee credential ID not found in token.");
+            }
+
+            // Parse the empCredentialId from the claim
+            int empCredentialId = int.Parse(empCredentialIdClaim.Value);
+
+            var res = _employeeAttendence.GetAttendanceByCredId(empCredentialId);
+            return Ok(res);
+        }
+
         [HttpGet("GetById")]
         [AllowAnonymous]
         public Attendance GetById(int id)
