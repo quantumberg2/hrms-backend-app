@@ -22,15 +22,21 @@ namespace HRMS_Application.BusinessLogic.Implements
                 {
                     ManagerId = manager.Id,
                     ManagerName = manager.UserName,
+                    Designation = _hrmsContext.EmployeeDetails
+                .Where(emp => emp.EmployeeCredentialId == manager.Id)   
+                .Select(emp => emp.Position.Name)                       
+                .FirstOrDefault(),
+
                     Employees = _hrmsContext.EmployeeDetails
                         .Where(emp => emp.ManagerId == manager.Id)
                         .Select(emp => new EmployeeDetailDto
                         {
-                            EmployeeId = emp.Id,
+                            EmployeeId = emp.EmployeeCredentialId,
                             EmployeeName = emp.FirstName + " " + emp.LastName,
                             Email = emp.Email,
-                            PositionId = emp.PositionId,
-                            Department = emp.DeptId // Assuming Department entity has a DeptName field
+                            Designation = emp.Position.Name
+
+
                         }).ToList()
                 }).ToList();
 

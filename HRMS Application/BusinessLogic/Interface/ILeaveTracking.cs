@@ -15,6 +15,9 @@ namespace HRMS_Application.BusinessLogic.Interface
      public Task<bool> DeleteAsync(int id);
      public Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId);
      public bool SoftDelete(int id, short isActive);
+     public List<LeavePendingDTO> GetPendingLeaves(int employeeCredentialId);
+
+
 
     }
 }
