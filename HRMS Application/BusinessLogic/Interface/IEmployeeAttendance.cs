@@ -4,7 +4,7 @@ using HRMS_Application.Models;
 namespace HRMS_Application.BusinessLogic.Interface
 {
     public interface IEmployeeAttendance
-    {
+    {   
         public List<Attendance> GetAllEmpAttendence();
         public Attendance  GetById(int id);
         public List<AttendanceDTO> GetAttendanceByCredId(int empCredId);

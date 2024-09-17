@@ -66,32 +66,37 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public List<AttendanceDTO> GetAttendanceByCredId(int empCredId)
         {
-            // Fetch attendance info
             var res = (from row in _hrmsContext.Attendances
                        where row.EmpCredentialId == empCredId
                        select row).FirstOrDefault();
 
-            // Fetch login info
             var loginInfo = (from row in _hrmsContext.DeviceTables
                              where row.EmpCredentialId == empCredId
                              select row).FirstOrDefault();
 
-            // Check if data exists in both tables
             if (res != null && loginInfo != null)
             {
-                // Create and return attendance info
-                AttendanceDTO objAttendanceInfo = new AttendanceDTO
+                AttendanceDTO objAttendanceInfo = new AttendanceDTO();
+
+                if (res.Status == "Present")
                 {
-                    TimeIn = loginInfo.TimeIn,
-                    TimeOut = loginInfo.TimeOut,
-                    Status = res.Status
-                };
+                    objAttendanceInfo.TimeIn = loginInfo.TimeIn;
+                    objAttendanceInfo.TimeOut = loginInfo.TimeOut;
+                }
+                else
+                {
+                    objAttendanceInfo.TimeIn = null;
+                    objAttendanceInfo.TimeOut = null;
+                }
+
+                objAttendanceInfo.Status = res.Status;
+
+
 
                 return new List<AttendanceDTO> { objAttendanceInfo };
             }
             else
             {
-                // Return empty list if data not found
                 return new List<AttendanceDTO>();
             }
         }
