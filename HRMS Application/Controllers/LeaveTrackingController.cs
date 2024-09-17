@@ -326,7 +326,7 @@ namespace HRMS_Application.Controllers
                     var leaveTracking = await _leaveTracking.UpdateLeaveAsyncchanges(employeeCredentialId,id, newStatus);
 
                 if (leaveTracking == null)
-                {
+                { 
                     return NotFound("Leave record not found.");
                 }
 
