@@ -1,6 +1,7 @@
 ﻿using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.DTO;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -12,64 +13,28 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             _hrmsContext = hrmsContext;
         }
-        public async Task<List<OrgChartNode>> GetOrgChartAsync()
+        public List<OrgChartNode> GetManagersWithEmployees()
         {
-            var employees = _hrmsContext.EmployeeDetails
-                .Where(e => e.IsActive == 1) 
-                .Select(e => new OrgChartNode
+            // Fetch managers and their employees from the database
+            var result = _hrmsContext.EmployeeCredentials
+                .Where(manager => _hrmsContext.EmployeeDetails.Any(emp => emp.ManagerId == manager.Id)) // Ensure manager has employees
+                .Select(manager => new OrgChartNode
                 {
-                    Id = e.Id,
-                    Name = $"{e.FirstName} {e.MiddleName} {e.LastName}",
-                    ManagerId = e.ManagerId,
-                    Email = e.Email,
-                    PositionId = e.PositionId,
-                    EmployeeCredentialId = e.EmployeeCredentialId
-                })
-                .ToList();
+                    ManagerId = manager.Id,
+                    ManagerName = manager.UserName,
+                    Employees = _hrmsContext.EmployeeDetails
+                        .Where(emp => emp.ManagerId == manager.Id)
+                        .Select(emp => new EmployeeDetailDto
+                        {
+                            EmployeeId = emp.Id,
+                            EmployeeName = emp.FirstName + " " + emp.LastName,
+                            Email = emp.Email,
+                            PositionId = emp.PositionId,
+                            Department = emp.DeptId // Assuming Department entity has a DeptName field
+                        }).ToList()
+                }).ToList();
 
-
-            var orgChart = BuildOrgChartHierarchy(employees);
-
-
-            if (orgChart.Count == 0)
-            {
-                return await Task.FromResult(new List<OrgChartNode>());
-            }
-
-            return await Task.FromResult(orgChart);
-        }
-
-        private List<OrgChartNode> BuildOrgChartHierarchy(List<OrgChartNode> employees)
-        {
-            var lookup = employees.ToLookup(e => e.ManagerId);
-
-            var topLevelNodes = new List<OrgChartNode>();
-
-            foreach (var emp in employees)
-            {
-                emp.Children = lookup[emp.Id].ToList();
-
-                
-                if (emp.ManagerId == null)
-                {
-                    topLevelNodes.Add(emp);
-                }
-            }
-            foreach (var node in topLevelNodes)
-            {
-                SortChildren(node);
-            }
-
-            return topLevelNodes;
-        }
-
-        private void SortChildren(OrgChartNode node)
-        {
-            node.Children = node.Children.OrderBy(c => c.ManagerId).ToList();
-            foreach (var child in node.Children)
-            {
-                SortChildren(child); 
-            }
+            return result;
         }
     }
 }

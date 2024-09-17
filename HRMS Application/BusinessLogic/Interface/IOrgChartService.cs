@@ -4,7 +4,7 @@ namespace HRMS_Application.BusinessLogic.Interface
 {
     public interface IOrgChartService
     {
-       public Task<List<OrgChartNode>> GetOrgChartAsync();
+       public List<OrgChartNode> GetManagersWithEmployees();
 
     }
 }

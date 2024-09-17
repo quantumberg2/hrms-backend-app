@@ -2,12 +2,16 @@
 {
     public class OrgChartNode
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int? ManagerId { get; set; } // Assuming ManagerId can be null
+        public int ManagerId { get; set; }
+        public string ManagerName { get; set; }
+        public List<EmployeeDetailDto> Employees { get; set; }
+    }
+    public class EmployeeDetailDto
+    {
+        public int EmployeeId { get; set; }
+        public string EmployeeName { get; set; }
         public string Email { get; set; }
         public int? PositionId { get; set; }
-        public List<OrgChartNode> Children { get; set; } = new List<OrgChartNode>();
-        public int? EmployeeCredentialId { get; internal set; }
+        public int? Department { get; set; }
     }
 }

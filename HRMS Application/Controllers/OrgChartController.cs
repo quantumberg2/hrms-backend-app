@@ -1,4 +1,5 @@
 ﻿using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,27 +17,17 @@ namespace HRMS_Application.Controllers
         }
 
         // GET: api/OrgChart
-        [HttpGet]
-        public async Task<IActionResult> GetOrgChart()
+        [HttpGet("managers-with-employees")]
+        public ActionResult<List<OrgChartNode>> GetManagersWithEmployees()
         {
-            try
-            {
-                // Fetch the organizational chart data
-                var orgChart = await _orgChartService.GetOrgChartAsync();
+            var result = _orgChartService.GetManagersWithEmployees();
 
-                if (orgChart == null || orgChart.Count == 0)
-                {
-                    return NotFound("Organizational chart data not found.");
-                }
-
-                // Return the org chart data
-                return Ok(orgChart);
-            }
-            catch (Exception ex)
+            if (result == null || result.Count == 0)
             {
-                // Handle the error and return a 500 Internal Server Error
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return NotFound("No managers with employees found.");
             }
+
+            return Ok(result);
         }
     }
 }
