@@ -263,21 +263,20 @@ namespace HRMS_Application.BusinessLogic.Implements
         
             public List<LeavePendingDTO> GetHistoryLeaves(int employeeCredentialId)
             {
-                     var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
+                             var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
                                  join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
                                  join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
                                  join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
-                                 where leave.Status == "Pending" && leave.Status == "Withdrawn" && leave.Status == "Approved" && empCred.Id == employeeCredentialId
+                                 where (leave.Status == "Rejected" || leave.Status == "Withdrawn" || leave.Status == "Approved")
+                                       && empCred.Id == employeeCredentialId
                                  select new LeavePendingDTO
                                  {
                                      id = leave.Id,
                                      employeecredentialId = empCred.Id,
                                      Name = empDetail.FirstName + " " + empDetail.LastName,
                                      LeaveType = leaveType.Type,
-                                     managername = _hrmsContext.EmployeeDetails
-                                        .Where(mgr => mgr.EmployeeCredentialId == empDetail.ManagerId)
-                                        .Select(mgr => mgr.FirstName + " " + mgr.LastName).FirstOrDefault(),
                                      Reason = leave.ReasonForLeave,
+                                     status = leave.Status,
                                      StartDate = leave.Startdate,
                                      EndDate = leave.Enddate,
                                      Applieddate = leave.AppliedDate,

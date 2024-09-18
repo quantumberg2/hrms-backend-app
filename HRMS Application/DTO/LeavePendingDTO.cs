@@ -12,5 +12,6 @@
         public DateTime? EndDate { get; set; }
         public DateTime? Applieddate { get; set; }
         public int NoofDays { get; set; }
+        public string status { get; set; }
     }
 }
