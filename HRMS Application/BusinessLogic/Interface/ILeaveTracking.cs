@@ -16,6 +16,8 @@ namespace HRMS_Application.BusinessLogic.Interface
      public Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId);
      public bool SoftDelete(int id, short isActive);
      public List<LeavePendingDTO> GetPendingLeaves(int employeeCredentialId);
+     public List<LeavePendingDTO> GetHistoryLeaves(int employeeCredentialId);
+
      public Task<LeaveTracking> UpdateLeaveAsyncchanges(int employeeCredentialId, int id, string newStatus);
 
 

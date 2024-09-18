@@ -260,6 +260,34 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return pendingLeaves;
         }
+        
+            public List<LeavePendingDTO> GetHistoryLeaves(int employeeCredentialId)
+            {
+                     var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
+                                 join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
+                                 join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
+                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                 where leave.Status == "Pending" && leave.Status == "Withdrawn" && leave.Status == "Approved" && empCred.Id == employeeCredentialId
+                                 select new LeavePendingDTO
+                                 {
+                                     id = leave.Id,
+                                     employeecredentialId = empCred.Id,
+                                     Name = empDetail.FirstName + " " + empDetail.LastName,
+                                     LeaveType = leaveType.Type,
+                                     managername = _hrmsContext.EmployeeDetails
+                                        .Where(mgr => mgr.EmployeeCredentialId == empDetail.ManagerId)
+                                        .Select(mgr => mgr.FirstName + " " + mgr.LastName).FirstOrDefault(),
+                                     Reason = leave.ReasonForLeave,
+                                     StartDate = leave.Startdate,
+                                     EndDate = leave.Enddate,
+                                     Applieddate = leave.AppliedDate,
+                                     NoofDays = (leave.Enddate != null && leave.Startdate != null)
+                                        ? (leave.Enddate.Value - leave.Startdate.Value).Days + 1
+                                        : 0
+                                 }).ToList();
+
+                            return pendingLeaves;
+            }
         public async Task<LeaveTracking> UpdateLeaveAsyncchanges(int employeeCredentialId, int id, string newStatus)
         {
             var leaveTracking = await _hrmsContext.LeaveTrackings
