@@ -5,5 +5,6 @@
         public DateTime? TimeIn { get; set; }
         public DateTime? TimeOut { get; set; }
         public string Status { get; set; }
+        public DateTime Date { get; set; }
     }
 }

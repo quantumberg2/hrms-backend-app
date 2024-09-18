@@ -66,22 +66,33 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public List<AttendanceDTO> GetAttendanceByCredId(int empCredId)
         {
+            // Fetch attendance data based on EmpCredentialId (without a Date column)
             var res = (from row in _hrmsContext.Attendances
                        where row.EmpCredentialId == empCredId
-                       select row).FirstOrDefault();
+                       select row).ToList();
 
+            // Fetch the device login info which contains the InsertedDate (the date reference)
             var loginInfo = (from row in _hrmsContext.DeviceTables
                              where row.EmpCredentialId == empCredId
-                             select row).FirstOrDefault();
+                             select row).ToList();
 
-            if (res != null && loginInfo != null)
+            List<AttendanceDTO> attendanceList = new List<AttendanceDTO>();
+
+            foreach (var login in loginInfo)
             {
-                AttendanceDTO objAttendanceInfo = new AttendanceDTO();
+                // For each login entry (which has a date), find the corresponding attendance record
+                var attendance = res.FirstOrDefault(a => a.EmpCredentialId == login.EmpCredentialId);
 
-                if (res.Status == "Present")
+                AttendanceDTO objAttendanceInfo = new AttendanceDTO
                 {
-                    objAttendanceInfo.TimeIn = loginInfo.TimeIn;
-                    objAttendanceInfo.TimeOut = loginInfo.TimeOut;
+                    Date = login.InsertedDate,
+                    Status = attendance?.Status ?? "Absent"
+                };
+
+                if (attendance != null && attendance.Status == "Present")
+                {
+                    objAttendanceInfo.TimeIn = login.TimeIn;
+                    objAttendanceInfo.TimeOut = login.TimeOut;
                 }
                 else
                 {
@@ -89,17 +100,12 @@ namespace HRMS_Application.BusinessLogic.Implements
                     objAttendanceInfo.TimeOut = null;
                 }
 
-                objAttendanceInfo.Status = res.Status;
-
-
-
-                return new List<AttendanceDTO> { objAttendanceInfo };
+                attendanceList.Add(objAttendanceInfo);
             }
-            else
-            {
-                return new List<AttendanceDTO>();
-            }
+
+            return attendanceList;
         }
+
 
         public Attendance GetById(int id)
         {

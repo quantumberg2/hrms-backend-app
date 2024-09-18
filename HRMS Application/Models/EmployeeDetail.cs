@@ -19,9 +19,6 @@ namespace HRMS_Application.Models
         public int? RequestCompanyId { get; set; }
         public short? IsActive { get; set; }
         public int? ManagerId { get; set; }
-        public string NickName { get; set; }
-        public string Extension { get; set; }
-        public string MobileNumber { get; set; }
 
         public virtual Department Dept { get; set; }
         public virtual EmployeeCredential EmployeeCredential { get; set; }
