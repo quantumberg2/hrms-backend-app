@@ -2,6 +2,7 @@
 {
     public class LeavePendingDTO
     {
+        public int id {  get; set; }
         public int employeecredentialId { get; set; }
         public string Name { get; set; }
         public string LeaveType { get; set; }

@@ -242,6 +242,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                  where leave.Status == "Pending" && empCred.Id == employeeCredentialId
                                  select new LeavePendingDTO
                                  {
+                                     id = leave.Id,
                                      employeecredentialId = empCred.Id,
                                      Name = empDetail.FirstName + " " + empDetail.LastName,
                                      LeaveType = leaveType.Type,
