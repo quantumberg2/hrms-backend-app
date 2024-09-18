@@ -18,6 +18,8 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<bool> UpdateEmployeepersonalInfoAsync(EmpPersonalInfoDTO empPersonalInfo);
         public Task<bool> UpdateEmployeeAddresslInfoAsync(AddressInfoDTO addressInfo);
         public Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetail accountDetail);
+        public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId);
+
 
 
 

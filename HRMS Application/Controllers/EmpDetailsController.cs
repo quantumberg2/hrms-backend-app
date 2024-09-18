@@ -207,5 +207,45 @@ namespace HRMS_Application.Controllers
 
             return Ok("Employee information updated successfully.");
         }
+        [HttpGet("GetEmployeeShiftAndLeaveStats")]
+        public IActionResult GetEmployeeShiftAndLeaveStats()
+        {
+            try
+            {
+                // Extract the JWT token from the Authorization header
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to get the empCredentialId
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extract the "UserId" claim from the token
+                var empCredentialClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId");
+                if (empCredentialClaim == null)
+                {
+                    return Unauthorized("UserId not found in token.");
+                }
+
+                // Parse the empCredentialId from the claim
+                if (!int.TryParse(empCredentialClaim.Value, out int empCredentialId))
+                {
+                    return BadRequest("Invalid UserId in token.");
+                }
+
+                // Call service to get shift and leave stats
+                var stats = _Empdetails.GetEmployeeShiftAndLeaveStats(empCredentialId);
+
+                return Ok(stats);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }

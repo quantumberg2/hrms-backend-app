@@ -505,8 +505,47 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return true;
         }
+        public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
+        {
+            var currentDate = DateTime.Now;
 
-       
-       
+            // Fetch current date-wise shift roster for the employee
+            var shiftRoster = _hrmsContext.ShiftRosters
+                .Where(sr => sr.EmpCredentialId == empCredentialId && sr.Startdate <= currentDate && sr.Enddate >= currentDate)
+                .Include(sr => sr.ShiftRosterType)
+                .FirstOrDefault();
+
+            if (shiftRoster == null)
+            {
+                throw new Exception("No shift roster found for the current date.");
+            }
+
+            // Fetch employee leave allocation
+            var leaveAllocations = _hrmsContext.EmployeeLeaveAllocations
+                .Where(la => la.EmpCredentialId == empCredentialId && la.IsActive == 1)
+                .Include(la => la.LeaveTypeNavigation)
+                .ToList();
+
+            // Calculate total leave count and remaining leave
+            var totalLeaveCount = leaveAllocations.Sum(la => la.NumberOfLeaves ?? 0);
+            var remainingLeaveCount = leaveAllocations.Sum(la => la.RemainingLeave ?? 0);
+
+            // Calculate the percentage of remaining leave
+            var leavePercentage = totalLeaveCount > 0 ? (remainingLeaveCount * 100) / totalLeaveCount : 0;
+
+            // Prepare the result DTO
+            var result = new EmployeeShiftAndLeaveStatsDto
+            {
+                ShiftType = shiftRoster.ShiftRosterType?.Type,
+                ShiftTimeRange = shiftRoster.ShiftRosterType?.TimeRange,
+                TotalLeaveCount = totalLeaveCount,
+                RemainingLeaveCount = remainingLeaveCount,
+                LeavePercentage = leavePercentage
+            };
+
+            return result;
+        }
+
+
     }
 }

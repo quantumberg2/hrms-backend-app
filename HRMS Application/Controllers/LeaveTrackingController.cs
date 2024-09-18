@@ -290,7 +290,7 @@ namespace HRMS_Application.Controllers
         [HttpGet("History-leaves")]
         public IActionResult Historyleaves()
         {
-            _logger.LogInformation("Apply leave method started");
+            _logger.LogInformation("History leave method started");
 
             try
             {
@@ -327,7 +327,7 @@ namespace HRMS_Application.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while fetching pending leaves");
+                _logger.LogError(ex, "An error occurred while fetching History leaves");
                 // Handle any errors
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
