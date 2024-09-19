@@ -13,6 +13,10 @@ namespace HRMS_Application.BusinessLogic.Interface
         public bool SoftDelete(int id, short isActive);
         public IEnumerable<EmployeeView> GetAllEmployees();
 
+        public Task<UpdateEmployeeInfoDTO> GetEmployeeInfoAsync(int employeeCredentialId);
+        public Task<EmpPersonalInfoDTO> GetEmployeePersonalInfoAsync(int employeeCredentialId);
+        public Task<AddressInfoDTO> GetEmployeeAddressInfoAsync(int employeeCredentialId);
+        public Task<AccountDetail> GetEmployeeAccountInfoAsync(int employeeCredentialId);
         public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch);
         public Task<bool> UpdateEmployeeInfoAsync(UpdateEmployeeInfoDTO updateEmployeeInfo);
         public Task<bool> UpdateEmployeepersonalInfoAsync(EmpPersonalInfoDTO empPersonalInfo);

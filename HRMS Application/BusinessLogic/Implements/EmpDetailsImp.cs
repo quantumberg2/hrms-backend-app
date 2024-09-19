@@ -215,7 +215,124 @@ namespace HRMS_Application.BusinessLogic.Implements
                Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m => m.EmployeeCredentialId == employee.ManagerId.Value)?.FirstName : "N/A"
             }).ToList();
         }
+        public async Task<UpdateEmployeeInfoDTO> GetEmployeeInfoAsync(int employeeCredentialId)
+        {
+            // Fetch employee details by EmployeeCredentialId
+            var employeeDetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(e => e.EmployeeCredentialId == employeeCredentialId);
 
+            var employeeCredential = await _hrmsContext.EmployeeCredentials
+                .FirstOrDefaultAsync(ec => ec.Id == employeeCredentialId);
+
+            var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);
+
+            // Check if all necessary data exists
+            if (employeeDetail == null || employeeCredential == null || employeePersonalInfo == null)
+            {
+                return null; // No data found for the given EmployeeCredentialId
+            }
+
+            // Combine the data into the DTO and return
+            return new UpdateEmployeeInfoDTO
+            {
+                EmployeeCredentialId = employeeCredentialId,
+                EmployeeName = employeeDetail.FirstName,
+                NickName = employeeDetail.NickName,
+                EmailAddress = employeeDetail.Email,
+                MobileNumber = employeeDetail.MobileNumber,
+                Extension = employeeDetail.Extension,
+                EmpLoginName = employeeCredential.EmployeeLoginName,
+                gender = employeePersonalInfo.Gender
+            };
+        }
+        public async Task<EmpPersonalInfoDTO> GetEmployeePersonalInfoAsync(int employeeCredentialId)
+        {
+            var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);
+            var employyedetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(ed => ed.EmployeeCredentialId == employeeCredentialId);
+
+            if (employeePersonalInfo == null)
+            {
+                return null; // Return null if no personal information found
+            }
+
+            // Map the entity data to the DTO
+            return new EmpPersonalInfoDTO
+            {
+                FirstName = employyedetail.FirstName,
+                MiddleName = employyedetail.MiddleName,
+                LastName = employyedetail.LastName,
+                Contact = employyedetail.MobileNumber,
+                EmployeeCredentialId = employeePersonalInfo.EmployeeCredentialId,
+                Gender = employeePersonalInfo.Gender,
+                EmailId = employeePersonalInfo.EmailId,
+                PersonalEmail = employeePersonalInfo.PersonalEmail,
+                Dob = employeePersonalInfo.Dob,
+                DateOfJoining = employeePersonalInfo.DateOfJoining,
+                ConfirmDate = employeePersonalInfo.ConfirmDate,
+                EmpStatus = employeePersonalInfo.EmpStatus,
+                PAN = employeePersonalInfo.Pan,
+                MaritalStatus = employeePersonalInfo.MaritalStatus,
+                BloodGroup = employeePersonalInfo.BloodGroup,
+                SpouseName = employeePersonalInfo.SpouseName,
+                PhysicallyChallenged = employeePersonalInfo.PhysicallyChallenged,
+                EmergencyContact = employeePersonalInfo.EmergencyContact
+            };
+        }
+        public async Task<AddressInfoDTO> GetEmployeeAddressInfoAsync(int employeeCredentialId)
+        {
+            var employeeAddress = await _hrmsContext.AddressInfos
+                .FirstOrDefaultAsync(e => e.EmployeeCredentialId == employeeCredentialId);
+
+            if (employeeAddress == null)
+            {
+                return null; // Return null if no address info found
+            }
+
+            // Map the entity data to the DTO
+            return new AddressInfoDTO
+            {
+                EmployeeCredentialId = employeeAddress.EmployeeCredentialId,
+                AddressLine1 = employeeAddress.AddressLine1,
+                AddressLine2 = employeeAddress.AddressLine2,
+                City = employeeAddress.City,
+                State = employeeAddress.State,
+                Country = employeeAddress.Country,
+                PinCode = employeeAddress.PinCode
+            };
+        }
+        public async Task<AccountDetail> GetEmployeeAccountInfoAsync(int employeeCredentialId)
+        {
+            var accountDetail = await _hrmsContext.AccountDetails
+                .FirstOrDefaultAsync(e => e.EmployeeCredentialId == employeeCredentialId);
+
+            if (accountDetail == null)
+            {
+                return null; // Return null if no account info found
+            }
+
+            // Map the entity data to the DTO
+            return new AccountDetail
+            {
+                EmployeeCredentialId = accountDetail.EmployeeCredentialId,
+                AadharNumber = accountDetail.AadharNumber,
+                AccountNumber = accountDetail.AccountNumber,
+                PfNumber = accountDetail.PfNumber,
+                UanNumber = accountDetail.UanNumber,
+                BankName = accountDetail.BankName,
+                AccountType = accountDetail.AccountType,
+                BranchName = accountDetail.BranchName,
+                City = accountDetail.City,
+                Country = accountDetail.Country,
+                State = accountDetail.State,
+                PfJoiningDate = accountDetail.PfJoiningDate,
+                Pin = accountDetail.Pin,
+                EligibleForPf = accountDetail.EligibleForPf,
+                IfscCode = accountDetail.IfscCode
+            };
+        }
         public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch)
         {
             List<EmployeeDetail> mm = new List<EmployeeDetail>();
@@ -507,11 +624,12 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
         {
-            var currentDate = DateTime.Now;
+            var currentDate = DateTime.Now.Date;  
 
-            // Fetch current date-wise shift roster for the employee
             var shiftRoster = _hrmsContext.ShiftRosters
-                .Where(sr => sr.EmpCredentialId == empCredentialId && sr.Startdate <= currentDate && sr.Enddate >= currentDate)
+                .Where(sr => sr.EmpCredentialId == empCredentialId
+                             && sr.Startdate.HasValue && sr.Startdate.Value.Date <= currentDate
+                             && sr.Enddate.HasValue && sr.Enddate.Value.Date >= currentDate)
                 .Include(sr => sr.ShiftRosterType)
                 .FirstOrDefault();
 
@@ -520,20 +638,17 @@ namespace HRMS_Application.BusinessLogic.Implements
                 throw new Exception("No shift roster found for the current date.");
             }
 
-            // Fetch employee leave allocation
+
             var leaveAllocations = _hrmsContext.EmployeeLeaveAllocations
                 .Where(la => la.EmpCredentialId == empCredentialId && la.IsActive == 1)
                 .Include(la => la.LeaveTypeNavigation)
                 .ToList();
 
-            // Calculate total leave count and remaining leave
             var totalLeaveCount = leaveAllocations.Sum(la => la.NumberOfLeaves ?? 0);
             var remainingLeaveCount = leaveAllocations.Sum(la => la.RemainingLeave ?? 0);
 
-            // Calculate the percentage of remaining leave
             var leavePercentage = totalLeaveCount > 0 ? (remainingLeaveCount * 100) / totalLeaveCount : 0;
 
-            // Prepare the result DTO
             var result = new EmployeeShiftAndLeaveStatsDto
             {
                 ShiftType = shiftRoster.ShiftRosterType?.Type,
@@ -545,7 +660,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return result;
         }
-
 
     }
 }

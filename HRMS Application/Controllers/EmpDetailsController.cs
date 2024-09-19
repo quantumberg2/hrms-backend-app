@@ -128,7 +128,54 @@ namespace HRMS_Application.Controllers
 
             return Ok(employees);
         }
+        [HttpGet("getdetails/{employeeCredentialId}")]
+        public async Task<IActionResult> GetEmployeeInfo(int employeeCredentialId)
+        {
+            var employeeInfo = await _Empdetails.GetEmployeeInfoAsync(employeeCredentialId);
 
+            if (employeeInfo == null)
+            {
+                return NotFound("Employee with the given credential ID not found.");
+            }
+
+            return Ok(employeeInfo);
+        }
+        [HttpGet("personaldetails/{employeeCredentialId}")]
+        public async Task<IActionResult> GetEmployeePersonalInfo(int employeeCredentialId)
+        {
+            var employeePersonalInfo = await _Empdetails.GetEmployeePersonalInfoAsync(employeeCredentialId);
+
+            if (employeePersonalInfo == null)
+            {
+                return NotFound("Employee personal information not found for the given credential ID.");
+            }
+
+            return Ok(employeePersonalInfo);
+        }
+        [HttpGet("addressdetails/{employeeCredentialId}")]
+        public async Task<IActionResult> GetEmployeeAddressInfo(int employeeCredentialId)
+        {
+            var employeeAddressInfo = await _Empdetails.GetEmployeeAddressInfoAsync(employeeCredentialId);
+
+            if (employeeAddressInfo == null)
+            {
+                return NotFound("Employee address information not found for the given credential ID.");
+            }
+
+            return Ok(employeeAddressInfo);
+        }
+        [HttpGet("accountdetails/{employeeCredentialId}")]
+        public async Task<IActionResult> GetEmployeeAccountInfo(int employeeCredentialId)
+        {
+            var accountInfo = await _Empdetails.GetEmployeeAccountInfoAsync(employeeCredentialId);
+
+            if (accountInfo == null)
+            {
+                return NotFound("Employee account information not found for the given credential ID.");
+            }
+
+            return Ok(accountInfo);
+        }
 
         [HttpGet("EmployeeSearch/")]
 
@@ -236,7 +283,6 @@ namespace HRMS_Application.Controllers
                     return BadRequest("Invalid UserId in token.");
                 }
 
-                // Call service to get shift and leave stats
                 var stats = _Empdetails.GetEmployeeShiftAndLeaveStats(empCredentialId);
 
                 return Ok(stats);
