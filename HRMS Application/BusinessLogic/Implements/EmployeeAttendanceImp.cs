@@ -64,47 +64,64 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
+
         public List<AttendanceDTO> GetAttendanceByCredId(int empCredId)
         {
-            // Fetch attendance data based on EmpCredentialId (without a Date column)
-            var res = (from row in _hrmsContext.Attendances
-                       where row.EmpCredentialId == empCredId
-                       select row).ToList();
+            var currentYear = DateTime.Now.Year;
+            var startDate = new DateTime(currentYear, 1, 1);
+            var endDate = new DateTime(currentYear, 12, 31);
 
-            // Fetch the device login info which contains the InsertedDate (the date reference)
-            var loginInfo = (from row in _hrmsContext.DeviceTables
-                             where row.EmpCredentialId == empCredId
-                             select row).ToList();
+            var shiftInfo = (from shift in _hrmsContext.ShiftRosters
+                             join shiftType in _hrmsContext.ShiftRosterTypes
+                             on shift.ShiftRosterTypeId equals shiftType.Id
+                             where shift.EmpCredentialId == empCredId
+                             select new
+                             {
+                                 ShiftId = shift.Id,
+                                 ShiftType = shiftType.Type,
+                                 StartDate = shift.Startdate,
+                                 EndDate = shift.Enddate
+                             }).ToList();
 
-            List<AttendanceDTO> attendanceList = new List<AttendanceDTO>();
+            var attendanceInfo = (from date in Enumerable.Range(0, (endDate - startDate).Days + 1)
+                                  let currentDate = startDate.AddDays(date)
+                                  let isSunday = currentDate.DayOfWeek == DayOfWeek.Sunday
 
-            foreach (var login in loginInfo)
-            {
-                // For each login entry (which has a date), find the corresponding attendance record
-                var attendance = res.FirstOrDefault(a => a.EmpCredentialId == login.EmpCredentialId);
+                                  join device in _hrmsContext.DeviceTables
+                                      on new { EmpCredentialId = empCredId, Date = currentDate.Date }
+                                      equals new { EmpCredentialId = device.EmpCredentialId ?? 0, Date = device.InsertedDate.Value.Date } into deviceJoin
+                                  from device in deviceJoin.DefaultIfEmpty()
 
-                AttendanceDTO objAttendanceInfo = new AttendanceDTO
-                {
-                    Date = login.InsertedDate,
-                    Status = attendance?.Status ?? "Absent"
-                };
+                                  join leave in _hrmsContext.LeaveTrackings
+                                      on new { EmpCredentialId = empCredId, Date = currentDate.Date }
+                                      equals new { EmpCredentialId = leave.EmpCredentialId ?? 0, Date = leave.Startdate.Value.Date } into leaveJoin
+                                  from leave in leaveJoin.DefaultIfEmpty()
 
-                if (attendance != null && attendance.Status == "Present")
-                {
-                    objAttendanceInfo.TimeIn = login.TimeIn;
-                    objAttendanceInfo.TimeOut = login.TimeOut;
-                }
-                else
-                {
-                    objAttendanceInfo.TimeIn = null;
-                    objAttendanceInfo.TimeOut = null;
-                }
+                                  join holiday in _hrmsContext.Holidays
+                                      on currentDate.Date equals holiday.Date.Value.Date into holidayJoin
+                                  from holiday in holidayJoin.DefaultIfEmpty()
 
-                attendanceList.Add(objAttendanceInfo);
-            }
+                                  let shift = shiftInfo.FirstOrDefault(s =>
+                                      currentDate.Date >= s.StartDate.Value.Date &&
+                                      currentDate.Date <= s.EndDate.Value.Date)
 
-            return attendanceList;
+                                  select new AttendanceDTO
+                                  {
+                                      Date = currentDate,
+                                      TimeIn = device != null ? device.TimeIn : null,
+                                      TimeOut = device != null ? device.TimeOut : null,
+                                      Status = isSunday ? "Holiday" :
+                                               holiday != null ? "Holiday" :
+                                               leave != null ? "Leave" :
+                                               device != null ? "Present" :
+                                               (currentDate > DateTime.Now ? " " : "Absent"),
+                                      Shift = shift != null ? shift.ShiftType : null 
+                                  }).ToList();
+
+            return attendanceInfo;
         }
+
+
 
 
         public Attendance GetById(int id)

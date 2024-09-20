@@ -67,7 +67,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             DecodeToken();
             leaveTracking.EmpCredentialId = empCredentialId;
 
-            
+            // Add to the database
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
@@ -85,7 +85,6 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
 
 
-
         public async Task<LeaveTracking> UpdateLeaveAsync(int id, string newStatus)
         {
             var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
@@ -94,12 +93,36 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (leaveTracking != null)
             {
+ 
                 leaveTracking.Status = newStatus;
 
-                await _hrmsContext.SaveChangesAsync(); 
+                if (newStatus == "Approved" && leaveTracking.Startdate.HasValue && leaveTracking.Enddate.HasValue)
+                {
+                    var empCredentialId = leaveTracking.EmpCredentialId;
+
+                    var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                                 where row.EmpCredentialId == empCredentialId && row.IsActive == 1
+                                                 select row).FirstOrDefaultAsync();
+
+                    if (leaveAllocation != null)
+                    {
+                        
+                   
+                        int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1; 
+
+                       var RemainingLeave = leaveAllocation.RemainingLeave - totalLeaveDays;
+
+                        if (leaveAllocation.RemainingLeave >0)
+                            leaveAllocation.RemainingLeave = RemainingLeave; 
+                    }
+                }
+
+                await _hrmsContext.SaveChangesAsync();
             }
+
             return leaveTracking;
         }
+
 
         public async Task<bool> DeleteAsync(int id)
         {
@@ -122,35 +145,37 @@ namespace HRMS_Application.BusinessLogic.Implements
                                 where leave.Status == status
                                 select new LeaveApprovalDTO
                                 {
-                                    Id = leave.Id,
                                     EmployeeNumber = emp.EmployeeNumber,
                                     Name = $"{emp.FirstName} {emp.LastName}",
-                                    LeaveType = leaveType.Type, 
+                                    LeaveType = leaveType.Type, // Assuming 'Name' is a property of LeaveType
                                     StartDate = leave.Startdate ?? DateTime.MinValue,
                                     EndDate = leave.Enddate ?? DateTime.MinValue,
                                     NoofDays = (leave.Enddate.HasValue && leave.Startdate.HasValue)
-                                ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1 
+                                ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1 // Include both start and end dates
                                 : 0
                                 }).ToListAsync();
 
             return leaves;
         }
-        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
+        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId, int year)
         {
+            // Fetch all leave details for the employee
             var allLeaveDetails = await _hrmsContext.LeaveTrackings
                 .Where(l => l.EmpCredentialId == employeeCredentialId)
                 .ToListAsync();
 
+            // Calculate global counts
             var totalApprovedCount = allLeaveDetails.Count(l => l.Status == "Approved");
-            var totalPendingCount  = allLeaveDetails.Count(l => l.Status == "Pending");
+            var totalPendingCount = allLeaveDetails.Count(l => l.Status == "Pending");
             var totalRejectedCount = allLeaveDetails.Count(l => l.Status == "Rejected");
 
-            
+            // Fetch leave allocations
             var leaveAllocations = await _hrmsContext.EmployeeLeaveAllocations
-                .Where(e => e.EmpCredentialId == employeeCredentialId)
+                .Where(e => e.EmpCredentialId == employeeCredentialId
+                             && e.Year == year)
                 .ToListAsync();
 
-            
+            // Prepare the summary for individual leave types
             var leaveSummaries = leaveAllocations.Select(allocation => new LeaveSummaryDTO
             {
                 LeaveType = _hrmsContext.LeaveTypes.FirstOrDefault(lt => lt.Id == allocation.LeaveType)?.Type ?? "Unknown",
@@ -183,16 +208,16 @@ namespace HRMS_Application.BusinessLogic.Implements
             }).ToList();
 
             // Calculate the aggregated totals for all leave types
+            var totalAllocatedLeaves = leaveSummaries.Sum(x => x.TotalAllocatedLeaves);
             var totalApprovedLeaves = leaveSummaries.Sum(x => x.ApprovedLeaves);
             var totalPendingLeaves = leaveSummaries.Sum(x => x.PendingLeaves);
             var totalRejectedLeaves = leaveSummaries.Sum(x => x.RejectedLeaves);
             var totalRemainingLeaves = leaveSummaries.Sum(x => x.RemainingLeaves);
-            var totalAllocatedLeaves = leaveSummaries.Sum(x => x.TotalAllocatedLeaves);
 
-            
+            // Return aggregated summary along with individual leave type details
             return new LeaveSummaryDTO
             {
-                LeaveType = "All Leave Types",
+                LeaveType = "All Leave Types", // Label for aggregated summary
                 TotalAllocatedLeaves = totalAllocatedLeaves,
                 ApprovedLeaves = totalApprovedLeaves,
                 PendingLeaves = totalPendingLeaves,
@@ -201,7 +226,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 ApprovedCount = totalApprovedCount,
                 PendingCount = totalPendingCount,
                 RejectedCount = totalRejectedCount,
-                LeaveSummaries = leaveSummaries 
+                LeaveSummaries = leaveSummaries // Include individual summaries
             };
         }
 
@@ -227,78 +252,31 @@ namespace HRMS_Application.BusinessLogic.Implements
             DecodeToken();
             leaveTracking.EmpCredentialId = empCredentialId;
 
-     
+            // Add to the database
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
             return leaveTracking;
         }
+
+        public Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<LeavePendingDTO> GetPendingLeaves(int employeeCredentialId)
         {
-            var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
-                                 join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
-                                 join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
-                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
-                                 where leave.Status == "Pending" && empCred.Id == employeeCredentialId
-                                 select new LeavePendingDTO
-                                 {
-                                     id = leave.Id,
-                                     employeecredentialId = empCred.Id,
-                                     Name = empDetail.FirstName + " " + empDetail.LastName,
-                                     LeaveType = leaveType.Type,
-                                     managername = _hrmsContext.EmployeeDetails
-                                        .Where(mgr => mgr.EmployeeCredentialId == empDetail.ManagerId)
-                                        .Select(mgr => mgr.FirstName + " " + mgr.LastName).FirstOrDefault(),
-                                     Reason = leave.ReasonForLeave,
-                                     StartDate = leave.Startdate,
-                                     EndDate = leave.Enddate,
-                                     Applieddate = leave.AppliedDate,
-                                     NoofDays = (leave.Enddate != null && leave.Startdate != null)
-                                        ? (leave.Enddate.Value - leave.Startdate.Value).Days + 1
-                                        : 0
-                                 }).ToList();
-
-            return pendingLeaves;
+            throw new NotImplementedException();
         }
-        
-            public List<LeavePendingDTO> GetHistoryLeaves(int employeeCredentialId)
-            {
-                             var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
-                                 join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
-                                 join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
-                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
-                                 where (leave.Status == "Rejected" || leave.Status == "Withdrawn" || leave.Status == "Approved")
-                                       && empCred.Id == employeeCredentialId
-                                 select new LeavePendingDTO
-                                 {
-                                     id = leave.Id,
-                                     employeecredentialId = empCred.Id,
-                                     Name = empDetail.FirstName + " " + empDetail.LastName,
-                                     LeaveType = leaveType.Type,
-                                     Reason = leave.ReasonForLeave,
-                                     status = leave.Status,
-                                     StartDate = leave.Startdate,
-                                     EndDate = leave.Enddate,
-                                     Applieddate = leave.AppliedDate,
-                                     NoofDays = (leave.Enddate != null && leave.Startdate != null)
-                                        ? (leave.Enddate.Value - leave.Startdate.Value).Days + 1
-                                        : 0
-                                 }).ToList();
 
-                            return pendingLeaves;
-            }
-        public async Task<LeaveTracking> UpdateLeaveAsyncchanges(int employeeCredentialId, int id, string newStatus)
+        public List<LeavePendingDTO> GetHistoryLeaves(int employeeCredentialId)
         {
-            var leaveTracking = await _hrmsContext.LeaveTrackings
-                .FirstOrDefaultAsync(lt => lt.EmpCredentialId == employeeCredentialId && lt.Id == id);
+            throw new NotImplementedException();
+        }
 
-            if (leaveTracking != null)
-            {
-                leaveTracking.Status = newStatus;
-                await _hrmsContext.SaveChangesAsync();
-            }
-
-            return leaveTracking;
+        public Task<LeaveTracking> UpdateLeaveAsyncchanges(int employeeCredentialId, int id, string newStatus)
+        {
+            throw new NotImplementedException();
         }
     }
 }
