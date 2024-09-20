@@ -84,8 +84,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             return leaveTracking;
         }
 
-
-
         public async Task<LeaveTracking> UpdateLeaveAsync(int id, string newStatus)
         {
             var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
@@ -100,7 +98,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             return leaveTracking;
         }
-
         public async Task<bool> DeleteAsync(int id)
         {
             DecodeToken();
@@ -204,7 +201,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 LeaveSummaries = leaveSummaries 
             };
         }
-
 
         public bool SoftDelete(int id, short isActive)
         {
