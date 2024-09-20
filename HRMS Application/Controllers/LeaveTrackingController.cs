@@ -334,7 +334,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("Leave-Withdrawn")]
-        [Authorize(new[] { "Admin", "User" })]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateLeaveStatus(int id, string newStatus)
         {
 

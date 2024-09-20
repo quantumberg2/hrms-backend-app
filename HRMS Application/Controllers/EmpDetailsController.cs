@@ -16,7 +16,7 @@ namespace HRMS_Application.Controllers
     {
         private readonly IEmpDetails _Empdetails;
         private readonly ILogger<EmpDetailsController> _logger;
-
+/**/
 
         public EmpDetailsController(IEmpDetails EmpDetails, ILogger<EmpDetailsController> logger)
         {
@@ -254,13 +254,14 @@ namespace HRMS_Application.Controllers
 
             return Ok("Employee information updated successfully.");
         }
+
         [HttpGet("GetEmployeeShiftAndLeaveStats")]
         public IActionResult GetEmployeeShiftAndLeaveStats()
         {
             try
             {
                 // Extract the JWT token from the Authorization header
-                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
                 if (string.IsNullOrEmpty(token))
                 {
                     return Unauthorized("Authorization token is missing or invalid.");
@@ -284,7 +285,6 @@ namespace HRMS_Application.Controllers
                 }
 
                 var stats = _Empdetails.GetEmployeeShiftAndLeaveStats(empCredentialId);
-
                 return Ok(stats);
             }
             catch (Exception ex)
