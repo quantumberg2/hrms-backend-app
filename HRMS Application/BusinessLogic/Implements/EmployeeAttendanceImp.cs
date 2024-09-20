@@ -68,8 +68,9 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<AttendanceDTO> GetAttendanceByCredId(int empCredId)
         {
             var currentYear = DateTime.Now.Year;
-            var startDate = new DateTime(currentYear, 1, 1);
-            var endDate = new DateTime(currentYear, 12, 31);
+            var startDate = new DateTime(currentYear, 1, 1, 0, 0, 0, DateTimeKind.Local);
+            var endDate = new DateTime(currentYear, 12, 31, 23, 59, 59, DateTimeKind.Local);
+
 
             var shiftInfo = (from shift in _hrmsContext.ShiftRosters
                              join shiftType in _hrmsContext.ShiftRosterTypes
@@ -101,7 +102,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                       on currentDate.Date equals holiday.Date.Value.Date into holidayJoin
                                   from holiday in holidayJoin.DefaultIfEmpty()
 
-                                  let shift = shiftInfo.FirstOrDefault(s =>
+                                  let shift = shiftInfo.Find(s =>
                                       currentDate.Date >= s.StartDate.Value.Date &&
                                       currentDate.Date <= s.EndDate.Value.Date)
 
