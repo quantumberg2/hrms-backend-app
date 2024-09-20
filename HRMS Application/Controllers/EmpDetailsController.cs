@@ -16,7 +16,7 @@ namespace HRMS_Application.Controllers
     {
         private readonly IEmpDetails _Empdetails;
         private readonly ILogger<EmpDetailsController> _logger;
-
+/**/
 
         public EmpDetailsController(IEmpDetails EmpDetails, ILogger<EmpDetailsController> logger)
         {
