@@ -624,7 +624,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
         {
-            var currentDate = DateTime.Now.Date;  
+            var currentDate = DateTime.Now.Date;
 
             var shiftRoster = _hrmsContext.ShiftRosters
                 .Where(sr => sr.EmpCredentialId == empCredentialId
@@ -637,7 +637,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 throw new Exception("No shift roster found for the current date.");
             }
-
 
             var leaveAllocations = _hrmsContext.EmployeeLeaveAllocations
                 .Where(la => la.EmpCredentialId == empCredentialId && la.IsActive == 1)
@@ -660,6 +659,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return result;
         }
+
 
     }
 }
