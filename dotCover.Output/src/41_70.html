@@ -2,79 +2,122 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Authorization\JwtUtilsTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\EmployeeViewTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Authorization
+namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using System.Collections.Generic;
-    using HRMS_Application.Authorization;
-    using HRMS_Application.DTOs;
-    using HRMS_Application.Helpers;
-    using Microsoft.Extensions.Options;
-    using Moq;
+    using HRMS_Application.DTO;
     using Xunit;
 
-    public class JwtUtilsTests
+    public class EmployeeViewTests
     {
-        private JwtUtils _testClass;
-        private Mock&lt;IOptions&lt;AppSettings&gt;&gt; _appSettings;
+        private readonly EmployeeView _testClass;
 
-        public JwtUtilsTests()
+        public EmployeeViewTests()
         {
-            _appSettings = new Mock&lt;IOptions&lt;AppSettings&gt;&gt;();
-            _testClass = new JwtUtils(_appSettings.Object);
+            _testClass = new EmployeeView();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new JwtUtils(_appSettings.Object);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGenerateJwtToken()
+        public void CanSetAndGetEmployeeId()
         {
             // Arrange
-            var user = new UserDto
-            {
-                UserName = &quot;TestValue558707124&quot;,
-                UserId = 10430243,
-                Roles = new List&lt;string&gt;()
-            };
+            var testValue = 18628338;
 
             // Act
-            var result = _testClass.GenerateJwtToken(user);
+            _testClass.EmployeeId = testValue;
 
             // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.EmployeeId);
         }
 
         [Fact]
-        public void CanCallValidateJwtToken()
+        public void CanSetAndGetEmployeeName()
         {
             // Arrange
-            var token = &quot;TestValue318537167&quot;;
+            var testValue = &quot;TestValue1617778297&quot;;
 
             // Act
-            var result = _testClass.ValidateJwtToken(token);
+            _testClass.EmployeeName = testValue;
 
             // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.EmployeeName);
+        }
+
+        [Fact]
+        public void CanSetAndGetAddress()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1445555755&quot;;
+
+            // Act
+            _testClass.Address = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Address);
+        }
+
+        [Fact]
+        public void CanSetAndGetGender()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1169984526&quot;;
+
+            // Act
+            _testClass.Gender = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Gender);
+        }
+
+        [Fact]
+        public void CanSetAndGetDOB()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2040165132&quot;;
+
+            // Act
+            _testClass.DOB = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.DOB);
+        }
+
+        [Fact]
+        public void CanSetAndGetDesignation()
+        {
+            // Arrange
+            var testValue = &quot;TestValue108275387&quot;;
+
+            // Act
+            _testClass.Designation = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Designation);
+        }
+
+        [Fact]
+        public void CanSetAndGetManager()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1109642688&quot;;
+
+            // Act
+            _testClass.Manager = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Manager);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[17,9,17,31,1],[18,9,18,10,1],[19,13,19,62,1],[20,13,20,60,1],[21,9,21,10,1],[25,9,25,10,1],[27,13,27,62,1],[30,13,30,38,1],[31,9,31,10,1],[35,9,35,10,1],[37,13,42,15,1],[45,13,45,60,1],[48,13,48,72,0],[53,9,53,10,1],[55,13,55,46,1],[58,13,58,61,1],[61,13,61,72,0]]);
+      highlightRanges([[11,9,11,35,1],[12,9,12,10,1],[13,13,13,45,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,38,1],[23,13,23,47,1],[26,13,26,60,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,49,1],[39,13,39,62,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,51,1],[49,13,49,44,1],[52,13,52,57,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,43,1],[65,13,65,56,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,51,1],[75,13,75,40,1],[78,13,78,53,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,50,1],[88,13,88,48,1],[91,13,91,61,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,51,1],[101,13,101,44,1],[104,13,104,57,1],[105,9,105,10,1]]);
     </script>
   </body>
 </html>

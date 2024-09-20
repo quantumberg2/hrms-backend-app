@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\CompanyrequestedControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.DTO;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class CompanyrequestedControllerTests
+    {
+        private readonly CompanyrequestedController _testClass;
+        private readonly Mock&lt;ICompanyRequestedform&gt; _companyRequested;
+        private readonly Mock&lt;ILogger&lt;CompanyrequestedController&gt;&gt; _logger;
+        private HRMSContext _context;
+
+        public CompanyrequestedControllerTests()
+        {
+            _companyRequested = new Mock&lt;ICompanyRequestedform&gt;();
+            _logger = new Mock&lt;ILogger&lt;CompanyrequestedController&gt;&gt;();
+            _context = new HRMSContext();
+            _testClass = new CompanyrequestedController(_companyRequested.Object, _logger.Object, _context);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new CompanyrequestedController(_companyRequested.Object, _logger.Object, _context);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetEmpCredential()
+        {
+            // Arrange
+            _companyRequested.Setup(mock =&gt; mock.GetAllRequestedCompanyForm()).Returns(new List&lt;RequestedCompanyForm&gt;());
+
+            // Act
+            var result = _testClass.GetEmpCredential();
+
+            // Assert
+            _companyRequested.Verify(mock =&gt; mock.GetAllRequestedCompanyForm());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetEmployeeCredentialsById()
+        {
+            // Arrange
+            var id = 909928549;
+
+            _companyRequested.Setup(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;())).Returns(new RequestedCompanyForm
+            {
+                Id = 634140502,
+                Name = &quot;TestValue393044128&quot;,
+                PhoneNumber = &quot;TestValue1089705126&quot;,
+                DomainName = &quot;TestValue1602044217&quot;,
+                Status = &quot;TestValue448385171&quot;,
+                InsertedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow,
+                Email = &quot;TestValue1638353311&quot;,
+                IsActive = (short)8409,
+                CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+            });
+
+            // Act
+            var result = _testClass.GetEmployeeCredentialsById(id);
+
+            // Assert
+            _companyRequested.Verify(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteRequestedCompanyForm()
+        {
+            // Arrange
+            var id = 1148091439;
+
+            _companyRequested.Setup(mock =&gt; mock.DeleteRequestedCompanyForm(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+
+            // Act
+            var result = await _testClass.DeleteRequestedCompanyForm(id);
+
+            // Assert
+            _companyRequested.Verify(mock =&gt; mock.DeleteRequestedCompanyForm(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertRequestedCompanyForm()
+        {
+            // Arrange
+            var requestedCompanyForm = new RequestedCompanyForm
+            {
+                Id = 2118866677,
+                Name = &quot;TestValue1211953008&quot;,
+                PhoneNumber = &quot;TestValue118736118&quot;,
+                DomainName = &quot;TestValue1707714847&quot;,
+                Status = &quot;TestValue816244637&quot;,
+                InsertedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow,
+                Email = &quot;TestValue764649943&quot;,
+                IsActive = (short)20247,
+                CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+            };
+
+            _companyRequested.Setup(mock =&gt; mock.InsertRequestedCompanyForm(It.IsAny&lt;RequestedCompanyForm&gt;())).ReturnsAsync(&quot;TestValue2094523348&quot;);
+
+            // Act
+            var result = await _testClass.InsertRequestedCompanyForm(requestedCompanyForm);
+
+            // Assert
+            _companyRequested.Verify(mock =&gt; mock.InsertRequestedCompanyForm(It.IsAny&lt;RequestedCompanyForm&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 139800988;
+            var isActive = (short)2316;
+
+            _companyRequested.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(true);
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            _companyRequested.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallVerifyOtp()
+        {
+            // Arrange
+            var request = new OtpEmail
+            {
+                EmailAddress = &quot;TestValue255230470&quot;,
+                Otp = &quot;TestValue2060189017&quot;
+            };
+
+            // Act
+            var result = await _testClass.VerifyOtp(request);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+
+    public class OtpRequestTests
+    {
+        private readonly OtpRequest _testClass;
+
+        public OtpRequestTests()
+        {
+            _testClass = new OtpRequest();
+        }
+
+        [Fact]
+        public void CanSetAndGetEmail()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1675935789&quot;;
+
+            // Act
+            _testClass.Email = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Email);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[21,9,21,49,1],[22,9,22,10,1],[23,13,23,67,1],[24,13,24,71,1],[25,13,25,42,1],[26,13,26,109,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,111,1],[36,13,36,38,1],[37,9,37,10,1],[41,9,41,10,1],[43,13,43,122,1],[46,13,46,56,1],[49,13,49,81,1],[51,13,51,72,1],[56,9,56,10,1],[58,13,58,32,1],[60,13,77,16,1],[80,13,80,68,1],[83,13,83,77,1],[85,13,85,72,1],[90,9,90,10,1],[92,13,92,33,1],[94,13,94,114,1],[97,13,97,74,1],[100,13,100,96,1],[102,13,102,72,1],[107,9,107,10,1],[109,13,126,15,1],[128,13,128,148,1],[131,13,131,92,1],[134,13,134,113,1],[136,13,136,72,1],[141,9,141,10,1],[143,13,143,32,1],[144,13,144,40,1],[146,13,146,112,1],[149,13,149,62,1],[152,13,152,99,1],[154,13,154,72,1],[159,9,159,10,1],[161,13,165,15,1],[168,13,168,62,1],[171,13,171,72,0],[179,9,179,33,1],[180,9,180,10,1],[181,13,181,43,1],[182,9,182,10,1],[186,9,186,10,1],[188,13,188,51,1],[191,13,191,42,1],[194,13,194,55,1],[195,9,195,10,1]]);
+    </script>
+  </body>
+</html>

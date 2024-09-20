@@ -160,3 +160,13 @@ C:\Users\USER\source\repos\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6
 C:\Users\USER\source\repos\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.dll
 C:\Users\USER\source\repos\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\refint\HRMSunitTestCase.dll
 C:\Users\USER\source\repos\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.pdb
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\bin\Debug\net6.0\CoverletSourceRootsMapping
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.csproj.AssemblyReference.cache
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.AssemblyInfoInputs.cache
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.AssemblyInfo.cs
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.csproj.CoreCompileInputs.cache
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.sourcelink.json
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.dll
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\refint\HRMSunitTestCase.dll
+C:\Users\USER\source\HRMS\hrms-backend-app\HRMSunitTestCase\obj\Debug\net6.0\HRMSunitTestCase.pdb

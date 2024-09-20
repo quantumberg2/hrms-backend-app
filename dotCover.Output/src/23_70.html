@@ -2,151 +2,238 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\AddressInfoControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\RequestedCompanyFormTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Controllers
+namespace HRMS_Unit_Test.Models
 {
     using System;
     using System.Collections.Generic;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
     using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
-    public class AddressInfoControllerTests
+    public partial class RequestedCompanyFormTests
     {
-        private AddressInfoController _testClass;
-        private Mock&lt;IAddressInfo&gt; _addressInfo;
-        private Mock&lt;ILogger&lt;AddressInfoController&gt;&gt; _logger;
+        private readonly RequestedCompanyForm _testClass;
 
-        public AddressInfoControllerTests()
+        public RequestedCompanyFormTests()
         {
-            _addressInfo = new Mock&lt;IAddressInfo&gt;();
-            _logger = new Mock&lt;ILogger&lt;AddressInfoController&gt;&gt;();
-            _testClass = new AddressInfoController(_addressInfo.Object, _logger.Object);
+            _testClass = new RequestedCompanyForm();
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new AddressInfoController(_addressInfo.Object, _logger.Object);
+            var instance = new RequestedCompanyForm();
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void CanCallGetAllAddressInfo()
+        public void CanSetAndGetId()
         {
             // Arrange
-            _addressInfo.Setup(mock =&gt; mock.GetAllAddressInfo()).Returns(new List&lt;AddressInfo&gt;());
+            var testValue = 286586202;
 
             // Act
-            var result = _testClass.GetAllAddressInfo();
+            _testClass.Id = testValue;
 
             // Assert
-            _addressInfo.Verify(mock =&gt; mock.GetAllAddressInfo());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Id);
         }
 
         [Fact]
-        public void CanCallInsertAddressInfo()
+        public void CanSetAndGetName()
         {
             // Arrange
-            var addresinfo = new AddressInfo
-            {
-                Id = 744241382,
-                EmployeeCredentialId = 610367684,
-                AddressLine1 = &quot;TestValue2123419013&quot;,
-                AddressLine2 = &quot;TestValue1161514708&quot;,
-                City = &quot;TestValue1236846703&quot;,
-                State = &quot;TestValue756233329&quot;,
-                Country = &quot;TestValue635753287&quot;,
-                PinCode = &quot;TestValue282742345&quot;,
-                EmployeeCredential = new EmployeeCredential
-                {
-                    Id = 409958266,
-                    UserName = &quot;TestValue1415857262&quot;,
-                    Password = &quot;TestValue1305610869&quot;,
-                    Status = (short)10252,
-                    RequestedCompanyId = 1701162570,
-                    Email = &quot;TestValue336203286&quot;,
-                    DefaultPassword = false,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 2068371570,
-                        Name = &quot;TestValue1472003760&quot;,
-                        PhoneNumber = &quot;TestValue1212964884&quot;,
-                        DomainName = &quot;TestValue2031198132&quot;,
-                        Status = &quot;TestValue273809571&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue713678213&quot;,
-                        Department = new Department
-                        {
-                            Id = 1836721459,
-                            Name = &quot;TestValue1431034461&quot;,
-                            RequestedCompanyId = 1189723826,
-                            RequestedCompany = default(RequestedCompanyForm),
-                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-                        },
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
-                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                }
-            };
-
-            _addressInfo.Setup(mock =&gt; mock.InsertAddressInfot(It.IsAny&lt;AddressInfo&gt;())).Returns(&quot;TestValue394159202&quot;);
+            var testValue = &quot;TestValue120758869&quot;;
 
             // Act
-            var result = _testClass.InsertAddressInfo(addresinfo);
+            _testClass.Name = testValue;
 
             // Assert
-            _addressInfo.Verify(mock =&gt; mock.InsertAddressInfot(It.IsAny&lt;AddressInfo&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Name);
         }
 
         [Fact]
-        public void CanCallDeleteAddressInfo()
+        public void CanSetAndGetPhoneNumber()
         {
             // Arrange
-            var id = 39499857;
-
-            _addressInfo.Setup(mock =&gt; mock.deleteAddressInfo(It.IsAny&lt;int&gt;())).Returns(true);
+            var testValue = &quot;TestValue1938555348&quot;;
 
             // Act
-            var result = _testClass.DeleteAddressInfo(id);
+            _testClass.PhoneNumber = testValue;
 
             // Assert
-            _addressInfo.Verify(mock =&gt; mock.deleteAddressInfo(It.IsAny&lt;int&gt;()));
+            Assert.Equal(testValue, _testClass.PhoneNumber);
+        }
 
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        [Fact]
+        public void CanSetAndGetDomainName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1643115842&quot;;
+
+            // Act
+            _testClass.DomainName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.DomainName);
+        }
+
+        [Fact]
+        public void CanSetAndGetStatus()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1645410926&quot;;
+
+            // Act
+            _testClass.Status = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Status);
+        }
+
+        [Fact]
+        public void CanSetAndGetInsertedDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.InsertedDate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.InsertedDate);
+        }
+
+        [Fact]
+        public void CanSetAndGetUpdatedDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.UpdatedDate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.UpdatedDate);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmail()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1869214364&quot;;
+
+            // Act
+            _testClass.Email = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Email);
+        }
+
+        [Fact]
+        public void CanSetAndGetIsActive()
+        {
+            // Arrange
+            var testValue = (short)16527;
+
+            // Act
+            _testClass.IsActive = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.IsActive);
+        }
+
+        [Fact]
+        public void CanSetAndGetCompanyDetails()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object;
+
+            // Act
+            _testClass.CompanyDetails = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.CompanyDetails);
+        }
+
+        [Fact]
+        public void CanSetAndGetDepartments()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object;
+
+            // Act
+            _testClass.Departments = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Departments);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeCredentials()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object;
+
+            // Act
+            _testClass.EmployeeCredentials = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.EmployeeCredentials);
+        }
+
+        [Fact]
+        public void CanSetAndGetHolidays()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object;
+
+            // Act
+            _testClass.Holidays = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Holidays);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveTypes()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object;
+
+            // Act
+            _testClass.LeaveTypes = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.LeaveTypes);
+        }
+
+        [Fact]
+        public void CanSetAndGetPositions()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object;
+
+            // Act
+            _testClass.Positions = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Positions);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[18,9,18,44,1],[19,9,19,10,1],[20,13,20,53,1],[21,13,21,66,1],[22,13,22,89,1],[23,9,23,10,1],[27,9,27,10,1],[29,13,29,91,1],[32,13,32,38,1],[33,9,33,10,1],[37,9,37,10,1],[39,13,39,99,1],[42,13,42,57,1],[45,13,45,67,1],[47,13,47,72,1],[52,9,52,10,1],[54,13,106,15,1],[108,13,108,120,1],[111,13,111,67,1],[114,13,114,91,1],[116,13,116,72,1],[121,9,121,10,1],[123,13,123,31,1],[125,13,125,95,1],[128,13,128,59,1],[131,13,131,82,1],[133,13,133,72,1]]);
+      highlightRanges([[13,9,13,43,1],[14,9,14,10,1],[15,13,15,53,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,55,1],[25,13,25,38,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,39,1],[35,13,35,39,1],[38,13,38,52,1],[39,9,39,10,1],[43,9,43,10,1],[45,13,45,50,1],[48,13,48,41,1],[51,13,51,54,1],[52,9,52,10,1],[56,9,56,10,1],[58,13,58,51,1],[61,13,61,48,1],[64,13,64,61,1],[65,9,65,10,1],[69,9,69,10,1],[71,13,71,51,1],[74,13,74,47,1],[77,13,77,60,1],[78,9,78,10,1],[82,9,82,10,1],[84,13,84,51,1],[87,13,87,43,1],[90,13,90,56,1],[91,9,91,10,1],[95,9,95,10,1],[97,13,97,45,1],[100,13,100,49,1],[103,13,103,62,1],[104,9,104,10,1],[108,9,108,10,1],[110,13,110,45,1],[113,13,113,48,1],[116,13,116,61,1],[117,9,117,10,1],[121,9,121,10,1],[123,13,123,51,1],[126,13,126,42,1],[129,13,129,55,1],[130,9,130,10,1],[134,9,134,10,1],[136,13,136,42,1],[139,13,139,45,1],[142,13,142,58,1],[143,9,143,10,1],[147,9,147,10,1],[149,13,149,75,1],[152,13,152,51,1],[155,13,155,63,1],[156,9,156,10,1],[160,9,160,10,1],[162,13,162,72,1],[165,13,165,48,1],[168,13,168,60,1],[169,9,169,10,1],[173,9,173,10,1],[175,13,175,80,1],[178,13,178,56,1],[181,13,181,68,1],[182,9,182,10,1],[186,9,186,10,1],[188,13,188,69,1],[191,13,191,45,1],[194,13,194,57,1],[195,9,195,10,1],[199,9,199,10,1],[201,13,201,71,1],[204,13,204,47,1],[207,13,207,59,1],[208,9,208,10,1],[212,9,212,10,1],[214,13,214,70,1],[217,13,217,46,1],[220,13,220,58,1],[221,9,221,10,1]]);
     </script>
   </body>
 </html>

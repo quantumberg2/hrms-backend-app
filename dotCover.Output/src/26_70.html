@@ -2,161 +2,95 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\DepartmentControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\ShiftRosterTypeTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Controllers
+namespace HRMS_Unit_Test.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
     using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
-    public class DepartmentControllerTests
+    public partial class ShiftRosterTypeTests
     {
-        private DepartmentController _testClass;
-        private Mock&lt;IDepartment&gt; _department;
-        private Mock&lt;ILogger&lt;DepartmentController&gt;&gt; _logger;
+        private readonly ShiftRosterType _testClass;
 
-        public DepartmentControllerTests()
+        public ShiftRosterTypeTests()
         {
-            _department = new Mock&lt;IDepartment&gt;();
-            _logger = new Mock&lt;ILogger&lt;DepartmentController&gt;&gt;();
-            _testClass = new DepartmentController(_department.Object, _logger.Object);
+            _testClass = new ShiftRosterType();
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new DepartmentController(_department.Object, _logger.Object);
+            var instance = new ShiftRosterType();
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void CanCallGetAllDepartments()
+        public void CanSetAndGetId()
         {
             // Arrange
-            _department.Setup(mock =&gt; mock.GetAllDepartment()).Returns(new List&lt;Department&gt;());
+            var testValue = 192779282;
 
             // Act
-            var result = _testClass.GetAllDepartments();
+            _testClass.Id = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.GetAllDepartment());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Id);
         }
 
         [Fact]
-        public async Task CanCallInsertDepartments()
+        public void CanSetAndGetType()
         {
             // Arrange
-            var department = new Department
-            {
-                Id = 741987660,
-                Name = &quot;TestValue1896309557&quot;,
-                RequestedCompanyId = 1815176146,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 1689386188,
-                    Name = &quot;TestValue550320494&quot;,
-                    PhoneNumber = &quot;TestValue1274484374&quot;,
-                    DomainName = &quot;TestValue2082348147&quot;,
-                    Status = &quot;TestValue1765545582&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue358315014&quot;,
-                    Department = default(Department),
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-            };
-
-            _department.Setup(mock =&gt; mock.InsertDepartment(It.IsAny&lt;Department&gt;())).ReturnsAsync(&quot;TestValue1418044533&quot;);
+            var testValue = &quot;TestValue139762141&quot;;
 
             // Act
-            var result = await _testClass.InsertDepartments(department);
+            _testClass.Type = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.InsertDepartment(It.IsAny&lt;Department&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Type);
         }
 
         [Fact]
-        public async Task CanCallUpdateDepartment()
+        public void CanSetAndGetTimeRange()
         {
             // Arrange
-            var id = 1955012774;
-            var name = &quot;TestValue48501686&quot;;
-            var requestedcompanyId = 1443374302;
-
-            _department.Setup(mock =&gt; mock.UpdateDepartment(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;())).ReturnsAsync(new Department
-            {
-                Id = 1399646938,
-                Name = &quot;TestValue1959110494&quot;,
-                RequestedCompanyId = 323565946,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 1518190496,
-                    Name = &quot;TestValue441498364&quot;,
-                    PhoneNumber = &quot;TestValue1146322766&quot;,
-                    DomainName = &quot;TestValue1756846823&quot;,
-                    Status = &quot;TestValue1155057114&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue1725346674&quot;,
-                    Department = default(Department),
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-            });
+            var testValue = &quot;TestValue1122451098&quot;;
 
             // Act
-            var result = await _testClass.UpdateDepartment(id, name, requestedcompanyId);
+            _testClass.TimeRange = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.UpdateDepartment(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.TimeRange);
         }
 
         [Fact]
-        public async Task CanCallDeleteDepartment()
+        public void CanSetAndGetShiftRosters()
         {
             // Arrange
-            var id = 1485943540;
-
-            _department.Setup(mock =&gt; mock.deleteDepartment(It.IsAny&lt;int&gt;())).ReturnsAsync(false);
+            var testValue = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object;
 
             // Act
-            var result = await _testClass.DeleteDepartment(id);
+            _testClass.ShiftRosters = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.deleteDepartment(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Same(testValue, _testClass.ShiftRosters);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[19,9,19,43,1],[20,9,20,10,1],[21,13,21,51,1],[22,13,22,65,1],[23,13,23,87,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,89,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,96,1],[43,13,43,57,1],[46,13,46,65,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,76,15,1],[78,13,78,122,1],[81,13,81,73,1],[84,13,84,87,1],[86,13,86,72,1],[91,9,91,10,1],[93,13,93,33,1],[94,13,94,44,1],[95,13,95,49,1],[97,13,118,16,1],[121,13,121,90,1],[124,13,124,118,1],[126,13,126,72,1],[131,9,131,10,1],[133,13,133,33,1],[135,13,135,99,1],[138,13,138,64,1],[141,13,141,80,1],[143,13,143,72,1]]);
+      highlightRanges([[13,9,13,38,1],[14,9,14,10,1],[15,13,15,48,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,50,1],[25,13,25,38,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,39,1],[35,13,35,39,1],[38,13,38,52,1],[39,9,39,10,1],[43,9,43,10,1],[45,13,45,50,1],[48,13,48,41,1],[51,13,51,54,1],[52,9,52,10,1],[56,9,56,10,1],[58,13,58,51,1],[61,13,61,46,1],[64,13,64,59,1],[65,9,65,10,1],[69,9,69,10,1],[71,13,71,73,1],[74,13,74,49,1],[77,13,77,61,1],[78,9,78,10,1]]);
     </script>
   </body>
 </html>

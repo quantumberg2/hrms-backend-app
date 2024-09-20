@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\ShiftRosterTypeControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class ShiftRosterTypeControllerTests
+    {
+        private readonly ShiftRosterTypeController _testClass;
+        private readonly Mock&lt;IShiftRostertype&gt; _shiftRostetype;
+        private readonly Mock&lt;ILogger&lt;ShiftRosterTypeController&gt;&gt; _logger;
+
+        public ShiftRosterTypeControllerTests()
+        {
+            _shiftRostetype = new Mock&lt;IShiftRostertype&gt;();
+            _logger = new Mock&lt;ILogger&lt;ShiftRosterTypeController&gt;&gt;();
+            _testClass = new ShiftRosterTypeController(_shiftRostetype.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new ShiftRosterTypeController(_shiftRostetype.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllShiftRosterType()
+        {
+            // Arrange
+            _shiftRostetype.Setup(mock =&gt; mock.GetAllShiftRosterType()).Returns(new List&lt;ShiftRosterType&gt;());
+
+            // Act
+            var result = _testClass.GetAllShiftRosterType();
+
+            // Assert
+            _shiftRostetype.Verify(mock =&gt; mock.GetAllShiftRosterType());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertPositions()
+        {
+            // Arrange
+            var shiftRosterType = new ShiftRosterType
+            {
+                Id = 970035281,
+                Type = &quot;TestValue943023523&quot;,
+                TimeRange = &quot;TestValue888588227&quot;,
+                ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+            };
+
+            _shiftRostetype.Setup(mock =&gt; mock.InsertShiftRosterType(It.IsAny&lt;ShiftRosterType&gt;())).ReturnsAsync(&quot;TestValue647623448&quot;);
+
+            // Act
+            var result = await _testClass.InsertPositions(shiftRosterType);
+
+            // Assert
+            _shiftRostetype.Verify(mock =&gt; mock.InsertShiftRosterType(It.IsAny&lt;ShiftRosterType&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdatePosition()
+        {
+            // Arrange
+            var id = 1747570573;
+            var Type = &quot;TestValue1076915682&quot;;
+            var TimeRange = &quot;TestValue1706529583&quot;;
+
+            _shiftRostetype.Setup(mock =&gt; mock.updateShiftRosterType(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;string&gt;())).ReturnsAsync(new ShiftRosterType
+            {
+                Id = 402744524,
+                Type = &quot;TestValue2024337644&quot;,
+                TimeRange = &quot;TestValue1139896086&quot;,
+                ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+            });
+
+            // Act
+            var result = await _testClass.UpdatePosition(id, Type, TimeRange);
+
+            // Assert
+            _shiftRostetype.Verify(mock =&gt; mock.updateShiftRosterType(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeletePosition()
+        {
+            // Arrange
+            var id = 660154360;
+
+            _shiftRostetype.Setup(mock =&gt; mock.deleteShiftRosterType(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+
+            // Act
+            var result = await _testClass.DeletePosition(id);
+
+            // Assert
+            _shiftRostetype.Verify(mock =&gt; mock.deleteShiftRosterType(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,48,1],[20,9,20,10,1],[21,13,21,60,1],[22,13,22,70,1],[23,13,23,96,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,98,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,110,1],[43,13,43,61,1],[46,13,46,74,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,61,15,1],[63,13,63,135,1],[66,13,66,76,1],[69,13,69,101,1],[71,13,71,72,1],[76,9,76,10,1],[78,13,78,33,1],[79,13,79,46,1],[80,13,80,51,1],[82,13,88,16,1],[91,13,91,79,1],[94,13,94,129,1],[96,13,96,72,1],[101,9,101,10,1],[103,13,103,32,1],[105,13,105,107,1],[108,13,108,62,1],[111,13,111,89,1],[113,13,113,72,1]]);
+    </script>
+  </body>
+</html>

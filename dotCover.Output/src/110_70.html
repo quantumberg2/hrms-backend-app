@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Authorization\JwtUtilsTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Authorization
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.DTOs;
+    using HRMS_Application.Helpers;
+    using Microsoft.Extensions.Options;
+    using Moq;
+    using Xunit;
+
+    public class JwtUtilsTests
+    {
+        private readonly JwtUtils _testClass;
+        private readonly Mock&lt;IOptions&lt;AppSettings&gt;&gt; _appSettings;
+
+        public JwtUtilsTests()
+        {
+            _appSettings = new Mock&lt;IOptions&lt;AppSettings&gt;&gt;();
+            _testClass = new JwtUtils(_appSettings.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new JwtUtils(_appSettings.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGenerateJwtToken()
+        {
+            // Arrange
+            var user = new UserDto
+            {
+                UserName = &quot;TestValue1695366951&quot;,
+                UserId = 200399745,
+                Email = &quot;TestValue653674234&quot;,
+                RequestedCompanyId = 71798334,
+                CompanyIds = new List&lt;int&gt;(),
+                Roles = new List&lt;string&gt;()
+            };
+
+            // Act
+            var result = _testClass.GenerateJwtToken(user);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallValidateJwtToken()
+        {
+            // Arrange
+            var token = &quot;TestValue206289278&quot;;
+
+            // Act
+            var result = _testClass.ValidateJwtToken(token);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,31,1],[18,9,18,10,1],[19,13,19,62,1],[20,13,20,60,1],[21,9,21,10,1],[25,9,25,10,1],[27,13,27,62,1],[30,13,30,38,1],[31,9,31,10,1],[35,9,35,10,1],[37,13,45,15,1],[48,13,48,60,1],[51,13,51,72,0],[56,9,56,10,1],[58,13,58,46,1],[61,13,61,61,1],[64,13,64,72,0]]);
+    </script>
+  </body>
+</html>

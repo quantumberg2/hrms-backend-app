@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\EmployeeImportController Tests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class EmployeeImportControllerTests
+    {
+        private readonly EmployeeImportController _testClass;
+        private readonly Mock&lt;IEmployeeImportService&gt; _employeeImportService;
+
+        public EmployeeImportControllerTests()
+        {
+            _employeeImportService = new Mock&lt;IEmployeeImportService&gt;();
+            _testClass = new EmployeeImportController(_employeeImportService.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new EmployeeImportController(_employeeImportService.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCallImportEmployees()
+        {
+            // Arrange
+            var @file = new Mock&lt;IFormFile&gt;().Object;
+
+            _employeeImportService.Setup(mock =&gt; mock.ImportEmployeesFromExcelAsync(It.IsAny&lt;Stream&gt;(), It.IsAny&lt;int&gt;()))
+                .ReturnsAsync((Inserted: 0, Rejected: 0, Errors: new List&lt;string&gt;()));
+
+            // Act
+            var result = await _testClass.ImportEmployees(file);
+
+            // Assert
+            _employeeImportService.Verify(mock =&gt; mock.ImportEmployeesFromExcelAsync(It.IsAny&lt;Stream&gt;(), It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,9,18,47,1],[19,9,19,10,1],[20,13,20,73,1],[21,13,21,86,1],[22,9,22,10,1],[26,9,26,10,1],[28,13,28,88,1],[31,13,31,38,1],[32,9,32,10,1],[36,9,36,10,1],[38,13,38,54,1],[40,13,41,87,1],[44,13,44,65,1],[47,13,47,124,1],[49,13,49,72,0]]);
+    </script>
+  </body>
+</html>

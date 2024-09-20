@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\AzureOperationsImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using Azure.Storage.Blobs;
+    using HRMS_Application.BusinessLogic.Implements;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class AzureOperationsImpTests
+    {
+        private readonly AzureOperationsImp _testClass;
+        private BlobServiceClient _blobServiceClient;
+
+        public AzureOperationsImpTests()
+        {
+            _blobServiceClient = new BlobServiceClient(&quot;TestValue1962203869&quot;);
+            _testClass = new AzureOperationsImp(_blobServiceClient);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new AzureOperationsImp(_blobServiceClient);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallStoreFilesInAzure()
+        {
+            // Arrange
+            var fileObj = new Mock&lt;IFormFile&gt;().Object;
+            var containerName = &quot;TestValue1976160341&quot;;
+
+            // Act
+            var result = _testClass.StoreFilesInAzure(fileObj, containerName);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,41,1],[16,9,16,10,1],[17,13,17,79,1],[18,13,18,69,0],[19,9,19,10,0],[23,9,23,10,0],[25,13,25,71,0],[28,13,28,38,0],[29,9,29,10,0],[33,9,33,10,0],[35,13,35,56,0],[36,13,36,55,0],[39,13,39,79,0],[42,13,42,72,0]]);
+    </script>
+  </body>
+</html>

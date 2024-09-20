@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\EmailService.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using System.Threading.Tasks;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+
+public class EmailService : IEmailService
+{
+    private readonly string _fromEmail = &quot;wequantumberg@gmail.com&quot;;
+    private readonly string _fromName = &quot;Quantumberg&quot;;
+    private readonly string _password = &quot;kwoipnisqnwmmbyh&quot;;
+    private readonly string _smtpServer = &quot;smtp.gmail.com&quot;;
+    private readonly int _smtpPort = 587;
+
+    public async Task SendOtpEmailAsync(OtpEmail otpEmail)
+    {
+        var email = new MimeMessage();
+        email.From.Add(new MailboxAddress(_fromName, _fromEmail));
+        email.To.Add(MailboxAddress.Parse(otpEmail.EmailAddress));
+        email.Subject = &quot;Your OTP Code&quot;;
+
+        var builder = new BodyBuilder
+        {
+            HtmlBody = $&quot;Your OTP code is: {otpEmail.Otp}&quot;
+        };
+        email.Body = builder.ToMessageBody();
+
+        using var smtp = new MailKit.Net.Smtp.SmtpClient();
+        smtp.Connect(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
+        smtp.Authenticate(_fromEmail, _password);
+        await smtp.SendAsync(email);
+        smtp.Disconnect(true);
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,5,10,68,1],[11,5,11,55,1],[12,5,12,60,1],[13,5,13,60,1],[14,5,14,42,1],[17,5,17,6,1],[18,9,18,39,1],[19,9,19,67,1],[20,9,20,67,1],[21,9,21,41,1],[23,9,26,11,1],[27,9,27,46,1],[29,9,29,60,1],[30,9,30,76,1],[31,9,31,50,1],[32,9,32,37,1],[33,9,33,31,0],[34,5,34,6,0]]);
+    </script>
+  </body>
+</html>

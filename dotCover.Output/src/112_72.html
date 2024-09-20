@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\CompanyrequestedController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
+using Microsoft.EntityFrameworkCore;
+using HRMS_Application.DTO;
+using HRMS_Application.Middleware.Exceptions;
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class CompanyrequestedController : ControllerBase
+    {
+        private readonly ICompanyRequestedform _companyRequested;
+        private readonly ILogger&lt;CompanyrequestedController&gt; _logger;
+        private readonly HRMSContext _context;
+
+
+        public CompanyrequestedController(ICompanyRequestedform companyRequested, ILogger&lt;CompanyrequestedController&gt; logger, HRMSContext context)
+        {
+            _companyRequested = companyRequested;
+            _logger = logger;
+            _context = context;
+        }
+        [HttpGet]
+        // [Authorize(new[] { &quot;Admin&quot; })]
+        public List&lt;RequestedCompanyForm&gt; GetEmpCredential()
+        {
+            _logger.LogInformation(&quot;Get All Employee Credential started&quot;);
+            var result = _companyRequested.GetAllRequestedCompanyForm();
+            return result;
+
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public RequestedCompanyForm GetEmployeeCredentialsById(int id)
+        {
+            _logger.LogInformation(&quot;Getby ID for Employee Credential method started&quot;);
+            var result = _companyRequested.GetById(id);
+            return result;
+        }
+
+        [HttpDelete]
+        //[Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;bool&gt; DeleteRequestedCompanyForm(int id)
+        {
+            _logger.LogInformation(&quot;Delete Employee Credential method was started&quot;);
+            var result = await _companyRequested.DeleteRequestedCompanyForm(id);
+            return result;
+        }
+        [HttpPost]
+        //[Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;string&gt; InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
+        {
+            _logger.LogInformation(&quot;Insert Employee Credential method started&quot;);
+            var result = await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
+            return result;
+
+        }
+
+        [HttpPut(&quot;SoftDelete&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation(&quot;Soft update company request method started&quot;);
+            var res = _companyRequested.SoftDelete(id, isActive);
+            return res;
+
+        }
+
+        [HttpPost]
+        [Route(&quot;verify-otp&quot;)]
+        public async Task&lt;IActionResult&gt; VerifyOtp([FromBody] OtpEmail request)
+        {
+            var companyForm = await _context.RequestedCompanyForms
+                .FirstOrDefaultAsync(c =&gt; c.Email == request.EmailAddress);
+
+            var employeeCredential = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e =&gt; e.Email == request.EmailAddress);
+
+            if (companyForm == null)
+            {
+                return NotFound(&quot;Company form not found.&quot;);
+            }
+
+            var storedOtp = employeeCredential.GenerateOtp.Trim().ToLower();
+            var providedOtp = request.Otp.Trim().ToLower();
+
+            // Log the OTP values
+            Console.WriteLine($&quot;Stored OTP: {storedOtp}&quot;);
+            Console.WriteLine($&quot;Provided OTP: {providedOtp}&quot;);
+
+            if (storedOtp != providedOtp)
+            {
+                companyForm.Status = &quot;Rejected&quot;;
+                _context.RequestedCompanyForms.Update(companyForm);
+                await _context.SaveChangesAsync();
+
+                return BadRequest(&quot;Invalid OTP.&quot;);
+            }
+
+            if (employeeCredential.OtpExpiration &lt; DateTime.UtcNow)
+            {
+                companyForm.Status = &quot;Expired&quot;;
+                _context.RequestedCompanyForms.Update(companyForm);
+                await _context.SaveChangesAsync();
+
+                return BadRequest(&quot;OTP has expired.&quot;);
+
+            }
+            companyForm.Status = &quot;Verified&quot;;
+            _context.RequestedCompanyForms.Update(companyForm);
+            await _context.SaveChangesAsync();
+
+            // Retrieve or generate the username and password
+            var employeeCredentials = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e =&gt; e.Email == request.EmailAddress);
+
+            if (employeeCredentials == null)
+            {
+                return NotFound(&quot;Employee credential not found.&quot;);
+            }
+
+
+            return Ok(&quot;Recieved your request Admin will get back to you shortly&quot;);
+        }
+
+
+    }
+
+}
+public class OtpRequest
+{
+    public string? Email { get; set; }
+}
+
+
+
+
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,147,1],[21,9,21,10,1],[22,13,22,50,1],[23,13,23,30,1],[24,13,24,32,1],[25,9,25,10,1],[29,9,29,10,1],[30,13,30,75,1],[31,13,31,73,1],[32,13,32,27,1],[34,9,34,10,1],[37,9,37,10,1],[38,13,38,87,1],[39,13,39,56,1],[40,13,40,27,1],[41,9,41,10,1],[46,9,46,10,1],[47,13,47,85,1],[48,13,48,81,1],[49,13,49,27,1],[50,9,50,10,1],[54,9,54,10,1],[55,13,55,81,1],[56,13,56,99,1],[57,13,57,27,1],[59,9,59,10,1],[65,9,65,10,1],[66,13,66,82,1],[67,13,67,66,1],[68,13,68,24,1],[70,9,70,10,1],[75,9,75,10,1],[76,13,77,76,1],[79,13,80,76,0],[82,13,82,37,0],[83,13,83,14,0],[84,17,84,60,0],[87,13,87,77,0],[88,13,88,60,0],[91,13,91,59,0],[92,13,92,63,0],[94,13,94,42,0],[95,13,95,14,0],[96,17,96,49,0],[97,17,97,68,0],[98,17,98,51,0],[100,17,100,51,0],[103,13,103,68,0],[104,13,104,14,0],[105,17,105,48,0],[106,17,106,68,0],[107,17,107,51,0],[109,17,109,55,0],[112,13,112,45,0],[113,13,113,64,0],[114,13,114,47,0],[117,13,118,76,0],[120,13,120,45,0],[121,13,121,14,0],[122,17,122,67,0],[126,13,126,83,0],[127,9,127,10,0],[135,28,135,32,1],[135,33,135,37,1]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\LeaveTypeController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class LeaveTypeController : ControllerBase
+    {
+        private readonly ILeaveTypes _leavetype;
+        private readonly ILogger&lt;LeaveTypeController&gt; _logger;
+        public LeaveTypeController(ILeaveTypes leavetype, ILogger&lt;LeaveTypeController&gt; logger)
+        {
+            _leavetype = leavetype;
+            _logger = logger;
+        }
+        [HttpGet]
+        public List&lt;LeaveType&gt; GetAllLeavetype()
+        {
+            _logger.LogInformation(&quot;get all leavetypes details started&quot;);
+            var result = _leavetype.GetAllLeaveType();
+            return result;
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public LeaveType GetleavetypeById(int id)
+        {
+            _logger.LogInformation(&quot;getbyid leavetypes details started&quot;);
+            var result = _leavetype.GetLeaveTypeById(id);
+            return result;
+        }
+       
+        [HttpPost]
+        [Authorize(new[] { &quot;Admin&quot; })]
+
+        public async Task&lt;string&gt; InsertLeavetypes([FromBody] LeaveType leaveType)
+        {
+            _logger.LogInformation(&quot;leavetypes details insert method started&quot;);
+            var result = await _leavetype.InsertLeaveType(leaveType);
+            return result;
+        }
+        [HttpDelete]
+        public bool DeleteLeavetype(int id)
+        {
+            _logger.LogInformation(&quot;leavetypes details delete method started&quot;);
+            var result = _leavetype.deleteLeaveType(id);
+            return result;
+        }
+
+        [HttpPut(&quot;SoftDelete&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation(&quot;Soft update leave type method started&quot;);
+            var res = _leavetype.SoftDelete(id, isActive);
+            return res;
+
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,95,1],[16,9,16,10,1],[17,13,17,36,1],[18,13,18,30,1],[19,9,19,10,1],[22,9,22,10,1],[23,13,23,74,1],[24,13,24,55,1],[25,13,25,27,1],[26,9,26,10,1],[29,9,29,10,1],[30,13,30,74,1],[31,13,31,58,1],[32,13,32,27,1],[33,9,33,10,1],[39,9,39,10,1],[40,13,40,80,1],[41,13,41,70,1],[42,13,42,27,1],[43,9,43,10,1],[46,9,46,10,1],[47,13,47,80,1],[48,13,48,57,1],[49,13,49,27,1],[50,9,50,10,1],[56,9,56,10,1],[57,13,57,77,1],[58,13,58,59,1],[59,13,59,24,1],[61,9,61,10,1]]);
+    </script>
+  </body>
+</html>

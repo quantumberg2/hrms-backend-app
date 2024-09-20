@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\DTO\OrgChartNode.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Application.DTO
+{
+    public class OrgChartNode
+    {
+        public int ManagerId { get; set; }
+        public string ManagerName { get; set; }
+        public string? Designation {  get; set; }
+        public List&lt;EmployeeDetailDto&gt; Employees { get; set; }
+    }
+    public class EmployeeDetailDto
+    {
+        public int? EmployeeId { get; set; }
+        public string EmployeeName { get; set; }
+        public string Email { get; set; }
+        public string? Designation { get; set; }
+      
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[5,32,5,36,1],[5,37,5,41,1],[6,37,6,41,1],[6,42,6,46,1],[7,39,7,43,1],[7,44,7,48,1],[8,52,8,56,1],[8,57,8,61,1],[12,34,12,38,1],[12,39,12,43,1],[13,38,13,42,1],[13,43,13,47,1],[14,31,14,35,1],[14,36,14,40,1],[15,38,15,42,1],[15,43,15,47,1]]);
+    </script>
+  </body>
+</html>

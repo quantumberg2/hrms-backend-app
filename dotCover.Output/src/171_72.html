@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\DepartmentController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
+
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class DepartmentController : ControllerBase
+    {
+        private readonly IDepartment _department;
+        private readonly ILogger&lt;DepartmentController&gt; _logger;
+
+
+        public DepartmentController(IDepartment department, ILogger&lt;DepartmentController&gt; logger)
+        {
+            _department = department;
+            _logger = logger;
+        }
+        [HttpGet]
+        //[Authorize(new[] { &quot;Admin&quot;, &quot;Developer&quot; })]
+        public List&lt;Department&gt; GetAllDepartments()
+        {
+            _logger.LogInformation(&quot;Get all department method started&quot;);
+            var dept = _department.GetAllDepartment();
+            return dept;
+        }
+
+        [HttpGet(&quot;GetDeptByName&quot;)]
+        public List&lt;Department&gt; GetDepartmentsByName(string name)
+        {
+            _logger.LogInformation(&quot;Get dept info by name method started&quot;);
+            var res = _department.GetDepartmentsByName(name);
+            return res;
+        }
+
+        [HttpPost(&quot;insertEmployees&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;string&gt; InsertDepartments([FromBody] Department department)
+        {
+            _logger.LogInformation(&quot;Insert department method started&quot;);
+
+            var status = await _department.InsertDepartment(department);
+            return status;
+        }
+
+        [HttpPut(&quot;UpdateAll/{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        // [Route(&quot;UpdateAll&quot;)]
+        public async Task&lt;Department&gt; UpdateDepartment(int id, string? name, int? requestedcompanyId)
+        {
+            _logger.LogInformation(&quot;Update method started&quot;);
+            var status = await _department.UpdateDepartment(id, name, requestedcompanyId);
+            return status;
+        }
+                                    
+        [HttpDelete(&quot;{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;bool&gt; DeleteDepartment(int id)
+        {
+          
+            _logger.LogInformation(&quot;Delete method started&quot;);
+            var status = await _department.deleteDepartment(id);
+            return status;
+        }
+
+        [HttpPut(&quot;SoftDelete&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation(&quot;Soft update department method started&quot;);
+            var res = _department.SoftDelete(id, isActive);
+            return res;
+
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,9,18,98,1],[19,9,19,10,1],[20,13,20,38,1],[21,13,21,30,1],[22,9,22,10,1],[26,9,26,10,1],[27,13,27,73,1],[28,13,28,55,1],[29,13,29,25,1],[30,9,30,10,1],[34,9,34,10,1],[35,13,35,76,1],[36,13,36,62,1],[37,13,37,24,1],[38,9,38,10,1],[43,9,43,10,1],[44,13,44,72,1],[46,13,46,73,1],[47,13,47,27,1],[48,9,48,10,1],[54,9,54,10,1],[55,13,55,61,1],[56,13,56,91,1],[57,13,57,27,1],[58,9,58,10,1],[63,9,63,10,1],[65,13,65,61,1],[66,13,66,65,1],[67,13,67,27,1],[68,9,68,10,1],[74,9,74,10,1],[75,13,75,77,1],[76,13,76,60,1],[77,13,77,24,1],[79,9,79,10,1]]);
+    </script>
+  </body>
+</html>

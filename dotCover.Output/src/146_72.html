@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Helpers\AppException.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using System.Globalization;
+using System.Security.AccessControl;
+
+namespace HRMS_Application.Helpers
+{
+    public class AppException : Exception
+    {
+        public AppException()  :base() { }
+
+        public AppException(string message) : base(message) { }
+
+        public AppException(string message,params object[] args)
+            :base(String.Format(CultureInfo.CurrentCulture, message, args)) { } 
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[8,33,8,39,1],[8,40,8,41,1],[8,42,8,43,1],[10,47,10,60,1],[10,61,10,62,1],[10,63,10,64,1],[13,14,13,76,1],[13,77,13,78,1],[13,79,13,80,1]]);
+    </script>
+  </body>
+</html>

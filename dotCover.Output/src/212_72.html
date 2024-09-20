@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\OrgChartServiceImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class OrgChartServiceImp : IOrgChartService
+    {
+        private readonly HRMSContext _hrmsContext;
+
+        public OrgChartServiceImp(HRMSContext hrmsContext)
+        {
+            _hrmsContext = hrmsContext;
+        }
+        public List&lt;OrgChartNode&gt; GetManagersWithEmployees()
+        {
+            // Fetch managers and their employees from the database
+            var result = _hrmsContext.EmployeeCredentials
+                .Where(manager =&gt; _hrmsContext.EmployeeDetails.Any(emp =&gt; emp.ManagerId == manager.Id)) // Ensure manager has employees
+                .Select(manager =&gt; new OrgChartNode
+                {
+                    ManagerId = manager.Id,
+                    ManagerName = manager.UserName,
+                    Designation = _hrmsContext.EmployeeDetails
+                .Where(emp =&gt; emp.EmployeeCredentialId == manager.Id)   
+                .Select(emp =&gt; emp.Position.Name)                       
+                .FirstOrDefault(),
+
+                    Employees = _hrmsContext.EmployeeDetails
+                        .Where(emp =&gt; emp.ManagerId == manager.Id)
+                        .Select(emp =&gt; new EmployeeDetailDto
+                        {
+                            EmployeeId = emp.EmployeeCredentialId,
+                            EmployeeName = emp.FirstName + &quot; &quot; + emp.LastName,
+                            Email = emp.Email,
+                            Designation = emp.Position.Name
+
+
+                        }).ToList()
+                }).ToList();
+
+            return result;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,59,1],[13,9,13,10,1],[14,13,14,40,1],[15,9,15,10,1],[17,9,17,10,1],[19,13,41,29,1],[43,13,43,27,0],[44,9,44,10,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\ShiftRostertypeImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class ShiftRostertypeImp : IShiftRostertype
+    {
+        private readonly HRMSContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public ShiftRostertypeImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        {
+            _context = context;
+            _jwtUtils = jwtUtils;
+            _httpContextAccessor = httpContextAccessor;
+
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; deleteShiftRosterType(int id)
+        {
+            DecodeToken();
+            var result = (from row in _context.ShiftRosterTypes
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _context.ShiftRosterTypes.Remove(result);
+            await _context.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;ShiftRosterType&gt; GetAllShiftRosterType()
+        {
+            var result = (from row in _context.ShiftRosterTypes
+                          select row).ToList();
+            return result;
+        }
+
+        public ShiftRosterType GetShiftRosterTypeId(int id)
+        {
+            var result = (from row in _context.ShiftRosterTypes
+                          where row.Id == id 
+                          select row).FirstOrDefault();
+
+            return result;
+        }
+
+        public async Task&lt;string&gt; InsertShiftRosterType(ShiftRosterType shiftRosterType)
+        {
+            DecodeToken();
+            await _context.ShiftRosterTypes.AddAsync(shiftRosterType);
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;new ShiftRosterType inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+        public async Task&lt;ShiftRosterType&gt; updateShiftRosterType(int id, string? Type, string? TimeRange)
+        {
+
+            DecodeToken();
+            var result = _context.ShiftRosterTypes.SingleOrDefault(p =&gt; p.Id == id);
+            if (result == null)
+            {
+                // Handle the case where the user with the specified id doesn&#39;t exist
+                return null;
+            }
+            result.Type = Type;
+            result.TimeRange = TimeRange;
+            _context.ShiftRosterTypes.Update(result);
+            await _context.SaveChangesAsync(_decodedToken);
+            return result;
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,117,1],[15,9,15,10,1],[16,13,16,32,1],[17,13,17,34,1],[18,13,18,56,1],[20,9,20,10,1],[22,9,22,10,1],[23,13,23,126,1],[24,13,24,45,1],[25,13,25,14,1],[26,17,26,31,1],[27,13,27,14,1],[29,13,29,14,0],[30,17,30,64,0],[31,17,31,37,0],[32,17,32,18,0],[33,21,33,110,0],[34,21,34,45,0],[35,21,35,22,0],[36,25,36,56,0],[37,25,37,71,0],[37,71,37,84,0],[37,84,37,95,0],[38,21,38,22,0],[40,21,40,22,0],[42,25,42,39,0],[43,21,43,22,0],[44,17,44,18,0],[45,13,45,14,0],[46,9,46,10,1],[48,9,48,10,1],[49,13,49,27,1],[50,13,52,57,1],[53,13,53,54,0],[54,13,54,60,0],[55,13,55,25,0],[56,9,56,10,0],[59,9,59,10,1],[60,13,61,48,1],[62,13,62,27,0],[63,9,63,10,0],[66,9,66,10,1],[67,13,69,56,1],[71,13,71,27,0],[72,9,72,10,0],[75,9,75,10,1],[76,13,76,27,1],[77,13,77,71,1],[78,13,78,73,0],[79,13,79,29,0],[80,13,80,14,0],[81,17,81,68,0],[85,13,85,14,0],[86,17,86,52,0],[88,9,88,10,0],[90,9,90,10,1],[92,13,92,27,1],[93,13,93,85,1],[94,13,94,32,0],[95,13,95,14,0],[97,17,97,29,0],[99,13,99,32,0],[100,13,100,42,0],[101,13,101,54,0],[102,13,102,60,0],[103,13,103,27,0],[104,9,104,10,0]]);
+    </script>
+  </body>
+</html>

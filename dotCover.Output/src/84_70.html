@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\CompanyDetailsImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Moq;
+    using Xunit;
+
+    public class CompanyDetailsImpTests
+    {
+        private readonly CompanyDetailsImp _testClass;
+        private HRMSContext _context;
+
+        public CompanyDetailsImpTests()
+        {
+            _context = new HRMSContext();
+            _testClass = new CompanyDetailsImp(_context);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new CompanyDetailsImp(_context);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCalldeleteCompanyDetails()
+        {
+            // Arrange
+            var id = 2135225435;
+
+            // Act
+            var result = _testClass.deleteCompanyDetails(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllCompanyDetails()
+        {
+            // Act
+            var result = _testClass.GetAllCompanyDetails();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetCompanyDetailstById()
+        {
+            // Arrange
+            var id = 1415456953;
+
+            // Act
+            var result = _testClass.GetCompanyDetailstById(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetCompanyDetailstByName()
+        {
+            // Arrange
+            var companyName = &quot;TestValue566928608&quot;;
+
+            // Act
+            var result = _testClass.GetCompanyDetailstByName(companyName);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallInsertCompanyDetails()
+        {
+            // Arrange
+            var companyDetail = new CompanyDetail
+            {
+                Id = 843301029,
+                Name = &quot;TestValue849453386&quot;,
+                Address = &quot;TestValue835783508&quot;,
+                Country = &quot;TestValue1370744713&quot;,
+                States = &quot;TestValue2088237923&quot;,
+                Industry = &quot;TestValue25205987&quot;,
+                TimeZone = &quot;TestValue947713085&quot;,
+                Currency = &quot;TestValue1827728215&quot;,
+                PfNo = &quot;TestValue1164806978&quot;,
+                TanNo = &quot;TestValue1558792427&quot;,
+                EsiNo = &quot;TestValue340143196&quot;,
+                PanNo = &quot;TestValue1184400570&quot;,
+                GstNo = &quot;TestValue1182386774&quot;,
+                RegistrationNo = &quot;TestValue1102214648&quot;,
+                Twitter = &quot;TestValue1188411501&quot;,
+                Facebook = &quot;TestValue404019633&quot;,
+                LinkedIn = &quot;TestValue1078755900&quot;,
+                CompanyLogo = &quot;TestValue391119822&quot;,
+                RequestedCompanyId = 947311784,
+                IsActive = (short)10638,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 760391035,
+                    Name = &quot;TestValue542607409&quot;,
+                    PhoneNumber = &quot;TestValue457093547&quot;,
+                    DomainName = &quot;TestValue1219862060&quot;,
+                    Status = &quot;TestValue251230889&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1753416085&quot;,
+                    IsActive = (short)23089,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                }
+            };
+
+            // Act
+            var result = _testClass.InsertCompanyDetails(companyDetail);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 341374462;
+            var isActive = (short)20875;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,40,1],[16,9,16,10,1],[17,13,17,42,1],[18,13,18,58,1],[19,9,19,10,1],[23,9,23,10,1],[25,13,25,60,1],[28,13,28,38,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,33,1],[38,13,38,62,1],[41,13,41,72,0],[46,9,46,10,1],[48,13,48,60,1],[51,13,51,72,0],[56,9,56,10,1],[58,13,58,33,1],[61,13,61,64,1],[64,13,64,72,0],[69,9,69,10,1],[71,13,71,52,1],[74,13,74,75,1],[77,13,77,72,0],[82,9,82,10,1],[84,13,124,15,1],[127,13,127,73,1],[130,13,130,72,0],[135,9,135,10,1],[137,13,137,32,1],[138,13,138,41,1],[141,13,141,62,1],[144,13,144,72,0]]);
+    </script>
+  </body>
+</html>

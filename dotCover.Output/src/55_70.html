@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\UserCompanyInfoTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.DTO
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.DTO;
+    using Xunit;
+
+    public class UserCompanyInfoTests
+    {
+        private readonly UserCompanyInfo _testClass;
+
+        public UserCompanyInfoTests()
+        {
+            _testClass = new UserCompanyInfo();
+        }
+
+        [Fact]
+        public void CanSetAndGetUserName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2001854311&quot;;
+
+            // Act
+            _testClass.UserName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.UserName);
+        }
+
+        [Fact]
+        public void CanSetAndGetUserId()
+        {
+            // Arrange
+            var testValue = 1502776362;
+
+            // Act
+            _testClass.UserId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.UserId);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmail()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1646098518&quot;;
+
+            // Act
+            _testClass.Email = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Email);
+        }
+
+        [Fact]
+        public void CanSetAndGetRequestedCompanyId()
+        {
+            // Arrange
+            var testValue = 857413488;
+
+            // Act
+            _testClass.RequestedCompanyId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RequestedCompanyId);
+        }
+
+        [Fact]
+        public void CanSetAndGetRoles()
+        {
+            // Arrange
+            var testValue = new List&lt;string&gt;();
+
+            // Act
+            _testClass.Roles = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Roles);
+        }
+
+      /*  [Fact]
+        public void CanSetAndGetJwtToken()
+        {
+            // Arrange
+            var testValue = &quot;TestValue660878491&quot;;
+
+            // Act
+            _testClass.JwtToken = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.JwtToken);
+        }*/
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,38,1],[13,9,13,10,1],[14,13,14,48,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,51,1],[24,13,24,45,1],[27,13,27,58,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,40,1],[37,13,37,43,1],[40,13,40,56,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,51,1],[50,13,50,42,1],[53,13,53,55,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,39,1],[63,13,63,55,1],[66,13,66,68,1],[67,9,67,10,1],[71,9,71,10,1],[73,13,73,48,1],[76,13,76,42,1],[79,13,79,54,1],[80,9,80,10,1]]);
+    </script>
+  </body>
+</html>

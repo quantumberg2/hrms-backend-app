@@ -2,153 +2,135 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\UserRoleControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\AddressInfoDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Controllers
+namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using HRMS_Application.DTO;
     using Xunit;
 
-    public class UserRoleControllerTests
+    public class AddressInfoDTOTests
     {
-        private UserRoleController _testClass;
-        private Mock&lt;IUserRoles&gt; _userRoles;
-        private Mock&lt;ILogger&lt;UserRoleController&gt;&gt; _logger;
+        private readonly AddressInfoDTO _testClass;
 
-        public UserRoleControllerTests()
+        public AddressInfoDTOTests()
         {
-            _userRoles = new Mock&lt;IUserRoles&gt;();
-            _logger = new Mock&lt;ILogger&lt;UserRoleController&gt;&gt;();
-            _testClass = new UserRoleController(_userRoles.Object, _logger.Object);
+            _testClass = new AddressInfoDTO();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new UserRoleController(_userRoles.Object, _logger.Object);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetAllUserRoles()
+        public void CanSetAndGetEmployeeCredentialId()
         {
             // Arrange
-            _userRoles.Setup(mock =&gt; mock.GetAlluserRole()).Returns(new List&lt;UserRolesJ&gt;());
+            var testValue = 615200737;
 
             // Act
-            var result = _testClass.GetAllUserRoles();
+            _testClass.EmployeeCredentialId = testValue;
 
             // Assert
-            _userRoles.Verify(mock =&gt; mock.GetAlluserRole());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.EmployeeCredentialId);
         }
 
         [Fact]
-        public async Task CanCallInsertUserRole()
+        public void CanSetAndGetAddressLine1()
         {
             // Arrange
-            var userRole = new UserRolesJ
-            {
-                Id = 1246636271,
-                EmployeeCredentialId = 1300775509,
-                RolesId = 1490817881,
-                EmployeeCredential = new EmployeeCredential
-                {
-                    Id = 1724946438,
-                    UserName = &quot;TestValue95298370&quot;,
-                    Password = &quot;TestValue1345970023&quot;,
-                    Status = (short)5209,
-                    RequestedCompanyId = 1750513768,
-                    Email = &quot;TestValue794498683&quot;,
-                    DefaultPassword = true,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 419547811,
-                        Name = &quot;TestValue420467615&quot;,
-                        PhoneNumber = &quot;TestValue1622701818&quot;,
-                        DomainName = &quot;TestValue807383081&quot;,
-                        Status = &quot;TestValue600934572&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue1831106224&quot;,
-                        Department = new Department
-                        {
-                            Id = 1676979332,
-                            Name = &quot;TestValue1733965819&quot;,
-                            RequestedCompanyId = 434614088,
-                            RequestedCompany = default(RequestedCompanyForm),
-                            EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-                        },
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
-                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                },
-                Roles = new Role
-                {
-                    Id = 1856761066,
-                    Name = &quot;TestValue1258666115&quot;,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                }
-            };
-
-            _userRoles.Setup(mock =&gt; mock.InsertuserRoles(It.IsAny&lt;UserRolesJ&gt;())).ReturnsAsync(&quot;TestValue391005334&quot;);
+            var testValue = &quot;TestValue1963389297&quot;;
 
             // Act
-            var result = await _testClass.InsertUserRole(userRole);
+            _testClass.AddressLine1 = testValue;
 
             // Assert
-            _userRoles.Verify(mock =&gt; mock.InsertuserRoles(It.IsAny&lt;UserRolesJ&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.AddressLine1);
         }
 
         [Fact]
-        public async Task CanCallDeleteUserRole()
+        public void CanSetAndGetAddressLine2()
         {
             // Arrange
-            var id = 248856501;
-
-            _userRoles.Setup(mock =&gt; mock.deleteUserRole(It.IsAny&lt;int&gt;())).ReturnsAsync(false);
+            var testValue = &quot;TestValue452581858&quot;;
 
             // Act
-            var result = await _testClass.DeleteUserRole(id);
+            _testClass.AddressLine2 = testValue;
 
             // Assert
-            _userRoles.Verify(mock =&gt; mock.deleteUserRole(It.IsAny&lt;int&gt;()));
+            Assert.Equal(testValue, _testClass.AddressLine2);
+        }
 
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        [Fact]
+        public void CanSetAndGetCity()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1264790561&quot;;
+
+            // Act
+            _testClass.City = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.City);
+        }
+
+        [Fact]
+        public void CanSetAndGetState()
+        {
+            // Arrange
+            var testValue = &quot;TestValue707459423&quot;;
+
+            // Act
+            _testClass.State = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.State);
+        }
+
+        [Fact]
+        public void CanSetAndGetCountry()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1590810437&quot;;
+
+            // Act
+            _testClass.Country = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Country);
+        }
+
+        [Fact]
+        public void CanSetAndGetPinCode()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1360574249&quot;;
+
+            // Act
+            _testClass.PinCode = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PinCode);
+        }
+
+        [Fact]
+        public void CanSetAndGetIsActive()
+        {
+            // Arrange
+            var testValue = (short)23978;
+
+            // Act
+            _testClass.IsActive = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.IsActive);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[19,9,19,41,1],[20,9,20,10,1],[21,13,21,49,1],[22,13,22,63,1],[23,13,23,84,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,86,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,93,1],[43,13,43,55,1],[46,13,46,62,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,108,15,1],[110,13,110,119,1],[113,13,113,68,1],[116,13,116,85,1],[118,13,118,72,1],[123,9,123,10,1],[125,13,125,32,1],[127,13,127,96,1],[130,13,130,62,1],[133,13,133,77,1],[135,13,135,72,1]]);
+      highlightRanges([[11,9,11,37,1],[12,9,12,10,1],[13,13,13,47,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,39,1],[23,13,23,57,1],[26,13,26,70,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,49,1],[39,13,39,62,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,49,1],[52,13,52,62,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,41,1],[65,13,65,54,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,50,1],[75,13,75,42,1],[78,13,78,55,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,51,1],[88,13,88,44,1],[91,13,91,57,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,51,1],[101,13,101,44,1],[104,13,104,57,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,42,1],[114,13,114,45,1],[117,13,117,58,1],[118,9,118,10,1]]);
     </script>
   </body>
 </html>

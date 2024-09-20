@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\RolesImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class RolesImp : IRoles
+    {
+        private HRMSContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public RolesImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; deleteRole(int id)
+        {
+            DecodeToken();
+            var result = (from row in _context.Roles
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _context.Roles.Remove(result);
+            await _context.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;Role&gt; GetAllRoles()
+        {
+            var result = (from row in _context.Roles
+                          where row.IsActive == 1
+                          select row).ToList();
+            return result;
+        }
+
+        public Role GetRolesById(int id)
+        {
+            var result = (from row in _context.Roles
+                          where row.Id == id &amp;&amp; row.IsActive == 1
+                          select row).FirstOrDefault();
+           
+            return result;
+        }
+
+        public async Task&lt;string&gt; InsertRole(Role role)
+        {
+           await _context.Roles.AddAsync(role);
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;new Department inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.Roles
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.Roles.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,107,1],[17,9,17,10,1],[18,13,18,32,1],[19,13,19,56,1],[20,13,20,34,1],[21,9,21,10,1],[23,9,23,10,1],[24,13,24,126,1],[25,13,25,45,1],[26,13,26,14,1],[27,17,27,31,1],[28,13,28,14,1],[30,13,30,14,0],[31,17,31,64,0],[32,17,32,37,0],[33,17,33,18,0],[34,21,34,110,0],[35,21,35,45,0],[36,21,36,22,0],[37,25,37,56,0],[38,25,38,71,0],[38,71,38,84,0],[38,84,38,95,0],[39,21,39,22,0],[41,21,41,22,0],[43,25,43,39,0],[44,21,44,22,0],[45,17,45,18,0],[46,13,46,14,0],[47,9,47,10,1],[49,9,49,10,1],[50,13,50,27,1],[51,13,53,57,1],[54,13,54,43,0],[55,13,55,60,0],[56,13,56,25,0],[57,9,57,10,0],[60,9,60,10,1],[61,13,63,48,1],[64,13,64,27,0],[65,9,65,10,0],[68,9,68,10,1],[69,13,71,56,1],[73,13,73,27,0],[74,9,74,10,0],[77,9,77,10,1],[78,12,78,48,1],[79,13,79,73,0],[80,13,80,29,0],[81,13,81,14,0],[82,17,82,63,0],[86,13,86,14,0],[87,17,87,52,0],[89,9,89,10,0],[92,9,92,10,1],[93,13,95,53,1],[96,13,96,29,0],[97,13,97,14,0],[98,17,98,41,0],[99,17,99,44,0],[100,17,100,40,0],[101,17,101,29,0],[104,13,104,26,0],[105,9,105,10,0]]);
+    </script>
+  </body>
+</html>

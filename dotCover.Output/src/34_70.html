@@ -2,175 +2,57 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\PositionControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Helpers\AppExceptionTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Controllers
+namespace HRMS_Unit_Test.Helpers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using HRMS_Application.Helpers;
     using Xunit;
 
-    public class PositionControllerTests
+    public class AppExceptionTests
     {
-        private PositionController _testClass;
-        private Mock&lt;IPosition&gt; _position;
-        private Mock&lt;ILogger&lt;PositionController&gt;&gt; _logger;
+        private readonly AppException _testClass;
+        private string _message;
+        private object[] _args;
 
-        public PositionControllerTests()
+        public AppExceptionTests()
         {
-            _position = new Mock&lt;IPosition&gt;();
-            _logger = new Mock&lt;ILogger&lt;PositionController&gt;&gt;();
-            _testClass = new PositionController(_position.Object, _logger.Object);
+            _message = &quot;TestValue98062793&quot;;
+            _args = new[] { new object(), new object(), new object() };
+            _testClass = new AppException(_message, _args);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new PositionController(_position.Object, _logger.Object);
+            var instance = new AppException();
 
             // Assert
             Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetAllPositions()
-        {
-            // Arrange
-            _position.Setup(mock =&gt; mock.GetPositions()).Returns(new List&lt;Position&gt;());
 
             // Act
-            var result = _testClass.GetAllPositions();
+            instance = new AppException(_message);
 
             // Assert
-            _position.Verify(mock =&gt; mock.GetPositions());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallInsertPositions()
-        {
-            // Arrange
-            var position = new Position
-            {
-                Id = 1527574174,
-                Name = &quot;TestValue1281013463&quot;,
-                RequestedCompanyId = 1666868329,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 767336399,
-                    Name = &quot;TestValue1688672935&quot;,
-                    PhoneNumber = &quot;TestValue705333130&quot;,
-                    DomainName = &quot;TestValue889086888&quot;,
-                    Status = &quot;TestValue797822324&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue954740128&quot;,
-                    Department = new Department
-                    {
-                        Id = 1138822697,
-                        Name = &quot;TestValue247270635&quot;,
-                        RequestedCompanyId = 1961186601,
-                        RequestedCompany = default(RequestedCompanyForm),
-                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-                    },
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-            };
-
-            _position.Setup(mock =&gt; mock.InsertPositions(It.IsAny&lt;Position&gt;())).ReturnsAsync(&quot;TestValue1167825913&quot;);
+            Assert.NotNull(instance);
 
             // Act
-            var result = await _testClass.InsertPositions(position);
+            instance = new AppException(_message, _args);
 
             // Assert
-            _position.Verify(mock =&gt; mock.InsertPositions(It.IsAny&lt;Position&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallUpdatePosition()
-        {
-            // Arrange
-            var id = 1660257705;
-            var name = &quot;TestValue1523897164&quot;;
-            var requestedcompanyId = 886248116;
-
-            _position.Setup(mock =&gt; mock.updateposition(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;())).ReturnsAsync(new Position
-            {
-                Id = 672260399,
-                Name = &quot;TestValue1264516475&quot;,
-                RequestedCompanyId = 1424022894,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 1757582591,
-                    Name = &quot;TestValue714999818&quot;,
-                    PhoneNumber = &quot;TestValue1030463078&quot;,
-                    DomainName = &quot;TestValue1319059958&quot;,
-                    Status = &quot;TestValue470435107&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue860374720&quot;,
-                    Department = new Department
-                    {
-                        Id = 582425334,
-                        Name = &quot;TestValue911728031&quot;,
-                        RequestedCompanyId = 1083833725,
-                        RequestedCompany = default(RequestedCompanyForm),
-                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-                    },
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-            });
-
-            // Act
-            var result = await _testClass.UpdatePosition(id, name, requestedcompanyId);
-
-            // Assert
-            _position.Verify(mock =&gt; mock.updateposition(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallDeletePosition()
-        {
-            // Arrange
-            var id = 792631118;
-
-            _position.Setup(mock =&gt; mock.deletePosition(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
-
-            // Act
-            var result = await _testClass.DeletePosition(id);
-
-            // Assert
-            _position.Verify(mock =&gt; mock.deletePosition(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.NotNull(instance);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[19,9,19,41,1],[20,9,20,10,1],[21,13,21,47,1],[22,13,22,63,1],[23,13,23,83,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,85,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,88,1],[43,13,43,55,1],[46,13,46,59,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,83,15,1],[85,13,85,117,1],[88,13,88,69,1],[91,13,91,82,1],[93,13,93,72,1],[98,9,98,10,1],[100,13,100,33,1],[101,13,101,46,1],[102,13,102,48,1],[104,13,132,16,1],[135,13,135,88,1],[138,13,138,114,1],[140,13,140,72,1],[145,9,145,10,1],[147,13,147,32,1],[149,13,149,94,1],[152,13,152,62,1],[155,13,155,76,1],[157,13,157,72,1]]);
+      highlightRanges([[13,9,13,35,1],[14,9,14,10,1],[15,13,15,44,1],[16,13,16,72,1],[17,13,17,60,1],[18,9,18,10,1],[22,9,22,10,1],[24,13,24,47,1],[27,13,27,38,1],[30,13,30,51,1],[33,13,33,38,1],[36,13,36,58,1],[39,13,39,38,1],[40,9,40,10,1]]);
     </script>
   </body>
 </html>

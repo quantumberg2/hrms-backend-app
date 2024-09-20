@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\OrgChartNodeTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.DTO
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.DTO;
+    using Xunit;
+
+    public class OrgChartNodeTests
+    {
+        private readonly OrgChartNode _testClass;
+
+        public OrgChartNodeTests()
+        {
+            _testClass = new OrgChartNode();
+        }
+
+        [Fact]
+        public void CanSetAndGetManagerId()
+        {
+            // Arrange
+            var testValue = 404041417;
+
+            // Act
+            _testClass.ManagerId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ManagerId);
+        }
+
+        [Fact]
+        public void CanSetAndGetManagerName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue973018496&quot;;
+
+            // Act
+            _testClass.ManagerName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ManagerName);
+        }
+
+        [Fact]
+        public void CanSetAndGetDesignation()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1380783977&quot;;
+
+            // Act
+            _testClass.Designation = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Designation);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployees()
+        {
+            // Arrange
+            var testValue = new List&lt;EmployeeDetailDto&gt;();
+
+            // Act
+            _testClass.Employees = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Employees);
+        }
+    }
+
+    public class EmployeeDetailDtoTests
+    {
+        private readonly EmployeeDetailDto _testClass;
+
+        public EmployeeDetailDtoTests()
+        {
+            _testClass = new EmployeeDetailDto();
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeId()
+        {
+            // Arrange
+            var testValue = 1223071789;
+
+            // Act
+            _testClass.EmployeeId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmployeeId);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1443364871&quot;;
+
+            // Act
+            _testClass.EmployeeName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmployeeName);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmail()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2035902399&quot;;
+
+            // Act
+            _testClass.Email = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Email);
+        }
+
+        [Fact]
+        public void CanSetAndGetDesignation()
+        {
+            // Arrange
+            var testValue = &quot;TestValue551987972&quot;;
+
+            // Act
+            _testClass.Designation = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Designation);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,35,1],[13,9,13,10,1],[14,13,14,45,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,39,1],[24,13,24,46,1],[27,13,27,59,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,50,1],[37,13,37,48,1],[40,13,40,61,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,51,1],[50,13,50,48,1],[53,13,53,61,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,59,1],[63,13,63,46,1],[66,13,66,58,1],[67,9,67,10,1],[74,9,74,40,1],[75,9,75,10,1],[76,13,76,50,1],[77,9,77,10,1],[81,9,81,10,1],[83,13,83,40,1],[86,13,86,47,1],[89,13,89,60,1],[90,9,90,10,1],[94,9,94,10,1],[96,13,96,51,1],[99,13,99,49,1],[102,13,102,62,1],[103,9,103,10,1],[107,9,107,10,1],[109,13,109,51,1],[112,13,112,42,1],[115,13,115,55,1],[116,9,116,10,1],[120,9,120,10,1],[122,13,122,50,1],[125,13,125,48,1],[128,13,128,61,1],[129,9,129,10,1]]);
+    </script>
+  </body>
+</html>

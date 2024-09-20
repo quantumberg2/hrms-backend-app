@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\AzureOperationsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using Azure.Storage.Blobs;
+using HRMS_Application.BusinessLogic.Interface;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class AzureOperationsImp  : IAzureOperations
+    {
+        private readonly BlobServiceClient _blobServiceClient;
+
+        public AzureOperationsImp(BlobServiceClient blobServiceClient)
+        {
+            _blobServiceClient = blobServiceClient;
+        }
+        public string StoreFilesInAzure(IFormFile fileObj, string containerName)
+        {
+            var containerInstance = _blobServiceClient.GetBlobContainerClient(containerName);
+            var blobInstance = containerInstance.GetBlobClient(fileObj.FileName);
+            blobInstance.Upload(fileObj.OpenReadStream(), true);
+            string url = blobInstance.Uri.ToString();
+            return url;
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,71,0],[11,9,11,10,0],[12,13,12,52,0],[13,9,13,10,0],[15,9,15,10,0],[16,13,16,94,0],[17,13,17,82,0],[18,13,18,65,0],[19,13,19,54,0],[20,13,20,24,0],[21,9,21,10,0]]);
+    </script>
+  </body>
+</html>

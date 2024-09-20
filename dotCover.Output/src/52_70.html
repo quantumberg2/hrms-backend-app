@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\SelectCompanyRequestTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.DTO
+{
+    using System;
+    using HRMS_Application.DTO;
+    using Xunit;
+
+    public class SelectCompanyRequestTests
+    {
+        private readonly SelectCompanyRequest _testClass;
+
+        public SelectCompanyRequestTests()
+        {
+            _testClass = new SelectCompanyRequest();
+        }
+
+        [Fact]
+        public void CanSetAndGetCompanyId()
+        {
+            // Arrange
+            var testValue = 1637965526;
+
+            // Act
+            _testClass.CompanyId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.CompanyId);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,43,1],[12,9,12,10,1],[13,13,13,53,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,40,1],[23,13,23,46,1],[26,13,26,59,1],[27,9,27,10,1]]);
+    </script>
+  </body>
+</html>

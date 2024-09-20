@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\FileStorageControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.DTO;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class FileStorageControllerTests
+    {
+        private readonly FileStorageController _testClass;
+        private readonly Mock&lt;ILogger&lt;FileStorageController&gt;&gt; _logger;
+        private readonly Mock&lt;IFileStorage&gt; _fileStorage;
+
+        public FileStorageControllerTests()
+        {
+            _logger = new Mock&lt;ILogger&lt;FileStorageController&gt;&gt;();
+            _fileStorage = new Mock&lt;IFileStorage&gt;();
+            _testClass = new FileStorageController(_logger.Object, _fileStorage.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new FileStorageController(_logger.Object, _fileStorage.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetFiles()
+        {
+            // Arrange
+            _fileStorage.Setup(mock =&gt; mock.GetFiles()).Returns(new List&lt;File&gt;());
+
+            // Act
+            var result = _testClass.GetFiles();
+
+            // Assert
+            _fileStorage.Verify(mock =&gt; mock.GetFiles());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallUploadFile()
+        {
+            // Arrange
+            var @file = new FileStorageDTO
+            {
+                ObjectId = 1923778001,
+                ObjectName = &quot;TestValue243559012&quot;,
+                IsActive = true,
+                Tags = &quot;TestValue1046869106&quot;,
+                FileContent = new Mock&lt;IFormFile&gt;().Object
+            };
+
+            _fileStorage.Setup(mock =&gt; mock.UploadFile(It.IsAny&lt;FileStorageDTO&gt;())).Returns(&quot;TestValue903485624&quot;);
+
+            // Act
+            var result = _testClass.UploadFile(file);
+
+            // Assert
+            _fileStorage.Verify(mock =&gt; mock.UploadFile(It.IsAny&lt;FileStorageDTO&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallUpdateFile()
+        {
+            // Arrange
+            var id = 1139559835;
+            var files = new FileStorageDTO
+            {
+                ObjectId = 1653005629,
+                ObjectName = &quot;TestValue1821979766&quot;,
+                IsActive = false,
+                Tags = &quot;TestValue1918379856&quot;,
+                FileContent = new Mock&lt;IFormFile&gt;().Object
+            };
+
+            _fileStorage.Setup(mock =&gt; mock.UpdateFile(It.IsAny&lt;int&gt;(), It.IsAny&lt;FileStorageDTO&gt;())).Returns(&quot;TestValue1972594316&quot;);
+
+            // Act
+            var result = _testClass.UpdateFile(id, files);
+
+            // Assert
+            _fileStorage.Verify(mock =&gt; mock.UpdateFile(It.IsAny&lt;int&gt;(), It.IsAny&lt;FileStorageDTO&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 653687585;
+            var isActive = true;
+
+            _fileStorage.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;bool&gt;())).Returns(true);
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            _fileStorage.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;bool&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,44,1],[21,9,21,10,1],[22,13,22,66,1],[23,13,23,53,1],[24,13,24,89,1],[25,9,25,10,1],[29,9,29,10,1],[31,13,31,91,1],[34,13,34,38,1],[35,9,35,10,1],[39,9,39,10,1],[41,13,41,83,1],[44,13,44,48,1],[47,13,47,58,1],[49,13,49,72,1],[54,9,54,10,1],[56,13,63,15,1],[65,13,65,115,1],[68,13,68,54,1],[71,13,71,86,1],[73,13,73,72,1],[78,9,78,10,1],[80,13,80,33,1],[81,13,88,15,1],[90,13,90,133,1],[93,13,93,59,1],[96,13,96,103,1],[98,13,98,72,1],[103,9,103,10,1],[105,13,105,32,1],[106,13,106,33,1],[108,13,108,106,1],[111,13,111,62,1],[114,13,114,93,1],[116,13,116,72,1]]);
+    </script>
+  </body>
+</html>

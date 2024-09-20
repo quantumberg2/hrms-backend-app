@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\DepartmentsImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class DepartmentsImpTests
+    {
+        private readonly DepartmentsImp _testClass;
+        private HRMSContext _hrmsContext;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+
+        public DepartmentsImpTests()
+        {
+            _hrmsContext = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _testClass = new DepartmentsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new DepartmentsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCalldeleteDepartment()
+        {
+            // Arrange
+            var id = 1059945110;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1591286846);
+
+            // Act
+            var result = await _testClass.deleteDepartment(id);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllDepartment()
+        {
+            // Act
+            var result = _testClass.GetAllDepartment();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetDepartmentById()
+        {
+            // Arrange
+            var id = 713819668;
+
+            // Act
+            var result = _testClass.GetDepartmentById(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertDepartment()
+        {
+            // Arrange
+            var department = new Department
+            {
+                Id = 1551367165,
+                Name = &quot;TestValue1358591935&quot;,
+                RequestedCompanyId = 556291736,
+                IsActive = (short)16834,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 630935733,
+                    Name = &quot;TestValue1673292904&quot;,
+                    PhoneNumber = &quot;TestValue1385211015&quot;,
+                    DomainName = &quot;TestValue1398364489&quot;,
+                    Status = &quot;TestValue170494215&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue806617993&quot;,
+                    IsActive = (short)29145,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+            };
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(53103466);
+
+            // Act
+            var result = await _testClass.InsertDepartment(department);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateDepartment()
+        {
+            // Arrange
+            var id = 847522756;
+            var name = &quot;TestValue794003813&quot;;
+            var requestedcompanyId = 273902707;
+
+            // Act
+            var result = await _testClass.UpdateDepartment(id, name, requestedcompanyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 330267794;
+            var isActive = (short)28568;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetDepartmentsByName()
+        {
+            // Arrange
+            var name = &quot;TestValue1328167099&quot;;
+
+            // Act
+            var result = _testClass.GetDepartmentsByName(name);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,37,1],[21,9,21,10,1],[22,13,22,46,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,106,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,108,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,33,1],[44,13,44,100,1],[47,13,47,64,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,56,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,32,1],[72,13,72,59,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,107,15,1],[109,13,109,98,1],[112,13,112,72,1],[115,13,115,81,0],[117,13,117,72,0],[122,9,122,10,1],[124,13,124,32,1],[125,13,125,45,1],[126,13,126,48,1],[129,13,129,90,1],[132,13,132,72,0],[137,9,137,10,1],[139,13,139,32,1],[140,13,140,41,1],[143,13,143,62,1],[146,13,146,72,0],[151,9,151,10,1],[153,13,153,46,1],[156,13,156,64,1],[159,13,159,72,0]]);
+    </script>
+  </body>
+</html>

@@ -2,127 +2,96 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Authorization\AuthorizeAttributeTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\EmployeeLeaveAllocationRequestTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Authorization
+namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using System.Collections.Generic;
-    using HRMS_Application.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Abstractions;
-    using Microsoft.AspNetCore.Mvc.ActionConstraints;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.AspNetCore.Mvc.ModelBinding;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.AspNetCore.Routing;
-    using Moq;
+    using HRMS_Application.DTO;
     using Xunit;
 
-    public class AuthorizeAttributeTests
+    public class EmployeeLeaveAllocationRequestTests
     {
-        private AuthorizeAttribute _testClass;
-        private string[] _roles;
+        private readonly EmployeeLeaveAllocationRequest _testClass;
 
-        public AuthorizeAttributeTests()
+        public EmployeeLeaveAllocationRequestTests()
         {
-            _roles = new[] { &quot;TestValue1148970397&quot;, &quot;TestValue1874453998&quot;, &quot;TestValue1264803415&quot; };
-            _testClass = new AuthorizeAttribute(_roles);
+            _testClass = new EmployeeLeaveAllocationRequest();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new AuthorizeAttribute(_roles);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallOnAuthorization()
+        public void CanSetAndGetYear()
         {
             // Arrange
-            var context = new AuthorizationFilterContext(new ActionContext
-            {
-                ActionDescriptor = new ActionDescriptor
-                {
-                    RouteValues = new Mock&lt;IDictionary&lt;string, string&gt;&gt;().Object,
-                    AttributeRouteInfo = new AttributeRouteInfo
-                    {
-                        Template = &quot;TestValue633567794&quot;,
-                        Order = 1127595463,
-                        Name = &quot;TestValue647968400&quot;,
-                        SuppressLinkGeneration = true,
-                        SuppressPathMatching = true
-                    },
-                    ActionConstraints = new[] { new Mock&lt;IActionConstraintMetadata&gt;().Object, new Mock&lt;IActionConstraintMetadata&gt;().Object, new Mock&lt;IActionConstraintMetadata&gt;().Object },
-                    EndpointMetadata = new[] { new object(), new object(), new object() },
-                    Parameters = new[] {
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue1159833655&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue465327828&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue636347032&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        }
-                    },
-                    BoundProperties = new[] {
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue944848717&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue1244881909&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue1204486873&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        }
-                    },
-                    FilterDescriptors = new[] { new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 570573410), new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 1606514152), new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 908582574) },
-                    DisplayName = &quot;TestValue420257541&quot;,
-                    Properties = new Mock&lt;IDictionary&lt;object, object&gt;&gt;().Object
-                },
-                HttpContext = new DefaultHttpContext(),
-                RouteData = new RouteData()
-            }, new[] { new Mock&lt;IFilterMetadata&gt;().Object, new Mock&lt;IFilterMetadata&gt;().Object, new Mock&lt;IFilterMetadata&gt;().Object });
+            var testValue = 1578670111;
 
             // Act
-            _testClass.OnAuthorization(context);
+            _testClass.Year = testValue;
 
             // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Year);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmpCredentialId()
+        {
+            // Arrange
+            var testValue = 1693482680;
+
+            // Act
+            _testClass.EmpCredentialId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmpCredentialId);
+        }
+
+        [Fact]
+        public void CanSetAndGetNumberOfLeaves()
+        {
+            // Arrange
+            var testValue = 1140625532;
+
+            // Act
+            _testClass.NumberOfLeaves = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.NumberOfLeaves);
+        }
+
+        [Fact]
+        public void CanSetAndGetRemainingLeave()
+        {
+            // Arrange
+            var testValue = 1801499393;
+
+            // Act
+            _testClass.RemainingLeave = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RemainingLeave);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveType()
+        {
+            // Arrange
+            var testValue = 1516237006;
+
+            // Act
+            _testClass.LeaveType = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveType);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[22,9,22,41,1],[23,9,23,10,1],[24,13,24,100,1],[25,13,25,57,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,59,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,103,134,1],[106,13,106,49,1],[109,13,109,72,1]]);
+      highlightRanges([[11,9,11,53,1],[12,9,12,10,1],[13,13,13,63,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,40,1],[23,13,23,41,1],[26,13,26,54,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,40,1],[36,13,36,52,1],[39,13,39,65,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,40,1],[49,13,49,51,1],[52,13,52,64,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,40,1],[62,13,62,51,1],[65,13,65,64,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,40,1],[75,13,75,46,1],[78,13,78,59,1],[79,9,79,10,1]]);
     </script>
   </body>
 </html>

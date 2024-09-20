@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Authorization\AuthorizeAttributeTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Authorization
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.Authorization;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Abstractions;
+    using Microsoft.AspNetCore.Mvc.ActionConstraints;
+    using Microsoft.AspNetCore.Mvc.Filters;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using Microsoft.AspNetCore.Mvc.Routing;
+    using Microsoft.AspNetCore.Routing;
+    using Moq;
+    using Xunit;
+
+    public class AuthorizeAttributeTests
+    {
+        private readonly AuthorizeAttribute _testClass;
+        private string[] _roles;
+
+        public AuthorizeAttributeTests()
+        {
+            _roles = new[] { &quot;TestValue307337822&quot;, &quot;TestValue1589331138&quot;, &quot;TestValue1455852817&quot; };
+            _testClass = new AuthorizeAttribute(_roles);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new AuthorizeAttribute(_roles);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallOnAuthorization()
+        {
+            // Arrange
+            var context = new AuthorizationFilterContext(new ActionContext
+            {
+                ActionDescriptor = new ActionDescriptor
+                {
+                    RouteValues = new Mock&lt;IDictionary&lt;string, string&gt;&gt;().Object,
+                    AttributeRouteInfo = new AttributeRouteInfo
+                    {
+                        Template = &quot;TestValue544539662&quot;,
+                        Order = 784310236,
+                        Name = &quot;TestValue842384596&quot;,
+                        SuppressLinkGeneration = false,
+                        SuppressPathMatching = true
+                    },
+                    ActionConstraints = new[] { new Mock&lt;IActionConstraintMetadata&gt;().Object, new Mock&lt;IActionConstraintMetadata&gt;().Object, new Mock&lt;IActionConstraintMetadata&gt;().Object },
+                    EndpointMetadata = new[] { new object(), new object(), new object() },
+                    Parameters = new[] {
+                        new ParameterDescriptor
+                        {
+                            Name = &quot;TestValue1249567415&quot;,
+                            ParameterType = typeof(string),
+                            BindingInfo = new BindingInfo()
+                        },
+                        new ParameterDescriptor
+                        {
+                            Name = &quot;TestValue531683493&quot;,
+                            ParameterType = typeof(string),
+                            BindingInfo = new BindingInfo()
+                        },
+                        new ParameterDescriptor
+                        {
+                            Name = &quot;TestValue1964333175&quot;,
+                            ParameterType = typeof(string),
+                            BindingInfo = new BindingInfo()
+                        }
+                    },
+                    BoundProperties = new[] {
+                        new ParameterDescriptor
+                        {
+                            Name = &quot;TestValue560692243&quot;,
+                            ParameterType = typeof(string),
+                            BindingInfo = new BindingInfo()
+                        },
+                        new ParameterDescriptor
+                        {
+                            Name = &quot;TestValue1630473598&quot;,
+                            ParameterType = typeof(string),
+                            BindingInfo = new BindingInfo()
+                        },
+                        new ParameterDescriptor
+                        {
+                            Name = &quot;TestValue2017492749&quot;,
+                            ParameterType = typeof(string),
+                            BindingInfo = new BindingInfo()
+                        }
+                    },
+                    FilterDescriptors = new[] { new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 1127721816), new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 1271480197), new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 1106528143) },
+                    DisplayName = &quot;TestValue758921232&quot;,
+                    Properties = new Mock&lt;IDictionary&lt;object, object&gt;&gt;().Object
+                },
+                HttpContext = new DefaultHttpContext(),
+                RouteData = new RouteData()
+            }, new[] { new Mock&lt;IFilterMetadata&gt;().Object, new Mock&lt;IFilterMetadata&gt;().Object, new Mock&lt;IFilterMetadata&gt;().Object });
+
+            // Act
+            _testClass.OnAuthorization(context);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[22,9,22,41,1],[23,9,23,10,1],[24,13,24,99,1],[25,13,25,57,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,59,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,103,134,1],[106,13,106,49,1],[109,13,109,72,1]]);
+    </script>
+  </body>
+</html>

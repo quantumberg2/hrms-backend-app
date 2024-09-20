@@ -2,13 +2,13 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Models\UserRolesJTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\HolidayTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Models
+namespace HRMS_Unit_Test.Models
 {
     using System;
     using System.Collections.Generic;
@@ -16,20 +16,20 @@ namespace HRMSunitTestCase.Models
     using Moq;
     using Xunit;
 
-    public partial class UserRolesJTests
+    public partial class HolidayTests
     {
-        private UserRolesJ _testClass;
+        private readonly Holiday _testClass;
 
-        public UserRolesJTests()
+        public HolidayTests()
         {
-            _testClass = new UserRolesJ();
+            _testClass = new Holiday();
         }
 
         [Fact]
         public void CanSetAndGetId()
         {
             // Arrange
-            var testValue = 1254014339;
+            var testValue = 200440649;
 
             // Act
             _testClass.Id = testValue;
@@ -39,107 +39,104 @@ namespace HRMSunitTestCase.Models
         }
 
         [Fact]
-        public void CanSetAndGetEmployeeCredentialId()
+        public void CanSetAndGetDate()
         {
             // Arrange
-            var testValue = 100530279;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.EmployeeCredentialId = testValue;
+            _testClass.Date = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.EmployeeCredentialId);
+            Assert.Equal(testValue, _testClass.Date);
         }
 
         [Fact]
-        public void CanSetAndGetRolesId()
+        public void CanSetAndGetType()
         {
             // Arrange
-            var testValue = 872416688;
+            var testValue = &quot;TestValue2121009354&quot;;
 
             // Act
-            _testClass.RolesId = testValue;
+            _testClass.Type = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.RolesId);
+            Assert.Equal(testValue, _testClass.Type);
         }
 
         [Fact]
-        public void CanSetAndGetEmployeeCredential()
+        public void CanSetAndGetCompanyId()
         {
             // Arrange
-            var testValue = new EmployeeCredential
+            var testValue = 391962771;
+
+            // Act
+            _testClass.CompanyId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.CompanyId);
+        }
+
+        [Fact]
+        public void CanSetAndGetOccasion()
+        {
+            // Arrange
+            var testValue = &quot;TestValue814776464&quot;;
+
+            // Act
+            _testClass.Occasion = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Occasion);
+        }
+
+        [Fact]
+        public void CanSetAndGetIsActive()
+        {
+            // Arrange
+            var testValue = (short)25064;
+
+            // Act
+            _testClass.IsActive = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.IsActive);
+        }
+
+        [Fact]
+        public void CanSetAndGetCompany()
+        {
+            // Arrange
+            var testValue = new RequestedCompanyForm
             {
-                Id = 29056551,
-                UserName = &quot;TestValue1816321576&quot;,
-                Password = &quot;TestValue981797958&quot;,
-                Status = (short)4157,
-                RequestedCompanyId = 157873845,
-                Email = &quot;TestValue837147360&quot;,
-                DefaultPassword = false,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 1525417996,
-                    Name = &quot;TestValue1510245984&quot;,
-                    PhoneNumber = &quot;TestValue610083060&quot;,
-                    DomainName = &quot;TestValue2129026557&quot;,
-                    Status = &quot;TestValue142326957&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue718214330&quot;,
-                    Department = new Department
-                    {
-                        Id = 2120564149,
-                        Name = &quot;TestValue1668081982&quot;,
-                        RequestedCompanyId = 999587288,
-                        RequestedCompany = default(RequestedCompanyForm),
-                        EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-                    },
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                EmployeeAttendances = new Mock&lt;ICollection&lt;EmployeeAttendance&gt;&gt;().Object,
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                EmployeeLeaves = new Mock&lt;ICollection&lt;EmployeeLeave&gt;&gt;().Object,
+                Id = 1874223695,
+                Name = &quot;TestValue765700642&quot;,
+                PhoneNumber = &quot;TestValue1333220231&quot;,
+                DomainName = &quot;TestValue1415987749&quot;,
+                Status = &quot;TestValue362922538&quot;,
+                InsertedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow,
+                Email = &quot;TestValue1460718944&quot;,
+                IsActive = (short)5837,
+                CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
                 Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
                 LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
             };
 
             // Act
-            _testClass.EmployeeCredential = testValue;
+            _testClass.Company = testValue;
 
             // Assert
-            Assert.Same(testValue, _testClass.EmployeeCredential);
-        }
-
-        [Fact]
-        public void CanSetAndGetRoles()
-        {
-            // Arrange
-            var testValue = new Role
-            {
-                Id = 772714799,
-                Name = &quot;TestValue838095090&quot;,
-                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-            };
-
-            // Act
-            _testClass.Roles = testValue;
-
-            // Assert
-            Assert.Same(testValue, _testClass.Roles);
+            Assert.Same(testValue, _testClass.Company);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[13,9,13,33,1],[14,9,14,10,1],[15,13,15,43,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,40,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,39,1],[38,13,38,57,1],[41,13,41,70,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,39,1],[51,13,51,44,1],[54,13,54,57,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,102,15,1],[105,13,105,55,1],[108,13,108,67,1],[109,9,109,10,1],[113,9,113,10,1],[115,13,120,15,1],[123,13,123,42,1],[126,13,126,54,1],[127,9,127,10,1]]);
+      highlightRanges([[13,9,13,30,1],[14,9,14,10,1],[15,13,15,40,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,39,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,45,1],[38,13,38,41,1],[41,13,41,54,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,51,1],[51,13,51,41,1],[54,13,54,54,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,39,1],[64,13,64,46,1],[67,13,67,59,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,50,1],[77,13,77,45,1],[80,13,80,58,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,87,42,1],[90,13,90,45,1],[93,13,93,58,1],[94,9,94,10,1],[98,9,98,10,1],[100,13,117,15,1],[120,13,120,44,1],[123,13,123,56,1],[124,9,124,10,1]]);
     </script>
   </body>
 </html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\AccountDetailsController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class AccountDetailsController : ControllerBase
+    {
+        private readonly IAccountDetails _accountDetails;
+        private readonly ILogger&lt;AccountDetailsController&gt; _logger;
+
+
+        public AccountDetailsController(IAccountDetails accountDetails, ILogger&lt;AccountDetailsController&gt; logger)
+        {
+            _accountDetails = accountDetails;
+            _logger = logger;
+        }
+        [HttpGet]
+        //[Authorize(new[] { &quot;Admin&quot;, &quot;Developer&quot; })]
+        public List&lt;AccountDetail&gt; GetAllaccountDetails()
+        {
+            _logger.LogInformation(&quot;Get all department method started&quot;);
+            var dept = _accountDetails.GetAllAccountdetails();
+            return dept;
+        }
+
+        [HttpGet(&quot;GetById&quot;)]
+        public AccountDetail GetAccountDetailsById(int id)
+        {
+            _logger.LogInformation(&quot;Get account details by id method started&quot;);
+            var res = _accountDetails.GetAccountDetailsById(id);
+            return res;
+        }
+
+        [HttpGet(&quot;GetByAccNumber&quot;)]
+        public AccountDetail GetAccountDetailsByAccNumber(string accountNumber)
+        {
+            _logger.LogInformation(&quot;Get account details by account number method started&quot;);
+            var res = _accountDetails.GetAccountDetailsByAccNumber(accountNumber);
+            return res;
+        }
+
+        [HttpPost(&quot;insertEmployees&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public string InsertAccountDetails(AccountDetail accountDetail)
+        {
+            _logger.LogInformation(&quot;Insert department method started&quot;);
+
+            var status = _accountDetails.InsertAccountDetails(accountDetail);
+            return status;
+        }
+
+
+       /* [HttpPut(&quot;UpdateAll/{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        // [Route(&quot;UpdateAll&quot;)]
+        public Department UpdateDepartment(int id, string? name, int? requestedcompanyId)
+        {
+            _logger.LogInformation(&quot;Update method started&quot;);
+            var status = _department.UpdateDepartment(id, name, requestedcompanyId);
+            return status;
+        }
+*/
+        [HttpDelete(&quot;{id}&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public bool DeleteAccountDetails(int id)
+        {
+            _logger.LogInformation(&quot;Delete method started&quot;);
+            var status = _accountDetails.deleteAccountDetails(id);
+            return status;
+        }
+
+        [HttpPut(&quot;SoftDelete&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation(&quot;Soft update Account details method started&quot;);
+            var res = _accountDetails.SoftDelete(id, isActive);
+            return res;
+
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,114,1],[18,9,18,10,1],[19,13,19,46,1],[20,13,20,30,1],[21,9,21,10,1],[25,9,25,10,1],[26,13,26,73,1],[27,13,27,63,1],[28,13,28,25,1],[29,9,29,10,1],[33,9,33,10,1],[34,13,34,80,1],[35,13,35,65,1],[36,13,36,24,1],[37,9,37,10,1],[41,9,41,10,1],[42,13,42,92,1],[43,13,43,83,1],[44,13,44,24,1],[45,9,45,10,1],[50,9,50,10,1],[51,13,51,72,1],[53,13,53,78,1],[54,13,54,27,1],[55,9,55,10,1],[71,9,71,10,1],[72,13,72,61,1],[73,13,73,67,1],[74,13,74,27,1],[75,9,75,10,1],[81,9,81,10,1],[82,13,82,82,1],[83,13,83,64,1],[84,13,84,24,1],[86,9,86,10,1]]);
+    </script>
+  </body>
+</html>

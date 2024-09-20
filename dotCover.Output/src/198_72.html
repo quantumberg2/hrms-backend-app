@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\DeviceOperationsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class DeviceOperationsImp : IDeviceOperations
+    {
+        private readonly HRMSContext _context;
+        public DeviceOperationsImp(HRMSContext context)
+        {
+            _context = context;
+        }
+        public List&lt;DeviceTable&gt; GetAllInfo()
+        {
+            var Info = (from row in _context.DeviceTables
+                        select row).ToList();
+            return Info;
+        }
+
+        public List&lt;DeviceTable&gt; GetByEmpCreId(int empCredId)
+        {
+            var Info = (from row in _context.DeviceTables
+                        where row.EmpCredentialId == empCredId
+                        select row).ToList();
+            return Info;
+        }
+
+        public string InsertInfo(DeviceTable deviceInfo)
+        {
+           _context.DeviceTables.Add(deviceInfo);
+            var res = _context.SaveChanges();
+            if (res != null)
+            {
+                return &quot;Successfully added new info&quot;;
+            }
+            else
+            {
+                return &quot;failed to insert new info&quot;;
+            }
+
+
+        }
+
+        public string UpdateInfo(DeviceTable deviceInfo)
+        {
+            var info = (from row in _context.DeviceTables
+                        where row.Id == deviceInfo.Id
+                        select row).FirstOrDefault();
+            if(info == null)
+            {
+                return &quot;Data not found&quot;;
+            }
+
+            info.EmpCredential = deviceInfo.EmpCredential;
+            info.TimeOut = deviceInfo.TimeOut;
+            info.TimeIn = deviceInfo.TimeIn;
+            info.InsertedDate = deviceInfo.InsertedDate;
+            info.WorkTime = deviceInfo.WorkTime;
+            info.OverTime = deviceInfo.OverTime;
+            info.ErlOut = deviceInfo.ErlOut;
+            info.LateIn = deviceInfo.LateIn;
+            info.Name = deviceInfo.Name;
+
+            _context.DeviceTables.Update(info);
+            var res = _context.SaveChanges();
+            if (res != null)
+            {
+                return &quot;Updated successfully&quot;;
+            }
+            else
+            {
+                return &quot;Failed to update info&quot;;
+            }
+
+        }
+
+        public bool DeleteInfo(int id)
+        {
+            var res = (from row in _context.DeviceTables
+                       where row.Id ==  id
+                       select row).FirstOrDefault();
+            if(res != null)
+            {
+                _context.DeviceTables.Remove(res);
+                _context.SaveChanges();
+                return true;    
+            }
+
+            else
+            {
+                return false;   
+            }
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,9,9,56,1],[10,9,10,10,1],[11,13,11,32,1],[12,9,12,10,1],[14,9,14,10,1],[15,13,16,46,1],[17,13,17,25,0],[18,9,18,10,0],[21,9,21,10,1],[22,13,24,46,1],[25,13,25,25,0],[26,9,26,10,0],[29,9,29,10,1],[30,12,30,50,1],[31,13,31,46,0],[32,13,32,29,0],[33,13,33,14,0],[34,17,34,54,0],[42,9,42,10,0],[45,9,45,10,1],[46,13,48,54,1],[49,13,49,29,0],[50,13,50,14,0],[51,17,51,41,0],[54,13,54,59,0],[55,13,55,47,0],[56,13,56,45,0],[57,13,57,57,0],[58,13,58,49,0],[59,13,59,49,0],[60,13,60,45,0],[61,13,61,45,0],[62,13,62,41,0],[64,13,64,48,0],[65,13,65,46,0],[66,13,66,29,0],[67,13,67,14,0],[68,17,68,47,0],[75,9,75,10,0],[78,9,78,10,1],[79,13,81,53,1],[82,13,82,28,0],[83,13,83,14,0],[84,17,84,51,0],[85,17,85,40,0],[86,17,86,29,0],[90,13,90,14,0],[91,17,91,30,0],[93,9,93,10,0]]);
+    </script>
+  </body>
+</html>

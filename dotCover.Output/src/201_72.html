@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\EmpDetailsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.GlobalSearch;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using OfficeOpenXml.FormulaParsing;
+using System.Xml.Linq;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class EmpDetailsImp : IEmpDetails
+    {
+        private readonly HRMSContext _hrmsContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        public List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        private readonly IEmailPassword _emailPasswordService;
+
+        public EmpDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils,IEmailPassword emailPasswordService)
+        {
+            _hrmsContext = hrmsContext;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+            _emailPasswordService = emailPasswordService;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _hrmsContext.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; DeleteEmployeeDetail(int id)
+        {
+            DecodeToken();
+            var result = (from row in _hrmsContext.EmployeeDetails
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _hrmsContext.EmployeeDetails.Remove(result);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;EmployeeDetail&gt; GetAllUser()
+        {
+            var result = (from row in _hrmsContext.EmployeeDetails
+                          where  row.IsActive == 1
+                          select row).ToList();
+            return result;
+        }
+
+        public EmployeeDetail GetById(int id)
+        {
+            var res = (from row in _hrmsContext.EmployeeDetails
+                       where row.Id == id &amp;&amp; row.IsActive == 1
+                       select row).FirstOrDefault();
+            return res;
+        }
+
+        public async Task&lt;string&gt; InsertEmployeeAsync(EmployeeDetail employeeDetail, int companyId)
+        {
+            DecodeToken();
+            // Check if the email already exists for the same company
+            var existingEmail = await _hrmsContext.EmployeeCredentials
+                .SingleOrDefaultAsync(e =&gt; e.Email == employeeDetail.Email &amp;&amp; e.RequestedCompanyId == companyId);
+
+            if (existingEmail != null)
+            {
+                return $&quot;Email &#39;{employeeDetail.Email}&#39; is already in use for company ID &#39;{companyId}&#39;.&quot;;
+            }
+
+            var employeeCredential = new EmployeeCredential
+            {
+                UserName = employeeDetail.Email, // Username is set to the email address
+                Email = employeeDetail.Email,
+                Password = GeneratePassword(),
+                DefaultPassword = true,
+                RequestedCompanyId = companyId,
+                IsActive = 1
+                
+            };
+
+            await _hrmsContext.EmployeeCredentials.AddAsync(employeeCredential);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+            // Set the EmployeeCredentialId in EmployeeDetail
+            employeeDetail.EmployeeCredentialId = employeeCredential.Id;
+            employeeDetail.RequestCompanyId = companyId;
+            employeeDetail.DeptId = null;
+            employeeDetail.IsActive = 1;
+            await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+            // Assign &quot;User&quot; role to the employee
+            var userRole = new UserRolesJ
+            {
+                EmployeeCredentialId = employeeCredential.Id,
+                RolesId = 2 ,// Assuming &quot;2&quot; is the ID for the &quot;User&quot; role
+                IsActive =1
+                
+            };
+
+            await _hrmsContext.UserRolesJs.AddAsync(userRole);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+            // Send email with username and password
+            await _emailPasswordService.SendOtpEmailAsync(new Generatepassword
+            {
+                EmailAddress = employeeCredential.Email,
+                Password = employeeCredential.Password,
+                UserName = employeeCredential.UserName
+            });
+
+            return &quot;Employee inserted successfully and credentials sent via email.&quot;;
+        }
+
+        private string GeneratePassword()
+        {
+            const string valid = &quot;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890&quot;;
+            var res = new char[8];
+            var rnd = new Random();
+            for (int i = 0; i &lt; res.Length; i++)
+            {
+                res[i] = valid[rnd.Next(valid.Length)];
+            }
+            return new string(res);
+        }
+
+
+
+        public async Task&lt;EmployeeDetail&gt; UpdateEmployeeDetail(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
+        {
+            DecodeToken();
+            var result = await _hrmsContext.EmployeeDetails.SingleOrDefaultAsync(p =&gt; p.Id == id);
+
+            if (result == null)
+            {
+                // Handle the case where the user with the specified id doesn&#39;t exist
+                return null;
+            }
+
+            // Update only the fields that have non-null values passed to the method
+            result.DeptId = depId ?? result.DeptId;
+            result.FirstName = fname ?? result.FirstName;
+            result.MiddleName = mname ?? result.MiddleName;
+            result.LastName = lname ?? result.LastName;
+            result.PositionId = positionid ?? result.PositionId;
+            result.EmployeeCredentialId = employeecredentialId ?? result.EmployeeCredentialId;
+            result.Email = Email ?? result.Email;
+            result.EmployeeNumber = EmployeeNumber ?? result.EmployeeNumber;
+            result.RequestCompanyId = requsetCompanyId ?? result.RequestCompanyId;
+             
+            _hrmsContext.EmployeeDetails.Update(result);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return result;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.EmployeeDetails
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.EmployeeDetails.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+        public IEnumerable&lt;EmployeeView&gt; GetAllEmployees()
+        {
+            var employees = _hrmsContext.EmployeeDetails
+                .Include(e =&gt; e.EmployeeCredential)
+                .Include(e =&gt; e.Position)
+                .Include(e =&gt; e.Dept)
+                .Include(e =&gt; e.EmployeeCredential.AddressInfos)
+                .Include(e =&gt; e.EmployeeCredential.EmpPersonalInfos)
+                .ToList();
+
+            return employees.Select(employee =&gt; new EmployeeView
+            {
+                EmployeeId = employee.Id,
+                EmployeeName = $&quot;{employee.FirstName} {employee.MiddleName} {employee.LastName}&quot;,
+                Address = employee.EmployeeCredential.AddressInfos.FirstOrDefault()?.AddressLine1,
+                Gender = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Gender,
+                DOB = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Dob.ToString(),
+                Designation = employee.Position?.Name,
+               // Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m =&gt; m.Id == employee.ManagerId.Value)?.FirstName : &quot;N/A&quot;
+               Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m =&gt; m.EmployeeCredentialId == employee.ManagerId.Value)?.FirstName : &quot;N/A&quot;
+            }).ToList();
+        }
+        public async Task&lt;UpdateEmployeeInfoDTO&gt; GetEmployeeInfoAsync(int employeeCredentialId)
+        {
+            // Fetch employee details by EmployeeCredentialId
+            var employeeDetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(e =&gt; e.EmployeeCredentialId == employeeCredentialId);
+
+            var employeeCredential = await _hrmsContext.EmployeeCredentials
+                .FirstOrDefaultAsync(ec =&gt; ec.Id == employeeCredentialId);
+
+            var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep =&gt; ep.EmployeeCredentialId == employeeCredentialId);
+
+            // Check if all necessary data exists
+            if (employeeDetail == null || employeeCredential == null || employeePersonalInfo == null)
+            {
+                return null; // No data found for the given EmployeeCredentialId
+            }
+
+            // Combine the data into the DTO and return
+            return new UpdateEmployeeInfoDTO
+            {
+                EmployeeCredentialId = employeeCredentialId,
+                EmployeeName = employeeDetail.FirstName,
+                NickName = employeeDetail.NickName,
+                EmailAddress = employeeDetail.Email,
+                MobileNumber = employeeDetail.MobileNumber,
+                Extension = employeeDetail.Extension,
+                EmpLoginName = employeeCredential.EmployeeLoginName,
+                gender = employeePersonalInfo.Gender
+            };
+        }
+        public async Task&lt;EmpPersonalInfoDTO&gt; GetEmployeePersonalInfoAsync(int employeeCredentialId)
+        {
+            var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep =&gt; ep.EmployeeCredentialId == employeeCredentialId);
+            var employyedetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(ed =&gt; ed.EmployeeCredentialId == employeeCredentialId);
+
+            if (employeePersonalInfo == null)
+            {
+                return null; // Return null if no personal information found
+            }
+
+            // Map the entity data to the DTO
+            return new EmpPersonalInfoDTO
+            {
+                FirstName = employyedetail.FirstName,
+                MiddleName = employyedetail.MiddleName,
+                LastName = employyedetail.LastName,
+                Contact = employyedetail.MobileNumber,
+                EmployeeCredentialId = employeePersonalInfo.EmployeeCredentialId,
+                Gender = employeePersonalInfo.Gender,
+                EmailId = employeePersonalInfo.EmailId,
+                PersonalEmail = employeePersonalInfo.PersonalEmail,
+                Dob = employeePersonalInfo.Dob,
+                DateOfJoining = employeePersonalInfo.DateOfJoining,
+                ConfirmDate = employeePersonalInfo.ConfirmDate,
+                EmpStatus = employeePersonalInfo.EmpStatus,
+                PAN = employeePersonalInfo.Pan,
+                MaritalStatus = employeePersonalInfo.MaritalStatus,
+                BloodGroup = employeePersonalInfo.BloodGroup,
+                SpouseName = employeePersonalInfo.SpouseName,
+                PhysicallyChallenged = employeePersonalInfo.PhysicallyChallenged,
+                EmergencyContact = employeePersonalInfo.EmergencyContact
+            };
+        }
+        public async Task&lt;AddressInfoDTO&gt; GetEmployeeAddressInfoAsync(int employeeCredentialId)
+        {
+            var employeeAddress = await _hrmsContext.AddressInfos
+                .FirstOrDefaultAsync(e =&gt; e.EmployeeCredentialId == employeeCredentialId);
+
+            if (employeeAddress == null)
+            {
+                return null; // Return null if no address info found
+            }
+
+            // Map the entity data to the DTO
+            return new AddressInfoDTO
+            {
+                EmployeeCredentialId = employeeAddress.EmployeeCredentialId,
+                AddressLine1 = employeeAddress.AddressLine1,
+                AddressLine2 = employeeAddress.AddressLine2,
+                City = employeeAddress.City,
+                State = employeeAddress.State,
+                Country = employeeAddress.Country,
+                PinCode = employeeAddress.PinCode
+            };
+        }
+        public async Task&lt;AccountDetail&gt; GetEmployeeAccountInfoAsync(int employeeCredentialId)
+        {
+            var accountDetail = await _hrmsContext.AccountDetails
+                .FirstOrDefaultAsync(e =&gt; e.EmployeeCredentialId == employeeCredentialId);
+
+            if (accountDetail == null)
+            {
+                return null; // Return null if no account info found
+            }
+
+            // Map the entity data to the DTO
+            return new AccountDetail
+            {
+                EmployeeCredentialId = accountDetail.EmployeeCredentialId,
+                AadharNumber = accountDetail.AadharNumber,
+                AccountNumber = accountDetail.AccountNumber,
+                PfNumber = accountDetail.PfNumber,
+                UanNumber = accountDetail.UanNumber,
+                BankName = accountDetail.BankName,
+                AccountType = accountDetail.AccountType,
+                BranchName = accountDetail.BranchName,
+                City = accountDetail.City,
+                Country = accountDetail.Country,
+                State = accountDetail.State,
+                PfJoiningDate = accountDetail.PfJoiningDate,
+                Pin = accountDetail.Pin,
+                EligibleForPf = accountDetail.EligibleForPf,
+                IfscCode = accountDetail.IfscCode
+            };
+        }
+        public List&lt;EmployeeDetail&gt; GetFilters(GlobalsearchEmp globalSearch)
+        {
+            List&lt;EmployeeDetail&gt; mm = new List&lt;EmployeeDetail&gt;();
+            var filterby = globalSearch.FilterBy.Trim().ToLowerInvariant();
+            if (!string.IsNullOrEmpty(filterby))
+            {
+                var query = _hrmsContext.EmployeeDetails.Where(f =&gt; f.FirstName.ToLower().Contains(filterby)
+                || f.LastName.ToLower().Contains(filterby)
+                || f.MiddleName.ToLower().Contains(filterby)
+                || f.Email.ToLower().Contains(filterby)
+                ||f.EmployeeNumber.ToLower().Contains(filterby)
+                ||f.EmployeeCredentialId.ToString().Contains(filterby));
+                mm = query.ToList();
+            }
+            return mm;
+        }
+        public async Task&lt;bool&gt; UpdateEmployeeInfoAsync(UpdateEmployeeInfoDTO updateEmployeeInfo)
+        {
+            // Check if the employee, credential, and personal info exist
+            var employeeDetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(e =&gt; e.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId);
+
+            var employeeCredential = await _hrmsContext.EmployeeCredentials
+                .FirstOrDefaultAsync(ec =&gt; ec.Id == updateEmployeeInfo.EmployeeCredentialId);
+
+            var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep =&gt; ep.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId);
+
+            // If employee, credential, or personal info doesn&#39;t exist, create new ones
+            if (employeeDetail == null)
+            {
+                employeeDetail = new EmployeeDetail
+                {
+                    EmployeeCredentialId = updateEmployeeInfo.EmployeeCredentialId,
+                    FirstName = updateEmployeeInfo.EmployeeName,
+                    NickName = updateEmployeeInfo.NickName,
+                    Email = updateEmployeeInfo.EmailAddress,
+                    MobileNumber = updateEmployeeInfo.MobileNumber,
+                    Extension = updateEmployeeInfo.Extension,
+                    IsActive =1,
+                };
+                await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
+            }
+            else
+            {
+                // Update only the fields provided in the DTO, keeping other values unchanged
+                employeeDetail.FirstName = updateEmployeeInfo.EmployeeName ?? employeeDetail.FirstName;
+                employeeDetail.NickName = updateEmployeeInfo.NickName ?? employeeDetail.NickName;
+                employeeDetail.Email = updateEmployeeInfo.EmailAddress ?? employeeDetail.Email;
+                employeeDetail.MobileNumber = updateEmployeeInfo.MobileNumber ?? employeeDetail.MobileNumber;
+                employeeDetail.Extension = updateEmployeeInfo.Extension ?? employeeDetail.Extension;
+
+                _hrmsContext.EmployeeDetails.Update(employeeDetail);
+            }
+
+            if (employeeCredential == null)
+            {
+                return false;
+            }
+            else
+            {
+                employeeCredential.EmployeeLoginName = updateEmployeeInfo.EmpLoginName ?? employeeCredential.EmployeeLoginName;
+                employeeCredential.Email = updateEmployeeInfo.EmailAddress ?? employeeCredential.Email;
+
+                _hrmsContext.EmployeeCredentials.Update(employeeCredential);
+            }
+
+            if (employeepersonalinfo == null)
+            {
+                employeepersonalinfo = new EmpPersonalInfo
+                {
+                    EmployeeCredentialId = updateEmployeeInfo.EmployeeCredentialId,
+                    Gender = updateEmployeeInfo.gender,
+                    IsActive = 1
+                };
+                await _hrmsContext.EmpPersonalInfos.AddAsync(employeepersonalinfo);
+            }
+            else
+            {
+                employeepersonalinfo.Gender = updateEmployeeInfo.gender ?? employeepersonalinfo.Gender;
+                _hrmsContext.EmpPersonalInfos.Update(employeepersonalinfo);
+            }
+
+            // Save changes to the database
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task&lt;bool&gt; UpdateEmployeepersonalInfoAsync(EmpPersonalInfoDTO empPersonalInfo)
+        {
+            // Check if EmployeeDetail exists
+            var employeeDetail = await _hrmsContext.EmployeeDetails
+                .FirstOrDefaultAsync(e =&gt; e.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
+
+            // Check if EmployeeCredential exists
+            var employeeCredential = await _hrmsContext.EmployeeCredentials
+                .FirstOrDefaultAsync(ec =&gt; ec.Id == empPersonalInfo.EmployeeCredentialId);
+
+            // Check if EmpPersonalInfo exists
+            var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep =&gt; ep.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
+
+            // If none of the records exist, create new ones
+            if (employeeDetail == null)
+            {
+                employeeDetail = new EmployeeDetail
+                {
+                    FirstName = empPersonalInfo.FirstName,
+                    MiddleName = empPersonalInfo.MiddleName,
+                    LastName = empPersonalInfo.LastName,
+                    Email = empPersonalInfo.EmailId,
+                    MobileNumber = empPersonalInfo.Contact,
+                    EmployeeCredentialId = empPersonalInfo.EmployeeCredentialId,
+                    IsActive =1
+                    
+                };
+                await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
+            }
+            else
+            {
+                // Update existing employee detail
+                employeeDetail.FirstName = empPersonalInfo.FirstName ?? employeeDetail.FirstName;
+                employeeDetail.MiddleName = empPersonalInfo.MiddleName ?? employeeDetail.MiddleName;
+                employeeDetail.LastName = empPersonalInfo.LastName ?? employeeDetail.LastName;
+                employeeDetail.Email = empPersonalInfo.EmailId ?? employeeDetail.Email;
+                employeeDetail.MobileNumber = empPersonalInfo.Contact ?? employeeDetail.MobileNumber;
+
+                _hrmsContext.EmployeeDetails.Update(employeeDetail);
+            }
+
+            if (employeeCredential == null)
+            {
+                return false;
+            }
+            else
+            {
+                // Update existing employee credential
+                employeeCredential.Email = empPersonalInfo.EmailId ?? employeeCredential.Email;
+
+                _hrmsContext.EmployeeCredentials.Update(employeeCredential);
+            }
+
+            if (employeepersonalinfo == null)
+            {
+                employeepersonalinfo = new EmpPersonalInfo
+                {
+                    EmployeeCredentialId = empPersonalInfo.EmployeeCredentialId,
+                    Gender = empPersonalInfo.Gender,
+                    EmailId = empPersonalInfo.EmailId,
+                    PersonalEmail = empPersonalInfo.PersonalEmail,
+                    Dob = empPersonalInfo.Dob,
+                    DateOfJoining = empPersonalInfo.DateOfJoining,
+                    ConfirmDate = empPersonalInfo.ConfirmDate,
+                    EmpStatus = empPersonalInfo.EmpStatus,
+                    Pan = empPersonalInfo.PAN,
+                    MaritalStatus = empPersonalInfo.MaritalStatus,
+                    BloodGroup = empPersonalInfo.BloodGroup,
+                    SpouseName = empPersonalInfo.SpouseName,
+                    PhysicallyChallenged = empPersonalInfo.PhysicallyChallenged,
+                    EmergencyContact = empPersonalInfo.EmergencyContact,
+                    IsActive =1
+                };
+                await _hrmsContext.EmpPersonalInfos.AddAsync(employeepersonalinfo);
+            }
+            else
+            {
+                // Update existing employee personal info
+                employeepersonalinfo.Gender = empPersonalInfo.Gender ?? employeepersonalinfo.Gender;
+                employeepersonalinfo.EmailId = empPersonalInfo.EmailId ?? employeepersonalinfo.EmailId;
+                employeepersonalinfo.PersonalEmail = empPersonalInfo.PersonalEmail ?? employeepersonalinfo.PersonalEmail;
+                employeepersonalinfo.Dob = empPersonalInfo.Dob ?? employeepersonalinfo.Dob;
+                employeepersonalinfo.DateOfJoining = empPersonalInfo.DateOfJoining ?? employeepersonalinfo.DateOfJoining;
+                employeepersonalinfo.ConfirmDate = empPersonalInfo.ConfirmDate ?? employeepersonalinfo.ConfirmDate;
+                employeepersonalinfo.EmpStatus = empPersonalInfo.EmpStatus ?? employeepersonalinfo.EmpStatus;
+                employeepersonalinfo.Pan = empPersonalInfo.PAN ?? employeepersonalinfo.Pan;
+                employeepersonalinfo.MaritalStatus = empPersonalInfo.MaritalStatus ?? employeepersonalinfo.MaritalStatus;
+                employeepersonalinfo.BloodGroup = empPersonalInfo.BloodGroup ?? employeepersonalinfo.BloodGroup;
+                employeepersonalinfo.SpouseName = empPersonalInfo.SpouseName ?? employeepersonalinfo.SpouseName;
+                employeepersonalinfo.PhysicallyChallenged = empPersonalInfo.PhysicallyChallenged ?? employeepersonalinfo.PhysicallyChallenged;
+                employeepersonalinfo.EmergencyContact = empPersonalInfo.EmergencyContact ?? employeepersonalinfo.EmergencyContact;
+
+                _hrmsContext.EmpPersonalInfos.Update(employeepersonalinfo);
+            }
+
+            // Save changes to the database
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task&lt;bool&gt; UpdateEmployeeAddresslInfoAsync(AddressInfoDTO addressInfo)
+        {
+            // Check if the AddressInfo record exists for the given EmployeeCredentialId
+            var employeeAddress = await _hrmsContext.AddressInfos
+                .FirstOrDefaultAsync(e =&gt; e.EmployeeCredentialId == addressInfo.EmployeeCredentialId);
+
+            if (employeeAddress == null)
+            {
+                // If no record exists, create a new AddressInfo entry
+                employeeAddress = new AddressInfo
+                {
+                    EmployeeCredentialId = addressInfo.EmployeeCredentialId,
+                    AddressLine1 = addressInfo.AddressLine1,
+                    AddressLine2 = addressInfo.AddressLine2,
+                    City = addressInfo.City,
+                    State = addressInfo.State,
+                    Country = addressInfo.Country,
+                    PinCode = addressInfo.PinCode,
+                    IsActive =1
+                };
+
+                await _hrmsContext.AddressInfos.AddAsync(employeeAddress); // Insert new record
+            }
+            else
+            {
+                // If record exists, update the fields that are provided, keep existing values for others
+                employeeAddress.AddressLine1 = addressInfo.AddressLine1 ?? employeeAddress.AddressLine1;
+                employeeAddress.AddressLine2 = addressInfo.AddressLine2 ?? employeeAddress.AddressLine2;
+                employeeAddress.City = addressInfo.City ?? employeeAddress.City;
+                employeeAddress.State = addressInfo.State ?? employeeAddress.State;
+                employeeAddress.Country = addressInfo.Country ?? employeeAddress.Country;
+                employeeAddress.PinCode = addressInfo.PinCode ?? employeeAddress.PinCode;
+
+                _hrmsContext.AddressInfos.Update(employeeAddress); // Update the existing record
+            }
+
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task&lt;bool&gt; UpdateEmployeeAccountInfoAsync(AccountDetail accountDetail)
+        {
+            // Check if the account already exists
+            var existingAccountDetail = await _hrmsContext.AccountDetails
+                .FirstOrDefaultAsync(e =&gt; e.EmployeeCredentialId == accountDetail.EmployeeCredentialId);
+
+            // If account exists, update the existing fields
+            if (existingAccountDetail != null)
+            {
+                existingAccountDetail.AadharNumber = accountDetail.AadharNumber ?? existingAccountDetail.AadharNumber;
+                existingAccountDetail.AccountNumber = accountDetail.AccountNumber ?? existingAccountDetail.AccountNumber;
+                existingAccountDetail.PfNumber = accountDetail.PfNumber ?? existingAccountDetail.PfNumber;
+                existingAccountDetail.UanNumber = accountDetail.UanNumber ?? existingAccountDetail.UanNumber;
+                existingAccountDetail.BankName = accountDetail.BankName ?? existingAccountDetail.BankName;
+                existingAccountDetail.AccountType = accountDetail.AccountType ?? existingAccountDetail.AccountType;
+                existingAccountDetail.BranchName = accountDetail.BranchName ?? existingAccountDetail.BranchName;
+                existingAccountDetail.City = accountDetail.City ?? existingAccountDetail.City;
+                existingAccountDetail.Country = accountDetail.Country ?? existingAccountDetail.Country;
+                existingAccountDetail.State = accountDetail.State ?? existingAccountDetail.State;
+                existingAccountDetail.PfJoiningDate = accountDetail.PfJoiningDate ?? existingAccountDetail.PfJoiningDate;
+                existingAccountDetail.Pin = accountDetail.Pin ?? existingAccountDetail.Pin;
+                existingAccountDetail.EligibleForPf = accountDetail.EligibleForPf ?? existingAccountDetail.EligibleForPf;
+                existingAccountDetail.IfscCode = accountDetail.IfscCode ?? existingAccountDetail.IfscCode;
+                
+                _hrmsContext.AccountDetails.Update(existingAccountDetail);
+            }
+            // If account does not exist, create a new one
+            else
+            {
+                AccountDetail newAccountDetail = new AccountDetail
+                {
+                    EmployeeCredentialId = accountDetail.EmployeeCredentialId,
+                    AadharNumber = accountDetail.AadharNumber,
+                    AccountNumber = accountDetail.AccountNumber,
+                    PfNumber = accountDetail.PfNumber,
+                    UanNumber = accountDetail.UanNumber,
+                    BankName = accountDetail.BankName,
+                    AccountType = accountDetail.AccountType,
+                    BranchName = accountDetail.BranchName,
+                    City = accountDetail.City,
+                    Country = accountDetail.Country,
+                    State = accountDetail.State,
+                    PfJoiningDate = accountDetail.PfJoiningDate,
+                    Pin = accountDetail.Pin,
+                    EligibleForPf = accountDetail.EligibleForPf,
+                    IfscCode = accountDetail.IfscCode,
+                    IsActive =1
+                };
+
+                await _hrmsContext.AccountDetails.AddAsync(newAccountDetail);
+            }
+
+            // Save changes to the database
+            await _hrmsContext.SaveChangesAsync();
+
+            return true;
+        }
+        public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
+        {
+            var currentDate = DateTime.Now.Date;  
+
+            var shiftRoster = _hrmsContext.ShiftRosters
+                .Where(sr =&gt; sr.EmpCredentialId == empCredentialId
+                             &amp;&amp; sr.Startdate.HasValue &amp;&amp; sr.Startdate.Value.Date &lt;= currentDate
+                             &amp;&amp; sr.Enddate.HasValue &amp;&amp; sr.Enddate.Value.Date &gt;= currentDate)
+                .Include(sr =&gt; sr.ShiftRosterType)
+                .FirstOrDefault();
+
+            if (shiftRoster == null)
+            {
+                throw new Exception(&quot;No shift roster found for the current date.&quot;);
+            }
+
+
+            var leaveAllocations = _hrmsContext.EmployeeLeaveAllocations
+                .Where(la =&gt; la.EmpCredentialId == empCredentialId &amp;&amp; la.IsActive == 1)
+                .Include(la =&gt; la.LeaveTypeNavigation)
+                .ToList();
+
+            var totalLeaveCount = leaveAllocations.Sum(la =&gt; la.NumberOfLeaves ?? 0);
+            var remainingLeaveCount = leaveAllocations.Sum(la =&gt; la.RemainingLeave ?? 0);
+
+            var leavePercentage = totalLeaveCount &gt; 0 ? (remainingLeaveCount * 100) / totalLeaveCount : 0;
+
+            var result = new EmployeeShiftAndLeaveStatsDto
+            {
+                ShiftType = shiftRoster.ShiftRosterType?.Type,
+                ShiftTimeRange = shiftRoster.ShiftRosterType?.TimeRange,
+                TotalLeaveCount = totalLeaveCount,
+                RemainingLeaveCount = remainingLeaveCount,
+                LeavePercentage = leavePercentage
+            };
+
+            return result;
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[23,9,23,152,1],[24,9,24,10,1],[25,13,25,40,1],[26,13,26,56,1],[27,13,27,34,1],[28,13,28,58,1],[29,9,29,10,1],[31,9,31,10,1],[32,13,32,126,1],[33,13,33,45,1],[34,13,34,14,1],[35,17,35,31,1],[36,13,36,14,1],[38,13,38,14,0],[39,17,39,64,0],[40,17,40,37,0],[41,17,41,18,0],[42,21,42,114,0],[43,21,43,45,0],[44,21,44,22,0],[45,25,45,56,0],[46,25,46,71,0],[46,71,46,84,0],[46,84,46,95,0],[47,21,47,22,0],[49,21,49,22,0],[51,25,51,39,0],[52,21,52,22,0],[53,17,53,18,0],[54,13,54,14,0],[55,9,55,10,1],[57,9,57,10,1],[58,13,58,27,1],[59,13,61,57,1],[62,13,62,57,0],[63,13,63,64,0],[64,13,64,25,0],[65,9,65,10,0],[68,9,68,10,1],[69,13,71,48,1],[72,13,72,27,0],[73,9,73,10,0],[76,9,76,10,1],[77,13,79,53,1],[80,13,80,24,0],[81,9,81,10,0],[84,9,84,10,1],[85,13,85,27,1],[87,13,88,114,1],[90,13,90,39,0],[91,13,91,14,0],[92,17,92,106,0],[95,13,104,15,0],[106,13,106,81,0],[107,13,107,64,0],[110,13,110,73,0],[111,13,111,57,0],[112,13,112,42,0],[113,13,113,41,0],[114,13,114,73,0],[115,13,115,64,0],[118,13,124,15,0],[126,13,126,63,0],[127,13,127,64,0],[130,13,135,16,0],[137,13,137,85,0],[138,9,138,10,0],[141,9,141,10,0],[143,13,143,35,0],[144,13,144,36,0],[145,18,145,27,0],[145,29,145,43,0],[145,45,145,48,0],[146,13,146,14,0],[147,17,147,56,0],[148,13,148,14,0],[149,13,149,36,0],[150,9,150,10,0],[155,9,155,10,1],[156,13,156,27,1],[157,13,157,99,1],[159,13,159,32,0],[160,13,160,14,0],[162,17,162,29,0],[166,13,166,52,0],[167,13,167,58,0],[168,13,168,60,0],[169,13,169,56,0],[170,13,170,65,0],[171,13,171,95,0],[172,13,172,50,0],[173,13,173,77,0],[174,13,174,83,0],[176,13,176,57,0],[177,13,177,64,0],[178,13,178,27,0],[179,9,179,10,0],[182,9,182,10,1],[183,13,185,53,1],[186,13,186,29,0],[187,13,187,14,0],[188,17,188,41,0],[189,17,189,58,0],[190,17,190,44,0],[191,17,191,29,0],[194,13,194,26,0],[195,9,195,10,0],[197,9,197,10,1],[198,13,204,27,1],[206,13,206,49,0],[206,49,216,14,0],[216,14,216,25,0],[217,9,217,10,0],[219,9,219,10,1],[221,13,222,91,1],[224,13,225,75,0],[227,13,228,93,0],[231,13,231,102,0],[232,13,232,14,0],[233,17,233,29,0],[237,13,247,15,0],[248,9,248,10,0],[250,9,250,10,1],[251,13,252,93,1],[253,13,254,93,0],[256,13,256,46,0],[257,13,257,14,0],[258,17,258,29,0],[262,13,282,15,0],[283,9,283,10,0],[285,9,285,10,1],[286,13,287,91,1],[289,13,289,41,0],[290,13,290,14,0],[291,17,291,29,0],[295,13,304,15,0],[305,9,305,10,0],[307,9,307,10,1],[308,13,309,91,1],[311,13,311,39,0],[312,13,312,14,0],[313,17,313,29,0],[317,13,334,15,0],[335,9,335,10,0],[337,9,337,10,1],[338,13,338,66,1],[339,13,339,76,1],[340,13,340,49,1],[341,13,341,14,1],[342,17,347,73,1],[348,17,348,37,0],[349,13,349,14,0],[350,13,350,23,0],[351,9,351,10,0],[353,9,353,10,1],[355,13,356,110,1],[358,13,359,94,0],[361,13,362,112,0],[365,13,365,40,0],[366,13,366,14,0],[367,17,376,19,0],[377,17,377,77,0],[378,13,378,14,0],[380,13,380,14,0],[382,17,382,104,0],[383,17,383,98,0],[384,17,384,96,0],[385,17,385,110,0],[386,17,386,101,0],[388,17,388,69,0],[389,13,389,14,0],[391,13,391,44,0],[392,13,392,14,0],[393,17,393,30,0],[396,13,396,14,0],[397,17,397,128,0],[398,17,398,104,0],[400,17,400,77,0],[401,13,401,14,0],[403,13,403,46,0],[404,13,404,14,0],[405,17,410,19,0],[411,17,411,84,0],[412,13,412,14,0],[414,13,414,14,0],[415,17,415,104,0],[416,17,416,76,0],[417,13,417,14,0],[420,13,420,51,0],[422,13,422,25,0],[423,9,423,10,0],[426,9,426,10,1],[428,13,429,107,1],[432,13,433,91,0],[436,13,437,109,0],[440,13,440,40,0],[441,13,441,14,0],[442,17,452,19,0],[453,17,453,77,0],[454,13,454,14,0],[456,13,456,14,0],[458,17,458,98,0],[459,17,459,101,0],[460,17,460,95,0],[461,17,461,88,0],[462,17,462,102,0],[464,17,464,69,0],[465,13,465,14,0],[467,13,467,44,0],[468,13,468,14,0],[469,17,469,30,0],[472,13,472,14,0],[474,17,474,96,0],[476,17,476,77,0],[477,13,477,14,0],[479,13,479,46,0],[480,13,480,14,0],[481,17,498,19,0],[499,17,499,84,0],[500,13,500,14,0],[502,13,502,14,0],[504,17,504,101,0],[505,17,505,104,0],[506,17,506,122,0],[507,17,507,92,0],[508,17,508,122,0],[509,17,509,116,0],[510,17,510,110,0],[511,17,511,92,0],[512,17,512,122,0],[513,17,513,113,0],[514,17,514,113,0],[515,17,515,143,0],[516,17,516,131,0],[518,17,518,76,0],[519,13,519,14,0],[522,13,522,51,0],[524,13,524,25,0],[525,9,525,10,0],[528,9,528,10,1],[530,13,531,103,1],[533,13,533,41,0],[534,13,534,14,0],[536,17,546,19,0],[548,17,548,75,0],[549,13,549,14,0],[551,13,551,14,0],[553,17,553,105,0],[554,17,554,105,0],[555,17,555,81,0],[556,17,556,84,0],[557,17,557,90,0],[558,17,558,90,0],[560,17,560,67,0],[561,13,561,14,0],[563,13,563,51,0],[565,13,565,25,0],[566,9,566,10,0],[569,9,569,10,1],[571,13,572,105,1],[575,13,575,47,0],[576,13,576,14,0],[577,17,577,119,0],[578,17,578,122,0],[579,17,579,107,0],[580,17,580,110,0],[581,17,581,107,0],[582,17,582,116,0],[583,17,583,113,0],[584,17,584,95,0],[585,17,585,104,0],[586,17,586,98,0],[587,17,587,122,0],[588,17,588,92,0],[589,17,589,122,0],[590,17,590,107,0],[592,17,592,75,0],[593,13,593,14,0],[596,13,596,14,0],[597,17,615,19,0],[617,17,617,78,0],[618,13,618,14,0],[621,13,621,51,0],[623,13,623,25,0],[624,9,624,10,0],[626,9,626,10,1],[627,13,627,49,1],[629,13,634,35,1],[636,13,636,37,0],[637,13,637,14,0],[638,17,638,84,0],[642,13,645,27,0],[647,13,647,62,0],[647,62,647,84,0],[647,84,647,86,0],[648,13,648,66,0],[648,66,648,88,0],[648,88,648,90,0],[650,13,650,107,0],[652,13,659,15,0],[661,13,661,27,0],[662,9,662,10,0]]);
+    </script>
+  </body>
+</html>

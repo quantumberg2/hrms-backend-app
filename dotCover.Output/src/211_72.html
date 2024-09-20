@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\LocalStorageOperationsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using System.Reflection.Metadata.Ecma335;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class LocalStorageOperationsImp : ILocalStorageOperations
+    {
+        public string StoreFiles(IFormFile file, string directory)
+        {
+            if(!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            string localFilePath = Path.Combine(directory, file.FileName);
+
+            using (var stream = new FileStream(localFilePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return localFilePath;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,9,9,10,1],[10,13,10,45,1],[11,13,11,14,1],[12,17,12,54,1],[13,13,13,14,1],[14,13,14,75,1],[16,20,16,79,0],[17,13,17,14,0],[18,17,18,37,0],[19,13,19,14,0],[21,13,21,34,0],[22,9,22,10,0]]);
+    </script>
+  </body>
+</html>

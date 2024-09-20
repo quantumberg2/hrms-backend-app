@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\UserServiceTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogics.Implements
+{
+    using System;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogics.Implements;
+    using HRMS_Application.DTO;
+    using HRMS_Application.DTOs;
+    using HRMS_Application.Helpers;
+    using HRMS_Application.Models;
+    using HRMS_Application.Models.Users;
+    using Microsoft.Extensions.Options;
+    using Moq;
+    using Xunit;
+
+    public class UserServiceTests
+    {
+        private readonly UserService _testClass;
+        private HRMSContext _hrmsContext;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly Mock&lt;IOptions&lt;AppSettings&gt;&gt; _appSettings;
+
+        public UserServiceTests()
+        {
+            _hrmsContext = new HRMSContext();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _appSettings = new Mock&lt;IOptions&lt;AppSettings&gt;&gt;();
+            _testClass = new UserService(_hrmsContext, _jwtUtils.Object, _appSettings.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new UserService(_hrmsContext, _jwtUtils.Object, _appSettings.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallAuthenticate()
+        {
+            // Arrange
+            var model = new AuthenticateRequest
+            {
+                Username = &quot;TestValue1822580608&quot;,
+                Password = &quot;TestValue1408824786&quot;
+            };
+
+            _jwtUtils.Setup(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;())).Returns(&quot;TestValue1996317196&quot;);
+
+            // Act
+            var result = _testClass.Authenticate(model);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSelectCompany()
+        {
+            // Arrange
+            var model = new SelectCompanyRequest { CompanyId = 1464199589 };
+            var Userid = 2065783220;
+
+            _jwtUtils.Setup(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;())).Returns(&quot;TestValue682944920&quot;);
+
+            // Act
+            var result = _testClass.SelectCompany(model, Userid);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAll()
+        {
+            // Act
+            var result = _testClass.GetAll();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetById()
+        {
+            // Arrange
+            var id = 1288879463;
+
+            // Act
+            var result = _testClass.GetById(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[22,9,22,34,1],[23,9,23,10,1],[24,13,24,46,1],[25,13,25,47,1],[26,13,26,62,1],[27,13,27,95,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,97,1],[37,13,37,38,1],[38,9,38,10,1],[42,9,42,10,1],[44,13,48,15,1],[50,13,50,112,1],[53,13,53,57,1],[56,13,56,82,0],[58,13,58,72,0],[63,9,63,10,1],[65,13,65,77,1],[66,13,66,37,1],[68,13,68,111,1],[71,13,71,66,1],[74,13,74,82,0],[76,13,76,72,0],[81,9,81,10,1],[83,13,83,46,1],[86,13,86,72,0],[91,9,91,10,1],[93,13,93,33,1],[96,13,96,49,1],[99,13,99,72,0]]);
+    </script>
+  </body>
+</html>

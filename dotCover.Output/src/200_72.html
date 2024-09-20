@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\EmpCredentialImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using HRMS_Application.Middleware.Exceptions;
+using System.Xml.Linq;
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogics.Interface;
+using Microsoft.EntityFrameworkCore;
+using HRMS_Application.DTO;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class EmpCredentialImp : IEmpCredential
+    {
+        private readonly HRMSContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IEmailPassword _emailService;
+        private readonly IEmailService _emailotpService;
+
+
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public EmpCredentialImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IEmailPassword emailService, IEmailService emailotpService)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+            _emailService = emailService;
+            _emailotpService = emailotpService;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; DeleteEmployeeCredential(int id)
+        {
+            var result = await (from row in _context.EmployeeCredentials
+                          where row.Id == id
+                          select row).SingleOrDefaultAsync();
+            _context.EmployeeCredentials.Remove(result);
+            await _context.SaveChangesAsync(_decodedToken);
+            return true;
+            
+        }
+
+        public List&lt;EmployeeCredential&gt; GetAllEmpCredential()
+        {
+            var result = (from row in _context.EmployeeCredentials
+                          where row.IsActive == 1
+                          select row).ToList();
+            return result;
+            
+        }
+
+        public EmployeeCredential GetById(int id)
+        {
+            var result = (from row in _context.EmployeeCredentials
+                          where row.Id == id &amp;&amp; row.IsActive == 1
+                          select row).SingleOrDefault();
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                throw new NotFoundException($&quot;Employee Credential Id &#39;{id}&#39; is not found&quot;);
+            }
+        }
+
+        public async Task&lt;string&gt; InsertEmployeeCredential(EmployeeCredential employeeCredential)
+        {
+            // Check if the username or email already exists
+            var existingUserName = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e =&gt; e.UserName == employeeCredential.UserName);
+            var existingEmail = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e =&gt; e.Email == employeeCredential.Email);
+
+            if (existingUserName != null)
+            {
+                return &quot;Username is not available.&quot;;
+            }
+
+            if (existingEmail != null)
+            {
+                return &quot;Email is already in use.&quot;;
+            }
+
+            // Generate and set the password
+            employeeCredential.Password = GeneratePassword();
+
+            // Set DefaultPassword to true
+            employeeCredential.DefaultPassword = true;
+
+            // Add the entity to the context
+            await _context.EmployeeCredentials.AddAsync(employeeCredential);
+
+            // Save the changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                // Prepare the email details
+                var generatepassword = new Generatepassword
+                {
+                    EmailAddress = employeeCredential.Email,
+                    UserName = employeeCredential.UserName,
+                    Password = employeeCredential.Password
+                };
+
+                // Send the email
+                await _emailService.SendOtpEmailAsync(generatepassword);
+
+                return &quot;New Employee Credentials inserted successfully&quot;;
+            }
+            else
+            {
+                throw new DatabaseOperationException(&quot;Failed to insert Employee credential data&quot;);
+            }
+        }
+
+        public async Task&lt;EmployeeCredential&gt; UpdateEmployeeCredentials(int id, string? username, string? password, short? status, int? requestedCompanyId)
+        {
+            var result = _context.EmployeeCredentials.SingleOrDefault(p =&gt; p.Id == id);
+            if (result != null)
+            {
+                // Handle the case where the user with the specified id doesn&#39;t exist
+                result.UserName = username;
+                result.Password = password;
+                result.Status = status;
+                result.RequestedCompanyId = requestedCompanyId;
+                _context.EmployeeCredentials.Update(result);
+                await _context.SaveChangesAsync(_decodedToken);
+                return result;
+            } 
+            else
+            {
+                throw new NotFoundException($&quot;Employee Credential  id {id} is not found to update&quot;);
+            }
+
+        }
+        public async Task&lt;string&gt; UpdateEmployeePassword(string email, string oldPassword, string newPassword)
+        {
+            // Find the user by email
+            var employeeCredential = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e =&gt; e.Email == email);
+
+            if (employeeCredential == null)
+            {
+                return &quot;Email not found.&quot;;
+            }
+
+            // Check if the old password matches
+            if (employeeCredential.Password != oldPassword)
+            {
+                return &quot;Old password is incorrect.&quot;;
+            }
+
+            // Update the password
+            employeeCredential.Password = newPassword;
+
+            // Save the changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;Password updated successfully.&quot;;
+            }
+            else
+            {
+                throw new DatabaseOperationException(&quot;Failed to update password.&quot;);
+            }
+        }
+        public async Task&lt;string&gt; GenerateAndSendOtp(string email)
+        {
+            // Check if the email already exists
+            var existingCompanyForm = await _context.RequestedCompanyForms
+                .FirstOrDefaultAsync(c =&gt; c.Email == email);
+
+            var employeeCredential = await _context.EmployeeCredentials
+               .FirstOrDefaultAsync(e =&gt; e.Email == email);
+
+            string generatedOtp;
+
+            if (existingCompanyForm != null)
+            {
+                // Update the existing record with new OTP and expiration time
+                generatedOtp = GenerateOtp();
+                employeeCredential.GenerateOtp = generatedOtp;
+                employeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
+                existingCompanyForm.UpdatedDate = DateTime.UtcNow;
+
+                // Save the changes to the database
+                _context.RequestedCompanyForms.Update(existingCompanyForm);
+            }
+            else
+            {
+                return &quot;Email not found.&quot;;
+            }
+
+            // Save the changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                // Send OTP via email
+                var otpEmail = new OtpEmail
+                {
+                    EmailAddress = email,
+                    Otp = generatedOtp
+                };
+                await _emailotpService.SendOtpEmailAsync(otpEmail);
+
+                return &quot;OTP sent to the provided email address.&quot;;
+            }
+            else
+            {
+                throw new DatabaseOperationException(&quot;Failed to update company request data.&quot;);
+            }
+        }
+        public async Task SendOtpEmailAsync(string email, string otp)
+        {
+            var otpEmail = new OtpEmail
+            {
+                EmailAddress = email,
+                Otp = otp
+            };
+            await _emailotpService.SendOtpEmailAsync(otpEmail);
+        }
+
+        private string GenerateOtp()
+        {
+            var random = new Random();
+            return random.Next(100000, 999999).ToString(); // Generate a 6-digit OTP
+        }
+        private string GeneratePassword(int length = 12)
+        {
+            const string validChars = &quot;ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@&quot;;
+            var random = new Random();
+            return new string(Enumerable.Repeat(validChars, length)
+                .Select(s =&gt; s[random.Next(s.Length)]).ToArray());
+        }
+
+        /* public async Task&lt;string&gt; UpdatePassword(string email, string otp, string newPassword)
+         {
+             // Check if the email and OTP match and are valid
+             var existingCompanyForm = await _context.EmployeeCredentials
+                 .FirstOrDefaultAsync(c =&gt; c.Email == email &amp;&amp; c.GenerateOtp == otp);
+
+             if (existingCompanyForm == null || existingCompanyForm.OtpExpiration &lt; DateTime.UtcNow)
+             {
+                 return &quot;Invalid or expired OTP.&quot;;
+             }
+
+             // Update the password in EmployeeCredentials
+             var employeeCredential = await _context.EmployeeCredentials
+                 .FirstOrDefaultAsync(e =&gt; e.Email == email);//&amp;&amp; e.RequestedCompanyId == existingCompanyForm.Id
+
+             if (employeeCredential == null)
+             {
+                 return &quot;User not found.&quot;;
+             }
+
+             employeeCredential.Password = newPassword;
+                        employeeCredential.DefaultPassword = false;
+                       _context.EmployeeCredentials.Update(employeeCredential);
+
+
+                         _context.EmployeeCredentials.Update(existingCompanyForm);
+
+             // Save the changes to the database
+             var result = await _context.SaveChangesAsync(_decodedToken);
+             if (result != 0)
+             {
+                 return &quot;Password updated successfully.&quot;;
+             }
+             else
+             {
+                 throw new DatabaseOperationException(&quot;Failed to update password.&quot;);
+             }
+         }*/
+        public async Task&lt;string&gt; UpdatePassword(string email, string otp, string newPassword, string confirmPassword)
+        {
+            // Check if the email and OTP match and are valid
+            var existingCompanyForm = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(c =&gt; c.Email == email &amp;&amp; c.GenerateOtp == otp);
+
+            if (existingCompanyForm == null || existingCompanyForm.OtpExpiration &lt; DateTime.UtcNow)
+            {
+                return &quot;Invalid or expired OTP.&quot;;
+            }
+
+            // Validate that newPassword and confirmPassword match
+            if (newPassword != confirmPassword)
+            {
+                return &quot;Passwords do not match.&quot;;
+            }
+
+            // Update the password in EmployeeCredentials
+            var employeeCredential = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e =&gt; e.Email == email);
+
+            if (employeeCredential == null)
+            {
+                return &quot;User not found.&quot;;
+            }
+
+            // Hash the new password before storing it
+            employeeCredential.Password = newPassword;
+            employeeCredential.DefaultPassword = false;
+
+            _context.EmployeeCredentials.Update(employeeCredential);
+            _context.EmployeeCredentials.Update(existingCompanyForm);
+
+            // Save the changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;Password updated successfully.&quot;;
+            }
+            else
+            {
+                throw new DatabaseOperationException(&quot;Failed to update password.&quot;);
+            }
+        }
+
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.EmployeeCredentials
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.EmployeeCredentials.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+        // Method to hash the password
+        /*private string HashPassword(string password)
+        {
+            byte[] salt = new byte[128 / 8];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8));
+
+            return $&quot;{Convert.ToBase64String(salt)}:{hashed}&quot;;
+        }*/
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[25,9,25,175,1],[26,9,26,10,1],[27,13,27,32,1],[28,13,28,56,1],[29,13,29,34,1],[30,13,30,42,1],[31,13,31,48,1],[32,9,32,10,1],[34,9,34,10,0],[35,13,35,126,0],[36,13,36,45,0],[37,13,37,14,0],[38,17,38,31,0],[39,13,39,14,0],[41,13,41,14,0],[42,17,42,64,0],[43,17,43,37,0],[44,17,44,18,0],[45,21,45,110,0],[46,21,46,45,0],[47,21,47,22,0],[48,25,48,56,0],[49,25,49,71,0],[49,71,49,84,0],[49,84,49,95,0],[50,21,50,22,0],[52,21,52,22,0],[54,25,54,39,0],[55,21,55,22,0],[56,17,56,18,0],[57,13,57,14,0],[58,9,58,10,0],[60,9,60,10,1],[61,13,63,62,1],[64,13,64,57,0],[65,13,65,60,0],[66,13,66,25,0],[68,9,68,10,0],[71,9,71,10,1],[72,13,74,48,1],[75,13,75,27,0],[77,9,77,10,0],[80,9,80,10,1],[81,13,83,57,1],[84,13,84,32,0],[85,13,85,14,0],[86,17,86,31,0],[89,13,89,14,0],[90,17,90,92,0],[92,9,92,10,0],[95,9,95,10,1],[97,13,98,86,1],[99,13,100,80,0],[102,13,102,42,0],[103,13,103,14,0],[104,17,104,53,0],[107,13,107,39,0],[108,13,108,14,0],[109,17,109,51,0],[113,13,113,62,0],[116,13,116,55,0],[119,13,119,77,0],[122,13,122,73,0],[123,13,123,29,0],[124,13,124,14,0],[126,17,131,19,0],[134,17,134,73,0],[136,17,136,73,0],[139,13,139,14,0],[140,17,140,99,0],[142,9,142,10,0],[145,9,145,10,1],[146,13,146,88,1],[147,13,147,32,0],[148,13,148,14,0],[150,17,150,44,0],[151,17,151,44,0],[152,17,152,40,0],[153,17,153,64,0],[154,17,154,61,0],[155,17,155,64,0],[156,17,156,31,0],[159,13,159,14,0],[160,17,160,101,0],[163,9,163,10,0],[165,9,165,10,1],[167,13,168,61,1],[170,13,170,44,0],[171,13,171,14,0],[172,17,172,43,0],[176,13,176,60,0],[177,13,177,14,0],[178,17,178,53,0],[182,13,182,55,0],[185,13,185,73,0],[186,13,186,29,0],[187,13,187,14,0],[188,17,188,57,0],[191,13,191,14,0],[192,17,192,84,0],[194,9,194,10,0],[196,9,196,10,1],[198,13,199,61,1],[201,13,202,60,0],[206,13,206,45,0],[207,13,207,14,0],[209,17,209,46,0],[210,17,210,63,0],[211,17,211,83,0],[212,17,212,67,0],[215,17,215,76,0],[216,13,216,14,0],[218,13,218,14,0],[219,17,219,43,0],[223,13,223,73,0],[224,13,224,29,0],[225,13,225,14,0],[227,17,231,19,0],[232,17,232,68,0],[234,17,234,66,0],[237,13,237,14,0],[238,17,238,96,0],[240,9,240,10,0],[242,9,242,10,1],[243,13,247,15,1],[248,13,248,64,1],[249,9,249,10,1],[252,9,252,10,0],[253,13,253,39,0],[254,13,254,59,0],[255,9,255,10,0],[257,9,257,10,0],[259,13,259,39,0],[260,13,261,30,0],[261,30,261,54,0],[261,54,261,67,0],[262,9,262,10,0],[303,9,303,10,1],[305,13,306,85,1],[308,13,308,100,0],[309,13,309,14,0],[310,17,310,50,0],[314,13,314,48,0],[315,13,315,14,0],[316,17,316,50,0],[320,13,321,61,0],[323,13,323,44,0],[324,13,324,14,0],[325,17,325,42,0],[329,13,329,55,0],[330,13,330,56,0],[332,13,332,69,0],[333,13,333,70,0],[336,13,336,73,0],[337,13,337,29,0],[338,13,338,14,0],[339,17,339,57,0],[342,13,342,14,0],[343,17,343,84,0],[345,9,345,10,0],[349,9,349,10,1],[350,13,352,53,1],[353,13,353,29,0],[354,13,354,14,0],[355,17,355,41,0],[356,17,356,58,0],[357,17,357,40,0],[358,17,358,29,0],[361,13,361,26,0],[362,9,362,10,0]]);
+    </script>
+  </body>
+</html>

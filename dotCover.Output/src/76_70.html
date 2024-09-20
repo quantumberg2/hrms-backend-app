@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\ShiftRosterControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class ShiftRosterControllerTests
+    {
+        private readonly ShiftRosterController _testClass;
+        private readonly Mock&lt;IShiftRoster&gt; _shiftRoster;
+        private readonly Mock&lt;ILogger&lt;ShiftRosterController&gt;&gt; _logger;
+
+        public ShiftRosterControllerTests()
+        {
+            _shiftRoster = new Mock&lt;IShiftRoster&gt;();
+            _logger = new Mock&lt;ILogger&lt;ShiftRosterController&gt;&gt;();
+            _testClass = new ShiftRosterController(_shiftRoster.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new ShiftRosterController(_shiftRoster.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllShiftRoster()
+        {
+            // Arrange
+            _shiftRoster.Setup(mock =&gt; mock.GetAllShiftRoster()).Returns(new List&lt;ShiftRoster&gt;());
+
+            // Act
+            var result = _testClass.GetAllShiftRoster();
+
+            // Assert
+            _shiftRoster.Verify(mock =&gt; mock.GetAllShiftRoster());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertShiftRoster()
+        {
+            // Arrange
+            var shiftRoster = new ShiftRoster
+            {
+                Id = 1388492343,
+                EmpCredentialId = 360324002,
+                ShiftRosterTypeId = 634625201,
+                Startdate = DateTime.UtcNow,
+                Enddate = DateTime.UtcNow,
+                ShiftRosterType = new ShiftRosterType
+                {
+                    Id = 451076007,
+                    Type = &quot;TestValue802476860&quot;,
+                    TimeRange = &quot;TestValue1214730792&quot;,
+                    ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+                }
+            };
+
+            _shiftRoster.Setup(mock =&gt; mock.InsertShiftRoster(It.IsAny&lt;ShiftRoster&gt;())).ReturnsAsync(&quot;TestValue1410838325&quot;);
+
+            // Act
+            var result = await _testClass.InsertShiftRoster(shiftRoster);
+
+            // Assert
+            _shiftRoster.Verify(mock =&gt; mock.InsertShiftRoster(It.IsAny&lt;ShiftRoster&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteShiftRoster()
+        {
+            // Arrange
+            var id = 1369719711;
+
+            _shiftRoster.Setup(mock =&gt; mock.deleteShiftRoster(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+
+            // Act
+            var result = await _testClass.DeleteShiftRoster(id);
+
+            // Assert
+            _shiftRoster.Verify(mock =&gt; mock.deleteShiftRoster(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,44,1],[20,9,20,10,1],[21,13,21,53,1],[22,13,22,66,1],[23,13,23,89,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,91,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,99,1],[43,13,43,57,1],[46,13,46,67,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,69,15,1],[71,13,71,125,1],[74,13,74,74,1],[77,13,77,90,1],[79,13,79,72,1],[84,9,84,10,1],[86,13,86,33,1],[88,13,88,100,1],[91,13,91,65,1],[94,13,94,82,1],[96,13,96,72,1]]);
+    </script>
+  </body>
+</html>

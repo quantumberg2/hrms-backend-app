@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\UserRoleImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class UserRoleImpTests
+    {
+        private readonly UserRoleImp _testClass;
+        private HRMSContext _context;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+
+        public UserRoleImpTests()
+        {
+            _context = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _testClass = new UserRoleImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new UserRoleImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCalldeleteUserRole()
+        {
+            // Arrange
+            var id = 504181455;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(447330976);
+
+            // Act
+            var result = await _testClass.deleteUserRole(id);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAlluserRole()
+        {
+            // Act
+            var result = _testClass.GetAlluserRole();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetuserRoleById()
+        {
+            // Arrange
+            var id = 1527702008;
+
+            // Act
+            var result = _testClass.GetuserRoleById(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertuserRoles()
+        {
+            // Arrange
+            var userRolesJ = new UserRolesJ
+            {
+                Id = 780123259,
+                EmployeeCredentialId = 1148153626,
+                RolesId = 432148440,
+                IsActive = (short)20102,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 217877924,
+                    UserName = &quot;TestValue700520182&quot;,
+                    Password = &quot;TestValue1794918133&quot;,
+                    Status = (short)11641,
+                    RequestedCompanyId = 377949490,
+                    Email = &quot;TestValue390595610&quot;,
+                    DefaultPassword = true,
+                    GenerateOtp = &quot;TestValue1109135803&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)32384,
+                    EmployeeLoginName = &quot;TestValue1696819120&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1720433594,
+                        Name = &quot;TestValue2137906314&quot;,
+                        PhoneNumber = &quot;TestValue1551686700&quot;,
+                        DomainName = &quot;TestValue1602711102&quot;,
+                        Status = &quot;TestValue1985152945&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1731947801&quot;,
+                        IsActive = (short)1460,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                Roles = new Role
+                {
+                    Id = 1830051757,
+                    Name = &quot;TestValue1016333926&quot;,
+                    IsActive = (short)13372,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                }
+            };
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(649877902);
+
+            // Act
+            var result = await _testClass.InsertuserRoles(userRolesJ);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 29759123;
+            var isActive = (short)9297;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,34,1],[21,9,21,10,1],[22,13,22,42,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,99,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,101,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,32,1],[44,13,44,99,1],[47,13,47,62,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,54,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,33,1],[72,13,72,57,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,137,15,1],[139,13,139,99,1],[142,13,142,71,1],[145,13,145,81,0],[147,13,147,72,0],[152,9,152,10,1],[154,13,154,31,1],[155,13,155,40,1],[158,13,158,62,1],[161,13,161,72,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\EmpPersonalInfoImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using Org.BouncyCastle.Crypto.Digests;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class EmpPersonalInfoImp : IEmpPersonalInfo
+    {
+        private readonly HRMSContext _context;
+        public EmpPersonalInfoImp(HRMSContext context)
+        {
+            _context = context;
+        }
+        public List&lt;EmpPersonalInfo&gt; GetAll()
+        {
+            var res = (from row in _context.EmpPersonalInfos
+                       where  row.IsActive == 1
+                       select row).ToList();
+            return res;
+        }
+
+        public string InsertEmpPersonalInfo(EmpPersonalInfoDTO empPersonalInfo, int empCredentialId)
+        {
+            /* var existingEntry = _context.EmpPersonalInfos
+                                        .FirstOrDefault(row =&gt; row.EmployeeCredentialId == empCredentialId);
+
+             if (existingEntry == null)
+             {
+                 _context.EmpPersonalInfos.Add(empPersonalInfo);
+             }
+             else
+             {
+                 existingEntry.BloodGroup = empPersonalInfo.BloodGroup;
+                 existingEntry.SpouseName = empPersonalInfo.SpouseName;
+                 existingEntry.DateOfJoining = empPersonalInfo.DateOfJoining;
+                 existingEntry.EmailId = empPersonalInfo.EmailId;
+                 existingEntry.ConfirmDate = empPersonalInfo.ConfirmDate;
+                 existingEntry.Dob = empPersonalInfo.Dob;
+                 existingEntry.EmergencyContact = empPersonalInfo.EmergencyContact;
+                 existingEntry.EmpStatus = empPersonalInfo.EmpStatus;
+                 existingEntry.MaritalStatus = empPersonalInfo.MaritalStatus;
+                 existingEntry.PersonalEmail = empPersonalInfo.PersonalEmail;
+                 existingEntry.PhysicallyChallenged = empPersonalInfo.PhysicallyChallenged;
+             }
+
+             // Save changes to the database
+             _context.SaveChanges();
+             return &quot;Operation completed successfully.&quot;;*/
+
+            var existingEmpDetails = _context.EmployeeDetails.FirstOrDefault(e=&gt; e.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
+
+            if(existingEmpDetails!=null)
+            {
+
+                existingEmpDetails.FirstName = empPersonalInfo.FirstName;
+                existingEmpDetails.LastName = empPersonalInfo.LastName;
+                existingEmpDetails.MiddleName = empPersonalInfo.MiddleName;
+            }
+            else
+            {
+                existingEmpDetails = new EmployeeDetail
+                {
+                    FirstName = empPersonalInfo.FirstName,
+                    LastName = empPersonalInfo.LastName,
+                    MiddleName = empPersonalInfo.MiddleName
+                };
+                _context.EmployeeDetails.Add(existingEmpDetails);
+            }
+
+            var existingEmpPersonalInfo = _context.EmpPersonalInfos.FirstOrDefault(e=&gt; e.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
+
+            if(existingEmpPersonalInfo!=null)
+            {
+                existingEmpPersonalInfo.DateOfJoining = empPersonalInfo.DateOfJoining;
+                existingEmpPersonalInfo.ConfirmDate = empPersonalInfo.ConfirmDate;
+                existingEmpPersonalInfo.EmailId = empPersonalInfo.EmailId;
+                existingEmpPersonalInfo.BloodGroup = empPersonalInfo.BloodGroup;
+                existingEmpPersonalInfo.Dob = empPersonalInfo.Dob;
+                existingEmpPersonalInfo.EmergencyContact = empPersonalInfo.EmergencyContact;
+                existingEmpPersonalInfo.PhysicallyChallenged = empPersonalInfo.PhysicallyChallenged;
+                existingEmpPersonalInfo.EmpStatus =existingEmpPersonalInfo.EmpStatus;
+                existingEmpPersonalInfo.PersonalEmail = existingEmpPersonalInfo.PersonalEmail;
+                existingEmpPersonalInfo.MaritalStatus = existingEmpPersonalInfo.MaritalStatus;
+                existingEmpPersonalInfo.SpouseName = existingEmpPersonalInfo.SpouseName;
+
+            }
+
+            existingEmpPersonalInfo = new EmpPersonalInfo
+            {
+                EmployeeCredentialId = empPersonalInfo.EmployeeCredentialId,
+                Dob = empPersonalInfo.Dob,
+                DateOfJoining = empPersonalInfo.DateOfJoining,
+                ConfirmDate = empPersonalInfo.ConfirmDate,
+                EmpStatus = empPersonalInfo.EmpStatus,
+                EmailId = empPersonalInfo.EmailId,
+                PersonalEmail = empPersonalInfo.PersonalEmail,
+                MaritalStatus = empPersonalInfo.MaritalStatus,
+                BloodGroup = empPersonalInfo.BloodGroup,
+                SpouseName = empPersonalInfo.SpouseName,
+                PhysicallyChallenged = empPersonalInfo.PhysicallyChallenged,
+                EmergencyContact = empPersonalInfo.EmergencyContact
+            };
+             _context.EmpPersonalInfos.AddAsync(existingEmpPersonalInfo);
+            try
+            {
+                _context.SaveChanges();
+                return &quot;Successfully added new data&quot;;
+            }
+            catch(Exception)
+            {
+                return &quot;Failed to add new data&quot;;
+            }
+           
+            
+
+        }
+
+
+        public string UpdateEmpPersonalInfo(EmpPersonalInfo empPersonalInfo, EmpPersonalInfoDTO name)
+        {
+            throw new NotImplementedException();
+        }
+        public string DeleteEmpPersonalInfo(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.EmpPersonalInfos
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+               _context.EmpPersonalInfos.Update(res);
+               _context.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,55,1],[12,9,12,10,1],[13,13,13,32,1],[14,9,14,10,1],[16,9,16,10,1],[17,13,19,45,1],[20,13,20,24,0],[21,9,21,10,0],[24,9,24,10,1],[51,13,51,146,1],[53,13,53,41,0],[54,13,54,14,0],[56,17,56,74,0],[57,17,57,72,0],[58,17,58,76,0],[59,13,59,14,0],[61,13,61,14,0],[62,17,67,19,0],[68,17,68,66,0],[69,13,69,14,0],[71,13,71,152,0],[73,13,73,46,0],[74,13,74,14,0],[75,17,75,87,0],[76,17,76,83,0],[77,17,77,75,0],[78,17,78,81,0],[79,17,79,67,0],[80,17,80,93,0],[81,17,81,101,0],[82,17,82,86,0],[83,17,83,95,0],[84,17,84,95,0],[85,17,85,89,0],[87,13,87,14,0],[89,13,103,15,0],[104,14,104,74,0],[106,13,106,14,0],[107,17,107,40,0],[108,17,108,54,0],[110,13,110,29,0],[111,13,111,14,0],[112,17,112,49,0],[117,9,117,10,0],[121,9,121,10,1],[122,13,122,49,1],[125,9,125,10,1],[126,13,126,49,1],[130,9,130,10,1],[131,13,133,53,1],[134,13,134,29,0],[135,13,135,14,0],[136,17,136,41,0],[137,16,137,54,0],[138,16,138,39,0],[139,17,139,29,0],[142,13,142,26,0],[143,9,143,10,0]]);
+    </script>
+  </body>
+</html>

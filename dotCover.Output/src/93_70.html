@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\EmployeeImportService Tests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.IO;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.DTO;
+    using HRMS_Application.Models;
+    using Moq;
+    using Xunit;
+
+    public class EmployeeImportServiceTests
+    {
+        private readonly EmployeeImportService _testClass;
+        private HRMSContext _context;
+        private readonly Mock&lt;IEmailPassword&gt; _emailPasswordService;
+
+        public EmployeeImportServiceTests()
+        {
+            _context = new HRMSContext();
+            _emailPasswordService = new Mock&lt;IEmailPassword&gt;();
+            _testClass = new EmployeeImportService(_context, _emailPasswordService.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new EmployeeImportService(_context, _emailPasswordService.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCallImportEmployeesFromExcelAsync()
+        {
+            // Arrange
+            var excelStream = new MemoryStream();
+            var companyId = 1985502974;
+
+            _emailPasswordService.Setup(mock =&gt; mock.SendOtpEmailAsync(It.IsAny&lt;Generatepassword&gt;())).Verifiable();
+
+            // Act
+            var result = await _testClass.ImportEmployeesFromExcelAsync(excelStream, companyId);
+
+            // Assert
+            _emailPasswordService.Verify(mock =&gt; mock.SendOtpEmailAsync(It.IsAny&lt;Generatepassword&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,44,1],[20,9,20,10,1],[21,13,21,42,1],[22,13,22,64,1],[23,13,23,92,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,94,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,50,1],[41,13,41,40,1],[43,13,43,116,1],[46,13,46,97,1],[49,13,49,104,0],[51,13,51,72,0]]);
+    </script>
+  </body>
+</html>

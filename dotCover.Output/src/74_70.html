@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\PositionControllerTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class PositionControllerTests
+    {
+        private readonly PositionController _testClass;
+        private readonly Mock&lt;IPosition&gt; _position;
+        private readonly Mock&lt;ILogger&lt;PositionController&gt;&gt; _logger;
+
+        public PositionControllerTests()
+        {
+            _position = new Mock&lt;IPosition&gt;();
+            _logger = new Mock&lt;ILogger&lt;PositionController&gt;&gt;();
+            _testClass = new PositionController(_position.Object, _logger.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new PositionController(_position.Object, _logger.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllPositions()
+        {
+            // Arrange
+            _position.Setup(mock =&gt; mock.GetPositions()).Returns(new List&lt;Position&gt;());
+
+            // Act
+            var result = _testClass.GetAllPositions();
+
+            // Assert
+            _position.Verify(mock =&gt; mock.GetPositions());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertPositions()
+        {
+            // Arrange
+            var position = new Position
+            {
+                Id = 763905151,
+                Name = &quot;TestValue596006017&quot;,
+                RequestedCompanyId = 2074893936,
+                IsActive = (short)19120,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 1199846903,
+                    Name = &quot;TestValue2079895826&quot;,
+                    PhoneNumber = &quot;TestValue237419867&quot;,
+                    DomainName = &quot;TestValue1882817839&quot;,
+                    Status = &quot;TestValue260819510&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue622653519&quot;,
+                    IsActive = (short)29307,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+            };
+
+            _position.Setup(mock =&gt; mock.InsertPositions(It.IsAny&lt;Position&gt;())).ReturnsAsync(&quot;TestValue1265880629&quot;);
+
+            // Act
+            var result = await _testClass.InsertPositions(position);
+
+            // Assert
+            _position.Verify(mock =&gt; mock.InsertPositions(It.IsAny&lt;Position&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdatePosition()
+        {
+            // Arrange
+            var id = 579698035;
+            var name = &quot;TestValue664055611&quot;;
+            var requestedcompanyId = 2012081916;
+
+            _position.Setup(mock =&gt; mock.updateposition(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;())).ReturnsAsync(new Position
+            {
+                Id = 1809009982,
+                Name = &quot;TestValue2062259015&quot;,
+                RequestedCompanyId = 1688412915,
+                IsActive = (short)9550,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 91260454,
+                    Name = &quot;TestValue526108476&quot;,
+                    PhoneNumber = &quot;TestValue1509343453&quot;,
+                    DomainName = &quot;TestValue1980989096&quot;,
+                    Status = &quot;TestValue1671600210&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1894862496&quot;,
+                    IsActive = (short)9320,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+            });
+
+            // Act
+            var result = await _testClass.UpdatePosition(id, name, requestedcompanyId);
+
+            // Assert
+            _position.Verify(mock =&gt; mock.updateposition(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeletePosition()
+        {
+            // Arrange
+            var id = 1445270625;
+
+            _position.Setup(mock =&gt; mock.deletePosition(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+
+            // Act
+            var result = await _testClass.DeletePosition(id);
+
+            // Assert
+            _position.Verify(mock =&gt; mock.deletePosition(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 1080340979;
+            var isActive = (short)18211;
+
+            _position.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(true);
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            _position.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,41,1],[20,9,20,10,1],[21,13,21,47,1],[22,13,22,63,1],[23,13,23,83,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,85,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,88,1],[43,13,43,55,1],[46,13,46,59,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,80,15,1],[82,13,82,117,1],[85,13,85,69,1],[88,13,88,82,1],[90,13,90,72,0],[95,9,95,10,1],[97,13,97,32,1],[98,13,98,45,1],[99,13,99,49,1],[101,13,126,16,1],[129,13,129,88,1],[132,13,132,114,1],[134,13,134,72,1],[139,9,139,10,1],[141,13,141,33,1],[143,13,143,94,1],[146,13,146,62,1],[149,13,149,76,1],[151,13,151,72,1],[156,9,156,10,1],[158,13,158,33,1],[159,13,159,41,1],[161,13,161,104,1],[164,13,164,62,1],[167,13,167,91,1],[169,13,169,72,1]]);
+    </script>
+  </body>
+</html>

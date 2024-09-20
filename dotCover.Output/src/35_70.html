@@ -2,105 +2,110 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\hrms-backend-app\HRMSunitTestCase\Controllers\RolesControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\UserDtoTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMSunitTestCase.Controllers
+namespace HRMS_Unit_Test.DTOs
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using HRMS_Application.DTOs;
     using Xunit;
 
-    public class RolesControllerTests
+    public class UserDtoTests
     {
-        private RolesController _testClass;
-        private Mock&lt;IRoles&gt; _roles;
-        private Mock&lt;ILogger&lt;RolesController&gt;&gt; _logger;
+        private readonly UserDto _testClass;
 
-        public RolesControllerTests()
+        public UserDtoTests()
         {
-            _roles = new Mock&lt;IRoles&gt;();
-            _logger = new Mock&lt;ILogger&lt;RolesController&gt;&gt;();
-            _testClass = new RolesController(_roles.Object, _logger.Object);
+            _testClass = new UserDto();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new RolesController(_roles.Object, _logger.Object);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetAllRole()
+        public void CanSetAndGetUserName()
         {
             // Arrange
-            _roles.Setup(mock =&gt; mock.GetAllRoles()).Returns(new List&lt;Role&gt;());
+            var testValue = &quot;TestValue925123920&quot;;
 
             // Act
-            var result = _testClass.GetAllRole();
+            _testClass.UserName = testValue;
 
             // Assert
-            _roles.Verify(mock =&gt; mock.GetAllRoles());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.UserName);
         }
 
         [Fact]
-        public async Task CanCallInsertRoles()
+        public void CanSetAndGetUserId()
         {
             // Arrange
-            var role = new Role
-            {
-                Id = 78052871,
-                Name = &quot;TestValue1416130903&quot;,
-                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-            };
-
-            _roles.Setup(mock =&gt; mock.InsertRole(It.IsAny&lt;Role&gt;())).ReturnsAsync(&quot;TestValue1169218105&quot;);
+            var testValue = 190342609;
 
             // Act
-            var result = await _testClass.InsertRoles(role);
+            _testClass.UserId = testValue;
 
             // Assert
-            _roles.Verify(mock =&gt; mock.InsertRole(It.IsAny&lt;Role&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.UserId);
         }
 
         [Fact]
-        public async Task CanCallDeleteRole()
+        public void CanSetAndGetEmail()
         {
             // Arrange
-            var id = 235964395;
-
-            _roles.Setup(mock =&gt; mock.deleteRole(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+            var testValue = &quot;TestValue725011518&quot;;
 
             // Act
-            var result = await _testClass.DeleteRole(id);
+            _testClass.Email = testValue;
 
             // Assert
-            _roles.Verify(mock =&gt; mock.deleteRole(It.IsAny&lt;int&gt;()));
+            Assert.Equal(testValue, _testClass.Email);
+        }
 
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        [Fact]
+        public void CanSetAndGetRequestedCompanyId()
+        {
+            // Arrange
+            var testValue = 572344161;
+
+            // Act
+            _testClass.RequestedCompanyId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RequestedCompanyId);
+        }
+
+        [Fact]
+        public void CanSetAndGetCompanyIds()
+        {
+            // Arrange
+            var testValue = new List&lt;int&gt;();
+
+            // Act
+            _testClass.CompanyIds = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.CompanyIds);
+        }
+
+        [Fact]
+        public void CanSetAndGetRoles()
+        {
+            // Arrange
+            var testValue = new List&lt;string&gt;();
+
+            // Act
+            _testClass.Roles = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.Roles);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[19,9,19,38,1],[20,9,20,10,1],[21,13,21,41,1],[22,13,22,60,1],[23,13,23,77,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,79,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,80,1],[43,13,43,50,1],[46,13,46,55,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,60,15,1],[62,13,62,105,1],[65,13,65,61,1],[68,13,68,70,1],[70,13,70,72,1],[75,9,75,10,1],[77,13,77,32,1],[79,13,79,87,1],[82,13,82,58,1],[85,13,85,69,1],[87,13,87,72,1]]);
+      highlightRanges([[12,9,12,30,1],[13,9,13,10,1],[14,13,14,40,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,50,1],[24,13,24,45,1],[27,13,27,58,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,39,1],[37,13,37,43,1],[40,13,40,56,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,50,1],[50,13,50,42,1],[53,13,53,55,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,39,1],[63,13,63,55,1],[66,13,66,68,1],[67,9,67,10,1],[71,9,71,10,1],[73,13,73,45,1],[76,13,76,47,1],[79,13,79,59,1],[80,9,80,10,1],[84,9,84,10,1],[86,13,86,48,1],[89,13,89,42,1],[92,13,92,54,1],[93,9,93,10,1]]);
     </script>
   </body>
 </html>

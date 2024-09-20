@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\LeaveApprovalDTOTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.DTO
+{
+    using System;
+    using HRMS_Application.DTO;
+    using Xunit;
+
+    public class LeaveApprovalDTOTests
+    {
+        private readonly LeaveApprovalDTO _testClass;
+
+        public LeaveApprovalDTOTests()
+        {
+            _testClass = new LeaveApprovalDTO();
+        }
+
+        [Fact]
+        public void CanSetAndGetId()
+        {
+            // Arrange
+            var testValue = 2011474673;
+
+            // Act
+            _testClass.Id = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Id);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeNumber()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2141689482&quot;;
+
+            // Act
+            _testClass.EmployeeNumber = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmployeeNumber);
+        }
+
+        [Fact]
+        public void CanSetAndGetName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue336227701&quot;;
+
+            // Act
+            _testClass.Name = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Name);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveType()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1068405414&quot;;
+
+            // Act
+            _testClass.LeaveType = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveType);
+        }
+
+        [Fact]
+        public void CanSetAndGetStartDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.StartDate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.StartDate);
+        }
+
+        [Fact]
+        public void CanSetAndGetEndDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.EndDate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EndDate);
+        }
+
+        [Fact]
+        public void CanSetAndGetNoofDays()
+        {
+            // Arrange
+            var testValue = 510561981;
+
+            // Act
+            _testClass.NoofDays = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.NoofDays);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[11,9,11,39,1],[12,9,12,10,1],[13,13,13,49,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,40,1],[23,13,23,39,1],[26,13,26,52,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,51,1],[39,13,39,64,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,41,1],[52,13,52,54,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,46,1],[65,13,65,59,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,45,1],[75,13,75,46,1],[78,13,78,59,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,45,1],[88,13,88,44,1],[91,13,91,57,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,39,1],[101,13,101,45,1],[104,13,104,58,1],[105,9,105,10,1]]);
+    </script>
+  </body>
+</html>
