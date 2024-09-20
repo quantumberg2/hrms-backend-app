@@ -56,9 +56,9 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<bool> DeleteEmployeeDetail(int id)
         {
             DecodeToken();
-            var result = (from row in _hrmsContext.EmployeeDetails
+            var result =await (from row in _hrmsContext.EmployeeDetails
                           where row.Id == id
-                          select row).SingleOrDefault();
+                          select row).FirstOrDefaultAsync();
             _hrmsContext.EmployeeDetails.Remove(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return true;
