@@ -94,10 +94,33 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (leaveTracking != null)
             {
+                /**/
                 leaveTracking.Status = newStatus;
 
-                await _hrmsContext.SaveChangesAsync(); 
+                if (newStatus == "Approved" && leaveTracking.Startdate.HasValue && leaveTracking.Enddate.HasValue)
+                {
+                    var empCredentialId = leaveTracking.EmpCredentialId;
+
+                    var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                                 where row.EmpCredentialId == empCredentialId && row.IsActive == 1
+                                                 select row).FirstOrDefaultAsync();
+
+                    if (leaveAllocation != null)
+                    {
+
+
+                        int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+
+                        var RemainingLeave = leaveAllocation.RemainingLeave - totalLeaveDays;
+
+                        if (leaveAllocation.RemainingLeave > 0)
+                            leaveAllocation.RemainingLeave = RemainingLeave;
+                    }
+                }
+
+                await _hrmsContext.SaveChangesAsync();
             }
+
             return leaveTracking;
         }
 
