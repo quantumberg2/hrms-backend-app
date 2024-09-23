@@ -248,14 +248,47 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<LeaveTracking> ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId)
         {
             DecodeToken();
+
             leaveTracking.EmpCredentialId = empCredentialId;
 
-     
+            var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                         where row.EmpCredentialId == empCredentialId && row.IsActive == 1
+                                         select row).FirstOrDefaultAsync();
+
+            var leaveType = await _hrmsContext.LeaveTypes
+                .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
+                .FirstOrDefaultAsync();
+
+            if (leaveAllocation != null && leaveType != null)
+            {
+                int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+
+                if (leaveType.Days < totalLeaveDays)
+                {
+                    throw new InvalidOperationException($"Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.");
+                }
+
+                if (leaveAllocation.RemainingLeave < totalLeaveDays)
+                {
+                    throw new InvalidOperationException("Requested leave exceeds remaining leave.");
+                }
+
+                if (leaveTracking.Status == "Approved")
+                {
+                    leaveAllocation.RemainingLeave -= totalLeaveDays;
+
+                    await _hrmsContext.SaveChangesAsync(_decodedToken);
+                }
+            }
+
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
+            // Return the leave tracking entry
             return leaveTracking;
         }
+
+
         public List<LeavePendingDTO> GetPendingLeaves(int employeeCredentialId)
         {
             var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings

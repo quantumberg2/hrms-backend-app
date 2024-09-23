@@ -622,9 +622,70 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return true;
         }
+        /*  public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
+          {
+              var currentDate = DateTime.Now.Date;
+
+              var employeeDetail = _hrmsContext.EmployeeDetails
+        .FirstOrDefault(e => e.EmployeeCredentialId == empCredentialId);
+
+              if (employeeDetail == null)
+              {
+                  throw new Exception("Employee not found.");
+              }
+
+              var shiftRoster = _hrmsContext.ShiftRosters
+                  .Where(sr => sr.EmpCredentialId == empCredentialId
+                               && sr.Startdate.HasValue && sr.Startdate.Value.Date <= currentDate
+                               && sr.Enddate.HasValue && sr.Enddate.Value.Date >= currentDate)
+                  .Include(sr => sr.ShiftRosterType)
+                  .FirstOrDefault();
+
+              if (shiftRoster == null)
+              {
+                  throw new Exception("No shift roster found for the current date.");
+              }
+
+              var leaveAllocations = _hrmsContext.EmployeeLeaveAllocations
+                  .Where(la => la.EmpCredentialId == empCredentialId && la.IsActive == 1)
+                  .Include(la => la.LeaveTypeNavigation)
+                  .ToList();
+
+              var totalLeaveCount = leaveAllocations.Sum(la => la.NumberOfLeaves ?? 0);
+              var remainingLeaveCount = leaveAllocations.Sum(la => la.RemainingLeave ?? 0);
+
+              var leavePercentage = totalLeaveCount > 0 ? (remainingLeaveCount * 100) / totalLeaveCount : 0;
+
+              var result = new EmployeeShiftAndLeaveStatsDto
+              {
+                  ShiftType = shiftRoster.ShiftRosterType?.Type,
+                  ShiftTimeRange = shiftRoster.ShiftRosterType?.TimeRange,
+                  TotalLeaveCount = totalLeaveCount,
+                  RemainingLeaveCount = remainingLeaveCount,
+                  LeavePercentage = leavePercentage,
+                  Name = $"{employeeDetail.FirstName} {employeeDetail.LastName}",
+                  Email = employeeDetail.Email,
+              };
+
+              return result;
+          }*/
         public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
         {
             var currentDate = DateTime.Now.Date;
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+
+            // Set the start and end date for the current month
+            var startDate = new DateTime(currentYear, currentMonth, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);  // Last day of the month
+
+            var employeeDetail = _hrmsContext.EmployeeDetails
+                .FirstOrDefault(e => e.EmployeeCredentialId == empCredentialId);
+
+            if (employeeDetail == null)
+            {
+                throw new Exception("Employee not found.");
+            }
 
             var shiftRoster = _hrmsContext.ShiftRosters
                 .Where(sr => sr.EmpCredentialId == empCredentialId
@@ -645,20 +706,59 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             var totalLeaveCount = leaveAllocations.Sum(la => la.NumberOfLeaves ?? 0);
             var remainingLeaveCount = leaveAllocations.Sum(la => la.RemainingLeave ?? 0);
-
             var leavePercentage = totalLeaveCount > 0 ? (remainingLeaveCount * 100) / totalLeaveCount : 0;
 
+            // Get holidays for the current month for the company
+            var holidays = _hrmsContext.Holidays
+                .Where(h => h.CompanyId == employeeDetail.RequestCompanyId
+                            && h.Date.HasValue
+                            && h.Date.Value.Date >= startDate
+                            && h.Date.Value.Date <= endDate
+                            && h.IsActive == 1)
+                .Select(h => h.Date.Value.Date)
+                .ToList();
+
+            // Calculate total days in the month excluding Sundays and holidays
+            var totalDaysInMonth = (endDate - startDate).Days + 1;
+            var weekends = Enumerable.Range(0, totalDaysInMonth)
+                .Select(d => startDate.AddDays(d))
+                .Where(d => d.DayOfWeek == DayOfWeek.Sunday)
+                .ToList();
+
+            var holidaysCount = holidays.Count;
+            var weekendsCount = weekends.Count;
+            var totalWorkingDays = totalDaysInMonth - holidaysCount - weekendsCount;
+
+            // Get attendance records for the employee for the current month
+            var presentDaysCount = _hrmsContext.DeviceTables
+                .Where(a => a.EmpCredentialId == empCredentialId
+                            && a.InsertedDate.HasValue
+                            && a.InsertedDate.Value.Date >= startDate
+                            && a.InsertedDate.Value.Date <= endDate)
+                .Select(a => a.InsertedDate.Value.Date)
+                .Distinct()
+                .Count();
+
+            var attendancePercentage = totalWorkingDays > 0 ? (presentDaysCount / (double)totalWorkingDays) * 100 : 0;
+
+            // Construct the result
             var result = new EmployeeShiftAndLeaveStatsDto
             {
                 ShiftType = shiftRoster.ShiftRosterType?.Type,
                 ShiftTimeRange = shiftRoster.ShiftRosterType?.TimeRange,
                 TotalLeaveCount = totalLeaveCount,
                 RemainingLeaveCount = remainingLeaveCount,
-                LeavePercentage = leavePercentage
+                LeavePercentage = leavePercentage,
+                Name = $"{employeeDetail.FirstName} {employeeDetail.LastName}",
+                Email = employeeDetail.Email,
+                MonthlyPresentDays = presentDaysCount,
+                TotalWorkingDays = totalWorkingDays,
+                AttendancePercentage = attendancePercentage,
             };
 
             return result;
         }
+
 
 
     }
