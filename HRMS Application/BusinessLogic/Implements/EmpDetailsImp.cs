@@ -206,7 +206,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return employees.Select(employee => new EmployeeView
             {
                 EmployeeId = employee.Id,
-                EmployeeName = $"{employee.FirstName} {employee.MiddleName} {employee.LastName}",
+                EmployeeName = $"{employee.FirstName} {employee.LastName}",
                 Address = employee.EmployeeCredential.AddressInfos.FirstOrDefault()?.AddressLine1,
                 Gender = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Gender,
                 DOB = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Dob.ToString(),
@@ -255,10 +255,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (employeePersonalInfo == null)
             {
-                return null; // Return null if no personal information found
+                return null; 
             }
 
-            // Map the entity data to the DTO
             return new EmpPersonalInfoDTO
             {
                 FirstName = employyedetail.FirstName,
@@ -758,8 +757,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return result;
         }
-
-
 
     }
 }

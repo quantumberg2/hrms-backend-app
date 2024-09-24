@@ -535,6 +535,8 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.RequestedCompanyId).HasColumnName("Requested_Company_id");
 
+                entity.Property(e => e.ResignedDate).HasColumnType("date");
+
                 entity.Property(e => e.UserName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -549,7 +551,7 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Employee_Detail");
 
-                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635986A1F7877")
+                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D6635989BA0CC78")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -589,6 +591,11 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.NickName)
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.NumberOfYearsExperience)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("Number_of_Years_Experience");
 
                 entity.Property(e => e.RequestCompanyId).HasColumnName("Request_Company_Id");
 
@@ -824,7 +831,7 @@ namespace HRMS_Application.Models
                 entity.HasOne(d => d.ShiftRosterType)
                     .WithMany(p => p.ShiftRosters)
                     .HasForeignKey(d => d.ShiftRosterTypeId)
-                    .HasConstraintName("FK__ShiftRost__Shift__236943A5");
+                    .HasConstraintName("FK__ShiftRost__Shift__17F790F9");
             });
 
             modelBuilder.Entity<ShiftRosterType>(entity =>
@@ -832,7 +839,7 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.TimeRange)
-                    .HasMaxLength(15)
+                    .HasMaxLength(25)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Type)
@@ -863,7 +870,6 @@ namespace HRMS_Application.Models
                     .HasConstraintName("FK_Roles");
             });
 
-            OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingPartial(modelBuilder);
         }
 
