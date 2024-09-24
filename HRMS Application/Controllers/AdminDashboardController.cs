@@ -25,11 +25,9 @@ namespace HRMS_Application.Controllers
                 var dashboardData = await _adminDashboard.GetAdminDashboardAsync();
                 return Ok(dashboardData);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Log exception (uncomment and use your logger)
-                // _logger.LogError(ex, "Error retrieving admin dashboard data.");
-                return StatusCode(500, "An error occurred while fetching the dashboard data.");
+               return StatusCode(500, "An error occurred while fetching the dashboard data.");
             }
         }
     }

@@ -169,8 +169,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("statusUpdate")]
-        [Authorize(new[] { "Admin" })]
-
+        [Authorize(new[] { "Admin","Manager" })]
         public async Task<IActionResult> UpdateLeaveAsync(int id, string newStatus)
         {
             _logger.LogInformation("update leave status method started");

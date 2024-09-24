@@ -53,25 +53,38 @@ namespace HRMS_Application.BusinessLogic.Implements
          ResignedCount = g.Count()
      })
      .ToListAsync();
+                var experienceCounts = await (from e in _hrmsContext.EmployeeDetails
+                                              join p in _hrmsContext.EmpPersonalInfos
+                                              on e.EmployeeCredentialId equals p.EmployeeCredentialId
+                                              where e.IsActive == 1 && !string.IsNullOrEmpty(e.NumberOfYearsExperience)
+                                              select new
+                                              {
+                                                  EmployeeDetail = e,
+                                                  CurrentCompanyJoiningDate = p.DateOfJoining
+                                              })
+                               .ToListAsync();
 
-                // Total years of experience for active employees
-                var experienceCounts = await _hrmsContext.EmployeeDetails
-                    .Where(e => e.IsActive == 1 && !string.IsNullOrEmpty(e.NumberOfYearsExperience))
-                    .ToListAsync();
+                
+              
+                var experienceGroups = experienceCounts.Select(e =>
+                {
+                    double previousExperience = double.TryParse(e.EmployeeDetail.NumberOfYearsExperience, out double years) ? years : 0;
 
-                // Calculate total experience by grouping and counting
-                var experienceSummary = experienceCounts
-                    .GroupBy(e => e.NumberOfYearsExperience)
-                    .Select(g => new ExperienceCountDTO
-                    {
-                        Years = g.Key,
-                        Count = g.Count()
-                    })
-                    .ToList();
+                    DateTime joiningDate = e.CurrentCompanyJoiningDate ?? currentDate;
 
-                // Total experience calculation
-                var totalExperienceSum = experienceCounts.Sum(e =>
-                    int.TryParse(e.NumberOfYearsExperience, out int years) ? years : 0);
+                    double currentExperience = (currentDate - joiningDate).TotalDays / 365;
+
+                    double totalExperience = previousExperience + currentExperience;
+
+                    return Math.Round(totalExperience, 1);
+                })
+                .GroupBy(experience => experience) 
+                .Select(g => new ExperienceCountDTO
+                {
+                    Years = g.Key.ToString(), 
+                    Count = g.Count()         
+                })
+                .ToList();
 
                 // Prepare the dashboard DTO
                 var dashboardData = new AdminDashboardDTO
@@ -80,15 +93,16 @@ namespace HRMS_Application.BusinessLogic.Implements
                     NewEmployees = newEmployees,
                     EmployeesJoinedMonthWise = employeesJoinedMonthWise,
                     EmployeesResignedMonthWise = employeesResignedMonthWise,
-                    ExperienceCounts = experienceSummary
+                    ExperienceCounts = experienceGroups // Set the calculated experience groups
                 };
 
                 return dashboardData;
+
+
             }
             catch (Exception ex)
             {
-                // Log exception if necessary
-                throw; // Rethrow or handle accordingly
+                throw; 
             }
         }
 

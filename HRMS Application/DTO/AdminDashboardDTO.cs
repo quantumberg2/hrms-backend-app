@@ -21,5 +21,6 @@
         public List<MonthlyCountDTO> EmployeesJoinedMonthWise { get; set; } // Use your defined DTO
         public List<MonthlyCountDTO> EmployeesResignedMonthWise { get; set; } // Use your defined DTO
         public List<ExperienceCountDTO> ExperienceCounts { get; set; } // Use your defined DTO
+
     }
 }
