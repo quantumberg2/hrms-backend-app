@@ -66,6 +66,8 @@ builder.Services.AddScoped<IShiftRostertype, ShiftRostertypeImp>();
 builder.Services.AddScoped<IOrgChartService, OrgChartServiceImp>();
 builder.Services.AddScoped<IAdminDashboard, AdmindashboardImp>();
 
+builder.Services.AddScoped<IContactUs, ContactUsImp>();
+
 builder.Services.AddScoped(_ =>
 {
     return new BlobServiceClient(builder.Configuration.GetConnectionString("AsureBlobStorage"));
