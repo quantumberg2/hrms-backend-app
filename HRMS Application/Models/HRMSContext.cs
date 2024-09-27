@@ -776,7 +776,9 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Desciption).IsUnicode(false);
+                entity.Property(e => e.Description)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
 
                 entity.Property(e => e.DisplayDate).HasColumnType("datetime");
 

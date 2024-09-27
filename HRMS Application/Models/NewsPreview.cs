@@ -16,7 +16,7 @@ namespace HRMS_Application.Models
         public DateTime? DisplayDate { get; set; }
         public DateTime? InsertedDate { get; set; }
         public string Heading { get; set; }
-        public string Desciption { get; set; }
+        public string Description { get; set; }
         public string ImgUrl { get; set; }
         public short? IsActive { get; set; }
 
