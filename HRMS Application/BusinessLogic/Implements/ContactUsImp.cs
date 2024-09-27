@@ -20,7 +20,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             MailText = MailText.Replace("[Name]", contact.Name).Replace("[Email]", contact.Email).Replace("[Phone]", contact.PhoneNumber).Replace("[Message]", contact.Message);
             var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("Quantumberg Website", fromEmail));
+            email.From.Add(new MailboxAddress("HRMS website", fromEmail));
             email.To.Add(MailboxAddress.Parse("srilakshmingr@gmail.com")); //admin@quantumberg.com
 /*            email.Bcc.Add(MailboxAddress.Parse("srilakshmingr@gmail.com"));*/
             email.Subject = "Email from Quantumberg Contact-us page";

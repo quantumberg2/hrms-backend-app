@@ -46,7 +46,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             Models.File objnewFile = new Models.File
             {
-                ObjectId = files.ObjectId,
+                ObjectId = files.ObjectId,  
                 ObjectName = files.ObjectName,
                 Tags = files.Tags,
                 IsActive = files.IsActive,

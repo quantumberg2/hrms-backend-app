@@ -67,6 +67,8 @@ builder.Services.AddScoped<IOrgChartService, OrgChartServiceImp>();
 builder.Services.AddScoped<IAdminDashboard, AdmindashboardImp>();
 
 builder.Services.AddScoped<IContactUs, ContactUsImp>();
+builder.Services.AddScoped<INewsPreview , NewPreviewImp>();
+builder.Services.AddScoped<INews , NewsImp>();
 
 builder.Services.AddScoped(_ =>
 {
