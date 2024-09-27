@@ -31,7 +31,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             NewsPreview objNews = new NewsPreview
             {
-                Desciption = news.Desciption,
+                Description = news.Desciption,
                 InsertedDate = news.InsertedDate,
                 Heading = news.Heading,
                 ImgUrl = url,
@@ -64,7 +64,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             res.DisplayDate = news?.DisplayDate ?? res.DisplayDate;
             res.InsertedDate = news?.InsertedDate ?? res.DisplayDate;
             res.Heading = news?.Heading ?? res.Heading;
-            res.Desciption = news?.Desciption ?? res.Desciption;
+            res.Description = news?.Desciption ?? res.Description;
             res.ImgUrl = url;
 
             if(res!=null)
