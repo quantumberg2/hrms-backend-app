@@ -27,7 +27,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             string url;
 
-            url = _azureOperations.StoreFilesInAzure(news.ImgUrl, "news");
+            url = _azureOperations.StoreFilesInAzure(news.ImgUrl, "hrms-news");
 
             NewsPreview objNews = new NewsPreview
             {
@@ -59,7 +59,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "No data found";
             }
 
-            string url = _azureOperations.StoreFilesInAzure(news.ImgUrl, "news");
+            string url = _azureOperations.StoreFilesInAzure(news.ImgUrl, "hrms-news");
 
             res.DisplayDate = news?.DisplayDate ?? res.DisplayDate;
             res.InsertedDate = news?.InsertedDate ?? res.DisplayDate;
