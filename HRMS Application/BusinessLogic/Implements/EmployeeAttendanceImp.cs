@@ -46,6 +46,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 }
             }
         }
+
         public async Task<bool> DeleteEmployeeAttendance(int id)
         {
             DecodeToken();
@@ -64,14 +65,14 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-
         public List<AttendanceDTO> GetAttendanceByCredId(int empCredId)
         {
-            var currentYear = DateTime.Now.Year;
-            var startDate = new DateTime(currentYear, 1, 1, 0, 0, 0, DateTimeKind.Local);
-            var endDate = new DateTime(currentYear, 12, 31, 23, 59, 59, DateTimeKind.Local);
+            // Fetch all attendance records for the employee
+            var attendanceInfo = (from row in _hrmsContext.Attendances
+                                  where row.EmpCredentialId == empCredId
+                                  select row).ToList();
 
-
+            // Fetch shift info, filtering based on attendance date within shift range
             var shiftInfo = (from shift in _hrmsContext.ShiftRosters
                              join shiftType in _hrmsContext.ShiftRosterTypes
                              on shift.ShiftRosterTypeId equals shiftType.Id
@@ -84,46 +85,20 @@ namespace HRMS_Application.BusinessLogic.Implements
                                  EndDate = shift.Enddate
                              }).ToList();
 
-            var attendanceInfo = (from date in Enumerable.Range(0, (endDate - startDate).Days + 1)
-                                  let currentDate = startDate.AddDays(date)
-                                  let isSunday = currentDate.DayOfWeek == DayOfWeek.Sunday
+            // Combine attendance and shift info based on date matching
+            var attendanceDTO = (from attendance in attendanceInfo
+                                 let shift = shiftInfo.FirstOrDefault(s => attendance.Date.HasValue && attendance.Date.Value >= s.StartDate && attendance.Date.Value <= s.EndDate)
+                                 select new AttendanceDTO
+                                 {
+                                     TimeIn = attendance.TimeIn,
+                                     TimeOut = attendance.Timeout,
+                                     Status = attendance.Status,
+                                     Date = attendance.Date.HasValue ? attendance.Date.Value : DateTime.MinValue, // Handle null Date
+                                     Shift = shift != null ? shift.ShiftType : " "
+                                 }).ToList();
 
-                                  join device in _hrmsContext.DeviceTables
-                                      on new { EmpCredentialId = empCredId, Date = currentDate.Date }
-                                      equals new { EmpCredentialId = device.EmpCredentialId ?? 0, Date = device.InsertedDate.Value.Date } into deviceJoin
-                                  from device in deviceJoin.DefaultIfEmpty()
-
-                                  join leave in _hrmsContext.LeaveTrackings
-                                      on new { EmpCredentialId = empCredId, Date = currentDate.Date }
-                                      equals new { EmpCredentialId = leave.EmpCredentialId ?? 0, Date = leave.Startdate.Value.Date } into leaveJoin
-                                  from leave in leaveJoin.DefaultIfEmpty()
-
-                                  join holiday in _hrmsContext.Holidays
-                                      on currentDate.Date equals holiday.Date.Value.Date into holidayJoin
-                                  from holiday in holidayJoin.DefaultIfEmpty()
-
-                                  let shift = shiftInfo.Find(s =>
-                                      currentDate.Date >= s.StartDate.Value.Date &&
-                                      currentDate.Date <= s.EndDate.Value.Date)
-
-                                  select new AttendanceDTO
-                                  {
-                                      Date = currentDate,
-                                      TimeIn = device != null ? device.TimeIn : null,
-                                      TimeOut = device != null ? device.TimeOut : null,
-                                      Status = isSunday ? "Holiday" :
-                                               holiday != null ? "Holiday" :
-                                               leave != null ? "Leave" :
-                                               device != null ? "Present" :
-                                               (currentDate > DateTime.Now ? " " : "Absent"),
-                                      Shift = shift != null ? shift.ShiftType : null 
-                                  }).ToList();
-
-            return attendanceInfo;
+            return attendanceDTO;
         }
-
-
-
 
         public Attendance GetById(int id)
         {
@@ -153,7 +128,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var result = _hrmsContext.Attendances.SingleOrDefault(p => p.Id == id);
             if (result == null)
             {
-                // Handle the case where the user with the specified id doesn't exist
                 return null;
             }
             
@@ -164,6 +138,11 @@ namespace HRMS_Application.BusinessLogic.Implements
             _hrmsContext.Attendances.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;
+        }
+
+        public Task<Attendance> UpdateAttendanceInfo(Attendance attendance)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -41,12 +41,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             else
             {
-                url = _azureOperations.StoreFilesInAzure(files.FileContent, "hrmsfiles");
+                url = _azureOperations.StoreFilesInAzure(files.FileContent, "hrms-files");
             }
 
             Models.File objnewFile = new Models.File
             {
-                ObjectId = files.ObjectId,
+                ObjectId = files.ObjectId,  
                 ObjectName = files.ObjectName,
                 Tags = files.Tags,
                 IsActive = files.IsActive,
@@ -83,7 +83,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             else
             {
-                url = files.FileContent != null ? _azureOperations.StoreFilesInAzure(files.FileContent, "hrmsfiles") : file.FileUrl;
+                url = files.FileContent != null ? _azureOperations.StoreFilesInAzure(files.FileContent, "hrms-files") : file.FileUrl;
             }
 
             file.ObjectId = files?.ObjectId??file.ObjectId;
