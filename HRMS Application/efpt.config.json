@@ -79,6 +79,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[News]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[NewsPreview]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Position]",
          "ObjectType": 0
       },
@@ -101,22 +109,6 @@
       {
          "Name": "[dbo].[User_Roles_J]",
          "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[NewUpdateProcedure]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[TableUpdation]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UpdateDeviceTable]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UpdateEmployeeAttendanceDetails]",
-         "ObjectType": 1
       }
    ],
    "UiHint": "desktop-i5h6434\\sqlexpress.HRMS.dbo",

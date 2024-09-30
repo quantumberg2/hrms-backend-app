@@ -11,6 +11,9 @@ namespace HRMS_Application.Models
         public int? EmpCredentialId { get; set; }
         public double? NumberOfHours { get; set; }
         public string Status { get; set; }
+        public DateTime? Date { get; set; }
+        public DateTime? TimeIn { get; set; }
+        public DateTime? Timeout { get; set; }
 
         public virtual EmployeeCredential EmpCredential { get; set; }
     }
