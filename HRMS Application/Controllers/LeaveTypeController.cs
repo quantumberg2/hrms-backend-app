@@ -59,5 +59,16 @@ namespace HRMS_Application.Controllers
             return res;
 
         }
+
+        [HttpPut("id")]
+        [Authorize(new[] { "Admin" })]
+        public IActionResult UpdateLeaveType(int id, string? name, int? days, int? year, int? requestedcompanyId)
+
+        {
+            _logger.LogInformation(" update Leave type method started");
+            var res = _leavetype.UpdateLeaveType(id, name, days, year, requestedcompanyId);
+            return Ok(res);
+
+        }
     }
 }

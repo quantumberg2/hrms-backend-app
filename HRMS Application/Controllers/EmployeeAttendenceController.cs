@@ -30,7 +30,7 @@ namespace HRMS_Application.Controllers
             return dept;
         }
 
-        [HttpGet("GetByEmpCredId")]
+        [HttpGet("GetByEmpCredId(from JWT)")]
         [AllowAnonymous]
         public IActionResult GetAttendanceByCredId()
         {
@@ -52,6 +52,16 @@ namespace HRMS_Application.Controllers
             var res = _employeeAttendence.GetAttendanceByCredId(empCredentialId);
             return Ok(res);
         }
+
+        [HttpGet("GetByCredId")]
+        [Authorize(new[] {"Admin", "Manager"})]
+        public IActionResult GetAttendanceByCredId(int empCredId)
+        {
+            _logger.LogInformation("Get Attendance details by passing Employee credential id method started");
+            var res = _employeeAttendence.GetAttendanceByCredId(empCredId);
+            return Ok(res);
+        }
+
 
         [HttpGet("GetById")]
         [AllowAnonymous]

@@ -108,7 +108,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                     if (leaveAllocation != null)
                     {
 
-
                         int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
 
                         var RemainingLeave = leaveAllocation.RemainingLeave - totalLeaveDays;
@@ -137,27 +136,50 @@ namespace HRMS_Application.BusinessLogic.Implements
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return true;
         }
-        public async Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status)
+        /* public async Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status)
+         {
+             var leaves = await (from leave in _hrmsContext.LeaveTrackings
+                                 join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
+                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                 where leave.Status == status
+                                 select new LeaveApprovalDTO
+                                 {
+                                     Id = leave.Id,
+                                     EmployeeNumber = emp.EmployeeNumber,
+                                     Name = $"{emp.FirstName} {emp.LastName}",
+                                     LeaveType = leaveType.Type, 
+                                     StartDate = leave.Startdate ?? DateTime.MinValue,
+                                     EndDate = leave.Enddate ?? DateTime.MinValue,
+                                     NoofDays = (leave.Enddate.HasValue && leave.Startdate.HasValue)
+                                 ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1 
+                                 : 0
+                                 }).ToListAsync();
+
+             return leaves;
+         }*/
+        public async Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status, int managerId)
         {
             var leaves = await (from leave in _hrmsContext.LeaveTrackings
                                 join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
                                 where leave.Status == status
+                                      && emp.ManagerId == managerId 
                                 select new LeaveApprovalDTO
                                 {
                                     Id = leave.Id,
                                     EmployeeNumber = emp.EmployeeNumber,
                                     Name = $"{emp.FirstName} {emp.LastName}",
-                                    LeaveType = leaveType.Type, 
+                                    LeaveType = leaveType.Type,
                                     StartDate = leave.Startdate ?? DateTime.MinValue,
                                     EndDate = leave.Enddate ?? DateTime.MinValue,
                                     NoofDays = (leave.Enddate.HasValue && leave.Startdate.HasValue)
-                                ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1 
-                                : 0
+                                        ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1
+                                        : 0
                                 }).ToListAsync();
 
             return leaves;
         }
+
         public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
         {
             var allLeaveDetails = await _hrmsContext.LeaveTrackings
@@ -212,7 +234,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var totalRemainingLeaves = leaveSummaries.Sum(x => x.RemainingLeaves);
             var totalAllocatedLeaves = leaveSummaries.Sum(x => x.TotalAllocatedLeaves);
 
-            
             return new LeaveSummaryDTO
             {
                 LeaveType = "All Leave Types",

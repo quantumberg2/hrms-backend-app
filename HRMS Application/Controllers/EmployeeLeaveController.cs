@@ -124,21 +124,17 @@ namespace HRMS_Application.Controllers
 
         }
         [HttpPost("GrantLeave")]
-        public IActionResult SaveEmployeeLeaveAllocation([FromBody] EmployeeLeaveAllocationRequest request)
+        public async Task<IActionResult> SaveEmployeeLeaveAllocation([FromBody] EmployeeLeaveAllocationRequest request)
         {
-            if (request == null || (request.EmpCredentialId == null))
+            if (request == null || request.EmpCredentialId == null)
             {
                 return BadRequest("Invalid input data.");
             }
 
             try
             {
-                // Check if it's a single credential ID request
-                if (request.EmpCredentialId.HasValue)
-                {
-                    SaveLeaveAllocation(request.EmpCredentialId.Value, request);
-                }
-              
+                // Save leave allocation using the service
+                await _employeeLeaveService.GrantLeaveAllocationAsync(request);
 
                 return Ok("Leave allocation saved successfully.");
             }
@@ -147,22 +143,5 @@ namespace HRMS_Application.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        private void SaveLeaveAllocation(int empCredentialId, EmployeeLeaveAllocationRequest request)
-        {
-            var leaveAllocation = new EmployeeLeaveAllocation
-            {
-                Year = request.Year,
-                EmpCredentialId = empCredentialId,
-                NumberOfLeaves = request.NumberOfLeaves,
-                RemainingLeave = request.NumberOfLeaves, // Default to NumberOfLeaves if not specified
-                LeaveType = request.LeaveType, // Default to 1 or any default LeaveType ID you have
-                IsActive = 1 // Default to 1
-            };
-
-            _context.EmployeeLeaveAllocations.Add(leaveAllocation);
-            _context.SaveChanges();
-        }
-
     }
 }

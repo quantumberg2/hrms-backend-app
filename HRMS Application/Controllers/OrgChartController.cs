@@ -16,18 +16,18 @@ namespace HRMS_Application.Controllers
             _orgChartService = orgChartService;
         }
 
-        // GET: api/OrgChart
-        [HttpGet("managers-with-employees")]
-        public ActionResult<List<OrgChartNode>> GetManagersWithEmployees()
+        [HttpGet("organization-chart")]
+        public async Task<IActionResult> GetOrganizationChart()
         {
-            var result = _orgChartService.GetManagersWithEmployees();
-
-            if (result == null || result.Count == 0)
+            try
             {
-                return NotFound("No managers with employees found.");
+                var orgChart = await _orgChartService.GetOrganizationChartAsync();
+                return Ok(orgChart); // Return the hierarchy
             }
-
-            return Ok(result);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }
