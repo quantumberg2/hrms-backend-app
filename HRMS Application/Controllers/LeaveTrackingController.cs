@@ -210,7 +210,7 @@ namespace HRMS_Application.Controllers
          }*/
 
         [HttpGet("leaves/{status}")]
-        [Authorize(new[] { "Manager" })]
+        [AllowAnonymous]
         public async Task<ActionResult<List<LeaveApprovalDTO>>> GetLeavesByStatus(string status)
         {
             _logger.LogInformation("Get leaves by status method started");

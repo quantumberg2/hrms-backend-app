@@ -108,7 +108,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                     if (leaveAllocation != null)
                     {
 
-
                         int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
 
                         var RemainingLeave = leaveAllocation.RemainingLeave - totalLeaveDays;
@@ -235,7 +234,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var totalRemainingLeaves = leaveSummaries.Sum(x => x.RemainingLeaves);
             var totalAllocatedLeaves = leaveSummaries.Sum(x => x.TotalAllocatedLeaves);
 
-            
             return new LeaveSummaryDTO
             {
                 LeaveType = "All Leave Types",

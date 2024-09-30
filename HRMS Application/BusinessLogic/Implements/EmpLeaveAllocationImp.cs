@@ -1,6 +1,8 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -100,6 +102,43 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             }
             return false;
+        }
+        public async Task GrantLeaveAllocationAsync(EmployeeLeaveAllocationRequest request)
+        {
+            if (request.EmpCredentialId == null)
+            {
+                throw new ArgumentException("Employee credential ID is required.");
+            }
+
+            var empCredentialId = request.EmpCredentialId.Value;
+
+            var existingAllocation = await _hrmsContext.EmployeeLeaveAllocations
+                .FirstOrDefaultAsync(e => e.EmpCredentialId == empCredentialId && e.Year == request.Year && e.IsActive == 1);
+
+            if (existingAllocation != null)
+            {
+                existingAllocation.NumberOfLeaves = request.NumberOfLeaves;
+                existingAllocation.RemainingLeave = request.RemainingLeave ?? request.NumberOfLeaves;
+                existingAllocation.LeaveType = request.LeaveType;
+
+                _hrmsContext.EmployeeLeaveAllocations.Update(existingAllocation); 
+            }
+            else
+            {
+                var newLeaveAllocation = new EmployeeLeaveAllocation
+                {
+                    Year = request.Year,
+                    EmpCredentialId = empCredentialId,
+                    NumberOfLeaves = request.NumberOfLeaves,
+                    RemainingLeave = request.RemainingLeave ?? request.NumberOfLeaves,
+                    LeaveType = request.LeaveType,
+                    IsActive = 1
+                };
+
+                await _hrmsContext.EmployeeLeaveAllocations.AddAsync(newLeaveAllocation);
+            }
+
+            await _hrmsContext.SaveChangesAsync();
         }
     }
 }

@@ -230,7 +230,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             // Check if all necessary data exists
             if (employeeDetail == null || employeeCredential == null || employeePersonalInfo == null)
             {
-                return null; // No data found for the given EmployeeCredentialId
+                return null; 
             }
 
             // Combine the data into the DTO and return
@@ -679,7 +679,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var endDate = startDate.AddMonths(1).AddDays(-1);  // Last day of the month
 
             var employeeDetail = _hrmsContext.EmployeeDetails
-                .FirstOrDefault(e => e.EmployeeCredentialId == empCredentialId);
+                .FirstOrDefault(e => e.EmployeeCredentialId == empCredentialId && e.IsActive == 1);
 
             if (employeeDetail == null)
             {
@@ -687,7 +687,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
 
             var shiftRoster = _hrmsContext.ShiftRosters
-                .Where(sr => sr.EmpCredentialId == empCredentialId
+                .Where(sr => sr.EmpCredentialId == empCredentialId 
                              && sr.Startdate.HasValue && sr.Startdate.Value.Date <= currentDate
                              && sr.Enddate.HasValue && sr.Enddate.Value.Date >= currentDate)
                 .Include(sr => sr.ShiftRosterType)
@@ -753,10 +753,13 @@ namespace HRMS_Application.BusinessLogic.Implements
                 MonthlyPresentDays = presentDaysCount,
                 TotalWorkingDays = totalWorkingDays,
                 AttendancePercentage = attendancePercentage,
+                ImageURl = employeeDetail.ImageUrl,
             };
 
             return result;
         }
+
+
 
     }
 }

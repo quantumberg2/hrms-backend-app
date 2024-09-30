@@ -1,6 +1,7 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -74,16 +75,38 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<string> InsertShiftRoster(ShiftRoster shiftRoster)
         {
             DecodeToken();
-            await _context.ShiftRosters.AddAsync(shiftRoster);
-            var result = await _context.SaveChangesAsync(_decodedToken);
-            if (result != 0)
-            {
-                return "new ShiftRoster inserted successfully";
 
+            // Check if a shift roster entry for the same employee credential already exists
+            var existingShiftRoster = await _context.ShiftRosters
+                .FirstOrDefaultAsync(sr => sr.EmpCredentialId == shiftRoster.EmpCredentialId);
+
+            if (existingShiftRoster != null)
+            {
+                // Update the existing ShiftRoster entry
+                existingShiftRoster.ShiftRosterTypeId = shiftRoster.ShiftRosterTypeId;
+                existingShiftRoster.Startdate = shiftRoster.Startdate;
+                existingShiftRoster.Enddate = shiftRoster.Enddate;
+
+                _context.ShiftRosters.Update(existingShiftRoster);
             }
             else
             {
-                return "failed to insert new data";
+                // Create a new ShiftRoster entry
+                await _context.ShiftRosters.AddAsync(shiftRoster);
+            }
+
+            // Save changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+
+            if (result != 0)
+            {
+                return existingShiftRoster != null
+                    ? "ShiftRoster updated successfully"
+                    : "New ShiftRoster inserted successfully";
+            }
+            else
+            {
+                return "Failed to insert or update ShiftRoster";
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using HRMS_Application.Models;
+﻿using HRMS_Application.DTO;
+using HRMS_Application.Models;
 
 namespace HRMS_Application.BusinessLogic.Interface
 {
@@ -9,5 +10,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<string> InsertEmployeeLeave(EmployeeLeaveAllocation employeeLeave);
         public Task<bool> DeleteEmployeeLeave(int id);
         public bool SoftDelete(int id, short isActive);
+        public Task GrantLeaveAllocationAsync(EmployeeLeaveAllocationRequest request);
+
     }
 }
