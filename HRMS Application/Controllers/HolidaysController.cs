@@ -58,6 +58,16 @@ namespace HRMS_Application.Controllers
 
         }
 
+        [HttpPut("id")]
+        [Authorize(new[] { "Admin" })]
+        public IActionResult UpdateHolidayType(int id, string? name, DateOnly? date, string? Occation, int? requestedCompanyId)
+
+        {
+            _logger.LogInformation(" update holiday method started");
+            var res = _holiday.UpdateHolidayType(id, name,date,Occation,requestedCompanyId);
+            return Ok(res);
+
+        }
 
     }
 }

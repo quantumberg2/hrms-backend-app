@@ -96,9 +96,26 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
-        public LeaveType UpdateLeaveType(int id, string? name, int? requestedcompanyId)
+        public LeaveType UpdateLeaveType(int id, string? name, int? days, int? year, int? requestedcompanyId)
+
         {
-            throw new NotImplementedException();
+            // Find the leave type by ID
+            var leaveType = _context.LeaveTypes.SingleOrDefault(row => row.Id == id);
+
+            // Check if leave type exists
+            if (leaveType == null)
+            {
+
+                return null;
+            }
+
+            leaveType.Type = name;
+            leaveType.CompanyId = requestedcompanyId;
+            leaveType.Days = days;
+            leaveType.Year = year;
+            _context.SaveChanges();
+
+            return leaveType;
         }
 
         public bool SoftDelete(int id, short isActive)
