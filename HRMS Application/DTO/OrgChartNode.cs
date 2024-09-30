@@ -2,17 +2,10 @@
 {
     public class OrgChartNode
     {
-        public int ManagerId { get; set; }
-        public string ManagerName { get; set; }
-        public string? Designation {  get; set; }
-        public List<EmployeeDetailDto> Employees { get; set; }
-    }
-    public class EmployeeDetailDto
-    {
-        public int? EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public string Email { get; set; }
-        public string? Designation { get; set; }
-      
+        public string? FullName { get; set; }
+        public string? PositionName { get; set; }
+        public string? Email { get; set; }
+        public string? ImageURl { get; set; }
+        public List<OrgChartNode> Subordinates { get; set; } = new List<OrgChartNode>();
     }
 }

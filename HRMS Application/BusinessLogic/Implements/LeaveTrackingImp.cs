@@ -92,10 +92,32 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (leaveTracking != null)
             {
+                /**/
                 leaveTracking.Status = newStatus;
 
-                await _hrmsContext.SaveChangesAsync(); 
+                if (newStatus == "Approved" && leaveTracking.Startdate.HasValue && leaveTracking.Enddate.HasValue)
+                {
+                    var empCredentialId = leaveTracking.EmpCredentialId;
+
+                    var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                                 where row.EmpCredentialId == empCredentialId && row.IsActive == 1
+                                                 select row).FirstOrDefaultAsync();
+
+                    if (leaveAllocation != null)
+                    {
+
+                        int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+
+                        var RemainingLeave = leaveAllocation.RemainingLeave - totalLeaveDays;
+
+                        if (leaveAllocation.RemainingLeave > 0)
+                            leaveAllocation.RemainingLeave = RemainingLeave;
+                    }
+                }
+
+                await _hrmsContext.SaveChangesAsync();
             }
+
             return leaveTracking;
         }
         public async Task<bool> DeleteAsync(int id)
@@ -111,27 +133,50 @@ namespace HRMS_Application.BusinessLogic.Implements
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return true;
         }
-        public async Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status)
+        /* public async Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status)
+         {
+             var leaves = await (from leave in _hrmsContext.LeaveTrackings
+                                 join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
+                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                 where leave.Status == status
+                                 select new LeaveApprovalDTO
+                                 {
+                                     Id = leave.Id,
+                                     EmployeeNumber = emp.EmployeeNumber,
+                                     Name = $"{emp.FirstName} {emp.LastName}",
+                                     LeaveType = leaveType.Type, 
+                                     StartDate = leave.Startdate ?? DateTime.MinValue,
+                                     EndDate = leave.Enddate ?? DateTime.MinValue,
+                                     NoofDays = (leave.Enddate.HasValue && leave.Startdate.HasValue)
+                                 ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1 
+                                 : 0
+                                 }).ToListAsync();
+
+             return leaves;
+         }*/
+        public async Task<List<LeaveApprovalDTO>> GetLeavesByStatusAsync(string status, int managerId)
         {
             var leaves = await (from leave in _hrmsContext.LeaveTrackings
                                 join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
                                 where leave.Status == status
+                                      && emp.ManagerId == managerId 
                                 select new LeaveApprovalDTO
                                 {
                                     Id = leave.Id,
                                     EmployeeNumber = emp.EmployeeNumber,
                                     Name = $"{emp.FirstName} {emp.LastName}",
-                                    LeaveType = leaveType.Type, 
+                                    LeaveType = leaveType.Type,
                                     StartDate = leave.Startdate ?? DateTime.MinValue,
                                     EndDate = leave.Enddate ?? DateTime.MinValue,
                                     NoofDays = (leave.Enddate.HasValue && leave.Startdate.HasValue)
-                                ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1 
-                                : 0
+                                        ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1
+                                        : 0
                                 }).ToListAsync();
 
             return leaves;
         }
+
         public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
         {
             var allLeaveDetails = await _hrmsContext.LeaveTrackings
@@ -186,7 +231,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var totalRemainingLeaves = leaveSummaries.Sum(x => x.RemainingLeaves);
             var totalAllocatedLeaves = leaveSummaries.Sum(x => x.TotalAllocatedLeaves);
 
-            
             return new LeaveSummaryDTO
             {
                 LeaveType = "All Leave Types",
@@ -221,14 +265,47 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<LeaveTracking> ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId)
         {
             DecodeToken();
+
             leaveTracking.EmpCredentialId = empCredentialId;
 
-     
+            var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                         where row.EmpCredentialId == empCredentialId && row.IsActive == 1
+                                         select row).FirstOrDefaultAsync();
+
+            var leaveType = await _hrmsContext.LeaveTypes
+                .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
+                .FirstOrDefaultAsync();
+
+            if (leaveAllocation != null && leaveType != null)
+            {
+                int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+
+                if (leaveType.Days < totalLeaveDays)
+                {
+                    throw new InvalidOperationException($"Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.");
+                }
+
+                if (leaveAllocation.RemainingLeave < totalLeaveDays)
+                {
+                    throw new InvalidOperationException("Requested leave exceeds remaining leave.");
+                }
+
+                if (leaveTracking.Status == "Approved")
+                {
+                    leaveAllocation.RemainingLeave -= totalLeaveDays;
+
+                    await _hrmsContext.SaveChangesAsync(_decodedToken);
+                }
+            }
+
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
+            // Return the leave tracking entry
             return leaveTracking;
         }
+
+
         public List<LeavePendingDTO> GetPendingLeaves(int employeeCredentialId)
         {
             var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings

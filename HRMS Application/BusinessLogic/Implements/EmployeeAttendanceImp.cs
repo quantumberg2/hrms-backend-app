@@ -46,6 +46,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 }
             }
         }
+
         public async Task<bool> DeleteEmployeeAttendance(int id)
         {
             DecodeToken();
@@ -66,39 +67,37 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public List<AttendanceDTO> GetAttendanceByCredId(int empCredId)
         {
-            var res = (from row in _hrmsContext.Attendances
-                       where row.EmpCredentialId == empCredId
-                       select row).FirstOrDefault();
+            // Fetch all attendance records for the employee
+            var attendanceInfo = (from row in _hrmsContext.Attendances
+                                  where row.EmpCredentialId == empCredId
+                                  select row).ToList();
 
-            var loginInfo = (from row in _hrmsContext.DeviceTables
-                             where row.EmpCredentialId == empCredId
-                             select row).FirstOrDefault();
+            // Fetch shift info, filtering based on attendance date within shift range
+            var shiftInfo = (from shift in _hrmsContext.ShiftRosters
+                             join shiftType in _hrmsContext.ShiftRosterTypes
+                             on shift.ShiftRosterTypeId equals shiftType.Id
+                             where shift.EmpCredentialId == empCredId
+                             select new
+                             {
+                                 ShiftId = shift.Id,
+                                 ShiftType = shiftType.Type,
+                                 StartDate = shift.Startdate,
+                                 EndDate = shift.Enddate
+                             }).ToList();
 
-            if (res != null && loginInfo != null)
-            {
-                AttendanceDTO objAttendanceInfo = new AttendanceDTO();
+            // Combine attendance and shift info based on date matching
+            var attendanceDTO = (from attendance in attendanceInfo
+                                 let shift = shiftInfo.FirstOrDefault(s => attendance.Date.HasValue && attendance.Date.Value >= s.StartDate && attendance.Date.Value <= s.EndDate)
+                                 select new AttendanceDTO
+                                 {
+                                     TimeIn = attendance.TimeIn,
+                                     TimeOut = attendance.Timeout,
+                                     Status = attendance.Status,
+                                     Date = attendance.Date.HasValue ? attendance.Date.Value : DateTime.MinValue, // Handle null Date
+                                     Shift = shift != null ? shift.ShiftType : " "
+                                 }).ToList();
 
-                if (res.Status == "Present")
-                {
-                    objAttendanceInfo.TimeIn = loginInfo.TimeIn;
-                    objAttendanceInfo.TimeOut = loginInfo.TimeOut;
-                }
-                else
-                {
-                    objAttendanceInfo.TimeIn = null;
-                    objAttendanceInfo.TimeOut = null;
-                }
-
-                objAttendanceInfo.Status = res.Status;
-
-
-
-                return new List<AttendanceDTO> { objAttendanceInfo };
-            }
-            else
-            {
-                return new List<AttendanceDTO>();
-            }
+            return attendanceDTO;
         }
 
         public Attendance GetById(int id)
@@ -129,7 +128,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var result = _hrmsContext.Attendances.SingleOrDefault(p => p.Id == id);
             if (result == null)
             {
-                // Handle the case where the user with the specified id doesn't exist
                 return null;
             }
             
@@ -140,6 +138,11 @@ namespace HRMS_Application.BusinessLogic.Implements
             _hrmsContext.Attendances.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
             return result;
+        }
+
+        public Task<Attendance> UpdateAttendanceInfo(Attendance attendance)
+        {
+            throw new NotImplementedException();
         }
     }
 }

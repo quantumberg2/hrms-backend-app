@@ -64,7 +64,8 @@ builder.Services.AddScoped<ILeaveTracking, LeaveTrackingImp>();
 builder.Services.AddScoped<IShiftRoster, ShiftRosterImp>();
 builder.Services.AddScoped<IShiftRostertype, ShiftRostertypeImp>();
 builder.Services.AddScoped<IOrgChartService, OrgChartServiceImp>();
-
+builder.Services.AddScoped<IAdminDashboard, AdmindashboardImp>();
+builder.Services.AddScoped<IUpdateEmployeeDetails, UpdateEmployeeDetailsImp>();
 builder.Services.AddScoped(_ =>
 {
     return new BlobServiceClient(builder.Configuration.GetConnectionString("AsureBlobStorage"));
@@ -107,8 +108,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseCors("AllowAllOrigins"); // Use the CORS policy
+
+app.UseAuthorization();
 
 app.MapControllers();
 

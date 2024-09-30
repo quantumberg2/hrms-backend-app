@@ -44,7 +44,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
-        [Authorize(new[] { "Admin", "User" })]
+        [Authorize(new[] { "Admin", "User","Manager" })]
         public async Task<IActionResult> CreateLeaveTracking([FromBody] LeaveTrackingDTO leaveTrackingDto)
         {
             _logger.LogInformation("Apply leave method started");
@@ -169,8 +169,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("statusUpdate")]
-        [Authorize(new[] { "Admin" })]
-
+        [Authorize(new[] { "Admin","Manager" })]
         public async Task<IActionResult> UpdateLeaveAsync(int id, string newStatus)
         {
             _logger.LogInformation("update leave status method started");
@@ -192,12 +191,61 @@ namespace HRMS_Application.Controllers
 
             return NoContent();
         }
+
+        /* [HttpGet("leaves/{status}")]
+         [Authorize(new[] { "Manager" })]
+
+         public async Task<ActionResult<List<LeaveApprovalDTO>>> GetLeavesByStatus(string status)
+         {
+             _logger.LogInformation("Get leaves by status method started");
+
+             var leaves = await _leaveTracking.GetLeavesByStatusAsync(status);
+
+             if (leaves == null || !leaves.Any())
+             {
+                 return NotFound("No leave records found with the given status.");
+             }
+
+             return Ok(leaves);
+         }*/
+
         [HttpGet("leaves/{status}")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<LeaveApprovalDTO>>> GetLeavesByStatus(string status)
         {
             _logger.LogInformation("Get leaves by status method started");
 
-            var leaves = await _leaveTracking.GetLeavesByStatusAsync(status);
+            // Extract EmpCredentialId from the token
+            /* var empCredentialId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+
+             if (string.IsNullOrEmpty(empCredentialId) || !int.TryParse(empCredentialId, out int managerId))
+             {
+                 return Unauthorized("Invalid or missing EmpCredentialId in token.");
+             }*/
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Authorization header is missing or token is empty.");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token))
+            {
+                return Unauthorized("Invalid token format.");
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+            var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
+
+            if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var managerId))
+            {
+                return Unauthorized("Employee credential ID not found or invalid in the token.");
+            }
+
+
+            // Get leaves by status and manager's EmpCredentialId
+            var leaves = await _leaveTracking.GetLeavesByStatusAsync(status, managerId);
 
             if (leaves == null || !leaves.Any())
             {
@@ -249,16 +297,13 @@ namespace HRMS_Application.Controllers
 
             try
             {
-                // Extract the token from the Authorization header
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
 
-                // Check if the token is present
                 if (string.IsNullOrEmpty(token))
                 {
                     return Unauthorized("Authorization header is missing or token is empty.");
                 }
 
-                // Decode the JWT token to extract claims
                 var handler = new JwtSecurityTokenHandler();
                 if (!handler.CanReadToken(token))
                 {
@@ -266,8 +311,6 @@ namespace HRMS_Application.Controllers
                 }
 
                 var jwtToken = handler.ReadJwtToken(token);
-                // Extract the "UserId" claim from the token. 
-                // Ensure this claim matches what you expect (e.g., "UserId" should contain the employeeCredentialId).
                 var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
 
                 if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var employeeCredentialId))
@@ -275,7 +318,6 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Employee credential ID not found or invalid in the token.");
                 }
 
-                // Call the service to get pending leaves using the extracted employeeCredentialId
                 var pendingLeaves = _leaveTracking.GetPendingLeaves(employeeCredentialId);
 
                 return Ok(pendingLeaves);
@@ -283,7 +325,6 @@ namespace HRMS_Application.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching pending leaves");
-                // Handle any errors
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
@@ -294,16 +335,13 @@ namespace HRMS_Application.Controllers
 
             try
             {
-                // Extract the token from the Authorization header
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
 
-                // Check if the token is present
                 if (string.IsNullOrEmpty(token))
                 {
                     return Unauthorized("Authorization header is missing or token is empty.");
                 }
 
-                // Decode the JWT token to extract claims
                 var handler = new JwtSecurityTokenHandler();
                 if (!handler.CanReadToken(token))
                 {
@@ -311,8 +349,7 @@ namespace HRMS_Application.Controllers
                 }
 
                 var jwtToken = handler.ReadJwtToken(token);
-                // Extract the "UserId" claim from the token. 
-                // Ensure this claim matches what you expect (e.g., "UserId" should contain the employeeCredentialId).
+
                 var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
 
                 if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var employeeCredentialId))
@@ -320,7 +357,6 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Employee credential ID not found or invalid in the token.");
                 }
 
-                // Call the service to get pending leaves using the extracted employeeCredentialId
                 var pendingLeaves = _leaveTracking.GetHistoryLeaves(employeeCredentialId);
 
                 return Ok(pendingLeaves);
@@ -328,28 +364,24 @@ namespace HRMS_Application.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching History leaves");
-                // Handle any errors
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
 
         [HttpPut("Leave-Withdrawn")]
-        [Authorize(new[] { "Admin", "User" })]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateLeaveStatus(int id, string newStatus)
         {
 
             try
             {
-                // Extract the token from the Authorization header
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
 
-                // Check if the token is present
                 if (string.IsNullOrEmpty(token))
                 {
                     return Unauthorized("Authorization header is missing or token is empty.");
                 }
 
-                // Decode the JWT token to extract claims
                 var handler = new JwtSecurityTokenHandler();
                 if (!handler.CanReadToken(token))
                 {
@@ -357,8 +389,6 @@ namespace HRMS_Application.Controllers
                 }
 
                 var jwtToken = handler.ReadJwtToken(token);
-                // Extract the "UserId" claim from the token. 
-                // Ensure this claim matches what you expect (e.g., "UserId" should contain the employeeCredentialId).
                 var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
 
                 if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var employeeCredentialId))
@@ -367,7 +397,6 @@ namespace HRMS_Application.Controllers
                 }
 
 
-                // Update the leave status
                 var leaveTracking = await _leaveTracking.UpdateLeaveAsyncchanges(employeeCredentialId, id, newStatus);
 
                 if (leaveTracking == null)

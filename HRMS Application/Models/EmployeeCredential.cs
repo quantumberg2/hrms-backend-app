@@ -32,6 +32,7 @@ namespace HRMS_Application.Models
         public DateTime? OtpExpiration { get; set; }
         public short? IsActive { get; set; }
         public string EmployeeLoginName { get; set; }
+        public DateTime? ResignedDate { get; set; }
 
         public virtual RequestedCompanyForm RequestedCompany { get; set; }
         public virtual ICollection<AccountDetail> AccountDetails { get; set; }

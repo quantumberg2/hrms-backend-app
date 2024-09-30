@@ -13,34 +13,65 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             _hrmsContext = hrmsContext;
         }
-        public List<OrgChartNode> GetManagersWithEmployees()
+        public async Task<OrgChartNode> GetOrganizationChartAsync()
         {
-            // Fetch managers and their employees from the database
-            var result = _hrmsContext.EmployeeCredentials
-                .Where(manager => _hrmsContext.EmployeeDetails.Any(emp => emp.ManagerId == manager.Id)) // Ensure manager has employees
-                .Select(manager => new OrgChartNode
+            var employees = await _hrmsContext.EmployeeDetails
+                            .Where(e => e.IsActive == 1)
+                            .ToListAsync();
+
+            var positions = await _hrmsContext.Positions
+                            .Where(p => p.IsActive == 1)
+                            .ToListAsync();
+
+            var employeeLookup = new Dictionary<int, EmployeeDetail>();
+
+            foreach (var employee in employees)
+            {
+                if (!employee.EmployeeCredentialId.HasValue || employeeLookup.ContainsKey(employee.EmployeeCredentialId.Value))
                 {
-                    ManagerId = manager.Id,
-                    ManagerName = manager.UserName,
-                    Designation = _hrmsContext.EmployeeDetails
-                .Where(emp => emp.EmployeeCredentialId == manager.Id)   
-                .Select(emp => emp.Position.Name)                       
-                .FirstOrDefault(),
+                    continue; 
+                }
 
-                    Employees = _hrmsContext.EmployeeDetails
-                        .Where(emp => emp.ManagerId == manager.Id)
-                        .Select(emp => new EmployeeDetailDto
-                        {
-                            EmployeeId = emp.EmployeeCredentialId,
-                            EmployeeName = emp.FirstName + " " + emp.LastName,
-                            Email = emp.Email,
-                            Designation = emp.Position.Name
+                employeeLookup[employee.EmployeeCredentialId.Value] = employee;
+            }
+            var positionLookup = positions.ToDictionary(p => p.Id, p => p.Name);
 
 
-                        }).ToList()
-                }).ToList();
+            var ceo = employeeLookup.Values.FirstOrDefault(emp => emp.ManagerId == 0);
+            if (ceo == null)
+            {
+                throw new Exception("No CEO found with ManagerId = 0");
+            }
 
-            return result;
+            // Recursively build the hierarchy
+            return BuildNode(ceo, employeeLookup, positionLookup);
+        }
+
+        private OrgChartNode BuildNode( EmployeeDetail employee, Dictionary<int, EmployeeDetail> employeeLookup, Dictionary<int, string> positionLookup)
+        {
+            var positionName = employee.PositionId.HasValue && positionLookup.ContainsKey(employee.PositionId.Value)
+           ? positionLookup[employee.PositionId.Value]
+           : "Unknown Position";
+            var node = new OrgChartNode
+            {
+                FullName = $"{employee.FirstName} {employee.LastName}",
+                PositionName = positionName,
+                Email = employee.Email,
+                ImageURl = employee.ImageUrl,
+                Subordinates = new List<OrgChartNode>() 
+            };
+
+            // Find all subordinates (employees whose ManagerId matches the current employee's EmployeeCredentialId)
+            var subordinates = employeeLookup.Values
+                .Where(e => e.ManagerId == employee.EmployeeCredentialId).ToList();
+
+            // Recursively build the hierarchy for all subordinates
+            foreach (var subordinate in subordinates)
+            {
+                node.Subordinates.Add(BuildNode(subordinate, employeeLookup, positionLookup));
+            }
+
+            return node;
         }
     }
 }

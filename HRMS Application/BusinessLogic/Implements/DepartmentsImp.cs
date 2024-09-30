@@ -90,7 +90,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<Department> UpdateDepartment(int id, string? name, int? requestedcompanyId)
         {
-            var result = _hrmsContext.Departments.SingleOrDefault(p => p.Id == id);
+            var result =  _hrmsContext.Departments.SingleOrDefault(p => p.Id == id);
             if (result == null)
             {
                 // Handle the case where the user with the specified id doesn't exist
