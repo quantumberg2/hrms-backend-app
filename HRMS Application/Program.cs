@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
 var useLocalDatabase = builder.Configuration.GetValue<bool>("DatabaseSettings:UseLocalDatabase");
 
 // Retrieve the connection string based on the flag
@@ -66,6 +65,8 @@ builder.Services.AddScoped<IShiftRostertype, ShiftRostertypeImp>();
 builder.Services.AddScoped<IOrgChartService, OrgChartServiceImp>();
 builder.Services.AddScoped<IAdminDashboard, AdmindashboardImp>();
 builder.Services.AddScoped<IUpdateEmployeeDetails, UpdateEmployeeDetailsImp>();
+builder.Services.AddScoped<INews, NewsImp>();
+builder.Services.AddScoped<INewsPreview, NewPreviewImp>();
 builder.Services.AddScoped(_ =>
 {
     return new BlobServiceClient(builder.Configuration.GetConnectionString("AsureBlobStorage"));

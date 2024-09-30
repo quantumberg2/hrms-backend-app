@@ -83,6 +83,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public async Task<string> InsertEmployeeAsync(EmployeeDetail employeeDetail, int companyId)
         {
             DecodeToken();
+
             // Check if the email already exists for the same company
             var existingEmail = await _hrmsContext.EmployeeCredentials
                 .SingleOrDefaultAsync(e => e.Email == employeeDetail.Email && e.RequestedCompanyId == companyId);
@@ -90,6 +91,15 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (existingEmail != null)
             {
                 return $"Email '{employeeDetail.Email}' is already in use for company ID '{companyId}'.";
+            }
+
+            // Check if the EmployeeNumber already exists
+            var existingEmployeeNumber = await _hrmsContext.EmployeeDetails
+                .SingleOrDefaultAsync(e => e.EmployeeNumber == employeeDetail.EmployeeNumber && e.RequestCompanyId == companyId);
+
+            if (existingEmployeeNumber != null)
+            {
+                return $"EmployeeNumber '{employeeDetail.EmployeeNumber}' already exists for company ID '{companyId}'.";
             }
 
             var employeeCredential = new EmployeeCredential
@@ -100,7 +110,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 DefaultPassword = true,
                 RequestedCompanyId = companyId,
                 IsActive = 1
-                
             };
 
             await _hrmsContext.EmployeeCredentials.AddAsync(employeeCredential);
@@ -118,9 +127,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             var userRole = new UserRolesJ
             {
                 EmployeeCredentialId = employeeCredential.Id,
-                RolesId = 2 ,// Assuming "2" is the ID for the "User" role
-                IsActive =1
-                
+                   RolesId = 2, // Assuming "2" is the ID for the "User" role
+                IsActive = 1
             };
 
             await _hrmsContext.UserRolesJs.AddAsync(userRole);
@@ -158,11 +166,8 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (result == null)
             {
-                // Handle the case where the user with the specified id doesn't exist
                 return null;
             }
-
-            // Update only the fields that have non-null values passed to the method
             result.DeptId = depId ?? result.DeptId;
             result.FirstName = fname ?? result.FirstName;
             result.MiddleName = mname ?? result.MiddleName;
@@ -217,7 +222,6 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         public async Task<UpdateEmployeeInfoDTO> GetEmployeeInfoAsync(int employeeCredentialId)
         {
-            // Fetch employee details by EmployeeCredentialId
             var employeeDetail = await _hrmsContext.EmployeeDetails
                 .FirstOrDefaultAsync(e => e.EmployeeCredentialId == employeeCredentialId);
 
@@ -227,7 +231,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);
 
-            // Check if all necessary data exists
             if (employeeDetail == null || employeeCredential == null || employeePersonalInfo == null)
             {
                 return null; 
