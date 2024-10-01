@@ -43,7 +43,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public async Task<IActionResult> InsertEmployee([FromBody] EmployeeDetail employeeDetail)
+        public async Task<IActionResult> InsertEmployee([FromForm]  EmployeeDetailsDTO employeeDetail)
         {
             if (employeeDetail == null)
             {
