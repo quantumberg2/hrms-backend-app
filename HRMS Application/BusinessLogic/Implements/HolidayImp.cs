@@ -104,26 +104,27 @@ namespace HRMS_Application.BusinessLogic.Implements
             return false;
         }
 
-        public Holiday UpdateHolidayType(int id, string? name, DateOnly? date, string? Occation, int? requestedCompanyId)
+        public Holiday UpdateHolidayType(int id, string? name, DateOnly? date, string? occasion, int? requestedCompanyId)
         {
-            // Find the leave type by ID
+       
             var holiday = _context.Holidays.SingleOrDefault(row => row.Id == id);
 
-            // Check if leave type exists
             if (holiday == null)
             {
-                
-                return null;
+                return null; 
             }
 
-            holiday.Type = name;
-            holiday.CompanyId = requestedCompanyId;
-            holiday.Date = date?.ToDateTime(TimeOnly.MinValue);
-            holiday.Occasion = Occation;
+           
+            holiday.Type = name ?? holiday.Type; 
+            holiday.CompanyId = requestedCompanyId ?? holiday.CompanyId; 
+            holiday.Date = date?.ToDateTime(TimeOnly.MinValue) ?? holiday.Date; 
+            holiday.Occasion = occasion ?? holiday.Occasion; 
+
             _context.SaveChanges();
 
             return holiday;
         }
+
 
     }
 }
