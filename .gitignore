@@ -1,13 +1,34 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿# From .NET Core 3.0 you can use the command: `dotnet new gitignore` to generate a customizable .gitignore file
 
-/.vs/HRMS Application/FileContentIndex/05104c75-1bbb-4b65-98dd-0b010b5fbd9e.vsidx
-/.vs/HRMS Application/FileContentIndex/85fffd5a-67d6-42c7-916c-91f1b976d31e.vsidx
-*.vsidx
-/.vs/HRMS Application/DesignTimeBuild/.dtbcache.v2
-/.vs/HRMS Application/v17/.suo
-/.vs/HRMS Application/v17/DocumentLayout.json
-/.gitignore
-/.vs/HRMS Application/v17/.suo
-/.vs/ProjectEvaluation
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+
+# Visual Studio Code
+.vscode
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Visual Studio 2015
+.vs/
