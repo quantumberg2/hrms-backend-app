@@ -79,6 +79,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[News]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[NewsPreview]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Position]",
          "ObjectType": 0
       },

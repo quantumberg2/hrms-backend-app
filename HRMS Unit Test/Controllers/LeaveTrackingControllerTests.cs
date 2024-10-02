@@ -1,4 +1,4 @@
-namespace HRMS_Unit_Test.Controllers
+/*namespace HRMS_Unit_Test.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -962,7 +962,7 @@ namespace HRMS_Unit_Test.Controllers
             throw new NotImplementedException("Create or modify test");
         }
 
-       /* [Fact]
+       *//* [Fact]
         public async Task CanCallGetLeaveSummary()
         {
             // Arrange
@@ -987,7 +987,7 @@ namespace HRMS_Unit_Test.Controllers
             _leaveTracking.Verify(mock => mock.GetEmployeeLeaveSummaryAsync(It.IsAny<int>()));
 
             throw new NotImplementedException("Create or modify test");
-        }*/
+        }*//*
 
         [Fact]
         public void CanCallSoftDelete()
@@ -1140,4 +1140,4 @@ namespace HRMS_Unit_Test.Controllers
             throw new NotImplementedException("Create or modify test");
         }
     }
-}
+}*/

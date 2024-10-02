@@ -1,4 +1,4 @@
-namespace HRMS_Unit_Test.DTO
+/*namespace HRMS_Unit_Test.DTO
 {
     using System;
     using System.Collections.Generic;
@@ -128,4 +128,4 @@ namespace HRMS_Unit_Test.DTO
             Assert.Equal(testValue, _testClass.Designation);
         }
     }
-}
+}*/

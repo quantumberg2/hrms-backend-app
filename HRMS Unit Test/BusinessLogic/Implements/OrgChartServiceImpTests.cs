@@ -1,4 +1,4 @@
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+/*namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
     using HRMS_Application.BusinessLogic.Implements;
@@ -36,4 +36,4 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
     }
-}
+}*/

@@ -102,6 +102,7 @@ namespace HRMS_Application.BusinessLogics.Implements
                                      empCred.Id,
                                      empCred.Email,
                                      empCred.RequestedCompanyId,
+                                     
                                  }).ToList();
 
             if (!userCompanies.Any())

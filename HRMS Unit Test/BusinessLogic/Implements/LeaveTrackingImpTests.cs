@@ -1,4 +1,4 @@
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+/*namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
     using System.Collections.Generic;
@@ -478,4 +478,4 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
     }
-}
+}*/

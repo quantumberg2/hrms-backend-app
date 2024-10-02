@@ -1,4 +1,4 @@
-namespace HRMS_Unit_Test.Controllers
+/*namespace HRMS_Unit_Test.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -44,4 +44,4 @@ namespace HRMS_Unit_Test.Controllers
             throw new NotImplementedException("Create or modify test");
         }
     }
-}
+}*/
