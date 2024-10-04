@@ -395,6 +395,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId);
 
+            var Url = _azureOperations.StoreFilesInAzure(updateEmployeeInfo.imageUrl, "hrms-profile-pics");
+
             // If employee, credential, or personal info doesn't exist, create new ones
             if (employeeDetail == null)
             {
@@ -407,6 +409,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     MobileNumber = updateEmployeeInfo.MobileNumber,
                     Extension = updateEmployeeInfo.Extension,
                     IsActive =1,
+                    ImageUrl = Url
                 };
                 await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
             }
@@ -418,6 +421,11 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeDetail.Email = updateEmployeeInfo.EmailAddress ?? employeeDetail.Email;
                 employeeDetail.MobileNumber = updateEmployeeInfo.MobileNumber ?? employeeDetail.MobileNumber;
                 employeeDetail.Extension = updateEmployeeInfo.Extension ?? employeeDetail.Extension;
+                
+                if(Url!=null)
+                {
+                    employeeDetail.ImageUrl = Url;
+                }
 
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
             }
@@ -788,6 +796,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 MonthlyPresentDays = presentDaysCount,
                 TotalWorkingDays = totalWorkingDays,
                 AttendancePercentage = attendancePercentage,
+                ImageURl = employeeDetail.ImageUrl
             };
 
             return result;
