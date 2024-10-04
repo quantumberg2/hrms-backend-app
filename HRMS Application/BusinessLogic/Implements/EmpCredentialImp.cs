@@ -194,50 +194,70 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         public async Task<string> GenerateAndSendOtp(string email)
         {
-            // Check if the email already exists
+            // Check if the email exists in EmployeeCredentials
+            var employeeCredential = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e => e.Email == email);
+
+            // Check if the email exists in RequestedCompanyForms (optional)
             var existingCompanyForm = await _context.RequestedCompanyForms
                 .FirstOrDefaultAsync(c => c.Email == email);
 
-            var employeeCredential = await _context.EmployeeCredentials
-               .FirstOrDefaultAsync(e => e.Email == email);
+            // Check if the email exists in EmployeeDetails (optional)
+            var employeeDetail = await _context.EmployeeDetails
+                .FirstOrDefaultAsync(e => e.Email == email);
 
+            // Variable to hold the generated OTP
             string generatedOtp;
 
-            if (existingCompanyForm != null)
+            // Check if the EmployeeCredential record exists
+            if (employeeCredential != null)
             {
-                // Update the existing record with new OTP and expiration time
+                // Generate the OTP
                 generatedOtp = GenerateOtp();
+
+                // Update EmployeeCredentials with the new OTP and expiration time
                 employeeCredential.GenerateOtp = generatedOtp;
                 employeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
-                existingCompanyForm.UpdatedDate = DateTime.UtcNow;
+
+                // Optionally, you can also update existingCompanyForm or employeeDetail here if needed
+                if (existingCompanyForm != null)
+                {
+                    existingCompanyForm.UpdatedDate = DateTime.UtcNow;
+                    _context.RequestedCompanyForms.Update(existingCompanyForm);
+                }
+
+                if (employeeDetail != null)
+                {
+                    // If you need to update employeeDetail, you can do it here (optional)
+                    // employeeDetail.SomeField = someValue; // Example update
+                    // _context.EmployeeDetails.Update(employeeDetail);
+                }
 
                 // Save the changes to the database
-                _context.RequestedCompanyForms.Update(existingCompanyForm);
+                var result = await _context.SaveChangesAsync(_decodedToken);
+                if (result > 0)
+                {
+                    // Send OTP via email
+                    var otpEmail = new OtpEmail
+                    {
+                        EmailAddress = email,
+                        Otp = generatedOtp
+                    };
+                    await _emailotpService.SendOtpEmailAsync(otpEmail);
+
+                    return "OTP sent to the provided email address.";
+                }
+                else
+                {
+                    throw new DatabaseOperationException("Failed to update EmployeeCredential record.");
+                }
             }
             else
             {
                 return "Email not found.";
             }
-
-            // Save the changes to the database
-            var result = await _context.SaveChangesAsync(_decodedToken);
-            if (result != 0)
-            {
-                // Send OTP via email
-                var otpEmail = new OtpEmail
-                {
-                    EmailAddress = email,
-                    Otp = generatedOtp
-                };
-                await _emailotpService.SendOtpEmailAsync(otpEmail);
-
-                return "OTP sent to the provided email address.";
-            }
-            else
-            {
-                throw new DatabaseOperationException("Failed to update company request data.");
-            }
         }
+
         public async Task SendOtpEmailAsync(string email, string otp)
         {
             var otpEmail = new OtpEmail

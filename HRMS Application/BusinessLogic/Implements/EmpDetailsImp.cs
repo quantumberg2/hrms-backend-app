@@ -480,7 +480,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeDetail.FirstName = empPersonalInfo.FirstName ?? employeeDetail.FirstName;
                 employeeDetail.MiddleName = empPersonalInfo.MiddleName ?? employeeDetail.MiddleName;
                 employeeDetail.LastName = empPersonalInfo.LastName ?? employeeDetail.LastName;
-                employeeDetail.Email = empPersonalInfo.EmailId ?? employeeDetail.Email;
+               // employeeDetail.Email = empPersonalInfo.EmailId ?? employeeDetail.Email;
                 employeeDetail.MobileNumber = empPersonalInfo.Contact ?? employeeDetail.MobileNumber;
 
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
@@ -493,9 +493,9 @@ namespace HRMS_Application.BusinessLogic.Implements
             else
             {
                 // Update existing employee credential
-                employeeCredential.Email = empPersonalInfo.EmailId ?? employeeCredential.Email;
+              /*  employeeCredential.Email = empPersonalInfo.EmailId ?? employeeCredential.Email;
 
-                _hrmsContext.EmployeeCredentials.Update(employeeCredential);
+                _hrmsContext.EmployeeCredentials.Update(employeeCredential);*/
             }
 
             if (employeepersonalinfo == null)

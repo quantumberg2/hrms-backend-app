@@ -113,13 +113,10 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId && ep.IsActive == 1);
 
-            // Check if all necessary data exists and the employee is active
             if (employeeDetail == null || employeeCredential == null || employeePersonalInfo == null)
             {
                 return null;
             }
-
-            // Combine the data into the DTO and return
             return new UpdateEmployeeInfoDTO
             {
                 EmployeeCredentialId = employeeCredentialId,
@@ -267,7 +264,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<bool> UpdateEmployeeInfoAsync(UpdateEmployeeInfoDTO updateEmployeeInfo)
         {
-            // Check if the employee, credential, and personal info exist
             var employeeDetail = await _hrmsContext.EmployeeDetails
                 .FirstOrDefaultAsync(e => e.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId && e.IsActive == 1);
 
@@ -277,7 +273,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId && ep.IsActive == 1);
 
-            // If employee, credential, or personal info doesn't exist, create new ones
             if (employeeDetail == null)
             {
                 employeeDetail = new EmployeeDetail
@@ -304,7 +299,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
             }
 
-            if (employeeCredential == null)
+           /* if (employeeCredential == null)
             {
                 return false;
             }
@@ -314,7 +309,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeCredential.Email = updateEmployeeInfo.EmailAddress ?? employeeCredential.Email;
 
                 _hrmsContext.EmployeeCredentials.Update(employeeCredential);
-            }
+            }*/
 
             if (employeepersonalinfo == null)
             {
@@ -374,23 +369,23 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeDetail.FirstName = empPersonalInfo.FirstName ?? employeeDetail.FirstName;
                 employeeDetail.MiddleName = empPersonalInfo.MiddleName ?? employeeDetail.MiddleName;
                 employeeDetail.LastName = empPersonalInfo.LastName ?? employeeDetail.LastName;
-                employeeDetail.Email = empPersonalInfo.EmailId ?? employeeDetail.Email;
+                //employeeDetail.Email = empPersonalInfo.EmailId ?? employeeDetail.Email;
                 employeeDetail.MobileNumber = empPersonalInfo.Contact ?? employeeDetail.MobileNumber;
 
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
             }
 
-            if (employeeCredential == null)
+          /*  if (employeeCredential == null)
             {
                 return false;
             }
             else
             {
                 // Update existing employee credential
-                employeeCredential.Email = empPersonalInfo.EmailId ?? employeeCredential.Email;
+               *//* employeeCredential.Email = empPersonalInfo.EmailId ?? employeeCredential.Email;
 
-                _hrmsContext.EmployeeCredentials.Update(employeeCredential);
-            }
+                _hrmsContext.EmployeeCredentials.Update(employeeCredential);*//*
+            }*/
 
             if (employeepersonalinfo == null)
             {

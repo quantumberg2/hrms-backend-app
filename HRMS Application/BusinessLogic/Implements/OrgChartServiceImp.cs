@@ -43,7 +43,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 throw new Exception("No CEO found with ManagerId = 0");
             }
 
-            // Recursively build the hierarchy
             return BuildNode(ceo, employeeLookup, positionLookup);
         }
 
@@ -61,11 +60,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                 Subordinates = new List<OrgChartNode>() 
             };
 
-            // Find all subordinates (employees whose ManagerId matches the current employee's EmployeeCredentialId)
             var subordinates = employeeLookup.Values
                 .Where(e => e.ManagerId == employee.EmployeeCredentialId).ToList();
 
-            // Recursively build the hierarchy for all subordinates
             foreach (var subordinate in subordinates)
             {
                 node.Subordinates.Add(BuildNode(subordinate, employeeLookup, positionLookup));
