@@ -183,14 +183,14 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("updatedetails")]
-        public async Task<IActionResult> UpdateEmployeeInfo([FromBody] UpdateEmployeeInfoDTO updateEmployeeInfo)
+        public async Task<IActionResult> UpdateEmployeeInfo([FromForm] UpdateEmployeeInfoDTO updateEmployeeInfo)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _Empdetails.UpdateEmployeeInfoAsync(updateEmployeeInfo);
+            var result = await _Empdetails.UpdateEmployeeInfoAsync(imageFile,updateEmployeeInfo);
 
             if (!result)
             {
