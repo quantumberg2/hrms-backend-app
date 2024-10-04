@@ -190,7 +190,7 @@ namespace HRMS_Application.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _Empdetails.UpdateEmployeeInfoAsync(imageFile,updateEmployeeInfo);
+            var result = await _Empdetails.UpdateEmployeeInfoAsync(updateEmployeeInfo);
 
             if (!result)
             {
