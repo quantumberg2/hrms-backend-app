@@ -82,7 +82,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return res;
         }
 
-        public async Task<string> InsertEmployeeAsync(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? designation, string? email, int? empCredId, string? empNumber, int? requestCompId, int? managerId, string? nickName, string? extention, string? mobNumber, string? experience, int companyId)
+        public async Task<string> InsertEmployeeAsync(IFormFile? imageFile,  int? depId, string? fname, string? mname, string? lname, int? positionid, string? email, string? empNumber,int? managerId, string? nickName,string? extention,string? mobNumber, string? experience, int companyId)
         {
             DecodeToken();
             // Check if the email already exists for the same company
@@ -92,6 +92,15 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (existingEmail != null)
             {
                 return $"Email '{email}' is already in use for company ID '{companyId}'.";
+            }
+
+            // Check if the EmployeeNumber already exists
+            var existingEmployeeNumber = await _hrmsContext.EmployeeDetails
+                .SingleOrDefaultAsync(e => e.EmployeeNumber == empNumber && e.RequestCompanyId == companyId);
+
+            if (existingEmployeeNumber != null)
+            {
+                return $"EmployeeNumber '{empNumber}' already exists for company ID '{companyId}'.";
             }
 
             var employeeCredential = new EmployeeCredential
@@ -118,8 +127,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 MiddleName = mname,
                 LastName = lname,
                 PositionId =positionid,
-                EmployeeCredentialId = employeeCredential.Id,
                 EmployeeNumber = empNumber,
+                EmployeeCredentialId = employeeCredential.Id,
                 Email = email,
                 RequestCompanyId = companyId,
                 DeptId = depId,
@@ -173,7 +182,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
 
 
-        public async Task<EmployeeDetail> UpdateEmployeeDetail(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
+        public async Task<EmployeeDetail> UpdateEmployeeDetail(IFormFile imageFile, int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
         {
             DecodeToken();
             var result = await _hrmsContext.EmployeeDetails.SingleOrDefaultAsync(p => p.Id == id);
@@ -183,6 +192,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 // Handle the case where the user with the specified id doesn't exist
                 return null;
             }
+
+            var Url = _azureOperations.StoreFilesInAzure(imageFile, "hrms-profile-pics");
 
             // Update only the fields that have non-null values passed to the method
             result.DeptId = depId ?? result.DeptId;
@@ -194,6 +205,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             result.Email = Email ?? result.Email;
             result.EmployeeNumber = EmployeeNumber ?? result.EmployeeNumber;
             result.RequestCompanyId = requsetCompanyId ?? result.RequestCompanyId;
+            result.ImageUrl = Url ?? result.ImageUrl;
              
             _hrmsContext.EmployeeDetails.Update(result);
             await _hrmsContext.SaveChangesAsync(_decodedToken);

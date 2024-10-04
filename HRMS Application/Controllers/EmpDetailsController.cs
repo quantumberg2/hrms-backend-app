@@ -43,7 +43,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public async Task<IActionResult> InsertEmployee(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? designation, string? email, int? empCredId, string? empNumber, int? requestCompId, int? managerId, string? nickName, string? extention, string? mobNumber, string? experience)
+        public async Task<IActionResult> InsertEmployee(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? email, string? empNumber, int? managerId, string? nickName, string? extention, string? mobNumber, string? experience)
         {
 
             try
@@ -72,7 +72,7 @@ namespace HRMS_Application.Controllers
                 }
 
                 // Call the service to insert the employee
-                string result = await _Empdetails.InsertEmployeeAsync(imageFile,depId,fname,mname,lname,positionid,designation,email,empCredId,empNumber,requestCompId,managerId,nickName,extention,mobNumber,experience,companyId);
+                string result = await _Empdetails.InsertEmployeeAsync(imageFile,depId,fname,mname,lname,positionid,email,empNumber,managerId,nickName,extention,mobNumber,experience,companyId);
 
                 if (result.Contains("already in use"))
                 {
@@ -91,10 +91,10 @@ namespace HRMS_Application.Controllers
         [HttpPut("UpdateAll/{id}")]
         [Authorize(new[] { "Admin" })]
         // [Route("UpdateAll")]
-        public async Task<EmployeeDetail> UpdateEmployeeDetails(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
+        public async Task<EmployeeDetail> UpdateEmployeeDetails(IFormFile imageFile, int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber, int? requsetCompanyId)
         {
             _logger.LogInformation("Update Employeedetails method started");
-            var status = await _Empdetails.UpdateEmployeeDetail(id,depId,fname,mname,lname,positionid,Designation,Email,employeecredentialId,EmployeeNumber,requsetCompanyId);
+            var status = await _Empdetails.UpdateEmployeeDetail(imageFile,id,depId,fname,mname,lname,positionid,Designation,Email,employeecredentialId,EmployeeNumber,requsetCompanyId);
             return status;
         }
 

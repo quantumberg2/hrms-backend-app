@@ -7,8 +7,8 @@ namespace HRMS_Application.BusinessLogic.Interface
     {
         public List<EmployeeDetail> GetAllUser();
         public EmployeeDetail GetById(int id);
-        public Task<string> InsertEmployeeAsync(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? designation, string? email, int? empCredId, string? empNumber, int? requestCompId,int? managerId, string? nickName,string? extention,string? mobNumber, string? experience, int companyId);
-        public Task<EmployeeDetail> UpdateEmployeeDetail(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber,int? requsetCompanyId);
+        public Task<string> InsertEmployeeAsync(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? email, string? empNumber,int? managerId, string? nickName,string? extention,string? mobNumber, string? experience, int companyId);
+        public Task<EmployeeDetail> UpdateEmployeeDetail(IFormFile imageFile, int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber,int? requsetCompanyId);
         public Task<bool> DeleteEmployeeDetail(int id);
         public bool SoftDelete(int id, short isActive);
         public IEnumerable<EmployeeView> GetAllEmployees();
