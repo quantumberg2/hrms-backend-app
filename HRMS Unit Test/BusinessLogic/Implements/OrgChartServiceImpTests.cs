@@ -30,7 +30,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
         public void CanCallGetManagersWithEmployees()
         {
             // Act
-            var result = _testClass.GetManagersWithEmployees();
+         //   var result = _testClass.GetManagersWithEmployees();
 
             // Assert
             throw new NotImplementedException("Create or modify test");

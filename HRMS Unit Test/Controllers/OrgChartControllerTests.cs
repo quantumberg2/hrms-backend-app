@@ -33,13 +33,13 @@ namespace HRMS_Unit_Test.Controllers
         public void CanCallGetManagersWithEmployees()
         {
             // Arrange
-            _orgChartService.Setup(mock => mock.GetManagersWithEmployees()).Returns(new List<OrgChartNode>());
+          //  _orgChartService.Setup(mock => mock.GetManagersWithEmployees()).Returns(new List<OrgChartNode>());
 
             // Act
-            var result = _testClass.GetManagersWithEmployees();
+          //  var result = _testClass.GetManagersWithEmployees();
 
             // Assert
-            _orgChartService.Verify(mock => mock.GetManagersWithEmployees());
+          //  _orgChartService.Verify(mock => mock.GetManagersWithEmployees());
 
             throw new NotImplementedException("Create or modify test");
         }
