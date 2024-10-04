@@ -82,22 +82,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             return res;
         }
 
-        public async Task<string> InsertEmployeeAsync(EmployeeDetailsDTO employeeDetail, int companyId)
+        public async Task<string> InsertEmployeeAsync(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? designation, string? email, int? empCredId, string? empNumber, int? requestCompId, int? managerId, string? nickName, string? extention, string? mobNumber, string? experience, int companyId)
         {
             DecodeToken();
             // Check if the email already exists for the same company
             var existingEmail = await _hrmsContext.EmployeeCredentials
-                .SingleOrDefaultAsync(e => e.Email == employeeDetail.Email && e.RequestedCompanyId == companyId);
+                .SingleOrDefaultAsync(e => e.Email == email && e.RequestedCompanyId == companyId);
 
             if (existingEmail != null)
             {
-                return $"Email '{employeeDetail.Email}' is already in use for company ID '{companyId}'.";
+                return $"Email '{email}' is already in use for company ID '{companyId}'.";
             }
 
             var employeeCredential = new EmployeeCredential
             {
-                UserName = employeeDetail.Email, // Username is set to the email address
-                Email = employeeDetail.Email,
+                UserName = email, // Username is set to the email address
+                Email = email,
                 Password = GeneratePassword(),
                 DefaultPassword = true,
                 RequestedCompanyId = companyId,
@@ -109,32 +109,27 @@ namespace HRMS_Application.BusinessLogic.Implements
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
            
-            var imageUrl = _azureOperations.StoreFilesInAzure(imageFile, "hrms-profile-pics");
+            var Url = _azureOperations.StoreFilesInAzure(imageFile, "hrms-profile-pics");
 
-            // Set the EmployeeCredentialId in EmployeeDetail
-            /*  employeeDetail.EmployeeCredentialId = employeeCredential.Id;
-              employeeDetail.RequestCompanyId = companyId;
-              employeeDetail.DeptId = null;
-              employeeDetail.IsActive = 1;*/
 
             var employee = new EmployeeDetail
             {
-                FirstName = employeeDetail.FirstName,
-                MiddleName = employeeDetail.MiddleName,
-                LastName = employeeDetail.LastName,
-                PositionId = employeeDetail.PositionId,
+                FirstName = fname,
+                MiddleName = mname,
+                LastName = lname,
+                PositionId =positionid,
                 EmployeeCredentialId = employeeCredential.Id,
-                EmployeeNumber = employeeDetail.EmployeeNumber,
-                Email = employeeDetail.Email,
+                EmployeeNumber = empNumber,
+                Email = email,
                 RequestCompanyId = companyId,
-                DeptId = employeeDetail.DeptId,
-                IsActive = employeeDetail.IsActive,
-                ManagerId = employeeDetail.ManagerId,
-                NickName = employeeDetail.NickName,
-                Extension = employeeDetail.Extension,
-                MobileNumber = employeeDetail.MobileNumber,
-                NumberOfYearsExperience = employeeDetail.NumberOfYearsExperience,
-                ImageUrl = imageUrl
+                DeptId = depId,
+                IsActive = 1,
+                ManagerId = managerId,
+                NickName = nickName,
+                Extension = extention,
+                MobileNumber = mobNumber,
+                NumberOfYearsExperience = experience,
+                ImageUrl = Url
             };
 
 

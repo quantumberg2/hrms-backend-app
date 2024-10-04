@@ -27,7 +27,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
-        public string InsertNews(NewsDTO news)
+        public string InsertNews([FromForm] NewsDTO news)
         {
             _logger.LogInformation("Upload News method started");
              var res = _news.InsertNews(news);

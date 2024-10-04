@@ -43,12 +43,8 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public async Task<IActionResult> InsertEmployee([FromForm]  EmployeeDetailsDTO employeeDetail)
+        public async Task<IActionResult> InsertEmployee(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? designation, string? email, int? empCredId, string? empNumber, int? requestCompId, int? managerId, string? nickName, string? extention, string? mobNumber, string? experience)
         {
-            if (employeeDetail == null)
-            {
-                return BadRequest("Employee details are required.");
-            }
 
             try
             {
@@ -76,7 +72,7 @@ namespace HRMS_Application.Controllers
                 }
 
                 // Call the service to insert the employee
-                string result = await _Empdetails.InsertEmployeeAsync(employeeDetail, companyId);
+                string result = await _Empdetails.InsertEmployeeAsync(imageFile,depId,fname,mname,lname,positionid,designation,email,empCredId,empNumber,requestCompId,managerId,nickName,extention,mobNumber,experience,companyId);
 
                 if (result.Contains("already in use"))
                 {
