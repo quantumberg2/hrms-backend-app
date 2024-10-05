@@ -69,7 +69,6 @@ builder.Services.AddScoped<INews, NewsImp>();
 builder.Services.AddScoped<INewsPreview, NewPreviewImp>();
 
 builder.Services.AddScoped<IContactUs, ContactUsImp>();
-builder.Services.AddScoped<IAlertEmailOperations,AlertEmailOperationsImp>();
 
 builder.Services.AddScoped(_ =>
 {

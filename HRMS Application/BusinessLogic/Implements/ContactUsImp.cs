@@ -17,12 +17,13 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             /*  string FilePath = Directory.GetCurrentDirectory() + "\\SendMessageTemplate.html";*/
 
-            string FilePath = constants.ContactTemplate;
-            StreamReader str = new StreamReader(FilePath);
-            string MailText = str.ReadToEnd();
-            str.Close();
+            string emailTemplate = constants.ContactTemplate;
 
-            MailText = MailText.Replace("[Name]", contact.Name).Replace("[Email]", contact.Email).Replace("[Phone]", contact.PhoneNumber).Replace("[Message]", contact.Message);
+            emailTemplate = emailTemplate.Replace("{{Name}}", contact.Name)
+                                         .Replace("{{Email}}", contact.Email)
+                                         .Replace("{{Phone}}", contact.PhoneNumber)
+                                         .Replace("{{Message}}", contact.Message);
+
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("HRMS website", fromEmail));
             email.To.Add(MailboxAddress.Parse("srilakshmingr@gmail.com")); //admin@quantumberg.com
@@ -30,7 +31,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             email.Subject = "Email from Quantumberg Contact-us page";
 
             var builder = new BodyBuilder();
-            builder.HtmlBody = MailText;
+            builder.HtmlBody = emailTemplate;
             email.Body = builder.ToMessageBody();
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
 
