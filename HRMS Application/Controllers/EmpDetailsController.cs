@@ -43,7 +43,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPost("insertEmployees")]
         [Authorize(new[] { "Admin" })]
-        public async Task<IActionResult> InsertEmployee(IFormFile imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? email, string? empNumber, int? managerId, string? nickName, string? extention, string? mobNumber, string? experience)
+        public async Task<IActionResult> InsertEmployee(IFormFile? imageFile, int? depId, string? fname, string? mname, string? lname, int? positionid, string? email, string? empNumber, int? managerId, string? nickName, string? extention, string? mobNumber, string? experience)
         {
 
             try
@@ -183,14 +183,14 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("updatedetails")]
-        public async Task<IActionResult> UpdateEmployeeInfo([FromForm] UpdateEmployeeInfoDTO updateEmployeeInfo)
+        public async Task<IActionResult> UpdateEmployeeInfo(int? empCredId, string? empName, string? nickName, string? emailAddress, string? empLoginName, string? extension, string? mobileNumber, string? gender, IFormFile? imageUrl)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _Empdetails.UpdateEmployeeInfoAsync(updateEmployeeInfo);
+            var result = await _Empdetails.UpdateEmployeeInfoAsync(empCredId,empName,nickName,emailAddress,empLoginName,extension,mobileNumber,gender,imageUrl);
 
             if (!result)
             {
