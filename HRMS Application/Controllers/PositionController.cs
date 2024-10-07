@@ -52,12 +52,11 @@ namespace HRMS_Application.Controllers
                     return BadRequest("Invalid Company ID in token.");
                 }
 
-                // Get positions based on the companyId
                 var positions = _position.GetPositions()
                                          .Where(p => p.RequestedCompanyId == companyId) 
                                          .ToList();
 
-                return Ok(positions); // Return the list of positions as a successful response
+                return Ok(positions);
             }
             catch (Exception ex)
             {
