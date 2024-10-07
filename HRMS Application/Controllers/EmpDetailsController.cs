@@ -288,6 +288,18 @@ namespace HRMS_Application.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+        [HttpGet("monthly-statistics/{employeeCredentialId}/{month}")]
+        public IActionResult GetMonthlyStatistics(int employeeCredentialId, DateTime month)
+        {
+            try
+            {
+                var statistics = _Empdetails.GetMonthlyStatistics(employeeCredentialId, month);
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

@@ -334,7 +334,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 City = employeeAddress.City,
                 State = employeeAddress.State,
                 Country = employeeAddress.Country,
-                PinCode = employeeAddress.PinCode
+                PinCode = employeeAddress.PinCode,
+                isActive = employeeAddress.IsActive
             };
         }
         public async Task<AccountDetail> GetEmployeeAccountInfoAsync(int employeeCredentialId)
@@ -802,7 +803,141 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
+        public MonthlyAttendanceStatistics GetMonthlyStatistics(int employeeCredentialId, DateTime month)
+        {
+            // Fetch attendance data for the employee for the given month
+            var attendances = _hrmsContext.Attendances
+                .Where(a => a.EmpCredentialId == employeeCredentialId && a.Date.Value.Month == month.Month && a.Date.Value.Year == month.Year)
+                .ToList();
+
+            // Fetch the shift roster to get time ranges
+            var shiftRoster = _hrmsContext.ShiftRosters
+                .Include(sr => sr.ShiftRosterType)
+                .FirstOrDefault(sr => sr.EmpCredentialId == employeeCredentialId);
+
+            if (shiftRoster == null)
+                throw new Exception("Shift Roster not found for employee");
+
+            var timeRange = shiftRoster.ShiftRosterType.TimeRange.Split('-');
+            if (timeRange.Length != 2)
+                throw new Exception("Invalid shift time range format");
+
+            var shiftStart = DateTime.Parse(timeRange[0].Trim()).TimeOfDay; 
+            var shiftEnd = DateTime.Parse(timeRange[1].Trim()).TimeOfDay;   
+            var standardWorkDayHours = (shiftEnd - shiftStart).TotalHours;
+
+            // Calculate total working days
+            var totalWorkingDays = CalculateTotalWorkingDays(month);
+
+            // Initialize total hours worked
+            double totalHoursWorked = standardWorkDayHours;
+            double totalPresentHours = 0; // To calculate average work hours for present status
+            double totalTimeIn = 0;
+            double totalTimeOut = 0;
+
+
+            foreach (var attendance in attendances)
+            {
+                if (attendance.TimeIn.HasValue && attendance.Timeout.HasValue)
+                {
+                    TimeSpan effectiveTimeIn = attendance.TimeIn.Value.TimeOfDay;
+                    TimeSpan effectiveTimeOut = attendance.Timeout.Value.TimeOfDay;
+
+                    TimeSpan workStart = effectiveTimeIn < shiftStart ? shiftStart : effectiveTimeIn; 
+                    TimeSpan workEnd = effectiveTimeOut > shiftEnd ? shiftEnd : effectiveTimeOut;    
+
+                    if (workStart < workEnd)
+                    {
+                        double workedHours = (workEnd - workStart).TotalHours;
+                        //totalHoursWorked += workedHours;
+
+                        // If status is "Present", add to total present hours
+                        if (attendance.Status == "Present")
+                        {
+                            totalPresentHours += workedHours;
+                            totalTimeIn += attendance.TimeIn.Value.TimeOfDay.TotalHours;
+                            totalTimeOut += attendance.Timeout.Value.TimeOfDay.TotalHours;
+                        }
+                    }
+                }
+            }
+           
+            var presentDaysCount = attendances.Count(a => a.Status == "Present");
+            var averageWorkHours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0; // Prevent division by zero
+
+
+
+            var avergeintime = presentDaysCount > 0 ? totalTimeIn/totalWorkingDays : 0;
+            var averageouttime = presentDaysCount > 0 ? totalTimeOut/totalWorkingDays : 0;
+
+            // Calculate counts for various attendance statuses
+            var presentCount = attendances.Count(a => a.Status == "Present");
+            var absentCount = attendances.Count(a => a.Status == "Absent");
+            var leaveTakenCount = attendances.Count(a => a.Status == "Leave");
+            var PenaltyleaveTakenCount = attendances.Count(a => a.Status == "Penalty Leave");
+
+            var holidayCount = GetHolidayCount(month);
+            var lateInCount = attendances.Count(a => a.TimeIn.HasValue && a.TimeIn.Value.TimeOfDay > shiftStart);
+            var earlyOutCount = attendances.Count(a => a.Timeout.HasValue && a.Timeout.Value.TimeOfDay < shiftEnd);
+
+            var countedDays = presentCount + absentCount + leaveTakenCount;
+            var restDays = totalWorkingDays - countedDays;
+            var restDaysPercentage = restDays > 0 ? (double)restDays / totalWorkingDays * 100 : 0;
+
+            // Calculate percentages
+            var presentPercentage = totalWorkingDays > 0 ? (double)presentCount / totalWorkingDays * 100 : 0;
+            var absentPercentage = totalWorkingDays > 0 ? (double)absentCount / totalWorkingDays * 100 : 0;
+            var leaveTakenPercentage = totalWorkingDays > 0 ? (double)leaveTakenCount / totalWorkingDays * 100 : 0;
+
+            var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);  // Total days in the month
+            var holidayPercentage = (double)holidayCount / daysInMonth * 100;
+
+            return new MonthlyAttendanceStatistics
+            {
+                EmployeecredntialId = employeeCredentialId,
+                TotalWorkingDays = totalWorkingDays,
+                TotalHoursWorked = totalHoursWorked,
+                AverageWorkHours = averageWorkHours,
+                LateInCount = lateInCount,
+                EarlyOutCount = earlyOutCount,
+                AbsentCount = absentCount,
+                LeaveTakenCount = leaveTakenCount,
+                PresentPercentage = presentPercentage,
+                AbsentPercentage = absentPercentage,
+                LeaveTakenPercentage = leaveTakenPercentage,
+                AvgTimein = avergeintime,
+                AvgTimeouT = averageouttime,
+                HolidayPercentage = holidayPercentage,
+                RestDaysPercentage = restDaysPercentage,
+                PenaltyCount = PenaltyleaveTakenCount
+            };
+        }
+        private int GetHolidayCount(DateTime month)
+        {
+            // Fetch holidays from the Holiday table based on the month
+            return _hrmsContext.Holidays
+                .Where(h => h.Date.HasValue && h.Date.Value.Month == month.Month && h.Date.Value.Year == month.Year && h.IsActive == 1)
+                .Count();
+        }
+
+        private int CalculateTotalWorkingDays(DateTime month)
+        {
+            var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);
+
+            var weekends = Enumerable.Range(1, daysInMonth)
+                .Select(day => new DateTime(month.Year, month.Month, day))
+                .Count(date => date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday);
+
+            var holidays = _hrmsContext.Holidays
+                .Where(h => h.Date.HasValue && h.Date.Value.Month == month.Month && h.Date.Value.Year == month.Year && h.IsActive == 1)
+                .ToList();
+
+            var holidayCount = holidays.Count(h => !(h.Date.Value.DayOfWeek == DayOfWeek.Sunday));
+
+            return daysInMonth - weekends - holidayCount; 
+        }
 
 
     }
+
 }

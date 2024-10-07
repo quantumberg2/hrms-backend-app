@@ -60,6 +60,9 @@ namespace HRMS_Application.Middleware
                 case NotFoundResultException:
                     statusCode = StatusCodes.Status404NotFound;
                     break;
+                case EmailAlreadyExistsException:
+                    statusCode = StatusCodes.Status409Conflict;
+                    break;
 
                 case ArgumentException:
                     statusCode = StatusCodes.Status500InternalServerError;

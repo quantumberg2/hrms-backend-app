@@ -45,11 +45,11 @@ namespace HRMS_Application.BusinessLogic.Implements
                     if (userDetails != null)
                     {
                         _decodedToken = userDetails.Id;
-                        dToken = userDetails.UserRolesJs.Select(ur => ur.Roles.Name).ToList(); // Assuming you want role names
+                        dToken = userDetails.UserRolesJs.Select(ur => ur.Roles.Name).ToList();
                     }
                     else
                     {
-                        // Handle the case where the user is not found in the database
+                       
                         dToken = null;
                     }
                 }
@@ -105,7 +105,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
-       
+
         public async Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedcompanyform)
         {
             if (!IsValidPhoneNumber(requestedcompanyform.PhoneNumber))
@@ -113,77 +113,83 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "Invalid phone number. The phone number must be exactly 10 digits.";
             }
 
-            // Set default values
+            if (!IsValidEmail(requestedcompanyform.Email))
+            {
+                return "Invalid email format. Please provide a valid email address.";
+            }
+
             requestedcompanyform.InsertedDate = DateTime.UtcNow;
             requestedcompanyform.UpdatedDate = DateTime.UtcNow;
             requestedcompanyform.Status = "Requested";
+            requestedcompanyform.IsActive = 1;
 
-            // Decode the token
             DecodeToken();
 
-            // Generate OTP
+            var existingRequestedCompanyForm = await _context.RequestedCompanyForms
+                .FirstOrDefaultAsync(c => c.Email == requestedcompanyform.Email);
+
+            var existingEmployeeCredential = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e => e.Email == requestedcompanyform.Email);
+
+            if (existingRequestedCompanyForm != null && existingRequestedCompanyForm.Status == "Verified"
+                 && existingEmployeeCredential != null)
+            {
+                throw new EmailAlreadyExistsException(
+                    $"This email {requestedcompanyform.Email} is already registered with company '{existingRequestedCompanyForm.Name}' and has been verified."
+                );
+            }
+
+
             string generatedOtp = GenerateOtp();
 
-            // Check if the email already exists in the RequestedCompanyForm table
             var existingCompanyForm = await _context.RequestedCompanyForms
-                .FirstOrDefaultAsync(c => c.Email == requestedcompanyform.Email);
+                .FirstOrDefaultAsync(c => c.Name == requestedcompanyform.Name);
 
             if (existingCompanyForm != null)
             {
-                // Update the existing record with new OTP and expiration time
                 existingCompanyForm.UpdatedDate = DateTime.UtcNow;
 
-                // Update the record in the database
                 _context.RequestedCompanyForms.Update(existingCompanyForm);
             }
             else
             {
-                // Add the new RequestedCompanyForm entity to the context
                 await _context.RequestedCompanyForms.AddAsync(requestedcompanyform);
-                await _context.SaveChangesAsync(_decodedToken); // Save the new RequestedCompanyForm
+                await _context.SaveChangesAsync(_decodedToken);
 
-                // Retrieve the newly added RequestedCompanyForm with its ID
                 existingCompanyForm = requestedcompanyform; // Now it has a valid ID
             }
 
-            // Handle the EmployeeCredential record
-            var existingEmployeeCredential = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == requestedcompanyform.Email);
-
             if (existingEmployeeCredential != null)
             {
-                // Update the existing EmployeeCredential record
                 existingEmployeeCredential.GenerateOtp = generatedOtp;
-                existingEmployeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10); // OTP valid for 10 minutes
+                existingEmployeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10);
                 existingEmployeeCredential.DefaultPassword = true;
-                existingEmployeeCredential.Password = GeneratePassword(); // Generate a default password
+                existingEmployeeCredential.Password = GeneratePassword();
                 existingEmployeeCredential.RequestedCompanyId = existingCompanyForm.Id;
 
                 _context.EmployeeCredentials.Update(existingEmployeeCredential);
             }
             else
             {
-                // Create a new EmployeeCredential record
                 var newEmployeeCredential = new EmployeeCredential
                 {
-                    UserName = requestedcompanyform.Email, // Use email as username
-                    Password = GeneratePassword(), // Generate a default password
+                    UserName = requestedcompanyform.Email,
+                    Password = GeneratePassword(),
                     Email = requestedcompanyform.Email,
                     DefaultPassword = true,
                     GenerateOtp = generatedOtp,
-                    OtpExpiration = DateTime.UtcNow.AddMinutes(10), // OTP valid for 10 minutes
+                    OtpExpiration = DateTime.UtcNow.AddMinutes(10),
                     RequestedCompanyId = existingCompanyForm.Id,
-                    Status = 1 // Assuming 1 means active, change as needed
+                    IsActive = 1,
+                    Status = 1
                 };
 
                 await _context.EmployeeCredentials.AddAsync(newEmployeeCredential);
             }
 
-            // Save all changes to the database
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
-                // Send OTP via email
                 await SendOtpEmailAsync(requestedcompanyform.Email, generatedOtp);
 
                 return "OTP sent to the provided email address.";
@@ -193,6 +199,21 @@ namespace HRMS_Application.BusinessLogic.Implements
                 throw new DatabaseOperationException("Failed to insert company request data");
             }
         }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
 
         private async Task SendOtpEmailAsync(string email, string otp)
         {

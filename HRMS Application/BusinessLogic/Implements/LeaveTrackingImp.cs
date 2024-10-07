@@ -163,7 +163,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                                 join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
                                 where leave.Status == status
-                                      && emp.ManagerId == managerId 
+                                      && emp.ManagerId == managerId
+                                      && emp.IsActive == 1
+                                      && leave.IsActive == 1
                                 select new LeaveApprovalDTO
                                 {
                                     Id = leave.Id,
@@ -179,6 +181,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return leaves;
         }
+
 
         public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
         {
