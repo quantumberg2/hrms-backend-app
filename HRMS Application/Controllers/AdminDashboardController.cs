@@ -18,6 +18,7 @@ namespace HRMS_Application.Controllers
         }
 
         [Authorize(new[] { "Admin" })]
+        [HttpGet]
         public async Task<IActionResult> GetDashboard()
         {
             try
