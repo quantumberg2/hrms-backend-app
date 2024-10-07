@@ -19,10 +19,10 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             string emailTemplate = constants.ContactTemplate;
 
-            emailTemplate = emailTemplate.Replace("{{Name}}", contact.Name)
-                                         .Replace("{{Email}}", contact.Email)
-                                         .Replace("{{Phone}}", contact.PhoneNumber)
-                                         .Replace("{{Message}}", contact.Message);
+            emailTemplate = emailTemplate.Replace("[Name]", contact.Name)
+                                         .Replace("[Email]", contact.Email)
+                                         .Replace("[Phone]", contact.PhoneNumber)
+                                         .Replace("[Message]", contact.Message);
 
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("HRMS website", fromEmail));
