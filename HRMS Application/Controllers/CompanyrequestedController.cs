@@ -52,11 +52,23 @@ namespace HRMS_Application.Controllers
         //[Authorize(new[] { "Admin" })]
         public async Task<IActionResult> InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
         {
-            _logger.LogInformation("Insert Employee Credential method started");
-            var result = await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
-            return Ok(new { message = result });
-
+            try
+            {
+                await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
+                return Ok(new { message = "Request submitted successfully." });
+            }
+            catch (EmailAlreadyExistsException ex)
+            {
+                // Return a 409 Conflict status with the error message
+                return Conflict(new { status = "Error", message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Return a 500 Internal Server Error status for any other exceptions
+                return StatusCode(500, new { status = "Error", message = "An internal server error occurred." });
+            }
         }
+
 
         [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
