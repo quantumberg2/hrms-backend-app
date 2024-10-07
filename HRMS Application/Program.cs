@@ -69,7 +69,7 @@ builder.Services.AddScoped<INews, NewsImp>();
 builder.Services.AddScoped<INewsPreview, NewPreviewImp>();
 
 builder.Services.AddScoped<IContactUs, ContactUsImp>();
-
+builder.Services.AddScoped<IAlertEmailOperations,AlertMailOperationsImp>();
 builder.Services.AddScoped(_ =>
 {
     return new BlobServiceClient(builder.Configuration.GetConnectionString("AsureBlobStorage"));

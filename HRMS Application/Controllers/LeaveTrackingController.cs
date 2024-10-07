@@ -178,7 +178,7 @@ namespace HRMS_Application.Controllers
         {
             _logger.LogInformation("update leave status method started");
 
-            var res = _leaveTracking.UpdateLeaveAsync(id, newStatus);
+            var res = await _leaveTracking.UpdateLeaveAsync(id, newStatus);
             return Ok(res);
         }
 
@@ -193,7 +193,7 @@ namespace HRMS_Application.Controllers
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok("Deleted");
         }
 
         /* [HttpGet("leaves/{status}")]
