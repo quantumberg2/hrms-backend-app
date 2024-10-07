@@ -1,4 +1,4 @@
-/*namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
     using System.Collections.Generic;
@@ -142,7 +142,7 @@
             var requestedcompanyId = 933466615;
 
             // Act
-            var result = _testClass.UpdateLeaveType(id, name, requestedcompanyId);
+        //    var result = _testClass.UpdateLeaveType(id, name, requestedcompanyId);
 
             // Assert
             throw new NotImplementedException("Create or modify test");
@@ -162,4 +162,4 @@
             throw new NotImplementedException("Create or modify test");
         }
     }
-}*/
+}

@@ -10,5 +10,6 @@
         public string? MobileNumber { get; set; }
         public string? Extension { get; set; }
         public string? gender { get; set; }
+        public IFormFile? imageUrl { get; set; }
     }
 }

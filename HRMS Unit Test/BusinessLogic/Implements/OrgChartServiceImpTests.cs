@@ -1,4 +1,4 @@
-/*namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
     using HRMS_Application.BusinessLogic.Implements;
@@ -30,10 +30,10 @@
         public void CanCallGetManagersWithEmployees()
         {
             // Act
-            var result = _testClass.GetManagersWithEmployees();
+         //   var result = _testClass.GetManagersWithEmployees();
 
             // Assert
             throw new NotImplementedException("Create or modify test");
         }
     }
-}*/
+}

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using HRMS_Application.Authorization;
 using HRMS_Application.DTO;
+using HRMS_Application.Enums;
+using OfficeOpenXml.Drawing;
+using Azure.Storage.Blobs.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRMS_Application.Controllers
 {
@@ -174,8 +178,8 @@ namespace HRMS_Application.Controllers
         {
             _logger.LogInformation("update leave status method started");
 
-            var status =await _leaveTracking.UpdateLeaveAsync(id,newStatus);
-            return Ok(status);
+            var res = _leaveTracking.UpdateLeaveAsync(id, newStatus);
+            return Ok(res);
         }
 
         [HttpDelete("{id}")]

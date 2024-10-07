@@ -1,6 +1,8 @@
 ﻿using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.DTO;
+using HRMS_Application.Helpers;
 using MailKit.Security;
+using Microsoft.VisualBasic;
 using MimeKit;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -13,20 +15,23 @@ namespace HRMS_Application.BusinessLogic.Implements
             string fromEmail = "wequantumberg@gmail.com";
             string password = "kwoipnisqnwmmbyh";
 
-            string FilePath = Directory.GetCurrentDirectory() + "\\SendMessageTemplate.html";
-            StreamReader str = new StreamReader(FilePath);
-            string MailText = str.ReadToEnd();
-            str.Close();
+            /*  string FilePath = Directory.GetCurrentDirectory() + "\\SendMessageTemplate.html";*/
 
-            MailText = MailText.Replace("[Name]", contact.Name).Replace("[Email]", contact.Email).Replace("[Phone]", contact.PhoneNumber).Replace("[Message]", contact.Message);
+            string emailTemplate = constants.ContactTemplate;
+
+            emailTemplate = emailTemplate.Replace("{{Name}}", contact.Name)
+                                         .Replace("{{Email}}", contact.Email)
+                                         .Replace("{{Phone}}", contact.PhoneNumber)
+                                         .Replace("{{Message}}", contact.Message);
+
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress("HRMS website", fromEmail));
             email.To.Add(MailboxAddress.Parse("srilakshmingr@gmail.com")); //admin@quantumberg.com
-/*            email.Bcc.Add(MailboxAddress.Parse("srilakshmingr@gmail.com"));*/
+            email.Bcc.Add(MailboxAddress.Parse("nitishmashal0@gmail.com"));
             email.Subject = "Email from Quantumberg Contact-us page";
 
             var builder = new BodyBuilder();
-            builder.HtmlBody = MailText;
+            builder.HtmlBody = emailTemplate;
             email.Body = builder.ToMessageBody();
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
 
