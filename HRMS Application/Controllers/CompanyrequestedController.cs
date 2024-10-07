@@ -50,11 +50,11 @@ namespace HRMS_Application.Controllers
         }
         [HttpPost]
         //[Authorize(new[] { "Admin" })]
-        public async Task<string> InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
+        public async Task<IActionResult> InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
         {
             _logger.LogInformation("Insert Employee Credential method started");
             var result = await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
-            return result;
+            return Ok(new { message = result });
 
         }
 
@@ -73,6 +73,11 @@ namespace HRMS_Application.Controllers
         [Route("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromBody] OtpEmail request)
         {
+            if (request == null || string.IsNullOrWhiteSpace(request.EmailAddress) || string.IsNullOrWhiteSpace(request.Otp))
+            {
+                return BadRequest("Invalid request data.");
+            }
+
             var companyForm = await _context.RequestedCompanyForms
                 .FirstOrDefaultAsync(c => c.Email == request.EmailAddress);
 
@@ -81,49 +86,45 @@ namespace HRMS_Application.Controllers
 
             if (companyForm == null)
             {
-                return NotFound("Company form not found.");
+                return NotFound(new { Status = "Error", Message = "Company form not found." });
+            }
+
+            if (employeeCredential == null)
+            {
+                return NotFound(new { Status = "Error", Message = "Employee credential not found." });
             }
 
             var storedOtp = employeeCredential.GenerateOtp.Trim().ToLower();
             var providedOtp = request.Otp.Trim().ToLower();
 
-            // Log the OTP values
-            Console.WriteLine($"Stored OTP: {storedOtp}");
-            Console.WriteLine($"Provided OTP: {providedOtp}");
+            // Log the OTP values using ILogger
+            _logger.LogInformation($"Stored OTP: {storedOtp}");
+            _logger.LogInformation($"Provided OTP: {providedOtp}");
 
             if (storedOtp != providedOtp)
             {
-                companyForm.Status = "Rejected";
-                _context.RequestedCompanyForms.Update(companyForm);
-                await _context.SaveChangesAsync();
-
-                return BadRequest("Invalid OTP.");
+                await UpdateCompanyFormStatus(companyForm, "Rejected");
+                return BadRequest(new { Status = "Error", Message = "Invalid OTP." });
             }
 
             if (employeeCredential.OtpExpiration < DateTime.UtcNow)
             {
-                companyForm.Status = "Expired";
-                _context.RequestedCompanyForms.Update(companyForm);
-                await _context.SaveChangesAsync();
-
-                return BadRequest("OTP has expired.");
-
+                await UpdateCompanyFormStatus(companyForm, "Expired");
+                return BadRequest(new { Status = "Error", Message = "OTP has expired." });
             }
-            companyForm.Status = "Verified";
+
+            await UpdateCompanyFormStatus(companyForm, "Verified");
+
+            // Optionally send a confirmation email or message here
+
+            return Ok(new { Status = "Success", Message = "Received your request. Admin will get back to you shortly." });
+        }
+
+        private async Task UpdateCompanyFormStatus(RequestedCompanyForm companyForm, string status)
+        {
+            companyForm.Status = status;
             _context.RequestedCompanyForms.Update(companyForm);
             await _context.SaveChangesAsync();
-
-            // Retrieve or generate the username and password
-            var employeeCredentials = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == request.EmailAddress);
-
-            if (employeeCredentials == null)
-            {
-                return NotFound("Employee credential not found.");
-            }
-
-
-            return Ok("Recieved your request Admin will get back to you shortly");
         }
 
 

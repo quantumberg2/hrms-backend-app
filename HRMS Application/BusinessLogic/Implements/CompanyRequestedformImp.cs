@@ -156,7 +156,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 await _context.RequestedCompanyForms.AddAsync(requestedcompanyform);
                 await _context.SaveChangesAsync(_decodedToken);
 
-                existingCompanyForm = requestedcompanyform; // Now it has a valid ID
+                existingCompanyForm = requestedcompanyform; 
             }
 
             if (existingEmployeeCredential != null)
