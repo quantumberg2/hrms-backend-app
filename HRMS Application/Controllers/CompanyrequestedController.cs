@@ -55,7 +55,7 @@ namespace HRMS_Application.Controllers
             try
             {
                 await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
-                return Ok(new { message = "Request submitted successfully." });
+                return Ok(new { message = "Otp sent to the Provided Email ID" });
             }
             catch (EmailAlreadyExistsException ex)
             {
