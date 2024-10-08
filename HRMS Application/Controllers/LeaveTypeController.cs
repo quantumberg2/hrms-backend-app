@@ -122,7 +122,7 @@ namespace HRMS_Application.Controllers
 
         [HttpPut("SoftDelete")]
         [Authorize(new[] { "Admin" })]
-
+           
         public bool SoftDelete(int id, short isActive)
         {
             _logger.LogInformation("Soft update leave type method started");
