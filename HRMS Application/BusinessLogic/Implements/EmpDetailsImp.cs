@@ -117,8 +117,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             await _hrmsContext.EmployeeCredentials.AddAsync(employeeCredential);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
-           
-            var Url = _azureOperations.StoreFilesInAzure(imageFile, "hrms-profile-pics");
+
+            string? imageUrl = null;
+            if (imageFile != null)
+            {
+                imageUrl = _azureOperations.StoreFilesInAzure(imageFile, "hrms-profile-pics");
+            }
 
 
             var employee = new EmployeeDetail
@@ -138,7 +142,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 Extension = extention,
                 MobileNumber = mobNumber,
                 NumberOfYearsExperience = experience,
-                ImageUrl = Url
+                ImageUrl = imageUrl
             };
 
 
