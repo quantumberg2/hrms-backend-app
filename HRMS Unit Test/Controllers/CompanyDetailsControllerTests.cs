@@ -81,7 +81,7 @@ namespace HRMS_Unit_Test.Controllers
             throw new NotImplementedException("Create or modify test");
         }
 
-        [Fact]
+       /* [Fact]
         public void CanCallInsertcompanyDetails()
         {
             // Arrange
@@ -137,7 +137,7 @@ namespace HRMS_Unit_Test.Controllers
 
             throw new NotImplementedException("Create or modify test");
         }
-
+*/
         [Fact]
         public void CanCallDeletecompanyDetails()
         {

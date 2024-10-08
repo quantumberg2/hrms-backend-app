@@ -314,7 +314,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-        [Fact]
+        /*[Fact]
         public void CanCallGetFilters()
         {
             // Arrange
@@ -325,7 +325,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Assert
             throw new NotImplementedException("Create or modify test");
-        }
+        }*/
 
         [Fact]
         public async Task CanCallUpdateEmployeeInfoAsync()

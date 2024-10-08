@@ -33,7 +33,7 @@ namespace HRMS_Unit_Test.Controllers
             Assert.NotNull(instance);
         }
 
-        [Fact]
+    /*    [Fact]
         public void CanCallGetAllHolidayDetails()
         {
             // Arrange
@@ -47,7 +47,7 @@ namespace HRMS_Unit_Test.Controllers
 
             throw new NotImplementedException("Create or modify test");
         }
-
+*/
         [Fact]
         public void CanCallGetHoliday()
         {

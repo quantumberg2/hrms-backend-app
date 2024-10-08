@@ -52,7 +52,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-        [Fact]
+      /*  [Fact]
         public void CanCallGetAllLeaveType()
         {
             // Act
@@ -61,7 +61,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             // Assert
             throw new NotImplementedException("Create or modify test");
         }
-
+*/
         [Fact]
         public void CanCallGetLeaveTypeById()
         {

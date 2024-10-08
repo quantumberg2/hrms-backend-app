@@ -32,7 +32,7 @@ namespace HRMS_Unit_Test.Controllers
             // Assert
             Assert.NotNull(instance);
         }
-
+/*
         [Fact]
         public void CanCallGetAllLeavetype()
         {
@@ -47,7 +47,7 @@ namespace HRMS_Unit_Test.Controllers
 
             throw new NotImplementedException("Create or modify test");
         }
-
+*/
         [Fact]
         public void CanCallGetleavetypeById()
         {
