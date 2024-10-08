@@ -10,6 +10,5 @@
         public string? Country { get; set; }
         public string? PinCode { get; set; }
         public short? IsActive { get; set; }
-        public short? isActive { get; internal set; }
     }
 }
