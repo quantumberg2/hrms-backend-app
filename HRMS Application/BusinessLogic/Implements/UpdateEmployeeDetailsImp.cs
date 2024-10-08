@@ -9,15 +9,17 @@ namespace HRMS_Application.BusinessLogic.Implements
     public class UpdateEmployeeDetailsImp : IUpdateEmployeeDetails
     {
         private readonly HRMSContext _hrmsContext;
+        private readonly IAzureOperations _azureOperations;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
         public List<string>? dToken;
         private int? _decodedToken;
         private readonly IEmailPassword _emailPasswordService;
 
-        public UpdateEmployeeDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IEmailPassword emailPasswordService)
+        public UpdateEmployeeDetailsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IEmailPassword emailPasswordService, IAzureOperations azureOperations)
         {
             _hrmsContext = hrmsContext;
+            _azureOperations = azureOperations;
             _httpContextAccessor = httpContextAccessor;
             _jwtUtils = jwtUtils;
             _emailPasswordService = emailPasswordService;
@@ -273,6 +275,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId && ep.IsActive == 1);
 
+            var Url = _azureOperations.StoreFilesInAzure(updateEmployeeInfo.imageUrl, "hrms-profile-pics");
+
             if (employeeDetail == null)
             {
                 employeeDetail = new EmployeeDetail
@@ -284,6 +288,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     MobileNumber = updateEmployeeInfo.MobileNumber,
                     Extension = updateEmployeeInfo.Extension,
                     IsActive = 1,
+                    ImageUrl = Url
                 };
                 await _hrmsContext.EmployeeDetails.AddAsync(employeeDetail);
             }
@@ -295,6 +300,11 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeDetail.Email = updateEmployeeInfo.EmailAddress ?? employeeDetail.Email;
                 employeeDetail.MobileNumber = updateEmployeeInfo.MobileNumber ?? employeeDetail.MobileNumber;
                 employeeDetail.Extension = updateEmployeeInfo.Extension ?? employeeDetail.Extension;
+
+                if (Url != null)
+                {
+                    employeeDetail.ImageUrl = Url;
+                }
 
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
             }
