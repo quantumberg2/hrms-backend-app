@@ -278,9 +278,9 @@ namespace HRMS_Application.BusinessLogic.Implements
             string existingImageUrl = employeeDetail?.ImageUrl;
 
             string Url = null;
-            if (imageUrl != null)
+            if (updateEmployeeInfo.imageUrl != null)
             {
-                Url = _azureOperations.StoreFilesInAzure(imageUrl, "hrms-profile-pics");
+                Url = _azureOperations.StoreFilesInAzure(updateEmployeeInfo.imageUrl, "hrms-profile-pics");
             }
 
             if (employeeDetail == null)
