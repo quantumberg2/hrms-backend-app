@@ -55,12 +55,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
-    
 
-        public List<Holiday> GetHoliday()
+
+        public List<Holiday> GetHoliday(int companyId)
         {
             var result = (from row in _context.Holidays
-                          where  row.IsActive == 1
+                          where row.IsActive == 1 && row.CompanyId == companyId 
                           select row).ToList();
             return result;
         }
@@ -80,7 +80,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
-                return "new Department inserted successfully";
+                return "new Holidays inserted successfully";
 
             }
             else

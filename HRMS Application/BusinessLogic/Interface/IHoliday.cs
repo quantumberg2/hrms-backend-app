@@ -4,7 +4,7 @@ namespace HRMS_Application.BusinessLogic.Interface
 {
     public interface IHoliday
     {
-        public List<Holiday> GetHoliday();
+        public List<Holiday> GetHoliday(int companyId);
         public Holiday GetHolidayById(int id);
       public Task<string> InsertHoliday(Holiday holiday);
         public Holiday UpdateHolidayType(int id, string? name, DateOnly? date, string? Occation, int? requestedCompanyId);

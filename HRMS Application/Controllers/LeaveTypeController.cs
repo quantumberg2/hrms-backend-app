@@ -3,6 +3,7 @@ using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -17,12 +18,45 @@ namespace HRMS_Application.Controllers
             _leavetype = leavetype;
             _logger = logger;
         }
+
         [HttpGet]
-        public List<LeaveType> GetAllLeavetype()
+        [Authorize(new[] { "Admin" })]
+        public ActionResult <List<LeaveType>> GetAllLeavetype()
         {
-            _logger.LogInformation("get all leavetypes details started");
-            var result = _leavetype.GetAllLeaveType();
-            return result;
+            try
+            {
+                _logger.LogInformation("get all leavetypes details started");
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to extract the CompanyId
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extract the CompanyId from the token
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                // Parse the CompanyId
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                var result = _leavetype.GetAllLeaveType(companyId);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the Leave Types details.");
+                return StatusCode(500, "An error occurred while fetching Leave Types data.");
+            }
         }
         [HttpGet("GetById")]
         public LeaveType GetleavetypeById(int id)
@@ -32,15 +66,52 @@ namespace HRMS_Application.Controllers
             return result;
         }
        
+       
         [HttpPost]
         [Authorize(new[] { "Admin" })]
-
-        public async Task<string> InsertLeavetypes([FromBody] LeaveType leaveType)
+        public async Task<IActionResult> InsertLeavetypes([FromBody] LeaveType leaveType)
         {
-            _logger.LogInformation("leavetypes details insert method started");
-            var result = await _leavetype.InsertLeaveType(leaveType);
-            return result;
+            try
+            {
+                _logger.LogInformation("InsertLeavetypes method started");
+
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                leaveType.CompanyId = companyId;
+
+                _logger.LogInformation("LeaveType details insert method started");
+
+                // Call the async InsertLeaveType method
+                var result = await _leavetype.InsertLeaveType(leaveType);
+
+                // Return success message
+                return Ok("LeaveType successfully inserted.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while inserting leave type details.");
+                return StatusCode(500, "An error occurred while inserting leave type details.");
+            }
         }
+
         [HttpDelete]
         public bool DeleteLeavetype(int id)
         {

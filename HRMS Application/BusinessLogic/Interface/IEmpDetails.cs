@@ -17,7 +17,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<EmpPersonalInfoDTO> GetEmployeePersonalInfoAsync(int employeeCredentialId);
         public Task<AddressInfoDTO> GetEmployeeAddressInfoAsync(int employeeCredentialId);
         public Task<AccountDetail> GetEmployeeAccountInfoAsync(int employeeCredentialId);
-        public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch);
+        public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch, int companyId);
         public Task<bool> UpdateEmployeeInfoAsync(int? empCredId, string? empName, string? nickName, string? emailAddress, string? empLoginName, string? extension, string? mobileNumber, string? gender, IFormFile? imageUrl);
         public Task<bool> UpdateEmployeepersonalInfoAsync(EmpPersonalInfoDTO empPersonalInfo);
         public Task<bool> UpdateEmployeeAddresslInfoAsync(AddressInfoDTO addressInfo);

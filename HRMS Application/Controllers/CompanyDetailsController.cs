@@ -3,6 +3,7 @@ using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -42,12 +43,52 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
-        public int InsertcompanyDetails([FromBody] CompanyDetail companyDetail)
+        public IActionResult InsertCompanyDetails([FromBody] CompanyDetail companyDetail)
         {
-            _logger.LogInformation("company details insert method started");
-            var result = _companyDetails.InsertCompanyDetails(companyDetail);
-            return result;
+            try
+            {
+                _logger.LogInformation("InsertCompanyDetails method started");
+
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                companyDetail.RequestedCompanyId = companyId;
+
+                var result = _companyDetails.InsertCompanyDetails(companyDetail);
+
+                if (result > 0)
+                {
+                    return Ok(new { Message = "Company details inserted successfully.", CompanyId = result });
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred while inserting company details.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while inserting company details.");
+                return StatusCode(500, "An error occurred while inserting company details.");
+            }
         }
+
         [HttpDelete]
         public bool DeletecompanyDetails(int id)
         {

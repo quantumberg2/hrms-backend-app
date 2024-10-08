@@ -36,7 +36,6 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Authorization token is missing or invalid.");
                 }
 
-                // Decode the JWT token to get the company ID
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(token);
 
@@ -46,7 +45,6 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Company ID not found in token.");
                 }
 
-                // Parse the company ID from the claim
                 if (!int.TryParse(companyIdClaim.Value, out int companyId))
                 {
                     return BadRequest("Invalid Company ID in token.");
@@ -74,14 +72,12 @@ namespace HRMS_Application.Controllers
 
             try
             {
-                // Extract the JWT token from the Authorization header
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
                 if (string.IsNullOrEmpty(token))
                 {
                     return Unauthorized("Authorization token is missing or invalid.");
                 }
 
-                // Decode the JWT token to get the RequestedCompanyId
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(token);
 
@@ -91,13 +87,11 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Company ID not found in token.");
                 }
 
-                // Parse the company ID from the claim
                 if (!int.TryParse(companyIdClaim.Value, out int requestedCompanyId))
                 {
                     return BadRequest("Invalid Company ID in token.");
                 }
 
-                // Set the RequestedCompanyId in the Position object
                 position.RequestedCompanyId = requestedCompanyId;
                 position.IsActive = 1;
 

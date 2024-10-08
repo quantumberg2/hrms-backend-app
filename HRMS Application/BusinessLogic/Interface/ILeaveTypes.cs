@@ -4,7 +4,7 @@ namespace HRMS_Application.BusinessLogic.Interface
 {
     public interface ILeaveTypes
     {
-        public List<LeaveType> GetAllLeaveType();
+        public List<LeaveType> GetAllLeaveType(int companyId);
         public LeaveType GetLeaveTypeById(int id);
         public LeaveType GetLeaveTypeByType(string Type);
         public Task<string> InsertLeaveType(LeaveType leaveType);

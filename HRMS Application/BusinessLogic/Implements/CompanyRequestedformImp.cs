@@ -129,13 +129,16 @@ namespace HRMS_Application.BusinessLogic.Implements
                 .FirstOrDefaultAsync(c => c.Email == requestedcompanyform.Email);
 
             var existingEmployeeCredential = await _context.EmployeeCredentials
-                .FirstOrDefaultAsync(e => e.Email == requestedcompanyform.Email);
+                .FirstOrDefaultAsync(e => e.Email == requestedcompanyform.Email );
+            var existingEmployeedetail = await _context.EmployeeDetails
+               .FirstOrDefaultAsync(e => e.Email == requestedcompanyform.Email);
 
             if (existingRequestedCompanyForm != null && existingRequestedCompanyForm.Status == "Verified"
-                 && existingEmployeeCredential != null)
+                 && existingEmployeeCredential != null && existingEmployeedetail != null)
             {
                 throw new EmailAlreadyExistsException(
-                    $"This email {requestedcompanyform.Email} is already registered with company '{existingRequestedCompanyForm.Name}' and has been verified."
+                    $"This email {requestedcompanyform.Email} is already registered with Us"
+                //'{existingRequestedCompanyForm.Name}' and has been verified.
                 );
             }
 
@@ -185,6 +188,25 @@ namespace HRMS_Application.BusinessLogic.Implements
                 };
 
                 await _context.EmployeeCredentials.AddAsync(newEmployeeCredential);
+            }
+            if (existingEmployeedetail != null) 
+            { 
+                existingEmployeedetail.Email = requestedcompanyform.Email;
+                existingEmployeedetail.EmployeeCredentialId = existingEmployeeCredential.Id;
+                existingEmployeedetail.RequestCompanyId = existingCompanyForm.Id;
+
+            }
+            else
+            {
+                var newEmployeeDetail = new EmployeeDetail
+                {
+                    Email = requestedcompanyform.Email,
+                    EmployeeCredentialId = existingCompanyForm.Id,
+                    RequestCompanyId = existingCompanyForm.Id,
+                    IsActive = 1,
+
+                };
+                await _context.EmployeeDetails.AddAsync(newEmployeeDetail);
             }
 
             var result = await _context.SaveChangesAsync(_decodedToken);

@@ -56,10 +56,10 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
-        public List<LeaveType> GetAllLeaveType()
+        public List<LeaveType> GetAllLeaveType(int companyId)
         {
             var result = (from row in _context.LeaveTypes
-                          where row.IsActive == 1
+                          where row.IsActive == 1 && row.CompanyId == companyId
                           select row).ToList();
             return result;
         }

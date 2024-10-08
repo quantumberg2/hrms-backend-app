@@ -368,21 +368,28 @@ namespace HRMS_Application.BusinessLogic.Implements
                 IfscCode = accountDetail.IfscCode
             };
         }
-        public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch)
+        public List<EmployeeDetail> GetFilters(GlobalsearchEmp globalSearch, int companyId)
         {
-            List<EmployeeDetail> mm = new List<EmployeeDetail>();
+            List<EmployeeDetail> filteredEmployees = new List<EmployeeDetail>();
             var filterby = globalSearch.FilterBy.Trim().ToLowerInvariant();
             if (!string.IsNullOrEmpty(filterby))
             {
-                var query = _hrmsContext.EmployeeDetails.Where(f => f.FirstName.ToLower().Contains(filterby)
-                || f.LastName.ToLower().Contains(filterby)
-                || f.MiddleName.ToLower().Contains(filterby)
-                || f.Email.ToLower().Contains(filterby)
-                ||f.EmployeeNumber.ToLower().Contains(filterby)
-                ||f.EmployeeCredentialId.ToString().Contains(filterby));
-                mm = query.ToList();
+                var query = (from ed in _hrmsContext.EmployeeDetails
+                             join ec in _hrmsContext.EmployeeCredentials
+                             on ed.EmployeeCredentialId equals ec.Id 
+                             where ec.RequestedCompanyId == companyId 
+                             && (ed.FirstName.ToLower().Contains(filterby)
+                             || ed.LastName.ToLower().Contains(filterby)
+                             || ed.MiddleName.ToLower().Contains(filterby)
+                             || ed.Email.ToLower().Contains(filterby)
+                             || ed.EmployeeNumber.ToLower().Contains(filterby)
+                             || ed.EmployeeCredentialId.ToString().Contains(filterby))
+                             select ed).ToList();
+
+                filteredEmployees = query;
+                ;
             }
-            return mm;
+            return filteredEmployees;
         }
         public async Task<bool> UpdateEmployeeInfoAsync(int? empCredId, string? empName, string? nickName, string? emailAddress, string? empLoginName, string? extension, string? mobileNumber, string? gender, IFormFile? imageUrl)
         {

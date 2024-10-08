@@ -177,9 +177,41 @@ namespace HRMS_Application.Controllers
 
         public IActionResult Get([FromQuery] GlobalsearchEmp globalsearch)
         {
-            var model = _Empdetails.GetFilters(globalsearch);
+            try
+            {
+                // Retrieve the Authorization token
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
 
-            return Ok(model);
+                // Decode the JWT token to get the company ID
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extract the CompanyId from the token
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                // Parse the company ID
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                var model = _Empdetails.GetFilters(globalsearch,companyId);
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving all employees.");
+                return StatusCode(500, "An error occurred while fetching employee data.");
+            }
         }
 
         [HttpPut("updatedetails")]
