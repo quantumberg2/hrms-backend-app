@@ -262,7 +262,7 @@ namespace HRMS_Application.Controllers
         [HttpGet("summary")]
         [Authorize(new[] { "Admin", "User" })]
 
-        public async Task<IActionResult> GetLeaveSummary(int year)
+        public async Task<IActionResult> GetLeaveSummary()
         {
             _logger.LogInformation("Get leave summary method started");
 
@@ -274,7 +274,7 @@ namespace HRMS_Application.Controllers
                 var employeeCredentialId = int.Parse(jwtToken.Claims.First(c => c.Type == "UserId").Value); // Replace 'employee_id' with the actual claim name
 
 
-                var leaveSummary = await _leaveTracking.GetEmployeeLeaveSummaryAsync(employeeCredentialId,year);
+                var leaveSummary = await _leaveTracking.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
 
                 return Ok(leaveSummary);
             }
