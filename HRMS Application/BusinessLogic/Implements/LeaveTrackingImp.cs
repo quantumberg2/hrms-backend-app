@@ -361,7 +361,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
 
 
-        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId, int year)
+        public async Task<LeaveSummaryDTO> GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
         {
             var allLeaveDetails = await _hrmsContext.LeaveTrackings
                 .Where(l => l.EmpCredentialId == employeeCredentialId)
@@ -371,62 +371,41 @@ namespace HRMS_Application.BusinessLogic.Implements
             var totalPendingCount = allLeaveDetails.Count(l => l.Status == "Pending");
             var totalRejectedCount = allLeaveDetails.Count(l => l.Status == "Rejected");
 
-            // Retrieve all leave types
-            var allLeaveTypes = await _hrmsContext.LeaveTypes.ToListAsync();
 
-            // Retrieve leave allocations for the employee
             var leaveAllocations = await _hrmsContext.EmployeeLeaveAllocations
-                .Where(e => e.EmpCredentialId == employeeCredentialId && e.Year == year)
+                .Where(e => e.EmpCredentialId == employeeCredentialId)
                 .ToListAsync();
 
-            // Create a dictionary for fast lookup of allocations by leave type
-            var allocationsDictionary = leaveAllocations.ToDictionary(
-                allocation => allocation.LeaveType,
-                allocation => allocation);
 
-            // Generate leave summaries for all leave types
-            var leaveSummaries = allLeaveTypes.Select(leaveType =>
+            var leaveSummaries = leaveAllocations.Select(allocation => new LeaveSummaryDTO
             {
-                // Check if there is an allocation for this leave type
-                var allocation = allocationsDictionary.ContainsKey(leaveType.Id)
-                                 ? allocationsDictionary[leaveType.Id]
-                                 : null;
-
-                // Calculate the leave days for each status (Approved, Pending, Rejected)
-                var approvedLeaves = allLeaveDetails
-                    .Where(l => l.LeaveTypeId == leaveType.Id && l.Status == "Approved")
+                LeaveType = _hrmsContext.LeaveTypes.FirstOrDefault(lt => lt.Id == allocation.LeaveType)?.Type ?? "Unknown",
+                TotalAllocatedLeaves = allocation.NumberOfLeaves ?? 0,
+                ApprovedLeaves = allLeaveDetails
+                    .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Approved")
                     .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
                             ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
-                            : 0);
-
-                var pendingLeaves = allLeaveDetails
-                    .Where(l => l.LeaveTypeId == leaveType.Id && l.Status == "Pending")
+                            : 0),
+                PendingLeaves = allLeaveDetails
+                    .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Pending")
                     .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
                             ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
-                            : 0);
-
-                var rejectedLeaves = allLeaveDetails
-                    .Where(l => l.LeaveTypeId == leaveType.Id && l.Status == "Rejected")
+                            : 0),
+                RejectedLeaves = allLeaveDetails
+                    .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Rejected")
                     .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
                             ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
-                            : 0);
-
-                // Remaining leaves = Allocated - Approved
-                var totalAllocatedLeaves = allocation?.NumberOfLeaves ?? 0;
-                var remainingLeaves = totalAllocatedLeaves - approvedLeaves;
-
-                return new LeaveSummaryDTO
-                {
-                    LeaveType = leaveType.Type ?? "Unknown",
-                    TotalAllocatedLeaves = totalAllocatedLeaves,
-                    ApprovedLeaves = approvedLeaves,
-                    PendingLeaves = pendingLeaves,
-                    RejectedLeaves = rejectedLeaves,
-                    RemainingLeaves = remainingLeaves,
-                    ApprovedCount = totalApprovedCount,
-                    PendingCount = totalPendingCount,
-                    RejectedCount = totalRejectedCount
-                };
+                            : 0),
+                RemainingLeaves = allocation.NumberOfLeaves.HasValue
+                    ? allocation.NumberOfLeaves.Value - allLeaveDetails
+                        .Where(l => l.LeaveTypeId == allocation.LeaveType && l.Status == "Approved")
+                        .Sum(l => (l.Enddate.HasValue && l.Startdate.HasValue)
+                                ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                                : 0)
+                    : 0,
+                ApprovedCount = totalApprovedCount,
+                PendingCount = totalPendingCount,
+                RejectedCount = totalRejectedCount
             }).ToList();
 
             // Calculate the aggregated totals for all leave types
