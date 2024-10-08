@@ -215,6 +215,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("updatedetails")]
+        [Authorize(new[] { "Admin" })]
         public async Task<IActionResult> UpdateEmployeeInfo(int? empCredId, string? empName, string? nickName, string? emailAddress, string? empLoginName, string? extension, string? mobileNumber, string? gender, IFormFile? imageUrl)
         {
             if (!ModelState.IsValid)
