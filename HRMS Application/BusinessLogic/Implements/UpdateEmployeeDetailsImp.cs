@@ -300,11 +300,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeDetail.Email = updateEmployeeInfo.EmailAddress ?? employeeDetail.Email;
                 employeeDetail.MobileNumber = updateEmployeeInfo.MobileNumber ?? employeeDetail.MobileNumber;
                 employeeDetail.Extension = updateEmployeeInfo.Extension ?? employeeDetail.Extension;
-
-                if (Url != null)
-                {
-                    employeeDetail.ImageUrl = Url;
-                }
+                employeeDetail.ImageUrl = Url ?? employeeDetail.ImageUrl;
 
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
             }

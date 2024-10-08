@@ -407,7 +407,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == empCredId);
 
-            var Url = _azureOperations.StoreFilesInAzure(imageUrl, "hrms-profile-pics");
+             string  Url = _azureOperations.StoreFilesInAzure(imageUrl, "hrms-profile-pics");
+          
 
             // If employee, credential, or personal info doesn't exist, create new ones
             if (employeeDetail == null)
@@ -433,11 +434,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeDetail.Email = emailAddress ?? employeeDetail.Email;
                 employeeDetail.MobileNumber = mobileNumber ?? employeeDetail.MobileNumber;
                 employeeDetail.Extension = extension ?? employeeDetail.Extension;
+                employeeDetail.ImageUrl = Url ?? employeeDetail.ImageUrl;
                 
-                if(Url!=null)
-                {
-                    employeeDetail.ImageUrl = Url;
-                }
 
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
             }
