@@ -24,11 +24,45 @@ namespace HRMS_Application.Controllers
         }
         [HttpGet]
         [Authorize(new[] { "Admin" })]
-        public List<Position> GetAllPositions()
+        public IActionResult GetAllPositions()
         {
-            _logger.LogInformation("Getall positions method started");
-            var dept = _position.GetPositions();
-            return dept;
+            try
+            {
+                _logger.LogInformation("GetAllPositions method started");
+
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to get the company ID
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                // Parse the company ID from the claim
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                var positions = _position.GetPositions()
+                                         .Where(p => p.RequestedCompanyId == companyId) 
+                                         .ToList();
+
+                return Ok(positions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching the positions.");
+                return StatusCode(500, "An error occurred while fetching the positions.");
+            }
         }
 
         [HttpPost("insertEmployees")]

@@ -2,6 +2,7 @@
 using HRMS_Application.DTO;
 using HRMS_Application.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.Globalization;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -15,7 +16,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             _hrmsContext = hrmsContext ?? throw new ArgumentNullException(nameof(hrmsContext));
         }
 
-        public async Task<AdminDashboardDTO> GetAdminDashboardAsync()
+        public async Task<AdminDashboardDTO> GetAdminDashboardAsync(int comapnyId)
         {
             try
             {
@@ -25,26 +26,43 @@ namespace HRMS_Application.BusinessLogic.Implements
 
                 // Total employees (active employees)
                 var totalEmployees = await _hrmsContext.EmployeeDetails
-                    .CountAsync(e => e.IsActive == 1);
+                    .CountAsync(e => e.IsActive == 1 && e.RequestCompanyId == comapnyId);
 
-                // New employees (who joined in the last year)
+                // New employees (who joined in the last year) for the specific company
                 var newEmployees = await _hrmsContext.EmpPersonalInfos
-                    .CountAsync(e => e.DateOfJoining.HasValue && e.DateOfJoining.Value >= startOfYear && e.DateOfJoining.Value <= endOfYear);
+                    .Join(_hrmsContext.EmployeeCredentials,
+                        empInfo => empInfo.EmployeeCredentialId,
+                        cred => cred.Id,
+                        (empInfo, cred) => new { empInfo, cred }) // Joining EmpPersonalInfos with EmployeeCredentials
+                    .Where(e => e.cred.RequestedCompanyId == comapnyId &&
+                                e.empInfo.DateOfJoining.HasValue &&
+                                e.empInfo.DateOfJoining.Value >= startOfYear &&
+                                e.empInfo.DateOfJoining.Value <= endOfYear)
+                    .CountAsync();
 
+                // Employees joined month-wise for the specific company
                 var employeesJoinedMonthWise = await _hrmsContext.EmpPersonalInfos
-      .Where(e => e.DateOfJoining.HasValue && e.DateOfJoining.Value >= startOfYear && e.DateOfJoining.Value <= endOfYear)
-      .GroupBy(e => new { e.DateOfJoining.Value.Year, e.DateOfJoining.Value.Month })
-      .Select(g => new MonthlyCountDTO
-      {
-          Year = g.Key.Year,
-          Month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(g.Key.Month), // Get abbreviated month name
-          JoinedCount = g.Count()
-      })
-      .ToListAsync();
+                    .Join(_hrmsContext.EmployeeCredentials,
+                        empInfo => empInfo.EmployeeCredentialId,
+                        cred => cred.Id,
+                        (empInfo, cred) => new { empInfo, cred }) // Joining EmpPersonalInfos with EmployeeCredentials
+                    .Where(e => e.cred.RequestedCompanyId == comapnyId &&
+                                e.empInfo.DateOfJoining.HasValue &&
+                                e.empInfo.DateOfJoining.Value >= startOfYear &&
+                                e.empInfo.DateOfJoining.Value <= endOfYear)
+                    .GroupBy(e => new { e.empInfo.DateOfJoining.Value.Year, e.empInfo.DateOfJoining.Value.Month })
+                    .Select(g => new MonthlyCountDTO
+                    {
+                        Year = g.Key.Year,
+                        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(g.Key.Month), // Get abbreviated month name
+                        JoinedCount = g.Count()
+                    })
+                    .ToListAsync();
+
 
                 // Employees resigned in the specified range, grouped by month and year
                 var employeesResignedMonthWise = await _hrmsContext.EmployeeCredentials
-     .Where(e => e.IsActive == 0 && e.ResignedDate.HasValue && e.ResignedDate.Value >= startOfYear && e.ResignedDate.Value <= endOfYear)
+     .Where(e => e.IsActive == 0 && e.ResignedDate.HasValue && e.ResignedDate.Value >= startOfYear && e.ResignedDate.Value <= endOfYear && e.RequestedCompanyId == comapnyId)
      .GroupBy(e => new { e.ResignedDate.Value.Year, e.ResignedDate.Value.Month })
      .Select(g => new MonthlyCountDTO
      {
@@ -56,7 +74,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var experienceCounts = await (from e in _hrmsContext.EmployeeDetails
                                               join p in _hrmsContext.EmpPersonalInfos
                                               on e.EmployeeCredentialId equals p.EmployeeCredentialId
-                                              where e.IsActive == 1 && !string.IsNullOrEmpty(e.NumberOfYearsExperience)
+                                              where e.IsActive == 1 && e.RequestCompanyId == comapnyId &&  !string.IsNullOrEmpty(e.NumberOfYearsExperience)
                                               select new
                                               {
                                                   EmployeeDetail = e,
