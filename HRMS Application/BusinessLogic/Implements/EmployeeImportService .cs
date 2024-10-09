@@ -71,7 +71,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Email = email,
                     DeptId = deptId,
                     PositionId = positionId,
-                    Designation = designation
+                    Designation = designation,
+                    isActive = 1,
                 };
                 employees.Add(employee);
             }
@@ -113,7 +114,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     EmployeeNumber = employeeDto.EmployeeNumber,
                     PositionId = employeeDto.PositionId,
                     RequestCompanyId = companyId ,
-                    NumberOfYearsExperience = employeeDto.YearsExperience
+                    NumberOfYearsExperience = employeeDto.YearsExperience,
+                    IsActive = 1,
                 };
 
                 _context.EmployeeDetails.Add(employeeDetail);
