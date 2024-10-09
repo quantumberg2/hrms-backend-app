@@ -97,6 +97,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Password = GeneratePassword(),
                     DefaultPassword = true,
                     RequestedCompanyId = companyId,
+                    IsActive = 1
                     
                 };
 
