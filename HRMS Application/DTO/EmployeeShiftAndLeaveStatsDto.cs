@@ -13,7 +13,6 @@ namespace HRMS_Application.DTO
         public int? MonthlyPresentDays { get; internal set; }
         public int? TotalWorkingDays { get; internal set; }
         public double? AttendancePercentage { get; set; }  // New property added for attendance percentage
-        public string? ImageURl {  get; set; }
         /* public List<AttendanceDTO> AttendanceDetails { get; set; } */
 
     }
