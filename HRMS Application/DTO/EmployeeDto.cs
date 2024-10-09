@@ -10,5 +10,8 @@
         public string LastName { get; set; }
         public int? DeptId { get; set; }
         public int? PositionId { get; set; }
+        public string? YearsExperience { get; set; }
+
+
     }
 }

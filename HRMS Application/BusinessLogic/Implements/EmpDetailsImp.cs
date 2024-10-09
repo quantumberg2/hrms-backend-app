@@ -308,7 +308,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 State = employeeAddress.State,
                 Country = employeeAddress.Country,
                 PinCode = employeeAddress.PinCode,
-                isActive = employeeAddress.IsActive
+                IsActive = employeeAddress.IsActive
             };
         }
         public async Task<AccountDetail> GetEmployeeAccountInfoAsync(int employeeCredentialId)
