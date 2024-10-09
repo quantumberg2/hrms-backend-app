@@ -84,7 +84,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
                 if (existingEmail != null)
                 {
-                    errors.Add($"Email '{employeeDto.Email}' is already in use for company ID '{companyId}'.");
+                    errors.Add($"Email '{employeeDto.Email}' is already in Created.");
                     rejectedCount++;
                     continue; // Skip this record
                 }
@@ -95,7 +95,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Email = employeeDto.Email,
                     Password = GeneratePassword(),
                     DefaultPassword = true,
-                    RequestedCompanyId = companyId
+                    RequestedCompanyId = companyId,
+                    
                 };
 
                 await _context.EmployeeCredentials.AddAsync(employeeCredential);
@@ -111,7 +112,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Email = employeeDto.Email,
                     EmployeeNumber = employeeDto.EmployeeNumber,
                     PositionId = employeeDto.PositionId,
-                    RequestCompanyId = companyId 
+                    RequestCompanyId = companyId ,
+                    NumberOfYearsExperience = employeeDto.YearsExperience
                 };
 
                 _context.EmployeeDetails.Add(employeeDetail);

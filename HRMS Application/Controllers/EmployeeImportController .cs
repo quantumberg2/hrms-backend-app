@@ -27,23 +27,56 @@ namespace HRMS_Application.Controllers
                 return BadRequest("No file uploaded.");
             }
 
-            // Extract companyId from the token
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "");
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var companyId = int.Parse(jwtToken.Claims.First(claim => claim.Type == "CompanyId").Value);
+            // Extract the Authorization header and remove "Bearer " prefix
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
-            using (var stream = file.OpenReadStream())
+            if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {
-                var result = await _employeeImportService.ImportEmployeesFromExcelAsync(stream, companyId);
-                return Ok(new
+                return BadRequest("Authorization header is missing or improperly formatted.");
+            }
+
+            var token = authorizationHeader.Replace("Bearer ", "").Trim();
+
+            try
+            {
+                // Read and validate the token
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extract companyId from the token claims
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+
+                if (companyIdClaim == null)
                 {
-                    Message = "File imported successfully.",
-                    Inserted = result.Inserted,
-                    Rejected = result.Rejected,
-                    Errors = result.Errors
-                });
+                    return BadRequest("CompanyId not found in token.");
+                }
+
+                var companyId = int.Parse(companyIdClaim.Value);
+
+                // Proceed with file processing
+                using (var stream = file.OpenReadStream())
+                {
+                    var result = await _employeeImportService.ImportEmployeesFromExcelAsync(stream, companyId);
+                    return Ok(new
+                    {
+                        Message = "File imported successfully.",
+                        Inserted = result.Inserted,
+                        Rejected = result.Rejected,
+                        Errors = result.Errors
+                    });
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                // Handle invalid JWT token format
+                return BadRequest($"Invalid token format: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // General error handling
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
+
     }
 }
