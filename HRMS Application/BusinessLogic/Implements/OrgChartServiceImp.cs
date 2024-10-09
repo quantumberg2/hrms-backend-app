@@ -56,7 +56,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 FullName = $"{employee.FirstName} {employee.LastName}",
                 PositionName = positionName,
                 Email = employee.Email,
-                ImageURl = employee.ImageUrl,
                 Subordinates = new List<OrgChartNode>() 
             };
 
