@@ -35,17 +35,13 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeLookup[employee.EmployeeCredentialId.Value] = employee;
             }
             var positionLookup = positions.ToDictionary(p => p.Id, p => p.Name);
-
-
             var ceo = employeeLookup.Values.FirstOrDefault(emp => emp.ManagerId == 0);
             if (ceo == null)
             {
-                throw new Exception("No CEO found with ManagerId = 0");
+              throw new Exception("No CEO found with ManagerId = 0");
             }
-
             return BuildNode(ceo, employeeLookup, positionLookup);
         }
-
         private OrgChartNode BuildNode( EmployeeDetail employee, Dictionary<int, EmployeeDetail> employeeLookup, Dictionary<int, string> positionLookup)
         {
             var positionName = employee.PositionId.HasValue && positionLookup.ContainsKey(employee.PositionId.Value)
