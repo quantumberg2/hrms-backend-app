@@ -24,8 +24,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetail accountDetail);
         public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId);
         public MonthlyAttendanceStatistics GetMonthlyStatistics(int employeeCredentialId, DateTime month);
-
-
+        public Task<string> UpdateImageUrl(int empcredId, IFormFile file);
 
 
 

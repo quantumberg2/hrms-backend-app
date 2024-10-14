@@ -909,7 +909,25 @@ namespace HRMS_Application.BusinessLogic.Implements
             return daysInMonth - weekends - holidayCount; 
         }
 
+        public async Task<string> UpdateImageUrl(int empcredId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return "File is empty";
 
+            var employee = await _hrmsContext.EmployeeDetails.FirstOrDefaultAsync(e => e.EmployeeCredentialId == empcredId);
+            if (employee == null)
+            {
+                return "Employee not found";
+            }
+
+            var imageUrl = _azureOperations.StoreFilesInAzure(file, "hrms-profile-pics");
+
+            employee.ImageUrl = imageUrl;
+            _hrmsContext.EmployeeDetails.Update(employee);
+            _hrmsContext.SaveChangesAsync();
+
+            return "File Updated successfully";
+        }
     }
 
 }
