@@ -1,5 +1,6 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +44,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
-        public IActionResult InsertCompanyDetails([FromBody] CompanyDetail companyDetail)
+        public IActionResult InsertCompanyDetails([FromForm] CompanyDetailsDTO companyDetail)
         {
             try
             {
@@ -66,14 +67,14 @@ namespace HRMS_Application.Controllers
 
                 if (!int.TryParse(companyIdClaim.Value, out int companyId))
                 {
-                    return BadRequest("Invalid Company ID in token.");
+                      return BadRequest("Invalid Company ID in token.");
                 }
 
                 companyDetail.RequestedCompanyId = companyId;
 
                 var result = _companyDetails.InsertCompanyDetails(companyDetail);
 
-                if (result > 0)
+                if (result !=null)
                 {
                     return Ok(new { Message = "Company details inserted successfully.", CompanyId = result });
                 }
