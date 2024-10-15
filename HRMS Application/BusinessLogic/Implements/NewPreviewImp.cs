@@ -33,6 +33,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 Description = news.Desciption,
                 InsertedDate = news.InsertedDate,
+                DisplayDate = news.DisplayDate,
                 Heading = news.Heading,
                 ImgUrl = url,
                 IsActive = 1              
