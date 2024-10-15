@@ -49,28 +49,34 @@ namespace HRMS_Application.Controllers
             return result;
         }
         [HttpPost]
-        public IActionResult InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
+        public async Task<IActionResult> PostRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
         {
+            if (requestedCompanyForm == null)
+            {
+                return BadRequest("Requested company form cannot be null.");
+            }
+
             try
             {
-                // Call the synchronous version of InsertRequestedCompanyForm
-                _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
-                return Ok(new { message = "Otp sent to the Provided Email ID" });
+                // Call the service to handle the business logic
+                string result = await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
+
+                if (result == "OTP sent to the provided email address.")
+                {
+                    return Ok(new { Message = result });
+                }
+
+                return BadRequest(new { Message = result });
             }
-            catch (EmailAlreadyExistsException ex)
+            catch (DatabaseOperationException ex)
             {
-                // Log the specific email conflict exception
-                Console.WriteLine($"Email conflict error: {ex.Message}");
-                return Conflict(new { status = "Error", message = ex.Message });
+                // Return an internal server error with a specific error message
+                return StatusCode(500, new { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                // Log the full exception details to help debug the issue
-                Console.WriteLine($"An internal server error occurred: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);  // Log stack trace to see where the error is coming from
-
-                // Return a generic 500 Internal Server Error status
-                return StatusCode(500, new { status = "Error", message = "An internal server error occurred." });
+                // Catch any other exceptions and return a generic error message
+                return StatusCode(500, new { Message = "An unexpected error occurred.", Details = ex.Message });
             }
         }
 
@@ -133,6 +139,15 @@ namespace HRMS_Application.Controllers
             await UpdateCompanyFormStatus(companyForm, "Verified");
 
             // Optionally send a confirmation email or message here
+            var userRole = new UserRolesJ
+            {
+                EmployeeCredentialId = employeeCredential.Id,
+                RolesId = 1,
+                IsActive = 1 
+            };
+
+            _context.UserRolesJs.Add(userRole);
+            await _context.SaveChangesAsync();
 
             return Ok(new { Status = "Success", Message = "Received your request. Admin will get back to you shortly." });
         }

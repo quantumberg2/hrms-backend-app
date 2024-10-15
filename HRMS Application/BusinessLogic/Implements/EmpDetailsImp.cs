@@ -928,6 +928,27 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return "File Updated successfully";
         }
+
+        public UserDetailsDTO GetUserDetails(int empcredId)
+        {
+            var employeeDetail = _hrmsContext.EmployeeDetails
+               .FirstOrDefault(e => e.EmployeeCredentialId == empcredId);
+
+            if (employeeDetail == null)
+            {
+                throw new Exception("Employee not found.");
+            }
+            var result = new UserDetailsDTO
+            {
+               
+                Name = $"{employeeDetail.FirstName} {employeeDetail.LastName}",
+                Email = employeeDetail.Email,
+                ImageUrl = employeeDetail.ImageUrl
+
+            };
+
+            return result;
+        }
     }
 
 }
