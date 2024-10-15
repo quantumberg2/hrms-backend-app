@@ -559,7 +559,7 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Employee_Detail");
 
-                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D66359828EE0F21")
+                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D663598FDDAE6F4")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("ID");
@@ -787,7 +787,7 @@ namespace HRMS_Application.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.ImgUrl)
-                    .HasMaxLength(1)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");

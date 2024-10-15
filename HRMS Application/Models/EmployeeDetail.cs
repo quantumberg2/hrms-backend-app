@@ -24,6 +24,7 @@ namespace HRMS_Application.Models
         public string MobileNumber { get; set; }
         public string NumberOfYearsExperience { get; set; }
         public string ImageUrl { get; set; }
+
         public virtual Department Dept { get; set; }
         public virtual EmployeeCredential EmployeeCredential { get; set; }
         public virtual Position Position { get; set; }

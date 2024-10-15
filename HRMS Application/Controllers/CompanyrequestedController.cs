@@ -49,22 +49,27 @@ namespace HRMS_Application.Controllers
             return result;
         }
         [HttpPost]
-        //[Authorize(new[] { "Admin" })]
-        public async Task<IActionResult> InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
+        public IActionResult InsertRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
         {
             try
             {
-                await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
+                // Call the synchronous version of InsertRequestedCompanyForm
+                _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
                 return Ok(new { message = "Otp sent to the Provided Email ID" });
             }
             catch (EmailAlreadyExistsException ex)
             {
-                // Return a 409 Conflict status with the error message
+                // Log the specific email conflict exception
+                Console.WriteLine($"Email conflict error: {ex.Message}");
                 return Conflict(new { status = "Error", message = ex.Message });
             }
             catch (Exception ex)
             {
-                // Return a 500 Internal Server Error status for any other exceptions
+                // Log the full exception details to help debug the issue
+                Console.WriteLine($"An internal server error occurred: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);  // Log stack trace to see where the error is coming from
+
+                // Return a generic 500 Internal Server Error status
                 return StatusCode(500, new { status = "Error", message = "An internal server error occurred." });
             }
         }

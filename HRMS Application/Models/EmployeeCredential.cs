@@ -28,7 +28,7 @@ namespace HRMS_Application.Models
         public int? RequestedCompanyId { get; set; }
         public string Email { get; set; }
         public bool? DefaultPassword { get; set; }
-        public string? GenerateOtp { get; set; }
+        public string GenerateOtp { get; set; }
         public DateTime? OtpExpiration { get; set; }
         public short? IsActive { get; set; }
         public string EmployeeLoginName { get; set; }
