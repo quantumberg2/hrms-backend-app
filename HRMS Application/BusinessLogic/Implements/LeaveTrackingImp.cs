@@ -199,6 +199,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                         parameters["Subject"] = "Your Leave Request has been Rejected";
                         bodyMessage = "Unfortunately, your leave request has been rejected. Please contact HR for more details.";
                         break;
+                    case "withdraw":
+                        parameters["Subject"] = "Your Leave Request has been Withdrawn";
+                        bodyMessage = "You have successfully withdrawn your leave request. If you have any concerns, feel free to contact HR.";
+                        break;
                     default:
                         throw new Exception("Invalid status for email notification.");
                 }
@@ -212,6 +216,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
                 await _alertEmail.SendEmailAsync(emailTemplate, parameters);
 
+               
+
+                _hrmsContext.LeaveTrackings.Update(leaveTracking);
                 await _hrmsContext.SaveChangesAsync();
             }
 
