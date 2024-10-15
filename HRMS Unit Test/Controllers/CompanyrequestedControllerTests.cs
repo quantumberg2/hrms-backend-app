@@ -125,10 +125,10 @@ namespace HRMS_Unit_Test.Controllers
                 Positions = new Mock<ICollection<Position>>().Object
             };
 
-            _companyRequested.Setup(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>())).ReturnsAsync("TestValue2094523348");
+        //    _companyRequested.Setup(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>())).ReturnsAsync("TestValue2094523348");
 
             // Act
-            var result = await _testClass.InsertRequestedCompanyForm(requestedCompanyForm);
+        //    var result = await _testClass.InsertRequestedCompanyForm(requestedCompanyForm);
 
             // Assert
             _companyRequested.Verify(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>()));

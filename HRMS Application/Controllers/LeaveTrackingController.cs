@@ -102,7 +102,7 @@ namespace HRMS_Application.Controllers
                 // Call the service to create the leave tracking record
                 var result = await _leaveTracking.CreateAsync(leaveTracking, empCredentialId);
 
-                return Ok(result);
+                return Ok(result);  
             }
             catch (Exception ex)
             {

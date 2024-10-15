@@ -1,7 +1,6 @@
 ﻿using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.DTO;
-using HRMS_Application.Helpers;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -88,7 +87,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var empInfo = await (from lt in _hrmsContext.LeaveTrackings
                                  join ec in _hrmsContext.EmployeeCredentials
                                  on lt.EmpCredentialId equals ec.Id
-                                 where lt.Id == empCredentialId
+                                 where lt.EmpCredentialId == empCredentialId
                                  select new
                                  {
                                      Email = ec.Email,
@@ -110,11 +109,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
                 };
 
-            //string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
-
-           // string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
-
-            string emailTemplate = constants.LeaveNotificationTemplate;
+            string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
+            string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
 
             string bodyMessage = "";
 
@@ -189,10 +185,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
                 };
 
-                //string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
-                //string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
-
-                string emailTemplate = constants.LeaveNotificationTemplate;
+                string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
+                string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
 
                 string bodyMessage = "";
                 switch (newStatus.ToLower())
