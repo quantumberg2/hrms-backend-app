@@ -1,15 +1,19 @@
 ﻿using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
 using HRMS_Application.Middleware.Exceptions;
 using HRMS_Application.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
     public class CompanyDetailsImp : ICompanyDetails
     {
         private readonly HRMSContext _context;
-        public CompanyDetailsImp(HRMSContext context)
+        private readonly IAzureOperations _azureOperations;
+        public CompanyDetailsImp(HRMSContext context, IAzureOperations azureOperations)
         {
             _context = context;
+            _azureOperations = azureOperations;
         }
         public bool deleteCompanyDetails(int id)
         {
@@ -51,25 +55,44 @@ namespace HRMS_Application.BusinessLogic.Implements
                         select row).ToList();
             return info;
         }
-        public int InsertCompanyDetails(CompanyDetail companyDetail)
+        public string InsertCompanyDetails(CompanyDetailsDTO companyDetail)
         {
-            try
+            string logoUrl = _azureOperations.StoreFilesInAzure(companyDetail.CompanyLogo, "hrms-profile-pics");
+
+            CompanyDetail objCompanyDetail = new CompanyDetail
             {
-                _context.CompanyDetails.Add(companyDetail);
-                var result = _context.SaveChanges();
-                if (result != 0)
-                {
-                    return result;
-                }
-                else
-                {
-                    throw new DatabaseOperationException("Failed to insert CompanyDetails data");
-                }
-            }
-            catch (Exception)
+                Name = companyDetail.Name,
+                Address = companyDetail.Address,
+                States = companyDetail.States,
+                Country = companyDetail.Country,
+                Currency = companyDetail.Currency,
+                EsiNo = companyDetail.EsiNo,
+                GstNo = companyDetail.GstNo,
+                Industry = companyDetail.Industry,
+                Facebook = companyDetail.Facebook,
+                LinkedIn = companyDetail.LinkedIn,
+                Twitter = companyDetail.Twitter,
+                PanNo = companyDetail.PfNo,
+                PfNo = companyDetail.PfNo,
+                RegistrationNo = companyDetail.RegistrationNo,
+                TanNo =  companyDetail.TanNo, 
+                TimeZone = companyDetail.TimeZone,   
+                IsActive = 1,
+             //   RequestedCompanyId = companyDetail.companyDetail.RequestedCompanyId,
+                CompanyLogo = logoUrl
+
+            };
+
+            if (objCompanyDetail !=null)
             {
-                throw new DatabaseOperationException("Failed to insert CompanyDetails data");
+                _context.CompanyDetails.Add(objCompanyDetail);
+                _context.SaveChanges();
+
+                return "Company Details inserted successfully";
             }
+            return "Failed to insert company details";
+
+            
         }
 
         public bool SoftDelete(int id, short isActive)
