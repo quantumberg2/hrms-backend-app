@@ -559,9 +559,6 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Employee_Detail");
 
-                entity.HasIndex(e => e.EmployeeNumber, "UQ__Employee__8D663598FDDAE6F4")
-                    .IsUnique();
-
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Email)

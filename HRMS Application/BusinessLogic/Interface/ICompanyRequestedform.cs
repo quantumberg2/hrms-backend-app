@@ -7,8 +7,8 @@ namespace HRMS_Application.BusinessLogic.Interface
     {
         public List<RequestedCompanyForm> GetAllRequestedCompanyForm();
         public RequestedCompanyForm GetById(int id);
-        public string InsertRequestedCompanyForm(RequestedCompanyForm requestedcompanyform);
-       // public Task<RequestedCompanyForm> UpdateEmployeeAttendence(int id, DateTime? Timein, DateTime? Timeout, string? Remark, int empcredentialId);
+        public Task<string> InsertRequestedCompanyForm(RequestedCompanyForm requestedcompanyform);
+        // public Task<RequestedCompanyForm> UpdateEmployeeAttendence(int id, DateTime? Timein, DateTime? Timeout, string? Remark, int empcredentialId);
         public Task<bool> DeleteRequestedCompanyForm(int id);
         // public Task<string> GenerateAndSendOtp(string email);
         // public Task<string> UpdatePassword(string email, string otp, string newPassword);
