@@ -341,7 +341,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("UpdateProfileImageUrl")]
-        [Authorize(new[] { "Admin", "user" })]
+        [Authorize(new[] { "Admin", "User","HR" })]
         public async Task<IActionResult> UpdateImageUrl(IFormFile file)
         {
             _logger.LogInformation("Update employee imageUrl method started");
