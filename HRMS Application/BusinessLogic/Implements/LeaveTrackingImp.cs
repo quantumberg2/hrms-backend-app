@@ -419,7 +419,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 RejectedCount = totalRejectedCount
             }).ToList();
 
-            // Calculate the aggregated totals for all leave types
             var totalApprovedLeaves = leaveSummaries.Sum(x => x.ApprovedLeaves);
             var totalPendingLeaves = leaveSummaries.Sum(x => x.PendingLeaves);
             var totalRejectedLeaves = leaveSummaries.Sum(x => x.RejectedLeaves);
@@ -524,27 +523,22 @@ namespace HRMS_Application.BusinessLogic.Implements
         { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
     };
 
-            // Load email template
             string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html";
             string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
 
-            // Customize the email message
             string bodyMessage = "A leave request has been successfully applied on your behalf and is pending approval.";
 
             parameters["Subject"] = "Leave Request Applied on Your Behalf";
             parameters["BodyMessage"] = bodyMessage;
 
-            // Replace placeholders in the email template
             foreach (var param in parameters)
             {
                 emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
             }
 
-            // Send the email
             await _alertEmail.SendEmailAsync(emailTemplate, parameters);
             await _hrmsContext.SaveChangesAsync();
 
-            // Return the leave tracking entry
             return leaveTracking;
         }
 

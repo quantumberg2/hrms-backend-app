@@ -113,7 +113,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var empCredentialId = request.EmpCredentialId.Value;
 
             var existingAllocation = await _hrmsContext.EmployeeLeaveAllocations
-                .FirstOrDefaultAsync(e => e.EmpCredentialId == empCredentialId && e.Year == request.Year && e.IsActive == 1);
+                .FirstOrDefaultAsync(e => e.EmpCredentialId == empCredentialId && e.Year == request.Year && e.IsActive == 1 && e.LeaveType == request.LeaveType);
 
             if (existingAllocation != null)
             {
