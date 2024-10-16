@@ -289,7 +289,7 @@ namespace HRMS_Application.Controllers
         [HttpPut("AccountDetail")]
         [Authorize(new[] { "Admin" })]
 
-        public async Task<IActionResult> UpdateEmployeeAccountInfo([FromBody] AccountDetail accountDetail)
+        public async Task<IActionResult> UpdateEmployeeAccountInfo([FromBody] AccountDetailDTO accountDetail)
         {
             if (!ModelState.IsValid)
             {

@@ -580,7 +580,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
-        public async Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetail accountDetail)
+        public async Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetailDTO accountDetail)
         {
             // Check if the account already exists
             var existingAccountDetail = await _hrmsContext.AccountDetails
