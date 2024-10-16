@@ -111,7 +111,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost("Apply_Behalf")]
-        [Authorize(new[] { "Admin" })]
+        [Authorize(new[] { "Admin","User" })]
         public async Task<IActionResult> ApllyLeaveBehalf([FromBody] LeaveTrackingDTO leaveTrackingDto, int empCredentialId)
         {
             _logger.LogInformation("Apply leave method started");
@@ -129,7 +129,7 @@ namespace HRMS_Application.Controllers
                     ReasonForLeave = leaveTrackingDto.ReasonForLeave,
                     EmpCredentialId = empCredentialId,
                     AppliedDate = leaveTrackingDto.Applied,
-                    Status = "Approved",
+                    Status = "Pending",
                     Files = leaveTrackingDto.Files,
                     Session = leaveTrackingDto.Session,
                     Contact = leaveTrackingDto.Contact,

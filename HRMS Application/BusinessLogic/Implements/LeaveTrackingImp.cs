@@ -197,11 +197,15 @@ namespace HRMS_Application.BusinessLogic.Implements
                         break;
                     case "rejected":
                         parameters["Subject"] = "Your Leave Request has been Rejected";
-                        bodyMessage = "Unfortunately, your leave request has been rejected. Please contact HR for more details.";
+                        bodyMessage = "Unfortunately, your leave request has been rejected. Please contact your manager for more details.";
                         break;
                     case "withdraw":
                         parameters["Subject"] = "Your Leave Request has been Withdrawn";
-                        bodyMessage = "You have successfully withdrawn your leave request. If you have any concerns, feel free to contact HR.";
+                        bodyMessage = "You have successfully withdrawn your leave request. If you have any concerns, feel free to contact your manager.";
+                        break;
+                    case "pending":
+                        parameters["Subject"] = "Your Leave Request is Currently Pending";
+                        bodyMessage = "We regret to inform you that your leave request is currently pending. If you have any concerns, feel free to contact your manager.";
                         break;
                     default:
                         throw new Exception("Invalid status for email notification.");
@@ -482,7 +486,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     throw new InvalidOperationException("Requested leave exceeds remaining leave.");
                 }
 
-                if (leaveTracking.Status == "Approved")
+                if (leaveTracking.Status == "Pending")
                 {
                     leaveAllocation.RemainingLeave -= totalLeaveDays;
 
@@ -493,9 +497,57 @@ namespace HRMS_Application.BusinessLogic.Implements
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
+            // Fetch employee information for email
+            var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                                 join ec in _hrmsContext.EmployeeCredentials
+                                 on lt.EmpCredentialId equals ec.Id
+                                 where lt.EmpCredentialId == empCredentialId
+                                 select new
+                                 {
+                                     Email = ec.Email,
+                                     UserName = ec.UserName,
+                                     StartDate = lt.Startdate,
+                                     EndDate = lt.Enddate
+                                 }).FirstOrDefaultAsync();
+
+            if (empInfo == null)
+            {
+                throw new Exception("Employee information not found.");
+            }
+
+            // Prepare email parameters
+            var parameters = new Dictionary<string, string>
+    {
+        { "To", empInfo.Email },
+        { "EmployeeName", empInfo.UserName },
+        { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+        { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+    };
+
+            // Load email template
+            string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html";
+            string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);
+
+            // Customize the email message
+            string bodyMessage = "A leave request has been successfully applied on your behalf and is pending approval.";
+
+            parameters["Subject"] = "Leave Request Applied on Your Behalf";
+            parameters["BodyMessage"] = bodyMessage;
+
+            // Replace placeholders in the email template
+            foreach (var param in parameters)
+            {
+                emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+            }
+
+            // Send the email
+            await _alertEmail.SendEmailAsync(emailTemplate, parameters);
+            await _hrmsContext.SaveChangesAsync();
+
             // Return the leave tracking entry
             return leaveTracking;
         }
+
 
 
         public List<LeavePendingDTO> GetPendingLeaves(int employeeCredentialId)

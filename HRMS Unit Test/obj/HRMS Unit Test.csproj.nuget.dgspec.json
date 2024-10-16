@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj": {}
+    "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
+    "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
         "projectName": "HRMS Application",
-        "projectPath": "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
+        "projectPath": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
         "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Application\\obj\\",
+        "outputPath": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -39,6 +39,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -101,18 +106,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj": {
+    "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj",
         "projectName": "HRMS Unit Test",
-        "projectPath": "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj",
+        "projectPath": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Unit Test\\HRMS Unit Test.csproj",
         "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Unit Test\\obj\\",
+        "outputPath": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Unit Test\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -134,8 +139,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
-                "projectPath": "C:\\Users\\USER\\source\\repos\\HRMS-DEV\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj"
+              "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj": {
+                "projectPath": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj"
               }
             }
           }
@@ -144,6 +149,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -187,7 +197,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

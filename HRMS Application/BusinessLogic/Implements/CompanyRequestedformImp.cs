@@ -273,6 +273,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 {
                     // Insert new company form
                     await _context.RequestedCompanyForms.AddAsync(requestedcompanyform);
+                    requestedcompanyform.IsActive = 1;
                     await _context.SaveChangesAsync(); // Save to generate the ID
                     existingCompanyForm = requestedcompanyform; // Get the newly created record with ID
                 }
@@ -350,7 +351,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                     await _context.EmployeeDetails.AddAsync(newEmployeeDetail);
                 }
 
-                // Save all changes
                 var result = await _context.SaveChangesAsync();
 
                 if (result != 0)
