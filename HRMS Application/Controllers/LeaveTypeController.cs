@@ -20,7 +20,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpGet]
-        [Authorize(new[] { "Admin" })]
+        [Authorize(new[] { "Admin","User","HR" })]
         public ActionResult <List<LeaveType>> GetAllLeavetype()
         {
             try
