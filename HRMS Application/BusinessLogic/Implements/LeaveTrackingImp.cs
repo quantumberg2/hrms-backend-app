@@ -135,7 +135,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
                                        where row.Id == id
-                                       select row).FirstOrDefaultAsync();
+                                       select row).FirstOrDefaultAsync();/**/
 
             if (leaveTracking != null)
             {
