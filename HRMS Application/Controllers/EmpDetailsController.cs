@@ -123,6 +123,8 @@ namespace HRMS_Application.Controllers
 
         }
         [HttpGet("EmployeeInfo")]
+        [Authorize(new[] { "Admin" })]
+
         public ActionResult<IEnumerable<EmployeeView>> GetAllEmployees()
         {
             var employees = _Empdetails.GetAllEmployees();
@@ -130,6 +132,8 @@ namespace HRMS_Application.Controllers
             return Ok(employees);
         }
         [HttpGet("getdetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeeInfo(int employeeCredentialId)
         {
             var employeeInfo = await _Empdetails.GetEmployeeInfoAsync(employeeCredentialId);
@@ -142,6 +146,8 @@ namespace HRMS_Application.Controllers
             return Ok(employeeInfo);
         }
         [HttpGet("personaldetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeePersonalInfo(int employeeCredentialId)
         {
             var employeePersonalInfo = await _Empdetails.GetEmployeePersonalInfoAsync(employeeCredentialId);
@@ -154,6 +160,8 @@ namespace HRMS_Application.Controllers
             return Ok(employeePersonalInfo);
         }
         [HttpGet("addressdetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeeAddressInfo(int employeeCredentialId)
         {
             var employeeAddressInfo = await _Empdetails.GetEmployeeAddressInfoAsync(employeeCredentialId);
@@ -166,6 +174,8 @@ namespace HRMS_Application.Controllers
             return Ok(employeeAddressInfo);
         }
         [HttpGet("accountdetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeeAccountInfo(int employeeCredentialId)
         {
             var accountInfo = await _Empdetails.GetEmployeeAccountInfoAsync(employeeCredentialId);
@@ -220,6 +230,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("updatedetails")]
+        [Authorize(new[] { "Admin" })]
         public async Task<IActionResult> UpdateEmployeeInfo([FromBody] UpdateEmployeeInfoDTO updateEmployeeInfo)
         {
             if (!ModelState.IsValid)
@@ -238,6 +249,8 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("PersonalDetails")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> UpdateEmployeePersonalInfo([FromBody] EmpPersonalInfoDTO empPersonalInfoDTO)
         {
             if (!ModelState.IsValid)
@@ -255,6 +268,8 @@ namespace HRMS_Application.Controllers
             return Ok("Employee information updated successfully.");
         }
         [HttpPut("AddressDetail")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> UpdateEmployeeAddressInfo([FromBody] AddressInfoDTO addressInfo)
         {
             if (!ModelState.IsValid)
@@ -272,6 +287,8 @@ namespace HRMS_Application.Controllers
             return Ok("Employee information updated successfully.");
         }
         [HttpPut("AccountDetail")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> UpdateEmployeeAccountInfo([FromBody] AccountDetail accountDetail)
         {
             if (!ModelState.IsValid)

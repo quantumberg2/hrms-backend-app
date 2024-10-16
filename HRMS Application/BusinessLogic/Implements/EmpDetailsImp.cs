@@ -231,11 +231,11 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeeCredential = await _hrmsContext.EmployeeCredentials
                 .FirstOrDefaultAsync(ec => ec.Id == employeeCredentialId);
 
-            var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
-                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);
+         /*   var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);*/
 
             // Check if all necessary data exists
-            if (employeeDetail == null || employeeCredential == null || employeePersonalInfo == null)
+            if (employeeDetail == null || employeeCredential == null)
             {
                 return null; // No data found for the given EmployeeCredentialId
             }
@@ -250,7 +250,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 MobileNumber = employeeDetail.MobileNumber,
                 Extension = employeeDetail.Extension,
                 EmpLoginName = employeeCredential.EmployeeLoginName,
-                gender = employeePersonalInfo.Gender
+               // gender = employeePersonalInfo.Gender
             };
         }
         public async Task<EmpPersonalInfoDTO> GetEmployeePersonalInfoAsync(int employeeCredentialId)
