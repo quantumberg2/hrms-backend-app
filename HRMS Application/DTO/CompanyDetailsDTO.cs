@@ -21,7 +21,7 @@ namespace HRMS_Application.DTO
         public string Facebook { get; set; }
         public string LinkedIn { get; set; }
         public IFormFile? CompanyLogo { get; set; }
-        public int? RequestedCompanyId { get; set; }
+      //  public int? RequestedCompanyId { get; set; }
         public short? IsActive { get; set; }
     }
 }
