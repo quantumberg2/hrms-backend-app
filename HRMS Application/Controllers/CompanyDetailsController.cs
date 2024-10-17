@@ -14,6 +14,7 @@ namespace HRMS_Application.Controllers
     {
         private readonly ICompanyDetails _companyDetails;
         private ILogger<CompanyDetailsController> _logger;
+
         public CompanyDetailsController(ICompanyDetails companyDetails, ILogger<CompanyDetailsController> logger)
         {
             _companyDetails = companyDetails;
@@ -44,6 +45,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
+        [Authorize(new[] { "Admin"})]
         public IActionResult InsertCompanyDetails([FromForm] CompanyDetailsDTO companyDetail)
         {
             try
