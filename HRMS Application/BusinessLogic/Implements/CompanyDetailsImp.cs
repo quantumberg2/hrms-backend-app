@@ -3,6 +3,7 @@ using HRMS_Application.DTO;
 using HRMS_Application.Middleware.Exceptions;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.Design;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
@@ -48,11 +49,16 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public List<CompanyDetail> GetCompanyDetailstByName(string companyName)
+        public List<ComanyLogoDTO> GetCompanyDetailstByCompanyId(int CompanyId)
         {
             var info = (from row in _context.CompanyDetails
-                        where row.Name == companyName && row.IsActive == 1
-                        select row).ToList();
+                        where row.RequestedCompanyId == CompanyId && row.IsActive == 1
+                        select new ComanyLogoDTO
+                        {
+                            CompanyName = row.Name, 
+                            CompanyLogo = row.CompanyLogo 
+                        }).ToList();
+
             return info;
         }
         public string InsertCompanyDetails(CompanyDetailsDTO companyDetail)
@@ -109,6 +115,27 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             }
             return false;
+        }
+
+      
+
+        public string updateComapanyLogo(CompanyDetailsDTO CompanyLogo, int companyId)
+        {
+            string logoUrl = _azureOperations.StoreFilesInAzure(CompanyLogo.CompanyLogo, "hrms-profile-pics");
+
+            // Find the company details in the database
+            var res = (from row in _context.CompanyDetails
+                       where row.RequestedCompanyId == companyId && row.IsActive == 1
+                       select row).FirstOrDefault();
+
+            if (res != null)
+            {
+                res.CompanyLogo = logoUrl;
+                _context.SaveChanges();
+                return logoUrl;
+            }
+
+            return null;
         }
     }
 }

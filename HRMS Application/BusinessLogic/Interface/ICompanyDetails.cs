@@ -7,7 +7,8 @@ namespace HRMS_Application.BusinessLogic.Interface
     {
         public List<CompanyDetail> GetAllCompanyDetails();
         public List<CompanyDetail> GetCompanyDetailstById(int id);
-        public List<CompanyDetail> GetCompanyDetailstByName(string companyName);
+        public List<ComanyLogoDTO> GetCompanyDetailstByCompanyId(int CompanyID);
+        public string updateComapanyLogo(CompanyDetailsDTO CompanyLogo, int companyId);
         public string InsertCompanyDetails(CompanyDetailsDTO companyDetail);
         //public CompanyDetail UpdateDepartment(int id, string? name, int? requestedcompanyId);
         public bool deleteCompanyDetails(int id);
