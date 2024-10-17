@@ -19,7 +19,7 @@ namespace HRMS_Application.Controllers
             _shiftRoster = shiftRoster;
         }
         [HttpGet]
-        [Authorize(new[] { "Admin" })]
+        [Authorize(new[] {"Admin", "User", "HR" })]
         public List<ShiftRoster> GetAllShiftRoster()
         {
             _logger.LogInformation("Getall positions method started");
@@ -28,7 +28,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
-        [Authorize(new[] { "Admin" })]
+        [Authorize(new[] {"Admin", "User", "HR" })]
         public async Task<string> InsertShiftRoster([FromBody] ShiftRoster shiftRoster)
         {
             _logger.LogInformation("Insert Positions method started");

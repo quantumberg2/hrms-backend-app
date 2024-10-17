@@ -54,7 +54,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpGet("GetByCredId")]
-        [Authorize(new[] {"Admin", "Manager"})]
+        [Authorize(new[] {"Admin"})]
         public IActionResult GetAttendanceByCredId(int empCredId)
         {
             _logger.LogInformation("Get Attendance details by passing Employee credential id method started");

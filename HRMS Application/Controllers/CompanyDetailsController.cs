@@ -14,6 +14,7 @@ namespace HRMS_Application.Controllers
     {
         private readonly ICompanyDetails _companyDetails;
         private ILogger<CompanyDetailsController> _logger;
+
         public CompanyDetailsController(ICompanyDetails companyDetails, ILogger<CompanyDetailsController> logger)
         {
             _companyDetails = companyDetails;
@@ -35,15 +36,49 @@ namespace HRMS_Application.Controllers
             return result;
         }
 
-        [HttpGet("GetDetailsByName")]
-        public List<CompanyDetail> GetCompanyDetailstByName(string companyName)
+        [HttpGet("GetDetailsByCompanyID")]
+        [AllowAnonymous]
+        public IActionResult GetCompanyDetailsByCompanyID()
         {
-            _logger.LogInformation("Get Company details by name method started");
-            var res = _companyDetails.GetCompanyDetailstByName(companyName);
-            return res;
+            // Get JWT token from the Authorization header
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Authorization token is missing or invalid.");
+            }
+
+            // Parse the JWT token
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            // Extract CompanyId from token claims
+            var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+
+            if (companyIdClaim == null)
+            {
+                return Unauthorized("Company ID not found in token.");
+            }
+
+            if (!int.TryParse(companyIdClaim.Value, out int companyId))
+            {
+                return BadRequest("Invalid Company ID in token.");
+            }
+
+            // Fetch company details using the companyId from the token
+            var companyDetails = _companyDetails.GetCompanyDetailstByCompanyId(companyId);
+
+            if (companyDetails != null && companyDetails.Count > 0)
+            {
+                return Ok(companyDetails);
+            }
+
+            return NotFound("No active company details found for the specified company.");
         }
 
+       
         [HttpPost]
+        [Authorize(new[] { "Admin"})]
         public IActionResult InsertCompanyDetails([FromForm] CompanyDetailsDTO companyDetail)
         {
             try
@@ -77,6 +112,53 @@ namespace HRMS_Application.Controllers
                 if (result !=null)
                 {
                     return Ok(new { Message = "Company details inserted successfully.", CompanyId = result });
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred while inserting company details.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while inserting company details.");
+                return StatusCode(500, "An error occurred while inserting company details.");
+            }
+        }
+        [HttpPut]
+        [Authorize(new[] { "Admin" })]
+        public IActionResult UpdateComanyLogo([FromForm] CompanyDetailsDTO companyDetail)
+        {
+            try
+            {
+                _logger.LogInformation("Update comapnyLogo method started");
+
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                companyDetail.RequestedCompanyId = companyId;
+
+                var result = _companyDetails.updateComapanyLogo(companyDetail, companyId);
+
+                if (result != null)
+                {
+                    return Ok(new { Message = "CompanyLogo Updated successfully.", CompanyId = result });
                 }
                 else
                 {

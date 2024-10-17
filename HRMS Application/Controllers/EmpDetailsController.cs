@@ -123,6 +123,8 @@ namespace HRMS_Application.Controllers
 
         }
         [HttpGet("EmployeeInfo")]
+        [Authorize(new[] { "Admin" })]
+
         public ActionResult<IEnumerable<EmployeeView>> GetAllEmployees()
         {
             var employees = _Empdetails.GetAllEmployees();
@@ -130,6 +132,8 @@ namespace HRMS_Application.Controllers
             return Ok(employees);
         }
         [HttpGet("getdetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeeInfo(int employeeCredentialId)
         {
             var employeeInfo = await _Empdetails.GetEmployeeInfoAsync(employeeCredentialId);
@@ -142,6 +146,8 @@ namespace HRMS_Application.Controllers
             return Ok(employeeInfo);
         }
         [HttpGet("personaldetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeePersonalInfo(int employeeCredentialId)
         {
             var employeePersonalInfo = await _Empdetails.GetEmployeePersonalInfoAsync(employeeCredentialId);
@@ -154,6 +160,8 @@ namespace HRMS_Application.Controllers
             return Ok(employeePersonalInfo);
         }
         [HttpGet("addressdetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeeAddressInfo(int employeeCredentialId)
         {
             var employeeAddressInfo = await _Empdetails.GetEmployeeAddressInfoAsync(employeeCredentialId);
@@ -166,6 +174,8 @@ namespace HRMS_Application.Controllers
             return Ok(employeeAddressInfo);
         }
         [HttpGet("accountdetails/{employeeCredentialId}")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> GetEmployeeAccountInfo(int employeeCredentialId)
         {
             var accountInfo = await _Empdetails.GetEmployeeAccountInfoAsync(employeeCredentialId);
@@ -220,6 +230,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("updatedetails")]
+        [Authorize(new[] { "Admin" })]
         public async Task<IActionResult> UpdateEmployeeInfo([FromBody] UpdateEmployeeInfoDTO updateEmployeeInfo)
         {
             if (!ModelState.IsValid)
@@ -238,6 +249,8 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("PersonalDetails")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> UpdateEmployeePersonalInfo([FromBody] EmpPersonalInfoDTO empPersonalInfoDTO)
         {
             if (!ModelState.IsValid)
@@ -255,6 +268,8 @@ namespace HRMS_Application.Controllers
             return Ok("Employee information updated successfully.");
         }
         [HttpPut("AddressDetail")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> UpdateEmployeeAddressInfo([FromBody] AddressInfoDTO addressInfo)
         {
             if (!ModelState.IsValid)
@@ -272,7 +287,9 @@ namespace HRMS_Application.Controllers
             return Ok("Employee information updated successfully.");
         }
         [HttpPut("AccountDetail")]
-        public async Task<IActionResult> UpdateEmployeeAccountInfo([FromBody] AccountDetail accountDetail)
+        [Authorize(new[] { "Admin" })]
+
+        public async Task<IActionResult> UpdateEmployeeAccountInfo([FromBody] AccountDetailDTO accountDetail)
         {
             if (!ModelState.IsValid)
             {
@@ -326,12 +343,33 @@ namespace HRMS_Application.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("monthly-statistics/{employeeCredentialId}/{month}")]
-        public IActionResult GetMonthlyStatistics(int employeeCredentialId, DateTime month)
+        [HttpGet("monthly-statistics")]
+        public IActionResult GetMonthlyStatistics(DateTime month)
         {
             try
             {
-                var statistics = _Empdetails.GetMonthlyStatistics(employeeCredentialId, month);
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+              
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                
+                var empCredentialClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId");
+                if (empCredentialClaim == null)
+                {
+                    return Unauthorized("UserId not found in token.");
+                }
+
+                if (!int.TryParse(empCredentialClaim.Value, out int empCredentialId))
+                {
+                    return BadRequest("Invalid UserId in token.");
+                }
+                var statistics = _Empdetails.GetMonthlyStatistics(empCredentialId, month);
                 return Ok(statistics);
             }
             catch (Exception ex)
@@ -341,7 +379,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPut("UpdateProfileImageUrl")]
-        [Authorize(new[] { "Admin", "user" })]
+        [Authorize(new[] { "Admin", "User","HR" })]
         public async Task<IActionResult> UpdateImageUrl(IFormFile file)
         {
             _logger.LogInformation("Update employee imageUrl method started");

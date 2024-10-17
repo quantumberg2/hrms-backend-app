@@ -20,7 +20,7 @@ namespace HRMS_Application.Controllers
             _logger = logger;
         }
         [HttpGet]
-        [Authorize(new[] { "Admin" })]
+        [Authorize(new[] { "Admin","User","HR" })]
         public List<ShiftRosterType> GetAllShiftRosterType()
         {
             _logger.LogInformation("Getall positions method started");

@@ -231,11 +231,11 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeeCredential = await _hrmsContext.EmployeeCredentials
                 .FirstOrDefaultAsync(ec => ec.Id == employeeCredentialId);
 
-            var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
-                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);
+         /*   var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
+                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);*/
 
             // Check if all necessary data exists
-            if (employeeDetail == null || employeeCredential == null || employeePersonalInfo == null)
+            if (employeeDetail == null || employeeCredential == null)
             {
                 return null; // No data found for the given EmployeeCredentialId
             }
@@ -250,7 +250,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 MobileNumber = employeeDetail.MobileNumber,
                 Extension = employeeDetail.Extension,
                 EmpLoginName = employeeCredential.EmployeeLoginName,
-                gender = employeePersonalInfo.Gender
+               // gender = employeePersonalInfo.Gender
             };
         }
         public async Task<EmpPersonalInfoDTO> GetEmployeePersonalInfoAsync(int employeeCredentialId)
@@ -580,7 +580,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
-        public async Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetail accountDetail)
+        public async Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetailDTO accountDetail)
         {
             // Check if the account already exists
             var existingAccountDetail = await _hrmsContext.AccountDetails
@@ -775,17 +775,17 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public MonthlyAttendanceStatistics GetMonthlyStatistics(int employeeCredentialId, DateTime month)
+        public MonthlyAttendanceStatistics GetMonthlyStatistics(int empCredentialId, DateTime month)
         {
             // Fetch attendance data for the employee for the given month
             var attendances = _hrmsContext.Attendances
-                .Where(a => a.EmpCredentialId == employeeCredentialId && a.Date.Value.Month == month.Month && a.Date.Value.Year == month.Year)
+                .Where(a => a.EmpCredentialId == empCredentialId && a.Date.Value.Month == month.Month && a.Date.Value.Year == month.Year)
                 .ToList();
 
             // Fetch the shift roster to get time ranges
             var shiftRoster = _hrmsContext.ShiftRosters
                 .Include(sr => sr.ShiftRosterType)
-                .FirstOrDefault(sr => sr.EmpCredentialId == employeeCredentialId);
+                .FirstOrDefault(sr => sr.EmpCredentialId == empCredentialId);
 
             if (shiftRoster == null)
                 throw new Exception("Shift Roster not found for employee");
@@ -802,7 +802,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var totalWorkingDays = CalculateTotalWorkingDays(month);
 
             // Initialize total hours worked
-            double totalHoursWorked = standardWorkDayHours;
+            TimeSpan? totalHoursWorked = TimeSpan.FromHours(standardWorkDayHours);
             double totalPresentHours = 0; // To calculate average work hours for present status
             double totalTimeIn = 0;
             double totalTimeOut = 0;
@@ -835,12 +835,21 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
            
             var presentDaysCount = attendances.Count(a => a.Status == "Present");
-            var averageWorkHours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0; // Prevent division by zero
+            var avgworkhours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0;
 
+            var averageWorkHours = TimeSpan.FromHours(avgworkhours);  // Prevent division by zero
+           
 
+            var averageTimeInHours = presentDaysCount > 0 ? totalTimeIn / presentDaysCount : 0;
+            var averageTimeOutHours = presentDaysCount > 0 ? totalTimeOut / presentDaysCount : 0;
 
-            var avergeintime = presentDaysCount > 0 ? totalTimeIn/totalWorkingDays : 0;
-            var averageouttime = presentDaysCount > 0 ? totalTimeOut/totalWorkingDays : 0;
+            // Convert average hours to TimeSpan
+            var averageTimeIn = TimeSpan.FromHours(averageTimeInHours);
+            var averageTimeOut = TimeSpan.FromHours(averageTimeOutHours);
+
+           /* // Format as hh:mm:ss
+            var formattedAverageTimeIn = averageTimeIn.ToString(@"hh\:mm\:ss");
+            var formattedAverageTimeOut = averageTimeOut.ToString(@"hh\:mm\:ss");*/
 
             // Calculate counts for various attendance statuses
             var presentCount = attendances.Count(a => a.Status == "Present");
@@ -866,10 +875,10 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return new MonthlyAttendanceStatistics
             {
-                EmployeecredntialId = employeeCredentialId,
+                EmployeecredntialId = empCredentialId,
                 TotalWorkingDays = totalWorkingDays,
-                TotalHoursWorked = totalHoursWorked,
-                AverageWorkHours = averageWorkHours,
+                TotalHoursWorked = totalHoursWorked,//Average Work Hours in a month
+                AverageWorkHours = averageWorkHours.ToString(@"hh\:mm\:ss"),//Employee Work Hours in a month
                 LateInCount = lateInCount,
                 EarlyOutCount = earlyOutCount,
                 AbsentCount = absentCount,
@@ -877,8 +886,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 PresentPercentage = presentPercentage,
                 AbsentPercentage = absentPercentage,
                 LeaveTakenPercentage = leaveTakenPercentage,
-                AvgTimein = avergeintime,
-                AvgTimeouT = averageouttime,
+                AvgTimein = averageTimeIn.ToString(@"hh\:mm\:ss"),
+                AvgTimeouT = averageTimeOut.ToString(@"hh\:mm\:ss"),
                 HolidayPercentage = holidayPercentage,
                 RestDaysPercentage = restDaysPercentage,
                 PenaltyCount = PenaltyleaveTakenCount

@@ -474,7 +474,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             };
 
             // Act
-            var result = await _testClass.UpdateEmployeeAccountInfoAsync(accountDetail);
+           // var result = await _testClass.UpdateEmployeeAccountInfoAsync(accountDetail);
 
             // Assert
             throw new NotImplementedException("Create or modify test");

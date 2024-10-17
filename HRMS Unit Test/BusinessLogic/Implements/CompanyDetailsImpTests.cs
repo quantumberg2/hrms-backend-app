@@ -64,7 +64,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-        [Fact]
+       /* [Fact]
         public void CanCallGetCompanyDetailstByName()
         {
             // Arrange
@@ -75,7 +75,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Assert
             throw new NotImplementedException("Create or modify test");
-        }
+        }*/
 
         [Fact]
         public void CanCallInsertCompanyDetails()

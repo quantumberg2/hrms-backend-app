@@ -2,9 +2,9 @@
 {
     public class EmpPersonalInfoDTO
     {
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
         public string? MiddleName { get; set; }  
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
         public int? EmployeeCredentialId { get; set; }
         public DateTime? Dob { get; set; }
         public DateTime? DateOfJoining { get; set; }
