@@ -802,7 +802,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var totalWorkingDays = CalculateTotalWorkingDays(month);
 
             // Initialize total hours worked
-            double totalHoursWorked = standardWorkDayHours;
+            TimeSpan? totalHoursWorked = TimeSpan.FromHours(standardWorkDayHours);
             double totalPresentHours = 0; // To calculate average work hours for present status
             double totalTimeIn = 0;
             double totalTimeOut = 0;
@@ -835,12 +835,21 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
            
             var presentDaysCount = attendances.Count(a => a.Status == "Present");
-            var averageWorkHours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0; // Prevent division by zero
+            var avgworkhours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0;
 
+            var averageWorkHours = TimeSpan.FromHours(avgworkhours);  // Prevent division by zero
+           
 
+            var averageTimeInHours = presentDaysCount > 0 ? totalTimeIn / presentDaysCount : 0;
+            var averageTimeOutHours = presentDaysCount > 0 ? totalTimeOut / presentDaysCount : 0;
 
-            var avergeintime = presentDaysCount > 0 ? totalTimeIn/totalWorkingDays : 0;
-            var averageouttime = presentDaysCount > 0 ? totalTimeOut/totalWorkingDays : 0;
+            // Convert average hours to TimeSpan
+            var averageTimeIn = TimeSpan.FromHours(averageTimeInHours);
+            var averageTimeOut = TimeSpan.FromHours(averageTimeOutHours);
+
+           /* // Format as hh:mm:ss
+            var formattedAverageTimeIn = averageTimeIn.ToString(@"hh\:mm\:ss");
+            var formattedAverageTimeOut = averageTimeOut.ToString(@"hh\:mm\:ss");*/
 
             // Calculate counts for various attendance statuses
             var presentCount = attendances.Count(a => a.Status == "Present");
@@ -868,8 +877,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 EmployeecredntialId = empCredentialId,
                 TotalWorkingDays = totalWorkingDays,
-                TotalHoursWorked = totalHoursWorked,
-                AverageWorkHours = averageWorkHours,
+                TotalHoursWorked = totalHoursWorked,//Average Work Hours in a month
+                AverageWorkHours = averageWorkHours.ToString(@"hh\:mm\:ss"),//Employee Work Hours in a month
                 LateInCount = lateInCount,
                 EarlyOutCount = earlyOutCount,
                 AbsentCount = absentCount,
@@ -877,8 +886,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 PresentPercentage = presentPercentage,
                 AbsentPercentage = absentPercentage,
                 LeaveTakenPercentage = leaveTakenPercentage,
-                AvgTimein = avergeintime,
-                AvgTimeouT = averageouttime,
+                AvgTimein = averageTimeIn.ToString(@"hh\:mm\:ss"),
+                AvgTimeouT = averageTimeOut.ToString(@"hh\:mm\:ss"),
                 HolidayPercentage = holidayPercentage,
                 RestDaysPercentage = restDaysPercentage,
                 PenaltyCount = PenaltyleaveTakenCount

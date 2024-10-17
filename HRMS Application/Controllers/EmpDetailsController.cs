@@ -343,7 +343,7 @@ namespace HRMS_Application.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("monthly-statistics/{employeeCredentialId}/{month}")]
+        [HttpGet("monthly-statistics")]
         public IActionResult GetMonthlyStatistics(DateTime month)
         {
             try
