@@ -775,17 +775,17 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public MonthlyAttendanceStatistics GetMonthlyStatistics(int employeeCredentialId, DateTime month)
+        public MonthlyAttendanceStatistics GetMonthlyStatistics(int empCredentialId, DateTime month)
         {
             // Fetch attendance data for the employee for the given month
             var attendances = _hrmsContext.Attendances
-                .Where(a => a.EmpCredentialId == employeeCredentialId && a.Date.Value.Month == month.Month && a.Date.Value.Year == month.Year)
+                .Where(a => a.EmpCredentialId == empCredentialId && a.Date.Value.Month == month.Month && a.Date.Value.Year == month.Year)
                 .ToList();
 
             // Fetch the shift roster to get time ranges
             var shiftRoster = _hrmsContext.ShiftRosters
                 .Include(sr => sr.ShiftRosterType)
-                .FirstOrDefault(sr => sr.EmpCredentialId == employeeCredentialId);
+                .FirstOrDefault(sr => sr.EmpCredentialId == empCredentialId);
 
             if (shiftRoster == null)
                 throw new Exception("Shift Roster not found for employee");
@@ -866,7 +866,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return new MonthlyAttendanceStatistics
             {
-                EmployeecredntialId = employeeCredentialId,
+                EmployeecredntialId = empCredentialId,
                 TotalWorkingDays = totalWorkingDays,
                 TotalHoursWorked = totalHoursWorked,
                 AverageWorkHours = averageWorkHours,

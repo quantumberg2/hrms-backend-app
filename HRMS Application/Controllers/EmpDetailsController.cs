@@ -344,11 +344,34 @@ namespace HRMS_Application.Controllers
             }
         }
         [HttpGet("monthly-statistics/{employeeCredentialId}/{month}")]
-        public IActionResult GetMonthlyStatistics(int employeeCredentialId, DateTime month)
+        public IActionResult GetMonthlyStatistics(DateTime month)
         {
             try
             {
-                var statistics = _Empdetails.GetMonthlyStatistics(employeeCredentialId, month);
+                // Extract the JWT token from the Authorization header
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to get the empCredentialId
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extract the "UserId" claim from the token
+                var empCredentialClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId");
+                if (empCredentialClaim == null)
+                {
+                    return Unauthorized("UserId not found in token.");
+                }
+
+                // Parse the empCredentialId from the claim
+                if (!int.TryParse(empCredentialClaim.Value, out int empCredentialId))
+                {
+                    return BadRequest("Invalid UserId in token.");
+                }
+                var statistics = _Empdetails.GetMonthlyStatistics(empCredentialId, month);
                 return Ok(statistics);
             }
             catch (Exception ex)
