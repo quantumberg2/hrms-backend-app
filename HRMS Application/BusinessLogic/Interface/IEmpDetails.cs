@@ -26,7 +26,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public MonthlyAttendanceStatistics GetMonthlyStatistics(int empCredentialId, DateTime month);
         public Task<string> UpdateImageUrl(int empcredId, IFormFile file);
 
-        public UserDetailsDTO GetUserDetails(int empcredId);
+        public UserDetailsDTO GetUserDetails(int empcredId, int companyId);
 
     }
 

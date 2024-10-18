@@ -61,7 +61,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return info;
         }
-        public string InsertCompanyDetails(CompanyDetailsDTO companyDetail)
+        public string InsertCompanyDetails(CompanyDetailsDTO companyDetail, int companyId)
         {
             string logoUrl = _azureOperations.StoreFilesInAzure(companyDetail.CompanyLogo, "hrms-profile-pics");
 
@@ -84,6 +84,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 TanNo =  companyDetail.TanNo, 
                 TimeZone = companyDetail.TimeZone,   
                 IsActive = 1,
+                RequestedCompanyId = companyId,
              //   RequestedCompanyId = companyDetail.companyDetail.RequestedCompanyId,
                 CompanyLogo = logoUrl
 
@@ -117,17 +118,19 @@ namespace HRMS_Application.BusinessLogic.Implements
             return false;
         }
 
-      
 
-        public string updateComapanyLogo(CompanyDetailsDTO CompanyLogo, int companyId)
+
+        public string updateCompanyLogo(IFormFile companyLogo, int companyId)
         {
-            string logoUrl = _azureOperations.StoreFilesInAzure(CompanyLogo.CompanyLogo, "hrms-profile-pics");
+            // Store the company logo in Azure and get the URL
+            string logoUrl = _azureOperations.StoreFilesInAzure(companyLogo, "hrms-profile-pics");
 
             // Find the company details in the database
             var res = (from row in _context.CompanyDetails
                        where row.RequestedCompanyId == companyId && row.IsActive == 1
                        select row).FirstOrDefault();
 
+            // Update the company logo URL if the company exists
             if (res != null)
             {
                 res.CompanyLogo = logoUrl;
@@ -137,5 +140,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return null;
         }
+
     }
 }

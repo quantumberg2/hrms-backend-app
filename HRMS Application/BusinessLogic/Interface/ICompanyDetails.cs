@@ -8,8 +8,8 @@ namespace HRMS_Application.BusinessLogic.Interface
         public List<CompanyDetail> GetAllCompanyDetails();
         public List<CompanyDetail> GetCompanyDetailstById(int id);
         public List<ComanyLogoDTO> GetCompanyDetailstByCompanyId(int CompanyID);
-        public string updateComapanyLogo(CompanyDetailsDTO CompanyLogo, int companyId);
-        public string InsertCompanyDetails(CompanyDetailsDTO companyDetail);
+        public string updateCompanyLogo(IFormFile companyLogo, int companyId);
+        public string InsertCompanyDetails(CompanyDetailsDTO companyDetail, int companyId);
         //public CompanyDetail UpdateDepartment(int id, string? name, int? requestedcompanyId);
         public bool deleteCompanyDetails(int id);
         public bool SoftDelete(int id, short isActive);

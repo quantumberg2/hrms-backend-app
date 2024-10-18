@@ -422,30 +422,40 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Authorization token is missing or invalid.");
                 }
 
-                // Decode the JWT token to get the empCredentialId
+                // Decode the JWT token to get empCredentialId and companyId
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(token);
 
                 // Extract the "UserId" claim from the token
                 var empCredentialClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId");
-                if (empCredentialClaim == null)
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+
+                if (empCredentialClaim == null || companyIdClaim == null)
                 {
-                    return Unauthorized("UserId not found in token.");
+                    return Unauthorized("UserId or CompanyId not found in token.");
                 }
 
-                // Parse the empCredentialId from the claim
+                // Parse the empCredentialId and companyId from the claims
                 if (!int.TryParse(empCredentialClaim.Value, out int empCredentialId))
                 {
                     return BadRequest("Invalid UserId in token.");
                 }
 
-                var stats = _Empdetails.GetUserDetails(empCredentialId);
-                return Ok(stats);
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid CompanyId in token.");
+                }
+
+                // Fetch user details using empCredentialId and companyId
+                var userDetails = _Empdetails.GetUserDetails(empCredentialId, companyId);
+
+                return Ok(userDetails);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
     }
 }

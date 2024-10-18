@@ -107,7 +107,7 @@ namespace HRMS_Application.Controllers
 
                 companyDetail.RequestedCompanyId = companyId;
 
-                var result = _companyDetails.InsertCompanyDetails(companyDetail);
+                var result = _companyDetails.InsertCompanyDetails(companyDetail,companyId);
 
                 if (result !=null)
                 {
@@ -124,9 +124,9 @@ namespace HRMS_Application.Controllers
                 return StatusCode(500, "An error occurred while inserting company details.");
             }
         }
-        [HttpPut]
+        [HttpPut("CompanyLogo")]
         [Authorize(new[] { "Admin" })]
-        public IActionResult UpdateComanyLogo([FromForm] CompanyDetailsDTO companyDetail)
+        public IActionResult UpdateComanyLogo(IFormFile Comapanylogo)
         {
             try
             {
@@ -152,9 +152,9 @@ namespace HRMS_Application.Controllers
                     return BadRequest("Invalid Company ID in token.");
                 }
 
-                companyDetail.RequestedCompanyId = companyId;
+                //companyDetail.RequestedCompanyId = companyId;
 
-                var result = _companyDetails.updateComapanyLogo(companyDetail, companyId);
+                var result = _companyDetails.updateCompanyLogo(Comapanylogo, companyId);
 
                 if (result != null)
                 {

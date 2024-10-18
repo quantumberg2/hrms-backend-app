@@ -938,7 +938,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return "File Updated successfully";
         }
 
-        public UserDetailsDTO GetUserDetails(int empcredId)
+        public UserDetailsDTO GetUserDetails(int empcredId, int companyId)
         {
             var employeeDetail = _hrmsContext.EmployeeDetails
                .FirstOrDefault(e => e.EmployeeCredentialId == empcredId);
@@ -947,12 +947,22 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 throw new Exception("Employee not found.");
             }
+            var companyDetail = _hrmsContext.CompanyDetails
+       .FirstOrDefault(c => c.RequestedCompanyId == companyId && c.IsActive == 1);
+
+            // Determine the company logo URL, if available
+            /*if (companyDetail == null)
+            {
+                throw new Exception("Company not found or inactive.");
+            }*/
             var result = new UserDetailsDTO
             {
                
                 Name = $"{employeeDetail.FirstName} {employeeDetail.LastName}",
                 Email = employeeDetail.Email,
-                ImageUrl = employeeDetail.ImageUrl
+                ImageUrl = employeeDetail.ImageUrl,
+                CompanyLogo = companyDetail?.CompanyLogo // If companyDetail is null, this will set CompanyLogo to null
+
 
             };
 
