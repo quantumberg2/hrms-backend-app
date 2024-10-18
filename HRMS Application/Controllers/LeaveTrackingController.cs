@@ -48,7 +48,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost]
-        [Authorize(new[] { "Admin", "User","Manager" })]
+        [Authorize(new[] { "Admin", "User" })]
         public async Task<IActionResult> CreateLeaveTracking([FromBody] LeaveTrackingDTO leaveTrackingDto)
         {
             _logger.LogInformation("Apply leave method started");

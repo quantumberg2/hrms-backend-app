@@ -16,12 +16,15 @@ namespace HRMS_Application.BusinessLogic.Implements
         private readonly IJwtUtils _jwtUtils;
         private List<string>? dToken;
         private int? _decodedToken;
-        public LeaveTrackingImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IAlertEmailOperations alertEmail)
+        private readonly IAzureOperations _azureOperations;
+
+        public LeaveTrackingImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IAlertEmailOperations alertEmail,IAzureOperations azureOperations)
         {
             _hrmsContext = hrmscontext;
             _httpContextAccessor = httpContextAccessor;
             _jwtUtils = jwtUtils;
             _alertEmail = alertEmail;
+            _azureOperations = azureOperations
         }
         private void DecodeToken()
         {
@@ -76,59 +79,122 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
 
 
+        /* public async Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId)
+         {
+             DecodeToken();
+             leaveTracking.EmpCredentialId = empCredentialId;
+
+             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+             await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+             var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                                  join ec in _hrmsContext.EmployeeCredentials
+                                  on lt.EmpCredentialId equals ec.Id
+                                  where lt.EmpCredentialId == empCredentialId
+                                  select new
+                                  {
+                                      Email = ec.Email,
+                                      UserName = ec.UserName,
+                                      StartDate = lt.Startdate,
+                                      EndDate = lt.Enddate
+                                  }).FirstOrDefaultAsync();
+
+             if (empInfo == null)
+             {
+                 throw new Exception("Employee information not found.");
+             }
+
+             var parameters = new Dictionary<string, string>
+                 {
+                     { "To", empInfo.Email },
+                     { "EmployeeName", empInfo.UserName },
+                     { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                     { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+                 };
+
+             *//*string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
+             string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);*//*
+
+             string emailTemplate = constants.LeaveNotificationTemplate;
+
+             string bodyMessage = "";
+
+             parameters["Subject"] = "Leave Request Received";
+             bodyMessage = "Your leave request has been successfully submitted and is pending approval.";
+
+             parameters["BodyMessage"] = bodyMessage;
+
+             foreach (var param in parameters)
+             {
+                 emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+             }
+
+             await _alertEmail.SendEmailAsync(emailTemplate, parameters);
+             await _hrmsContext.SaveChangesAsync();
+
+             return leaveTracking;
+         }
+ */
         public async Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId)
         {
             DecodeToken();
             leaveTracking.EmpCredentialId = empCredentialId;
 
-            
-            await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
-            await _hrmsContext.SaveChangesAsync(_decodedToken);
-
-            var empInfo = await (from lt in _hrmsContext.LeaveTrackings
-                                 join ec in _hrmsContext.EmployeeCredentials
-                                 on lt.EmpCredentialId equals ec.Id
-                                 where lt.EmpCredentialId == empCredentialId
-                                 select new
-                                 {
-                                     Email = ec.Email,
-                                     UserName = ec.UserName,
-                                     StartDate = lt.Startdate,
-                                     EndDate = lt.Enddate
-                                 }).FirstOrDefaultAsync();
-
-            if (empInfo == null)
+            try
             {
-                throw new Exception("Employee information not found.");
-            }
+                // Store the file in Azure and get the URL
+                string fileUrl = await _azureOperations.StoreFilesInAzure(leaveTracking.Files, "hrms-profile-pics");
+                leaveTracking.Files = fileUrl;  // Update leaveTracking.Files with the URL
 
-            var parameters = new Dictionary<string, string>
+                // Add leave tracking record
+                await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+                await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+                // Retrieve employee information
+                var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                                     join ec in _hrmsContext.EmployeeCredentials
+                                     on lt.EmpCredentialId equals ec.Id
+                                     where lt.EmpCredentialId == empCredentialId
+                                     select new
+                                     {
+                                         Email = ec.Email,
+                                         UserName = ec.UserName,
+                                         StartDate = lt.Startdate,
+                                         EndDate = lt.Enddate
+                                     }).FirstOrDefaultAsync();
+
+                if (empInfo == null)
                 {
-                    { "To", empInfo.Email },
-                    { "EmployeeName", empInfo.UserName },
-                    { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
-                    { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
-                };
+                    throw new Exception("Employee information not found.");
+                }
 
-            /*string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
-            string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);*/
+                // Prepare email parameters
+                var parameters = new Dictionary<string, string>
+        {
+            { "To", empInfo.Email },
+            { "EmployeeName", empInfo.UserName },
+            { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+            { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+            { "Subject", "Leave Request Received" },
+            { "BodyMessage", "Your leave request has been successfully submitted and is pending approval." }
+        };
 
-            string emailTemplate = constants.LeaveNotificationTemplate;
+                // Prepare email template
+                string emailTemplate = constants.LeaveNotificationTemplate;
+                foreach (var param in parameters)
+                {
+                    emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+                }
 
-            string bodyMessage = "";
-
-            parameters["Subject"] = "Leave Request Received";
-            bodyMessage = "Your leave request has been successfully submitted and is pending approval.";
-
-            parameters["BodyMessage"] = bodyMessage;
-
-            foreach (var param in parameters)
-            {
-                emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+                // Send email notification
+                await _alertEmail.SendEmailAsync(emailTemplate, parameters);
             }
-
-            await _alertEmail.SendEmailAsync(emailTemplate, parameters);
-            await _hrmsContext.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                // Consider logging the error
+                _logger.LogError(ex, "Error occurred while creating leave tracking");
+                throw;  // Re-throw or handle as necessary
+            }
 
             return leaveTracking;
         }

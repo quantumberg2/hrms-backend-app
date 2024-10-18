@@ -2,6 +2,7 @@
 using HRMS_Application.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -21,8 +22,29 @@ namespace HRMS_Application.Controllers
         {
             try
             {
-                var orgChart = await _orgChartService.GetOrganizationChartAsync();
-                return Ok(orgChart); // Return the hierarchy
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+                var orgChart = await _orgChartService.GetOrganizationChartAsync(companyId);
+                return Ok(orgChart); 
             }
             catch (Exception ex)
             {

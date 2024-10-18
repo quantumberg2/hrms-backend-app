@@ -13,14 +13,14 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             _hrmsContext = hrmsContext;
         }
-        public async Task<OrgChartNode> GetOrganizationChartAsync()
+        public async Task<OrgChartNode> GetOrganizationChartAsync(int companyId)
         {
             var employees = await _hrmsContext.EmployeeDetails
-                            .Where(e => e.IsActive == 1)
+                            .Where(e => e.IsActive == 1 && e.RequestCompanyId == companyId)
                             .ToListAsync();
 
             var positions = await _hrmsContext.Positions
-                            .Where(p => p.IsActive == 1)
+                            .Where(p => p.IsActive == 1 && p.RequestedCompanyId == companyId)
                             .ToListAsync();
 
             var employeeLookup = new Dictionary<int, EmployeeDetail>();
