@@ -105,7 +105,6 @@ namespace HRMS_Application.Controllers
                       return BadRequest("Invalid Company ID in token.");
                 }
 
-               // companyDetail.RequestedCompanyId = companyId;
 
                 var result = _companyDetails.InsertCompanyDetails(companyDetail,companyId);
 

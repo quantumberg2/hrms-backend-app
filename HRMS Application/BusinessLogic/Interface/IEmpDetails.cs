@@ -27,6 +27,8 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<string> UpdateImageUrl(int empcredId, IFormFile file);
 
         public UserDetailsDTO GetUserDetails(int empcredId, int companyId);
+        public List<EmployeeDetail> GetFiltersbymanager(GlobalsearchEmp globalSearch, int companyId,int managerId);
+
 
     }
 

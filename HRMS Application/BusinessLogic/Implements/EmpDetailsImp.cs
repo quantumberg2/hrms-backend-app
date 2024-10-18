@@ -364,6 +364,29 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             return filteredEmployees;
         }
+        public List<EmployeeDetail> GetFiltersbymanager(GlobalsearchEmp globalSearch, int companyId, int managerId)
+        {
+            List<EmployeeDetail> filteredEmployees = new List<EmployeeDetail>();
+            var filterby = globalSearch.FilterBy.Trim().ToLowerInvariant();
+            if (!string.IsNullOrEmpty(filterby))
+            {
+                var query = (from ed in _hrmsContext.EmployeeDetails
+                             join ec in _hrmsContext.EmployeeCredentials
+                             on ed.EmployeeCredentialId equals ec.Id
+                             where ec.RequestedCompanyId == companyId && ed.ManagerId == managerId
+                             && (ed.FirstName.ToLower().Contains(filterby)
+                             || ed.LastName.ToLower().Contains(filterby)
+                             || ed.MiddleName.ToLower().Contains(filterby)
+                             || ed.Email.ToLower().Contains(filterby)
+                             || ed.EmployeeNumber.ToLower().Contains(filterby)
+                             || ed.EmployeeCredentialId.ToString().Contains(filterby))
+                             select ed).ToList();
+
+                filteredEmployees = query;
+                ;
+            }
+            return filteredEmployees;
+        }
         public async Task<bool> UpdateEmployeeInfoAsync(UpdateEmployeeInfoDTO updateEmployeeInfo)
         {
             // Check if the employee, credential, and personal info exist

@@ -189,7 +189,6 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpGet("EmployeeSearch/")]
-
         public IActionResult Get([FromQuery] GlobalsearchEmp globalsearch)
         {
             try
@@ -219,6 +218,51 @@ namespace HRMS_Application.Controllers
                 }
 
                 var model = _Empdetails.GetFilters(globalsearch,companyId);
+
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving all employees.");
+                return StatusCode(500, "An error occurred while fetching employee data.");
+            }
+        }
+
+        [HttpGet("EmployeeSearchbyManager/")]
+        public IActionResult GetfiltersbyManager([FromQuery] GlobalsearchEmp globalsearch)
+        {
+            try
+            {
+                // Retrieve the Authorization token
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to get the company ID
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Extract the CompanyId from the token
+                var empCredentialClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId");
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+
+                if (empCredentialClaim == null || companyIdClaim == null)
+                {
+                    return Unauthorized("UserId or CompanyId not found in token.");
+                }
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+                // Parse the company ID
+                if (!int.TryParse(empCredentialClaim.Value, out int managerId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                var model = _Empdetails.GetFiltersbymanager(globalsearch, companyId, managerId);
 
                 return Ok(model);
             }
