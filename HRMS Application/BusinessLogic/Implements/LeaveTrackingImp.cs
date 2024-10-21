@@ -144,9 +144,10 @@ namespace HRMS_Application.BusinessLogic.Implements
             var overlappingLeave = await _hrmsContext.LeaveTrackings
                 .Where(lt => lt.EmpCredentialId == empCredentialId &&
                              (lt.Status == "Pending" || lt.Status == "Approved") &&
-                            ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
-                             (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
-                             (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)))
+                             ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within an existing leave
+                              (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within an existing leave
+                              (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||   // New leave fully overlaps existing
+                              (leaveTracking.Enddate == lt.Startdate || leaveTracking.Startdate == lt.Enddate)))    // End touches Start or Start touches End
                 .FirstOrDefaultAsync();
 
             // If an overlapping leave exists, return appropriate messages
@@ -161,6 +162,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     throw new Exception($"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
                 }
             }
+
 
             // If no overlap, proceed to create the leave request
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
@@ -655,28 +657,30 @@ namespace HRMS_Application.BusinessLogic.Implements
         .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
         .FirstOrDefaultAsync();
 
-    // Check for overlapping leave requests
-    var overlappingLeave = await _hrmsContext.LeaveTrackings
-        .Where(lt => lt.EmpCredentialId == empCredentialId &&
-                     ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
-                      (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
-                      (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)))
-        .Select(lt => new { lt.Status, lt.Startdate, lt.Enddate })
-        .FirstOrDefaultAsync();
+            // Check if there are overlapping leave requests in "Pending" or "Approved" states
+            var overlappingLeave = await _hrmsContext.LeaveTrackings
+                .Where(lt => lt.EmpCredentialId == empCredentialId &&
+                             (lt.Status == "Pending" || lt.Status == "Approved") &&
+                             ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within an existing leave
+                              (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within an existing leave
+                              (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||   // New leave fully overlaps existing
+                              (leaveTracking.Enddate == lt.Startdate || leaveTracking.Startdate == lt.Enddate)))    // End touches Start or Start touches End
+                .FirstOrDefaultAsync();
 
-    if (overlappingLeave != null)
-    {
-        if (overlappingLeave.Status == "Pending")
-        {
-            throw new Exception($"There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
-        }
-        else if (overlappingLeave.Status == "Approved")
-        {
-            throw new Exception($"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
-        }
-    }
+            // If an overlapping leave exists, return appropriate messages
+            if (overlappingLeave != null)
+            {
+                if (overlappingLeave.Status == "Pending")
+                {
+                    throw new Exception($"There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
+                }
+                else if (overlappingLeave.Status == "Approved")
+                {
+                    throw new Exception($"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
+                }
+            }
 
-    if (leaveAllocation != null && leaveType != null)
+            if (leaveAllocation != null && leaveType != null)
     {
         int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
 
