@@ -79,15 +79,94 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
 
 
+        /*    public async Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId)
+            {
+                DecodeToken();
+                leaveTracking.EmpCredentialId = empCredentialId;
+
+
+                await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+                await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+                var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                                     join ec in _hrmsContext.EmployeeCredentials
+                                     on lt.EmpCredentialId equals ec.Id
+                                     where lt.EmpCredentialId == empCredentialId
+                                     select new
+                                     {
+                                         Email = ec.Email,
+                                         UserName = ec.UserName,
+                                         StartDate = lt.Startdate,
+                                         EndDate = lt.Enddate
+                                     }).FirstOrDefaultAsync();
+
+                if (empInfo == null)
+                {
+                    throw new Exception("Employee information not found.");
+                }
+
+                var parameters = new Dictionary<string, string>
+            {
+                { "To", empInfo.Email },
+                { "EmployeeName", empInfo.UserName },
+                { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+            };
+
+                *//*string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
+                string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);*//*
+
+                string emailTemplate = constants.LeaveNotificationTemplate;
+
+                string bodyMessage = "";
+
+                parameters["Subject"] = "Leave Request Received";
+                bodyMessage = "Your leave request has been successfully submitted and is pending approval.";
+
+                parameters["BodyMessage"] = bodyMessage;
+
+                foreach (var param in parameters)
+                {
+                    emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+                }
+
+                await _alertEmail.SendEmailAsync(emailTemplate, parameters);
+                await _hrmsContext.SaveChangesAsync();
+
+                return leaveTracking;
+            }*/
         public async Task<LeaveTracking> CreateAsync(LeaveTracking leaveTracking, int empCredentialId)
         {
             DecodeToken();
             leaveTracking.EmpCredentialId = empCredentialId;
 
+            // Check if there are overlapping leave requests in "Pending" or "Approved" states
+            var overlappingLeave = await _hrmsContext.LeaveTrackings
+                .Where(lt => lt.EmpCredentialId == empCredentialId &&
+                             (lt.Status == "Pending" || lt.Status == "Approved") &&
+                            ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
+                             (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
+                             (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)))
+                .FirstOrDefaultAsync();
 
+            // If an overlapping leave exists, return appropriate messages
+            if (overlappingLeave != null)
+            {
+                if (overlappingLeave.Status == "Pending")
+                {
+                    throw new Exception($"There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
+                }
+                else if (overlappingLeave.Status == "Approved")
+                {
+                    throw new Exception($"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
+                }
+            }
+
+            // If no overlap, proceed to create the leave request
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
             await _hrmsContext.SaveChangesAsync(_decodedToken);
 
+            // Fetch employee information to send notification
             var empInfo = await (from lt in _hrmsContext.LeaveTrackings
                                  join ec in _hrmsContext.EmployeeCredentials
                                  on lt.EmpCredentialId equals ec.Id
@@ -105,31 +184,28 @@ namespace HRMS_Application.BusinessLogic.Implements
                 throw new Exception("Employee information not found.");
             }
 
+            // Prepare email parameters for notification
             var parameters = new Dictionary<string, string>
-        {
-            { "To", empInfo.Email },
-            { "EmployeeName", empInfo.UserName },
-            { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
-            { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
-        };
-
-            /*string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html"; 
-            string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);*/
+    {
+        { "To", empInfo.Email },
+        { "EmployeeName", empInfo.UserName },
+        { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+        { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+    };
 
             string emailTemplate = constants.LeaveNotificationTemplate;
-
-            string bodyMessage = "";
+            string bodyMessage = "Your leave request has been successfully submitted and is pending approval.";
 
             parameters["Subject"] = "Leave Request Received";
-            bodyMessage = "Your leave request has been successfully submitted and is pending approval.";
-
             parameters["BodyMessage"] = bodyMessage;
 
+            // Replace placeholders in the email template
             foreach (var param in parameters)
             {
                 emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
             }
 
+            // Send the notification email
             await _alertEmail.SendEmailAsync(emailTemplate, parameters);
             await _hrmsContext.SaveChangesAsync();
 
@@ -137,9 +213,9 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
 
 
-            public async Task<LeaveTracking> UpdateLeaveAsync(int id, string newStatus)
-        {
-            var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
+        public async Task<LeaveTracking> UpdateLeaveAsync(int id, string newStatus)
+            {
+             var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
                                        where row.Id == id
                                        select row).FirstOrDefaultAsync();
 
@@ -465,65 +541,186 @@ namespace HRMS_Application.BusinessLogic.Implements
             return false;
         }
 
+        /*  public async Task<LeaveTracking> ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId)
+          {
+              DecodeToken();
+
+              leaveTracking.EmpCredentialId = empCredentialId;
+
+              var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                           where row.EmpCredentialId == empCredentialId && row.IsActive == 1
+                                           select row).FirstOrDefaultAsync();
+
+              var leaveType = await _hrmsContext.LeaveTypes
+                  .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
+                  .FirstOrDefaultAsync();
+
+              // Check if there are overlapping leave requests in "Pending" state
+              bool isOverlap = await _hrmsContext.LeaveTrackings
+                  .AnyAsync(lt => lt.EmpCredentialId == empCredentialId &&
+                                   (lt.Status == "Pending" || lt.Status == "Approved") &&
+                                  ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
+                                   (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
+                                   (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)));
+
+              if (isOverlap)
+              {
+                  throw new Exception("There is already a pending leave request for the specified dates.");
+              }
+
+              if (leaveAllocation != null && leaveType != null)
+              {
+                  int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+
+                  if (leaveType.Days < totalLeaveDays)
+                  {
+                      throw new InvalidOperationException($"Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.");
+                  }
+
+                  if (leaveAllocation.RemainingLeave < totalLeaveDays)
+                  {
+                      throw new InvalidOperationException("Requested leave exceeds remaining leave.");
+                  }
+
+                  if (leaveTracking.Status == "Pending")
+                  {
+                      leaveAllocation.RemainingLeave -= totalLeaveDays;
+
+                      await _hrmsContext.SaveChangesAsync(_decodedToken);
+                  }
+              }
+
+              await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+              await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+              // Fetch employee information for email
+              var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                                   join ec in _hrmsContext.EmployeeCredentials
+                                   on lt.EmpCredentialId equals ec.Id
+                                   where lt.EmpCredentialId == empCredentialId
+                                   select new
+                                   {
+                                       Email = ec.Email,
+                                       UserName = ec.UserName,
+                                       StartDate = lt.Startdate,
+                                       EndDate = lt.Enddate
+                                   }).FirstOrDefaultAsync();
+
+              if (empInfo == null)
+              {
+                  throw new Exception("Employee information not found.");
+              }
+
+              // Prepare email parameters
+              var parameters = new Dictionary<string, string>
+      {
+          { "To", empInfo.Email },
+          { "EmployeeName", empInfo.UserName },
+          { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+          { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+      };
+
+              *//*string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html";
+              string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);*//*
+
+              string emailTemplate = constants.LeaveNotificationTemplate;
+
+              string bodyMessage = "A leave request has been successfully applied on your behalf and is pending approval.";
+
+              parameters["Subject"] = "Leave Request Applied on Your Behalf";
+              parameters["BodyMessage"] = bodyMessage;
+
+              foreach (var param in parameters)
+              {
+                  emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+              }
+
+              await _alertEmail.SendEmailAsync(emailTemplate, parameters);
+              await _hrmsContext.SaveChangesAsync();
+
+              return leaveTracking;
+          }
+  */
         public async Task<LeaveTracking> ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId)
         {
-            DecodeToken();
+         DecodeToken();
 
-            leaveTracking.EmpCredentialId = empCredentialId;
+        leaveTracking.EmpCredentialId = empCredentialId;
 
-            var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
-                                         where row.EmpCredentialId == empCredentialId && row.IsActive == 1
-                                         select row).FirstOrDefaultAsync();
+         var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                 where row.EmpCredentialId == empCredentialId && row.IsActive == 1
+                                 select row).FirstOrDefaultAsync();
 
-            var leaveType = await _hrmsContext.LeaveTypes
-                .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
-                .FirstOrDefaultAsync();
+    var leaveType = await _hrmsContext.LeaveTypes
+        .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
+        .FirstOrDefaultAsync();
 
-            if (leaveAllocation != null && leaveType != null)
-            {
-                int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+    // Check for overlapping leave requests
+    var overlappingLeave = await _hrmsContext.LeaveTrackings
+        .Where(lt => lt.EmpCredentialId == empCredentialId &&
+                     ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
+                      (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
+                      (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)))
+        .Select(lt => new { lt.Status, lt.Startdate, lt.Enddate })
+        .FirstOrDefaultAsync();
 
-                if (leaveType.Days < totalLeaveDays)
-                {
-                    throw new InvalidOperationException($"Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.");
-                }
+    if (overlappingLeave != null)
+    {
+        if (overlappingLeave.Status == "Pending")
+        {
+            throw new Exception($"There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
+        }
+        else if (overlappingLeave.Status == "Approved")
+        {
+            throw new Exception($"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
+        }
+    }
 
-                if (leaveAllocation.RemainingLeave < totalLeaveDays)
-                {
-                    throw new InvalidOperationException("Requested leave exceeds remaining leave.");
-                }
+    if (leaveAllocation != null && leaveType != null)
+    {
+        int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
 
-                if (leaveTracking.Status == "Pending")
-                {
-                    leaveAllocation.RemainingLeave -= totalLeaveDays;
+        if (leaveType.Days < totalLeaveDays)
+        {
+            throw new InvalidOperationException($"Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.");
+        }
 
-                    await _hrmsContext.SaveChangesAsync(_decodedToken);
-                }
-            }
+        if (leaveAllocation.RemainingLeave < totalLeaveDays)
+        {
+            throw new InvalidOperationException("Requested leave exceeds remaining leave.");
+        }
 
-            await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+        if (leaveTracking.Status == "Pending")
+        {
+            leaveAllocation.RemainingLeave -= totalLeaveDays;
+
             await _hrmsContext.SaveChangesAsync(_decodedToken);
+        }
+    }
 
-            // Fetch employee information for email
-            var empInfo = await (from lt in _hrmsContext.LeaveTrackings
-                                 join ec in _hrmsContext.EmployeeCredentials
-                                 on lt.EmpCredentialId equals ec.Id
-                                 where lt.EmpCredentialId == empCredentialId
-                                 select new
-                                 {
-                                     Email = ec.Email,
-                                     UserName = ec.UserName,
-                                     StartDate = lt.Startdate,
-                                     EndDate = lt.Enddate
-                                 }).FirstOrDefaultAsync();
+    await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+    await _hrmsContext.SaveChangesAsync(_decodedToken);
 
-            if (empInfo == null)
-            {
-                throw new Exception("Employee information not found.");
-            }
+    // Fetch employee information for email
+    var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                         join ec in _hrmsContext.EmployeeCredentials
+                         on lt.EmpCredentialId equals ec.Id
+                         where lt.EmpCredentialId == empCredentialId
+                         select new
+                         {
+                             Email = ec.Email,
+                             UserName = ec.UserName,
+                             StartDate = lt.Startdate,
+                             EndDate = lt.Enddate
+                         }).FirstOrDefaultAsync();
 
-            // Prepare email parameters
-            var parameters = new Dictionary<string, string>
+    if (empInfo == null)
+    {
+        throw new Exception("Employee information not found.");
+    }
+
+    // Prepare email parameters
+    var parameters = new Dictionary<string, string>
     {
         { "To", empInfo.Email },
         { "EmployeeName", empInfo.UserName },
@@ -531,27 +728,23 @@ namespace HRMS_Application.BusinessLogic.Implements
         { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
     };
 
-            /*string templatePath = Directory.GetCurrentDirectory() + "\\LeaveNotificationTemplate.html";
-            string emailTemplate = await System.IO.File.ReadAllTextAsync(templatePath);*/
+    string emailTemplate = constants.LeaveNotificationTemplate;
 
-            string emailTemplate = constants.LeaveNotificationTemplate;
+    string bodyMessage = "A leave request has been successfully applied on your behalf and is pending approval.";
 
-            string bodyMessage = "A leave request has been successfully applied on your behalf and is pending approval.";
+    parameters["Subject"] = "Leave Request Applied on Your Behalf";
+    parameters["BodyMessage"] = bodyMessage;
 
-            parameters["Subject"] = "Leave Request Applied on Your Behalf";
-            parameters["BodyMessage"] = bodyMessage;
+    foreach (var param in parameters)
+    {
+        emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+    }
 
-            foreach (var param in parameters)
-            {
-                emailTemplate = emailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
-            }
+    await _alertEmail.SendEmailAsync(emailTemplate, parameters);
+    await _hrmsContext.SaveChangesAsync();
 
-            await _alertEmail.SendEmailAsync(emailTemplate, parameters);
-            await _hrmsContext.SaveChangesAsync();
-
-            return leaveTracking;
-        }
-
+    return leaveTracking;
+}
 
 
         public List<LeavePendingDTO> GetPendingLeaves(int employeeCredentialId)

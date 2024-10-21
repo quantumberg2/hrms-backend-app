@@ -938,17 +938,16 @@ namespace HRMS_Application.BusinessLogic.Implements
             var holidayCount = GetHolidayCount(month);
             var lateInCount = attendances.Count(a => a.TimeIn.HasValue && a.TimeIn.Value.TimeOfDay > shiftStart);
             var earlyOutCount = attendances.Count(a => a.Timeout.HasValue && a.Timeout.Value.TimeOfDay < shiftEnd);
+            var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);  
 
             var countedDays = presentCount + absentCount + leaveTakenCount;
-            var restDays = totalWorkingDays - countedDays;
-            var restDaysPercentage = restDays > 0 ? (double)restDays / totalWorkingDays * 100 : 0;
+            var restDays = daysInMonth - countedDays;
+            var restDaysPercentage = restDays > 0 ? (double)restDays / daysInMonth * 100 : 0;
 
-            // Calculate percentages
-            var presentPercentage = totalWorkingDays > 0 ? (double)presentCount / totalWorkingDays * 100 : 0;
-            var absentPercentage = totalWorkingDays > 0 ? (double)absentCount / totalWorkingDays * 100 : 0;
-            var leaveTakenPercentage = totalWorkingDays > 0 ? (double)leaveTakenCount / totalWorkingDays * 100 : 0;
+            var presentPercentage = daysInMonth > 0 ? (double)presentCount / daysInMonth * 100 : 0;
+            var absentPercentage = daysInMonth > 0 ? (double)absentCount / daysInMonth * 100 : 0;
+            var leaveTakenPercentage = daysInMonth > 0 ? (double)leaveTakenCount / daysInMonth * 100 : 0;
 
-            var daysInMonth = DateTime.DaysInMonth(month.Year, month.Month);  // Total days in the month
             var holidayPercentage = (double)holidayCount / daysInMonth * 100;
 
             return new MonthlyAttendanceStatistics
