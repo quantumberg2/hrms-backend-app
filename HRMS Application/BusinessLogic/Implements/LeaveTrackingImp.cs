@@ -139,8 +139,16 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             DecodeToken();
             leaveTracking.EmpCredentialId = empCredentialId;
+            // Check if the employee has the leave type assigned
+            var leaveAllocation = await _hrmsContext.EmployeeLeaveAllocations
+                .FirstOrDefaultAsync(la => la.EmpCredentialId == empCredentialId && la.IsActive == 1);
 
-          var overlappingLeave = await _hrmsContext.LeaveTrackings
+            if (leaveAllocation == null || leaveAllocation.LeaveType == null)
+            {
+                throw new Exception("The employee does not have an assigned leave type.");
+            }
+
+            var overlappingLeave = await _hrmsContext.LeaveTrackings
     .Where(lt => lt.EmpCredentialId == empCredentialId &&
                  (lt.Status == "Pending" || lt.Status == "Approved") &&
                  (
