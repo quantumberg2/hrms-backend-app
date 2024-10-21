@@ -384,6 +384,8 @@ namespace HRMS_Application.Controllers
             }
         }
         [HttpGet("monthly-statistics")]
+        [Authorize(new[] { "Admin","User","HR" })]
+
         public IActionResult GetMonthlyStatistics(DateTime month)
         {
             try
@@ -417,6 +419,31 @@ namespace HRMS_Application.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+        [HttpGet("monthlyAttendence")]
+        [Authorize(new[] { "Admin", "User", "HR" })]
+        public IActionResult GetMonthlyStatisticsforManager(int empCredentialId, DateTime month)
+        {
+            try
+            {
+                // Validate empCredentialId
+                if (empCredentialId <= 0)
+                {
+                    return BadRequest("Invalid Employee Credential ID.");
+                }
+
+                // Fetch the monthly statistics using the provided empCredentialId
+                var statistics = _Empdetails.GetMonthlyStatistics(empCredentialId, month);
+
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
 
         [HttpPut("UpdateProfileImageUrl")]
         [Authorize(new[] { "Admin", "User","HR" })]

@@ -22,7 +22,7 @@ namespace HRMS_Application.Controllers
             _logger = logger;
         }
         [HttpGet]
-        [Authorize(new[] { "Admin", "Developer" })]
+        [Authorize(new[] { "Admin", "User","HR" })]
         public List<Attendance> GetAllEmpDetails()
         {
             _logger.LogInformation("Get all department method started");
@@ -54,7 +54,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpGet("GetByCredId")]
-        [Authorize(new[] {"Admin"})]
+        [Authorize(new[] {"Admin","User","HR"})]
         public IActionResult GetAttendanceByCredId(int empCredId)
         {
             _logger.LogInformation("Get Attendance details by passing Employee credential id method started");

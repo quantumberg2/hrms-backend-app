@@ -821,14 +821,26 @@ namespace HRMS_Application.BusinessLogic.Implements
             var shiftEnd = DateTime.Parse(timeRange[1].Trim()).TimeOfDay;   
             var standardWorkDayHours = (shiftEnd - shiftStart).TotalHours;
 
+            var totalworkhrs = (standardWorkDayHours);
+
             // Calculate total working days
             var totalWorkingDays = CalculateTotalWorkingDays(month);
 
-            // Initialize total hours worked
-            TimeSpan? totalHoursWorked = TimeSpan.FromHours(standardWorkDayHours);
+            var totalHoursWorked = totalworkhrs * totalWorkingDays;
+            // Initialize tovtal hours worked
             double totalPresentHours = 0; // To calculate average work hours for present status
             double totalTimeIn = 0;
             double totalTimeOut = 0;
+            double totalOvertimeHours = 0; // To calculate total overtime hours for the month
+
+            TimeSpan totalWorkTime = TimeSpan.Zero; // To calculate total work time for the month
+            TimeSpan totalOverTime = TimeSpan.Zero;
+            TimeSpan LessHours = TimeSpan.Zero; // Initialize LessHours at the start
+
+            // List to hold date-wise attendance data
+            var dateWiseAttendance = new List<DateWiseAttendance>();
+
+            DateWiseAttendance specificDayAttendance = null;
 
 
             foreach (var attendance in attendances)
@@ -839,40 +851,83 @@ namespace HRMS_Application.BusinessLogic.Implements
                     TimeSpan effectiveTimeOut = attendance.Timeout.Value.TimeOfDay;
 
                     TimeSpan workStart = effectiveTimeIn < shiftStart ? shiftStart : effectiveTimeIn; 
-                    TimeSpan workEnd = effectiveTimeOut > shiftEnd ? shiftEnd : effectiveTimeOut;    
+                    TimeSpan workEnd = effectiveTimeOut > shiftEnd ? shiftEnd : effectiveTimeOut;
 
+                    TimeSpan workTime = effectiveTimeOut - effectiveTimeIn;
+                    double workedHourstime = (workEnd - workStart).TotalHours;
+
+
+                    TimeSpan overtime = TimeSpan.Zero;
+                    if (workTime.TotalHours > workedHourstime)
+                    {
+                        overtime = workTime - TimeSpan.FromHours(workedHourstime);
+                    }
+                  
                     if (workStart < workEnd)
                     {
+                        TimeSpan workTimes = effectiveTimeOut - effectiveTimeIn;
+                        totalWorkTime += workTimes; // Accumulate total work time for all dates
+                        totalOverTime += overtime;
+                     
                         double workedHours = (workEnd - workStart).TotalHours;
-                        //totalHoursWorked += workedHours;
-
+                           if (workTimes.TotalHours < standardWorkDayHours)
+                           {
+                                double lessHours = standardWorkDayHours - workTimes.TotalHours; // Calculate the difference in hours
+                                LessHours += TimeSpan.FromHours(lessHours); // Accumulate LessHours
+                           }
                         // If status is "Present", add to total present hours
                         if (attendance.Status == "Present")
                         {
                             totalPresentHours += workedHours;
                             totalTimeIn += attendance.TimeIn.Value.TimeOfDay.TotalHours;
                             totalTimeOut += attendance.Timeout.Value.TimeOfDay.TotalHours;
+                            totalOvertimeHours += overtime.TotalHours; // Add overtime hours
+
+                            // Add date-wise entry to the list
+                            var attendanceEntry = new DateWiseAttendance
+                            {
+                                Date = attendance.Date.Value,
+                                TimeIn = attendance.TimeIn.Value.ToString(@"hh\:mm\:ss"),
+                                TimeOut = attendance.Timeout.Value.ToString(@"hh\:mm\:ss"),
+                                // WorkTime = (workEnd - workStart).ToString(@"hh\:mm"), // Add work time
+                                WorkTime = workTime.ToString(@"hh\:mm"),  // Work time in hh:mm format
+                                Overtime = overtime.ToString(@"hh\:mm"),
+                                Status = attendance.Status
+                            };
+
+                            dateWiseAttendance.Add(attendanceEntry);
+
+                            // Check if it's the specific day (e.g., 2024-10-10)
+                            if (attendance.Date.Value.Date == month.Date)
+                            {
+                                specificDayAttendance = attendanceEntry;
+                            }
                         }
+
                     }
                 }
             }
            
             var presentDaysCount = attendances.Count(a => a.Status == "Present");
-            var avgworkhours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0;
+            //var avgworkhours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0;
+            var avgworkhours = presentDaysCount > 0 ? totalPresentHours : 0;
 
             var averageWorkHours = TimeSpan.FromHours(avgworkhours);  // Prevent division by zero
-           
-
+            
             var averageTimeInHours = presentDaysCount > 0 ? totalTimeIn / presentDaysCount : 0;
             var averageTimeOutHours = presentDaysCount > 0 ? totalTimeOut / presentDaysCount : 0;
 
             // Convert average hours to TimeSpan
             var averageTimeIn = TimeSpan.FromHours(averageTimeInHours);
             var averageTimeOut = TimeSpan.FromHours(averageTimeOutHours);
+            
+            double averageOvertimeHours = presentDaysCount > 0 ? totalOvertimeHours / presentDaysCount : 0;
+            var averageOvertime = TimeSpan.FromHours(averageOvertimeHours);
 
-           /* // Format as hh:mm:ss
-            var formattedAverageTimeIn = averageTimeIn.ToString(@"hh\:mm\:ss");
-            var formattedAverageTimeOut = averageTimeOut.ToString(@"hh\:mm\:ss");*/
+
+            /* // Format as hh:mm:ss
+             var formattedAverageTimeIn = averageTimeIn.ToString(@"hh\:mm\:ss");
+             var formattedAverageTimeOut = averageTimeOut.ToString(@"hh\:mm\:ss");*/
 
             // Calculate counts for various attendance statuses
             var presentCount = attendances.Count(a => a.Status == "Present");
@@ -901,7 +956,11 @@ namespace HRMS_Application.BusinessLogic.Implements
                 EmployeecredntialId = empCredentialId,
                 TotalWorkingDays = totalWorkingDays,
                 TotalHoursWorked = totalHoursWorked,//Average Work Hours in a month
-                AverageWorkHours = averageWorkHours.ToString(@"hh\:mm\:ss"),//Employee Work Hours in a month
+                AverageWorkHours = averageWorkHours.ToString(@"hh\:mm"),//Employee Work Hours in a month
+                AverageOvertime = averageOvertime.ToString(@"hh\:mm"), // Average overtime in hh:mm format
+                TotalWorkplusOT = totalWorkTime.ToString(@"hh\:mm"), // Total work time in hh:mm format
+                TotalOverTime = totalOverTime.ToString(@"hh\:mm"),
+                LessHoursTime = LessHours.ToString(@"hh\:mm"), // Add LessHours to the return object
                 LateInCount = lateInCount,
                 EarlyOutCount = earlyOutCount,
                 AbsentCount = absentCount,
@@ -913,7 +972,12 @@ namespace HRMS_Application.BusinessLogic.Implements
                 AvgTimeouT = averageTimeOut.ToString(@"hh\:mm\:ss"),
                 HolidayPercentage = holidayPercentage,
                 RestDaysPercentage = restDaysPercentage,
-                PenaltyCount = PenaltyleaveTakenCount
+                PenaltyCount = PenaltyleaveTakenCount,
+
+                // Return specific day attendance if found
+                SpecificDayAttendance = specificDayAttendance,
+                DateWiseAttendance = dateWiseAttendance
+
             };
         }
         private int GetHolidayCount(DateTime month)
