@@ -22,7 +22,7 @@ namespace HRMS_Application.Controllers
             _logger = logger;
         }
         [HttpGet]
-        [Authorize(new[] { "Admin", "User","HR" })]
+        [Authorize(new[] { "Admin", "Developer" })]
         public List<Attendance> GetAllEmpDetails()
         {
             _logger.LogInformation("Get all department method started");
