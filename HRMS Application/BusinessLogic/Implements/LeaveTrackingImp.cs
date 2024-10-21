@@ -146,8 +146,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                              (lt.Status == "Pending" || lt.Status == "Approved") &&
                              ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within an existing leave
                               (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within an existing leave
-                              (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||   // New leave fully overlaps existing
-                              (leaveTracking.Enddate == lt.Startdate || leaveTracking.Startdate == lt.Enddate)))    // End touches Start or Start touches End
+                              (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)) ||   // New leave fully overlaps existing
+                 !(leaveTracking.Enddate < lt.Startdate || leaveTracking.Startdate > lt.Enddate))  // No overlap if new leave is fully before or after
                 .FirstOrDefaultAsync();
 
             // If an overlapping leave exists, return appropriate messages
@@ -645,17 +645,17 @@ namespace HRMS_Application.BusinessLogic.Implements
   */
         public async Task<LeaveTracking> ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId)
         {
-         DecodeToken();
+          DecodeToken();
 
-        leaveTracking.EmpCredentialId = empCredentialId;
+          leaveTracking.EmpCredentialId = empCredentialId;
 
-         var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+          var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
                                  where row.EmpCredentialId == empCredentialId && row.IsActive == 1
                                  select row).FirstOrDefaultAsync();
 
-    var leaveType = await _hrmsContext.LeaveTypes
-        .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
-        .FirstOrDefaultAsync();
+         var leaveType = await _hrmsContext.LeaveTypes
+          .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
+          .FirstOrDefaultAsync();
 
             // Check if there are overlapping leave requests in "Pending" or "Approved" states
             var overlappingLeave = await _hrmsContext.LeaveTrackings
@@ -663,8 +663,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                              (lt.Status == "Pending" || lt.Status == "Approved") &&
                              ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within an existing leave
                               (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within an existing leave
-                              (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||   // New leave fully overlaps existing
-                              (leaveTracking.Enddate == lt.Startdate || leaveTracking.Startdate == lt.Enddate)))    // End touches Start or Start touches End
+                              (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)) ||   // New leave fully overlaps existing
+                 !(leaveTracking.Enddate < lt.Startdate || leaveTracking.Startdate > lt.Enddate))  // No overlap if new leave is fully before or after
                 .FirstOrDefaultAsync();
 
             // If an overlapping leave exists, return appropriate messages
@@ -681,32 +681,32 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
 
             if (leaveAllocation != null && leaveType != null)
-    {
-        int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+            {
+               int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
 
-        if (leaveType.Days < totalLeaveDays)
-        {
-            throw new InvalidOperationException($"Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.");
+            if (leaveType.Days < totalLeaveDays)
+            {
+              throw new InvalidOperationException($"Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.");
+            }
+
+            if (leaveAllocation.RemainingLeave < totalLeaveDays)
+            {
+              throw new InvalidOperationException("Requested leave exceeds remaining leave.");
+            }
+
+            if (leaveTracking.Status == "Pending")
+            {
+              leaveAllocation.RemainingLeave -= totalLeaveDays;
+
+              await _hrmsContext.SaveChangesAsync(_decodedToken);
+            }
         }
 
-        if (leaveAllocation.RemainingLeave < totalLeaveDays)
-        {
-            throw new InvalidOperationException("Requested leave exceeds remaining leave.");
-        }
+        await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+        await _hrmsContext.SaveChangesAsync(_decodedToken);
 
-        if (leaveTracking.Status == "Pending")
-        {
-            leaveAllocation.RemainingLeave -= totalLeaveDays;
-
-            await _hrmsContext.SaveChangesAsync(_decodedToken);
-        }
-    }
-
-    await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
-    await _hrmsContext.SaveChangesAsync(_decodedToken);
-
-    // Fetch employee information for email
-    var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+         // Fetch employee information for email
+             var empInfo = await (from lt in _hrmsContext.LeaveTrackings
                          join ec in _hrmsContext.EmployeeCredentials
                          on lt.EmpCredentialId equals ec.Id
                          where lt.EmpCredentialId == empCredentialId
@@ -718,19 +718,19 @@ namespace HRMS_Application.BusinessLogic.Implements
                              EndDate = lt.Enddate
                          }).FirstOrDefaultAsync();
 
-    if (empInfo == null)
-    {
-        throw new Exception("Employee information not found.");
-    }
+        if (empInfo == null)
+        {
+           throw new Exception("Employee information not found.");
+        }
 
     // Prepare email parameters
-    var parameters = new Dictionary<string, string>
-    {
-        { "To", empInfo.Email },
-        { "EmployeeName", empInfo.UserName },
-        { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
-        { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
-    };
+        var parameters = new Dictionary<string, string>
+        {
+          { "To", empInfo.Email },
+          { "EmployeeName", empInfo.UserName },
+          { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+          { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+        };
 
     string emailTemplate = constants.LeaveNotificationTemplate;
 
