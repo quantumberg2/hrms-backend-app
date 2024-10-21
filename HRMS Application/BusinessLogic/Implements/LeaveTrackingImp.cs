@@ -142,12 +142,22 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             // Check if there are overlapping leave requests in "Pending" or "Approved" states
             var overlappingLeave = await _hrmsContext.LeaveTrackings
-                .Where(lt => lt.EmpCredentialId == empCredentialId &&
-                             (lt.Status == "Pending" || lt.Status == "Approved") &&
-                            ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
-                             (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
-                             (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)))
-                .FirstOrDefaultAsync();
+      .Where(lt => lt.EmpCredentialId == empCredentialId &&
+                   (lt.Status == "Pending" || lt.Status == "Approved") &&
+                   (
+                       // New leave starts within an existing leave period
+                       (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
+
+                       // New leave ends within an existing leave period
+                       (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
+
+                       // New leave fully overlaps an existing leave period
+                       (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||
+
+                       // New leave is entirely within an existing leave period
+                       (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate)
+                   ))
+      .FirstOrDefaultAsync();
 
             // If an overlapping leave exists, return appropriate messages
             if (overlappingLeave != null)
