@@ -141,29 +141,36 @@ namespace HRMS_Application.BusinessLogic.Implements
             leaveTracking.EmpCredentialId = empCredentialId;
 
 
-          var overlappingLeave = await _hrmsContext.LeaveTrackings
-    .Where(lt => lt.EmpCredentialId == empCredentialId &&
-                 (lt.Status == "Pending" || lt.Status == "Approved") &&
-                 (
-                     // New leave starts within an existing leave period
-                     (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
+            var overlappingLeave = await _hrmsContext.LeaveTrackings
+        .Where(lt => lt.EmpCredentialId == empCredentialId &&
+                     (lt.Status == "Pending" || lt.Status == "Approved") &&
+                     (
+                         // New leave starts within an existing leave period
+                         (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
 
-                     // New leave ends within an existing leave period
-                     (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
+                         // New leave ends within an existing leave period
+                         (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
 
-                     // New leave fully overlaps an existing leave period
-                     (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||
+                         // New leave fully overlaps an existing leave period
+                         (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||
 
-                     // New leave is entirely within an existing leave period
-                     (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
+                         // New leave is entirely within an existing leave period
+                         (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
 
-                     // New leave overlaps at the end of an existing leave (start after existing start, end after existing end)
-                     (leaveTracking.Startdate <= lt.Enddate && leaveTracking.Enddate > lt.Enddate)
-                 ))
-    .FirstOrDefaultAsync();
+                         // New leave overlaps at the end of an existing leave
+                         (leaveTracking.Startdate <= lt.Enddate && leaveTracking.Enddate > lt.Enddate) ||
 
-// If an overlapping leave exists, return appropriate messages
-if (overlappingLeave != null)
+                         // New leave's start date is within existing leave's dates
+                         (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) &&
+
+                         // New leave's end date is within existing leave's dates
+                         (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate)
+                     ))
+        .FirstOrDefaultAsync();
+
+
+            // If an overlapping leave exists, return appropriate messages
+            if (overlappingLeave != null)
 {
     if (overlappingLeave.Status == "Pending")
     {
