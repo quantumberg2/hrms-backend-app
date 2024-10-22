@@ -716,6 +716,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             // Set the start and end date for the current month
             var startDate = new DateTime(currentYear, currentMonth, 1);
             var endDate = startDate.AddMonths(1).AddDays(-1);  // Last day of the month
+            var totalWorkingDays = CalculateTotalWorkingDays(startDate);
 
             var employeeDetail = _hrmsContext.EmployeeDetails
                 .FirstOrDefault(e => e.EmployeeCredentialId == empCredentialId);
@@ -765,17 +766,19 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             var holidaysCount = holidays.Count;
             var weekendsCount = weekends.Count;
-            var totalWorkingDays = totalDaysInMonth - holidaysCount - weekendsCount;
+           // var totalWorkingDays = totalDaysInMonth - holidaysCount - weekendsCount;
 
             // Get attendance records for the employee for the current month
-            var presentDaysCount = _hrmsContext.DeviceTables
-                .Where(a => a.EmpCredentialId == empCredentialId
-                            && a.InsertedDate.HasValue
-                            && a.InsertedDate.Value.Date >= startDate
-                            && a.InsertedDate.Value.Date <= endDate)
-                .Select(a => a.InsertedDate.Value.Date)
-                .Distinct()
-                .Count();
+            var presentDaysCount = _hrmsContext.Attendances
+            .Where(a => a.EmpCredentialId == empCredentialId
+                && a.Status == "Present"  // Filter by status "Present"
+                && a.Date.HasValue
+                && a.Date.Value.Date >= startDate
+                && a.Date.Value.Date <= endDate)
+             .Select(a => a.Date.Value.Date)  // Select distinct dates
+             .Distinct()
+             .Count();
+
 
             var attendancePercentage = totalWorkingDays > 0 ? (presentDaysCount / (double)totalWorkingDays) * 100 : 0;
 
