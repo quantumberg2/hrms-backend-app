@@ -876,6 +876,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                 LessHours += TimeSpan.FromHours(lessHours); // Accumulate LessHours
                            }
                         // If status is "Present", add to total present hours
+
                         if (attendance.Status == "Present")
                         {
                             totalPresentHours += workedHours;
@@ -950,6 +951,11 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             var holidayPercentage = (double)holidayCount / daysInMonth * 100;
 
+            
+           var TotalWorkplusOT = totalWorkTime.TotalHours >= 1
+    ? string.Format("{0:00}:{1:00}", (int)totalWorkTime.TotalHours, totalWorkTime.Minutes)
+    : string.Format("00:{0:00}", totalWorkTime.Minutes);
+
             return new MonthlyAttendanceStatistics
             {
                 EmployeecredntialId = empCredentialId,
@@ -957,7 +963,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 TotalHoursWorked = totalHoursWorked,//Average Work Hours in a month
                 AverageWorkHours = averageWorkHours.ToString(@"hh\:mm"),//Employee Work Hours in a month
                 AverageOvertime = averageOvertime.ToString(@"hh\:mm"), // Average overtime in hh:mm format
-                TotalWorkplusOT = totalWorkTime.ToString(@"hh\:mm"), // Total work time in hh:mm format
+               //TotalWorkplusOT = totalWorkTime.ToString(@"hh\:mm"), // Total work time in hh:mm format
+                TotalWorkplusOT = TotalWorkplusOT,
                 TotalOverTime = totalOverTime.ToString(@"hh\:mm"),
                 LessHoursTime = LessHours.ToString(@"hh\:mm"), // Add LessHours to the return object
                 LateInCount = lateInCount,

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HRMS Unit Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c551a56e99b4ad663fa8fc848c4e3e1de0528bb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d7ffd15dd4195c059ef012b2221c91fd54afd525")]
 [assembly: System.Reflection.AssemblyProductAttribute("HRMS Unit Test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HRMS Unit Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
