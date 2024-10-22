@@ -963,7 +963,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 TotalHoursWorked = totalHoursWorked,//Average Work Hours in a month
                 AverageWorkHours = averageWorkHours.ToString(@"hh\:mm"),//Employee Work Hours in a month
                 AverageOvertime = averageOvertime.ToString(@"hh\:mm"), // Average overtime in hh:mm format
-               //TotalWorkplusOT = totalWorkTime.ToString(@"hh\:mm"), // Total work time in hh:mm format
                 TotalWorkplusOT = TotalWorkplusOT,
                 TotalOverTime = totalOverTime.ToString(@"hh\:mm"),
                 LessHoursTime = LessHours.ToString(@"hh\:mm"), // Add LessHours to the return object
