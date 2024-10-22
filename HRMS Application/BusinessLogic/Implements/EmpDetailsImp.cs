@@ -952,7 +952,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             var holidayPercentage = (double)holidayCount / daysInMonth * 100;
 
             
-           var TotalWorkplusOT = totalWorkTime.TotalHours >= 1
+           var TotalWorkplusOTs = totalWorkTime.TotalHours >= 1
     ? string.Format("{0:00}:{1:00}", (int)totalWorkTime.TotalHours, totalWorkTime.Minutes)
     : string.Format("00:{0:00}", totalWorkTime.Minutes);
 
@@ -963,7 +963,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 TotalHoursWorked = totalHoursWorked,//Average Work Hours in a month
                 AverageWorkHours = averageWorkHours.ToString(@"hh\:mm"),//Employee Work Hours in a month
                 AverageOvertime = averageOvertime.ToString(@"hh\:mm"), // Average overtime in hh:mm format
-                TotalWorkplusOT = TotalWorkplusOT,
+                TotalWorkplusOT = TotalWorkplusOTs,
                 TotalOverTime = totalOverTime.ToString(@"hh\:mm"),
                 LessHoursTime = LessHours.ToString(@"hh\:mm"), // Add LessHours to the return object
                 LateInCount = lateInCount,
