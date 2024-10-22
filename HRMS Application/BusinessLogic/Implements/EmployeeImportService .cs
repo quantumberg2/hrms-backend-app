@@ -46,21 +46,34 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var lastName = worksheet.Cells[row, 4].Text;
                 var designation = worksheet.Cells[row, 5].Text;
                 var email = worksheet.Cells[row, 6].Text;
+                var yearofexperience = worksheet.Cells[row, 7].Text;
 
-                // Validate fields
-                if (string.IsNullOrWhiteSpace(employeeNumber) || string.IsNullOrWhiteSpace(firstName) ||
-                    string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) ||
-                    !IsValidEmail(email))
+                // Validate fields and create a list of missing fields
+                var missingFields = new List<string>();
+                if (string.IsNullOrWhiteSpace(employeeNumber))
+                    missingFields.Add("Employee Number");
+                if (string.IsNullOrWhiteSpace(firstName))
+                    missingFields.Add("First Name");
+                if (string.IsNullOrWhiteSpace(lastName))
+                    missingFields.Add("Last Name");
+                if (string.IsNullOrWhiteSpace(email) || !IsValidEmail(email))
+                    missingFields.Add("Email");
+                if (string.IsNullOrWhiteSpace(designation))
+                    missingFields.Add("Designation");
+                if (string.IsNullOrWhiteSpace(yearofexperience))
+                    missingFields.Add("Years of Experience");
+
+                // If there are missing fields, log an error and continue to the next row
+                if (missingFields.Count > 0)
                 {
-                    errors.Add($"Row {row}: Invalid data. Ensure all required fields are filled correctly.");
+                    errors.Add($"Row {row}: Missing or invalid data for fields: {string.Join(", ", missingFields)}.");
                     rejectedCount++;
                     continue;
                 }
-
                 // Handle departmentId and positionId as null
                 int? deptId = null;
-                int? positionId = null;
-
+                int positionId = Convert.ToInt32(designation);
+                var yearofexperiences = yearofexperience;
                 // Create a new EmployeeDto
                 var employee = new EmployeeDto
                 {
@@ -71,7 +84,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     Email = email,
                     DeptId = deptId,
                     PositionId = positionId,
-                    Designation = designation,
+                    YearsExperience = yearofexperiences,
                     isActive = 1,
                 };
                 employees.Add(employee);
@@ -82,17 +95,32 @@ namespace HRMS_Application.BusinessLogic.Implements
                 // Check if the email already exists for the same company
                 var existingEmail = await _context.EmployeeCredentials
                     .SingleOrDefaultAsync(e => e.Email == employeeDto.Email && e.RequestedCompanyId == companyId);
+                var existingEmployeeNumber = await _context.EmployeeDetails
+                    .SingleOrDefaultAsync(emp =>  emp.RequestCompanyId == companyId && emp.EmployeeNumber == employeeDto.EmployeeNumber);
 
-                if (existingEmail != null)
+                // Combined validation checks for email and employee number
+                if (existingEmail != null || existingEmployeeNumber != null)
                 {
-                    errors.Add($"Email '{employeeDto.Email}' is already in Created.");
+                    var errorMessage = $"Record for '{employeeDto.FirstName} {employeeDto.LastName}' ";
+
+                    if (existingEmail != null)
+                    {
+                        errorMessage += $"has an existing email '{employeeDto.Email}'. ";
+                    }
+
+                    if (existingEmployeeNumber != null)
+                    {
+                        errorMessage += $"Employee Number '{employeeDto.EmployeeNumber}' already exists. ";
+                    }
+
+                    errors.Add(errorMessage.Trim());
                     rejectedCount++;
                     continue; // Skip this record
                 }
 
                 var employeeCredential = new EmployeeCredential
                 {
-                    UserName = employeeDto.FirstName,
+                    UserName = employeeDto.Email,
                     Email = employeeDto.Email,
                     Password = GeneratePassword(),
                     DefaultPassword = true,
