@@ -35,7 +35,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var errors = new List<string>();
             int insertedCount = 0;
             int rejectedCount = 0;
-
             // Read the data starting from row 2, assuming row 1 has headings
             for (int row = 2; row <= rowCount; row++)
             {
@@ -47,7 +46,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var designation = worksheet.Cells[row, 5].Text;
                 var email = worksheet.Cells[row, 6].Text;
                 var yearofexperience = worksheet.Cells[row, 7].Text;
-
                 // Validate fields and create a list of missing fields
                 var missingFields = new List<string>();
                 if (string.IsNullOrWhiteSpace(employeeNumber))
@@ -62,7 +60,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                     missingFields.Add("Designation");
                 if (string.IsNullOrWhiteSpace(yearofexperience))
                     missingFields.Add("Years of Experience");
-
                 // If there are missing fields, log an error and continue to the next row
                 if (missingFields.Count > 0)
                 {
@@ -89,7 +86,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 };
                 employees.Add(employee);
             }
-
             foreach (var employeeDto in employees)
             {
                 // Check if the email already exists for the same company
@@ -102,12 +98,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                 if (existingEmail != null || existingEmployeeNumber != null)
                 {
                     var errorMessage = $"Record for '{employeeDto.FirstName} {employeeDto.LastName}' ";
-
                     if (existingEmail != null)
                     {
                         errorMessage += $"has an existing email '{employeeDto.Email}'. ";
                     }
-
                     if (existingEmployeeNumber != null)
                     {
                         errorMessage += $"Employee Number '{employeeDto.EmployeeNumber}' already exists. ";
@@ -117,7 +111,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                     rejectedCount++;
                     continue; // Skip this record
                 }
-
                 var employeeCredential = new EmployeeCredential
                 {
                     UserName = employeeDto.Email,
@@ -154,12 +147,12 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var userRole = new UserRolesJ
                 {
                     EmployeeCredentialId = employeeCredential.Id,
-                    RolesId = 2 
+                    RolesId = 2,
+                    IsActive = 1
                 };
 
                 await _context.UserRolesJs.AddAsync(userRole);
                 await _context.SaveChangesAsync();
-
                 // Send email with username and password
                 await _emailPasswordService.SendOtpEmailAsync(new Generatepassword
                 {
@@ -173,7 +166,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             return (Inserted: insertedCount, Rejected: rejectedCount, Errors: errors);
         }
-
         private bool IsValidEmail(string email)
         {
             try
