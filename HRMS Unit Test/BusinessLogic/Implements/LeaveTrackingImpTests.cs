@@ -52,7 +52,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             var id = 460871789;
 
             // Act
-            var result = await _testClass.GetByIdAsync(id);
+           // var result = await _testClass.GetByIdAsync(id);
 
             // Assert
             throw new NotImplementedException("Create or modify test");
