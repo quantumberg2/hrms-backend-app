@@ -8,7 +8,7 @@ namespace HRMS_Application.Models
     public partial class DeviceTable
     {
         public int Id { get; set; }
-        public int? EmpCredentialId { get; set; }
+        public int? EmpCode { get; set; }
         public DateTime? TimeIn { get; set; }
         public DateTime? TimeOut { get; set; }
         public DateTime? InsertedDate { get; set; }
@@ -20,7 +20,5 @@ namespace HRMS_Application.Models
         public string Name { get; set; }
         public string Status { get; set; }
         public short? IsActive { get; set; }
-
-        public virtual EmployeeCredential EmpCredential { get; set; }
     }
 }

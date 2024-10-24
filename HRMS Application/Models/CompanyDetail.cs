@@ -24,7 +24,7 @@ namespace HRMS_Application.Models
         public string Twitter { get; set; }
         public string Facebook { get; set; }
         public string LinkedIn { get; set; }
-        public string? CompanyLogo { get; set; }
+        public string CompanyLogo { get; set; }
         public int? RequestedCompanyId { get; set; }
         public short? IsActive { get; set; }
 

@@ -19,11 +19,31 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public List<DeviceTable> GetByEmpCreId(int empCredId)
         {
-            var Info = (from row in _context.DeviceTables
-                        where row.EmpCredentialId == empCredId
-                        select row).ToList();
-            return Info;
+            var result = (from row in _context.EmployeeCredentials
+                          join map in _context.EmpCredIdEmpCodeMappings
+                          on row.Id equals map.EmpCredId
+                          join device in _context.DeviceTables
+                          on map.EmpCode equals device.EmpCode
+                          where row.Id == empCredId
+                          select new DeviceTable
+                          {
+                              EmpCode = device.EmpCode,
+                              TimeIn = device.TimeIn,
+                              TimeOut = device.TimeOut,
+                              InsertedDate = device.InsertedDate,
+                              WorkTime = device.WorkTime,
+                              OverTime = device.OverTime,
+                              Remark = device.Remark,
+                              ErlOut = device.ErlOut,
+                              LateIn = device.LateIn,
+                              Name = device.Name,
+                              Status = device.Status,
+                              IsActive = device.IsActive
+                          }).ToList();
+
+            return result;
         }
+
 
         public string InsertInfo(DeviceTable deviceInfo)
         {
@@ -50,7 +70,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "Data not found";
             }
 
-            info.EmpCredential = deviceInfo.EmpCredential;
+            info.EmpCode = deviceInfo.EmpCode;
             info.TimeOut = deviceInfo.TimeOut;
             info.TimeIn = deviceInfo.TimeIn;
             info.InsertedDate = deviceInfo.InsertedDate;

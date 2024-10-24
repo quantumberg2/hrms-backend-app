@@ -286,7 +286,7 @@ namespace HRMS_Unit_Test.Models
                 AccountDetails = new Mock<ICollection<AccountDetail>>().Object,
                 AddressInfos = new Mock<ICollection<AddressInfo>>().Object,
                 Attendances = new Mock<ICollection<Attendance>>().Object,
-                DeviceTables = new Mock<ICollection<DeviceTable>>().Object,
+                //DeviceTables = new Mock<ICollection<DeviceTable>>().Object,
                 EmpPersonalInfos = new Mock<ICollection<EmpPersonalInfo>>().Object,
                 EmpSalaries = new Mock<ICollection<EmpSalary>>().Object,
                 EmployeeDetails = new Mock<ICollection<EmployeeDetail>>().Object,
