@@ -2,7 +2,7 @@
 {
     public interface IEmployeeImportService
     {
-        public Task<(int Inserted, int Rejected, List<string> Errors)> ImportEmployeesFromExcelAsync(Stream excelStream, int companyId);
+        public Task<(int Inserted, int Rejected, List<string> Errors)> ImportEmployeesFromExcelAsync(IFormFile excelFile, int companyId);
 
     }
 }

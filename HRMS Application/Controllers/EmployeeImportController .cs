@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Authorization;
 
 namespace HRMS_Application.Controllers
 {
@@ -20,8 +21,11 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpPost("import")]
+        [Authorize(new[] { "Admin" })]
+
         public async Task<IActionResult> ImportEmployees(IFormFile file)
         {
+            // Validate the uploaded file
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");
@@ -53,18 +57,17 @@ namespace HRMS_Application.Controllers
 
                 var companyId = int.Parse(companyIdClaim.Value);
 
-                // Proceed with file processing
-                using (var stream = file.OpenReadStream())
+                // Directly pass the IFormFile to the service method
+                var result = await _employeeImportService.ImportEmployeesFromExcelAsync(file, companyId);
+
+                // Return the result
+                return Ok(new
                 {
-                    var result = await _employeeImportService.ImportEmployeesFromExcelAsync(stream, companyId);
-                    return Ok(new
-                    {
-                        Message = "File imported successfully.",
-                        Inserted = result.Inserted,
-                        Rejected = result.Rejected,
-                        Errors = result.Errors
-                    });
-                }
+                    Message = "File imported successfully.",
+                    Inserted = result.Inserted,
+                    Rejected = result.Rejected,
+                    Errors = result.Errors
+                });
             }
             catch (ArgumentException ex)
             {
@@ -77,6 +80,5 @@ namespace HRMS_Application.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
-
     }
 }
