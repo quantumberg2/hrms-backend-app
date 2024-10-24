@@ -12,7 +12,7 @@ namespace HRMS_Application.Models
             AccountDetails = new HashSet<AccountDetail>();
             AddressInfos = new HashSet<AddressInfo>();
             Attendances = new HashSet<Attendance>();
-            DeviceTables = new HashSet<DeviceTable>();
+            EmpCredIdEmpCodeMappings = new HashSet<EmpCredIdEmpCodeMapping>();
             EmpPersonalInfos = new HashSet<EmpPersonalInfo>();
             EmpSalaries = new HashSet<EmpSalary>();
             EmployeeDetails = new HashSet<EmployeeDetail>();
@@ -38,7 +38,7 @@ namespace HRMS_Application.Models
         public virtual ICollection<AccountDetail> AccountDetails { get; set; }
         public virtual ICollection<AddressInfo> AddressInfos { get; set; }
         public virtual ICollection<Attendance> Attendances { get; set; }
-        public virtual ICollection<DeviceTable> DeviceTables { get; set; }
+        public virtual ICollection<EmpCredIdEmpCodeMapping> EmpCredIdEmpCodeMappings { get; set; }
         public virtual ICollection<EmpPersonalInfo> EmpPersonalInfos { get; set; }
         public virtual ICollection<EmpSalary> EmpSalaries { get; set; }
         public virtual ICollection<EmployeeDetail> EmployeeDetails { get; set; }

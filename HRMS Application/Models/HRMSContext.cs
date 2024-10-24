@@ -22,6 +22,7 @@ namespace HRMS_Application.Models
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Audit> Audits { get; set; }
+
         public virtual async Task<int> SaveChangesAsync(int? userId = null)
         {
             OnBeforeSaveChanges(userId);
@@ -78,6 +79,7 @@ namespace HRMS_Application.Models
         public virtual DbSet<CompanyDetail> CompanyDetails { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<DeviceTable> DeviceTables { get; set; }
+        public virtual DbSet<EmpCredIdEmpCodeMapping> EmpCredIdEmpCodeMappings { get; set; }
         public virtual DbSet<EmpPersonalInfo> EmpPersonalInfos { get; set; }
         public virtual DbSet<EmpSalary> EmpSalaries { get; set; }
         public virtual DbSet<EmployeeCredential> EmployeeCredentials { get; set; }
@@ -381,8 +383,6 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
-
                 entity.Property(e => e.ErlOut)
                     .HasColumnType("datetime")
                     .HasColumnName("Erl_out");
@@ -414,11 +414,20 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.TimeOut).HasColumnType("datetime");
 
                 entity.Property(e => e.WorkTime).HasColumnType("datetime");
+            });
 
-                entity.HasOne(d => d.EmpCredential)
-                    .WithMany(p => p.DeviceTables)
-                    .HasForeignKey(d => d.EmpCredentialId)
-                    .HasConstraintName("FK_DeviceTable_Employee_Credential");
+            modelBuilder.Entity<EmpCredIdEmpCodeMapping>(entity =>
+            {
+                entity.ToTable("EmpCredId_EmpCode_Mapping");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.EmpCredId).HasColumnName("EmpCred_Id");
+
+                entity.HasOne(d => d.EmpCred)
+                    .WithMany(p => p.EmpCredIdEmpCodeMappings)
+                    .HasForeignKey(d => d.EmpCredId)
+                    .HasConstraintName("FK__Employee___EmpCr__2645B050");
             });
 
             modelBuilder.Entity<EmpPersonalInfo>(entity =>

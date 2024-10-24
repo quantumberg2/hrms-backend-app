@@ -9,7 +9,7 @@ namespace HRMS_Application.Models
     {
         public int Id { get; set; }
         public int? EmpCredentialId { get; set; }
-        public Double? NumberOfHours { get; set; }
+        public double? NumberOfHours { get; set; }
         public string Status { get; set; }
         public DateTime? Date { get; set; }
         public DateTime? TimeIn { get; set; }
