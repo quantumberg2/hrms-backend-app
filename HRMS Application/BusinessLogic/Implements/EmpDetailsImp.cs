@@ -1028,7 +1028,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             employee.ImageUrl = imageUrl;
             _hrmsContext.EmployeeDetails.Update(employee);
-            _hrmsContext.SaveChangesAsync();
+            await _hrmsContext.SaveChangesAsync();
 
             return "File Updated successfully";
         }

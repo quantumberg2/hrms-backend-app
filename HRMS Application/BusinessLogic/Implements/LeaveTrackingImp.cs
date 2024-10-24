@@ -60,12 +60,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public async Task<LeaveTracking> GetByIdAsync(int id)
+        public LeaveTracking GetByIdAsync(int id)
         {
             var res = (from row in _hrmsContext.LeaveTrackings
                        where row.Id == id && row.IsActive == 1
                        select row).FirstOrDefault();
-            return res;
+            return res ?? new LeaveTracking();
         }
 
 
