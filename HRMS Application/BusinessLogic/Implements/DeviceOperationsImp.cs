@@ -27,19 +27,18 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public string InsertInfo(DeviceTable deviceInfo)
         {
-           _context.DeviceTables.Add(deviceInfo);
+            _context.DeviceTables.Add(deviceInfo);
             var res = _context.SaveChanges();
-            if (res != null)
+            if (res > 0)
             {
                 return "Successfully added new info";
             }
             else
             {
-                return "failed to insert new info";
+                return "Failed to insert new info";
             }
-
-
         }
+
 
         public string UpdateInfo(DeviceTable deviceInfo)
         {
