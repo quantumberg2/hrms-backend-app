@@ -80,12 +80,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             var result = await _context.SaveChangesAsync(_decodedToken);
             if (result != 0)
             {
-                return "new Department inserted successfully";
+                return "Successfully assigned role to employee";
 
             }
             else
             {
-                return "failed to insert new data";
+                return "failed to assign role to employee";
             }
         }
         public bool SoftDelete(int id, short isActive)
