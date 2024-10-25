@@ -14,24 +14,48 @@ namespace HRMS_Application.Controllers
     public class EmployeeImportController : ControllerBase
     {
         private readonly IEmployeeImportService _employeeImportService;
+        private readonly IAzureOperations _azureOperations;
 
-        public EmployeeImportController(IEmployeeImportService employeeImportService)
+        public EmployeeImportController(IEmployeeImportService employeeImportService, IAzureOperations azureOperations)
         {
             _employeeImportService = employeeImportService;
+            _azureOperations = azureOperations;
         }
 
+
+        [HttpGet]
+        [Route("download-employee-file")]
+        public async Task<IActionResult> DownloadEmployeeFile()
+        {
+            string fileUrl = "https://quantumbergtest.blob.core.windows.net/hrms-files/Add_Bulk_Employee_Template.xlsx";
+
+            try
+            {
+                Stream fileStream = await _azureOperations.FetchBulkEmployeeDetailsFile(fileUrl);
+
+                if (fileStream == null)
+                {
+                    return NotFound("File could not be found.");
+                }
+
+                return File(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Add_Bulk_Employee_Template.xlsx");
+            }
+            catch (Exception ex)
+            {
+                return NotFound($"Error: {ex.Message}");
+            }
+
+        }
         [HttpPost("import")]
         [Authorize(new[] { "Admin" })]
 
         public async Task<IActionResult> ImportEmployees(IFormFile file)
         {
-            // Validate the uploaded file
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");
             }
 
-            // Extract the Authorization header and remove "Bearer " prefix
             var authorizationHeader = HttpContext.Request.Headers["Authorization"].ToString();
 
             if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))

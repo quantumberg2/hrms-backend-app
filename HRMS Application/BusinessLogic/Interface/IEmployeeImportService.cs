@@ -1,4 +1,6 @@
-﻿namespace HRMS_Application.BusinessLogic.Interface
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace HRMS_Application.BusinessLogic.Interface
 {
     public interface IEmployeeImportService
     {

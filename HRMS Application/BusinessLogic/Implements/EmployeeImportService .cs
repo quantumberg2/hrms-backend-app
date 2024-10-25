@@ -15,13 +15,11 @@ namespace HRMS_Application.BusinessLogic.Implements
     {
         private readonly HRMSContext _context;
         private readonly IEmailPassword _emailPasswordService;
-        private readonly IAzureOperations _azureOperations;
 
-        public EmployeeImportService(HRMSContext context, IEmailPassword emailPasswordService, IAzureOperations azureOperations)
+        public EmployeeImportService(HRMSContext context, IEmailPassword emailPasswordService)
         {
             _context = context;
             _emailPasswordService = emailPasswordService;
-            _azureOperations = azureOperations;
         }
 
         public async Task<(int Inserted, int Rejected, List<string> Errors)> ImportEmployeesFromExcelAsync(IFormFile excelFile, int companyId)
@@ -29,13 +27,13 @@ namespace HRMS_Application.BusinessLogic.Implements
             // Set the license context
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            var fileUrl = _azureOperations.StoreFilesInAzure(excelFile, "hrms-files");
+           /* var fileUrl = _azureOperations.StoreFilesInAzure(excelFile, "hrms-files");
 
             // If storing was unsuccessful, throw an exception
             if (string.IsNullOrWhiteSpace(fileUrl))
             {
                 throw new Exception("Failed to store the file in Azure");
-            }
+            }*/
 
             // Use OpenReadStream to create a stream for reading the Excel file
             using var excelStream = excelFile.OpenReadStream();

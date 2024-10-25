@@ -20,5 +20,19 @@ namespace HRMS_Application.BusinessLogic.Implements
             return url;
         }
 
+
+        public async Task<Stream> FetchBulkEmployeeDetailsFile(string url)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync(url);
+
+                response.EnsureSuccessStatusCode();
+
+                var stream = await response.Content.ReadAsStreamAsync();
+                return stream;
+            }
+        }
+
     }
 }
