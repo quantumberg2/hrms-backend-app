@@ -35,7 +35,7 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public IActionResult GetById(int id)
         {
             _logger.LogInformation("Get leaves by Id method started");
 

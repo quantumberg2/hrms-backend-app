@@ -24,7 +24,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<(int Inserted, int Rejected, List<string> Errors)> ImportEmployeesFromExcelAsync(IFormFile excelFile, int companyId)
         {
-            // Set the license context
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
            /* var fileUrl = _azureOperations.StoreFilesInAzure(excelFile, "hrms-files");
@@ -46,10 +45,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             var errors = new List<string>();
             int insertedCount = 0;
             int rejectedCount = 0;
-            // Read the data starting from row 2, assuming row 1 has headings
             for (int row = 2; row <= rowCount; row++)
             {
-                // Extract data from cells
                 var employeeNumber = worksheet.Cells[row, 1].Text;
                 var firstName = worksheet.Cells[row, 2].Text;
                 var middleName = worksheet.Cells[row, 3].Text;
@@ -57,7 +54,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var designation = worksheet.Cells[row, 5].Text;
                 var email = worksheet.Cells[row, 6].Text;
                 var yearofexperience = worksheet.Cells[row, 7].Text;
-                // Validate fields and create a list of missing fields
                 var missingFields = new List<string>();
                 if (string.IsNullOrWhiteSpace(employeeNumber))
                     missingFields.Add("Employee Number");
@@ -71,18 +67,16 @@ namespace HRMS_Application.BusinessLogic.Implements
                     missingFields.Add("Designation");
                 if (string.IsNullOrWhiteSpace(yearofexperience))
                     missingFields.Add("Years of Experience");
-                // If there are missing fields, log an error and continue to the next row
                 if (missingFields.Count > 0)
                 {
                     errors.Add($"Row {row}: Missing or invalid data for fields: {string.Join(", ", missingFields)}.");
                     rejectedCount++;
                     continue;
                 }
-                // Handle departmentId and positionId as null
                 int? deptId = null;
                 int positionId = Convert.ToInt32(designation);
                 var yearofexperiences = yearofexperience;
-                // Create a new EmployeeDto
+
                 var employee = new EmployeeDto
                 {
                     EmployeeNumber = employeeNumber,
@@ -99,13 +93,11 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             foreach (var employeeDto in employees)
             {
-                // Check if the email already exists for the same company
                 var existingEmail = await _context.EmployeeCredentials
                     .SingleOrDefaultAsync(e => e.Email == employeeDto.Email && e.RequestedCompanyId == companyId);
                 var existingEmployeeNumber = await _context.EmployeeDetails
                     .SingleOrDefaultAsync(emp =>  emp.RequestCompanyId == companyId && emp.EmployeeNumber == employeeDto.EmployeeNumber);
 
-                // Combined validation checks for email and employee number
                 if (existingEmail != null || existingEmployeeNumber != null)
                 {
                     var errorMessage = $"Record for '{employeeDto.FirstName} {employeeDto.LastName}' ";
@@ -120,7 +112,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
                     errors.Add(errorMessage.Trim());
                     rejectedCount++;
-                    continue; // Skip this record
+                    continue; 
                 }
                 var employeeCredential = new EmployeeCredential
                 {
@@ -151,10 +143,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                     IsActive = 1,
                 };
 
-                _context.EmployeeDetails.Add(employeeDetail);
+               await _context.EmployeeDetails.AddAsync(employeeDetail);
                 await _context.SaveChangesAsync();
 
-                // Assign "User" role to the employee
                 var userRole = new UserRolesJ
                 {
                     EmployeeCredentialId = employeeCredential.Id,
@@ -164,7 +155,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
                 await _context.UserRolesJs.AddAsync(userRole);
                 await _context.SaveChangesAsync();
-                // Send email with username and password
                 await _emailPasswordService.SendOtpEmailAsync(new Generatepassword
                 {
                     EmailAddress = employeeCredential.Email,

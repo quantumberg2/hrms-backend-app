@@ -3,6 +3,7 @@ using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HRMS_Application.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -21,21 +22,87 @@ namespace HRMS_Application.Controllers
         }
         [HttpGet]
         [Authorize(new[] { "Admin","User","HR" })]
-        public List<ShiftRosterType> GetAllShiftRosterType()
+        public ActionResult<ShiftRosterType> GetAllShiftRosterType()
         {
-            _logger.LogInformation("Getall positions method started");
-            var dept = _shiftRostertype.GetAllShiftRosterType();
-            return dept;
+            try
+            {
+                _logger.LogInformation("Getall positions method started");
+
+                // Extract the JWT token from the Authorization header
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to get the company ID
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                // Parse the company ID from the claim
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+                var dept = _shiftRostertype.GetAllShiftRosterType(companyId);
+                return Ok(dept);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
         }
 
         [HttpPost]
         [Authorize(new[] { "Admin" })]
-        public async Task<string> InsertPositions([FromBody] ShiftRosterType shiftRosterType)
+        public async Task<IActionResult> InsertPositions([FromBody] ShiftRosterType shiftRosterType)
         {
-            _logger.LogInformation("Insert Positions method started");
+            try
+            {
+                _logger.LogInformation("Insert Positions method started");
 
-            var status = await _shiftRostertype.InsertShiftRosterType(shiftRosterType);
-            return status;
+                // Extract the JWT token from the Authorization header
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization token is missing or invalid.");
+                }
+
+                // Decode the JWT token to get the company ID
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized("Company ID not found in token.");
+                }
+
+                // Parse the company ID from the claim
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest("Invalid Company ID in token.");
+                }
+
+                // Call the InsertShiftRosterType method and pass the company ID
+                var status = await _shiftRostertype.InsertShiftRosterType(shiftRosterType, companyId);
+
+                // Return success status if the operation succeeded
+                return Ok(status);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while inserting positions.");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut("UpdateAll/{id}")]

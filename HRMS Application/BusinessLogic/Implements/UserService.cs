@@ -128,7 +128,6 @@ namespace HRMS_Application.BusinessLogics.Implements
                     RequestedCompanyId = objUser.RequestedCompanyId,
                     Roles = roles,
                 };
-                
 
                 // authentication successful so generate jwt token
                 var jwtToken = _jwtUtils.GenerateJwtToken(user);
@@ -189,7 +188,6 @@ namespace HRMS_Application.BusinessLogics.Implements
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
             return new AuthenticateResponse(user, jwtToken, user.Roles, new List<int> { empCred.RequestedCompanyId.Value });
         }
-
 
         public IEnumerable<EmployeeCredential> GetAll()
         {

@@ -22,7 +22,6 @@ namespace HRMS_Application.Models
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Audit> Audits { get; set; }
-
         public virtual async Task<int> SaveChangesAsync(int? userId = null)
         {
             OnBeforeSaveChanges(userId);
@@ -74,6 +73,11 @@ namespace HRMS_Application.Models
                             break;
                     }
                 }
+            }
+
+            foreach (var auditEntry in auditEntries)
+            {
+                Audits.Add(auditEntry.ToAudit());
             }
         }
         public virtual DbSet<CompanyDetail> CompanyDetails { get; set; }
@@ -892,6 +896,8 @@ namespace HRMS_Application.Models
             modelBuilder.Entity<ShiftRosterType>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CompanyRequestedId).HasColumnName("Company_requestedId");
 
                 entity.Property(e => e.TimeRange)
                     .HasMaxLength(25)

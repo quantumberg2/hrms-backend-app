@@ -55,9 +55,10 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
-        public List<ShiftRosterType> GetAllShiftRosterType()
+        public List<ShiftRosterType> GetAllShiftRosterType(int CompanyId)
         {
             var result = (from row in _context.ShiftRosterTypes
+                          where row.CompanyRequestedId == CompanyId
                           select row).ToList();
             return result;
         }
@@ -71,24 +72,19 @@ namespace HRMS_Application.BusinessLogic.Implements
             return result;
         }
 
-        public async Task<string> InsertShiftRosterType(ShiftRosterType shiftRosterType)
+        public async Task<string> InsertShiftRosterType(ShiftRosterType shiftRosterType, int companyId)
         {
-            DecodeToken();
-            await _context.ShiftRosterTypes.AddAsync(shiftRosterType);
-            var result = await _context.SaveChangesAsync(_decodedToken);
-            if (result != 0)
-            {
-                return "new ShiftRosterType inserted successfully";
+            shiftRosterType.CompanyRequestedId = companyId;
 
-            }
-            else
-            {
-                return "failed to insert new data";
-            }
+            await _context.ShiftRosterTypes.AddAsync(shiftRosterType);
+
+            var result = await _context.SaveChangesAsync();
+
+            return result != 0 ? "New ShiftRosterType inserted successfully" : "Failed to insert new data";
         }
+ 
         public async Task<ShiftRosterType> updateShiftRosterType(int id, string? Type, string? TimeRange)
         {
-
             DecodeToken();
             var result = _context.ShiftRosterTypes.SingleOrDefault(p => p.Id == id);
             if (result == null)
