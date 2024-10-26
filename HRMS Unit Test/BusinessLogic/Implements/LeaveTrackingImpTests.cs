@@ -25,15 +25,6 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
           //  _testClass = new LeaveTrackingImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
         }
 
-        [Fact]
-        public void CanConstruct()
-        {
-            // Act
-        //    var instance = new LeaveTrackingImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
-
-            // Assert
-       //     Assert.NotNull(instance);
-        }
 
         [Fact]
         public async Task CanCallGetAllAsync()
@@ -42,26 +33,15 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             var result = await _testClass.GetAllAsync();
 
             // Assert
-            throw new NotImplementedException("Create or modify test");
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IEnumerable<LeaveTracking>>(result); 
+            Assert.True(result.Any(), "Expected at least one leave record"); 
         }
 
-        [Fact]
-        public async Task CanCallGetByIdAsync()
-        {
-            // Arrange
-            var id = 460871789;
-
-            // Act
-            var result = await _testClass.GetByIdAsync(id);
-
-            // Assert
-            throw new NotImplementedException("Create or modify test");
-        }
 
         [Fact]
         public async Task CanCallCreateAsync()
         {
-            // Arrange
             var leaveTracking = new LeaveTracking
             {
                 Id = 1836190213,

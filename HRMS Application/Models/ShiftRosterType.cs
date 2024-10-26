@@ -15,6 +15,7 @@ namespace HRMS_Application.Models
         public int Id { get; set; }
         public string Type { get; set; }
         public string TimeRange { get; set; }
+        public int? CompanyRequestedId { get; set; }
 
         public virtual ICollection<ShiftRoster> ShiftRosters { get; set; }
     }

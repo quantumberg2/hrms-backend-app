@@ -80,7 +80,7 @@ namespace HRMS_Unit_Test.Entities
         public void CanSetAndGetRole()
         {
             // Arrange
-            var testValue = Role.Faculty;
+            var testValue = Role.HR;
 
             // Act
             _testClass.Role = testValue;

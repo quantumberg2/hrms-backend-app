@@ -47,16 +47,25 @@ namespace HRMS_Application.Controllers
         [HttpGet("{id:int}")]
         public IActionResult GetById(int id)
         {
-             _logger.LogInformation("Get by id method started");
-            // only admins can access other Employee records
-            var currentUser = (EmployeeDetail)HttpContext.Items["User"];
-            if (id != currentUser.Id)// && currentUser.Role != Role.Admin)
+            _logger.LogInformation("Get by id method started");
+
+            // Using "as" keyword to safely cast and check for null
+            var currentUser = HttpContext.Items["User"] as EmployeeDetail;
+            if (currentUser == null)
+            {
+                return Unauthorized(new { message = "User not found in context" });
+            }
+
+            if (id != currentUser.Id) // Add the role check if needed
+            {
                 return Unauthorized(new { message = "Unauthorized" });
+            }
 
             var user = _userService.GetById(id);
             return Ok(user);
         }
-     
+
+
         [HttpPost("select-company")]
         public IActionResult SelectCompany([FromBody] SelectCompanyRequest model)
         {

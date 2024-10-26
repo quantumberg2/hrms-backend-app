@@ -35,11 +35,11 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public IActionResult GetById(int id)
         {
             _logger.LogInformation("Get leaves by Id method started");
 
-            var leaveTracking = await _leaveTracking.GetByIdAsync(id);
+            var leaveTracking =  _leaveTracking.GetByIdAsync(id);
             if (leaveTracking == null)
             {
                 return NotFound();

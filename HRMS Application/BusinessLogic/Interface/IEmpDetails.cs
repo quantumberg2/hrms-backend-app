@@ -11,7 +11,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public Task<EmployeeDetail> UpdateEmployeeDetail(int id, int? depId, string? fname, string? mname, string? lname, int? positionid, string? Designation, string? Email, int? employeecredentialId, string? EmployeeNumber,int? requsetCompanyId);
         public Task<bool> DeleteEmployeeDetail(int id);
         public bool SoftDelete(int id, short isActive);
-        public IEnumerable<EmployeeView> GetAllEmployees();
+        public IEnumerable<EmployeeView> GetAllEmployees(int companyId);
 
         public Task<UpdateEmployeeInfoDTO> GetEmployeeInfoAsync(int employeeCredentialId);
         public Task<EmpPersonalInfoDTO> GetEmployeePersonalInfoAsync(int employeeCredentialId);

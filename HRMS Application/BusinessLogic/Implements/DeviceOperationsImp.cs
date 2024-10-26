@@ -58,14 +58,13 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "Failed to insert new info";
             }
         }
-
-
         public string UpdateInfo(DeviceTable deviceInfo)
         {
             var info = (from row in _context.DeviceTables
                         where row.Id == deviceInfo.Id
                         select row).FirstOrDefault();
-            if(info == null)
+
+            if (info == null)
             {
                 return "Data not found";
             }
@@ -81,8 +80,10 @@ namespace HRMS_Application.BusinessLogic.Implements
             info.Name = deviceInfo.Name;
 
             _context.DeviceTables.Update(info);
-            var res = _context.SaveChanges();
-            if (res != null)
+
+            var res = _context.SaveChanges(); 
+
+            if (res > 0) 
             {
                 return "Updated successfully";
             }
@@ -90,8 +91,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 return "Failed to update info";
             }
-
         }
+
 
         public bool DeleteInfo(int id)
         {

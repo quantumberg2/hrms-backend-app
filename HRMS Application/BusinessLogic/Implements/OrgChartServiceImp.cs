@@ -35,10 +35,19 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeLookup[employee.EmployeeCredentialId.Value] = employee;
             }
             var positionLookup = positions.ToDictionary(p => p.Id, p => p.Name);
-            var ceo = employeeLookup.Values.FirstOrDefault(emp => emp.ManagerId == 0);
+            var ceo = await _hrmsContext.EmployeeDetails
+                .Join(
+                    _hrmsContext.Positions,
+                    emp => emp.PositionId,
+                    pos => pos.Id,
+                    (emp, pos) => new { emp, pos }
+                )
+                .Where(ep => ep.pos.Name == "CEO" && (ep.emp.ManagerId == 0 || ep.emp.ManagerId == null) && ep.emp.RequestCompanyId == companyId)
+                .Select(ep => ep.emp)
+                .FirstOrDefaultAsync();
             if (ceo == null)
             {
-              throw new Exception("No CEO found with ManagerId = 0");
+              throw new Exception("No CEO found with ManagerId ");
             }
             return BuildNode(ceo, employeeLookup, positionLookup);
         }
@@ -51,7 +60,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 FullName = $"{employee.FirstName} {employee.LastName}",
                 PositionName = positionName,
-                Email = employee.Email,
+                Email = employee.Email, 
                 Subordinates = new List<OrgChartNode>() 
             };
 

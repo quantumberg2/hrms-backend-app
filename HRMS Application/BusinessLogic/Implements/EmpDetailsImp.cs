@@ -79,8 +79,13 @@ namespace HRMS_Application.BusinessLogic.Implements
             var res = (from row in _hrmsContext.EmployeeDetails
                        where row.Id == id && row.IsActive == 1
                        select row).FirstOrDefault();
+            if (res == null)
+            {
+                throw new KeyNotFoundException($"EmployeeDetail with Id {id} not found.");
+            }
             return res;
         }
+
 
         public async Task<string> InsertEmployeeAsync(EmployeeDetail employeeDetail, int companyId)
         {
@@ -200,14 +205,16 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             return false;
         }
-        public IEnumerable<EmployeeView> GetAllEmployees()
+        public IEnumerable<EmployeeView> GetAllEmployees(int companyId)
         {
             var employees = _hrmsContext.EmployeeDetails
+                
                 .Include(e => e.EmployeeCredential)
                 .Include(e => e.Position)
                 .Include(e => e.Dept)
                 .Include(e => e.EmployeeCredential.AddressInfos)
                 .Include(e => e.EmployeeCredential.EmpPersonalInfos)
+                .Where(e => e.RequestCompanyId == companyId)
                 .ToList();
 
             return employees.Select(employee => new EmployeeView
@@ -218,29 +225,23 @@ namespace HRMS_Application.BusinessLogic.Implements
                 Gender = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Gender,
                 DOB = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Dob.ToString(),
                 Designation = employee.Position?.Name,
-               // Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m => m.Id == employee.ManagerId.Value)?.FirstName : "N/A"
                Manager = employee.ManagerId.HasValue ? _hrmsContext.EmployeeDetails.FirstOrDefault(m => m.EmployeeCredentialId == employee.ManagerId.Value)?.FirstName : "N/A"
             }).ToList();
         }
         public async Task<UpdateEmployeeInfoDTO> GetEmployeeInfoAsync(int employeeCredentialId)
         {
-            // Fetch employee details by EmployeeCredentialId
             var employeeDetail = await _hrmsContext.EmployeeDetails
                 .FirstOrDefaultAsync(e => e.EmployeeCredentialId == employeeCredentialId);
 
             var employeeCredential = await _hrmsContext.EmployeeCredentials
                 .FirstOrDefaultAsync(ec => ec.Id == employeeCredentialId);
 
-         /*   var employeePersonalInfo = await _hrmsContext.EmpPersonalInfos
-                .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == employeeCredentialId);*/
 
-            // Check if all necessary data exists
             if (employeeDetail == null || employeeCredential == null)
             {
-                return null; // No data found for the given EmployeeCredentialId
+                return null; 
             }
 
-            // Combine the data into the DTO and return
             return new UpdateEmployeeInfoDTO
             {
                 EmployeeCredentialId = employeeCredentialId,
@@ -250,7 +251,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 MobileNumber = employeeDetail.MobileNumber,
                 Extension = employeeDetail.Extension,
                 EmpLoginName = employeeCredential.EmployeeLoginName,
-               // gender = employeePersonalInfo.Gender
             };
         }
         public async Task<EmpPersonalInfoDTO> GetEmployeePersonalInfoAsync(int employeeCredentialId)
@@ -262,10 +262,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (employeePersonalInfo == null)
             {
-                return null; // Return null if no personal information found
+                return null;
             }
 
-            // Map the entity data to the DTO
             return new EmpPersonalInfoDTO
             {
                 FirstName = employyedetail.FirstName,
@@ -295,10 +294,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (employeeAddress == null)
             {
-                return null; // Return null if no address info found
+                return null; 
             }
 
-            // Map the entity data to the DTO
             return new AddressInfoDTO
             {
                 EmployeeCredentialId = employeeAddress.EmployeeCredentialId,
@@ -318,10 +316,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             if (accountDetail == null)
             {
-                return null; // Return null if no account info found
+                return null; 
             }
 
-            // Map the entity data to the DTO
             return new AccountDetail
             {
                 EmployeeCredentialId = accountDetail.EmployeeCredentialId,
@@ -360,7 +357,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                              select ed).ToList();
 
                 filteredEmployees = query;
-                ;
+                
             }
             return filteredEmployees;
         }
@@ -383,13 +380,12 @@ namespace HRMS_Application.BusinessLogic.Implements
                              select ed).ToList();
 
                 filteredEmployees = query;
-                ;
+                
             }
             return filteredEmployees;
         }
         public async Task<bool> UpdateEmployeeInfoAsync(UpdateEmployeeInfoDTO updateEmployeeInfo)
         {
-            // Check if the employee, credential, and personal info exist
             var employeeDetail = await _hrmsContext.EmployeeDetails
                 .FirstOrDefaultAsync(e => e.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId);
 
@@ -399,7 +395,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == updateEmployeeInfo.EmployeeCredentialId);
 
-            // If employee, credential, or personal info doesn't exist, create new ones
             if (employeeDetail == null)
             {
                 employeeDetail = new EmployeeDetail
@@ -416,7 +411,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             else
             {
-                // Update only the fields provided in the DTO, keeping other values unchanged
                 employeeDetail.FirstName = updateEmployeeInfo.EmployeeName ?? employeeDetail.FirstName;
                 employeeDetail.NickName = updateEmployeeInfo.NickName ?? employeeDetail.NickName;
                 employeeDetail.Email = updateEmployeeInfo.EmailAddress ?? employeeDetail.Email;
@@ -454,7 +448,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 _hrmsContext.EmpPersonalInfos.Update(employeepersonalinfo);
             }
 
-            // Save changes to the database
             await _hrmsContext.SaveChangesAsync();
 
             return true;
@@ -462,19 +455,15 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<bool> UpdateEmployeepersonalInfoAsync(EmpPersonalInfoDTO empPersonalInfo)
         {
-            // Check if EmployeeDetail exists
             var employeeDetail = await _hrmsContext.EmployeeDetails
                 .FirstOrDefaultAsync(e => e.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
 
-            // Check if EmployeeCredential exists
             var employeeCredential = await _hrmsContext.EmployeeCredentials
                 .FirstOrDefaultAsync(ec => ec.Id == empPersonalInfo.EmployeeCredentialId);
 
-            // Check if EmpPersonalInfo exists
             var employeepersonalinfo = await _hrmsContext.EmpPersonalInfos
                 .FirstOrDefaultAsync(ep => ep.EmployeeCredentialId == empPersonalInfo.EmployeeCredentialId);
 
-            // If none of the records exist, create new ones
             if (employeeDetail == null)
             {
                 employeeDetail = new EmployeeDetail
@@ -492,11 +481,9 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             else
             {
-                // Update existing employee detail
                 employeeDetail.FirstName = empPersonalInfo.FirstName ?? employeeDetail.FirstName;
                 employeeDetail.MiddleName = empPersonalInfo.MiddleName ?? employeeDetail.MiddleName;
                 employeeDetail.LastName = empPersonalInfo.LastName ?? employeeDetail.LastName;
-               // employeeDetail.Email = empPersonalInfo.EmailId ?? employeeDetail.Email;
                 employeeDetail.MobileNumber = empPersonalInfo.Contact ?? employeeDetail.MobileNumber;
 
                 _hrmsContext.EmployeeDetails.Update(employeeDetail);
@@ -538,7 +525,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
             else
             {
-                // Update existing employee personal info
                 employeepersonalinfo.Gender = empPersonalInfo.Gender ?? employeepersonalinfo.Gender;
                 employeepersonalinfo.EmailId = empPersonalInfo.EmailId ?? employeepersonalinfo.EmailId;
                 employeepersonalinfo.PersonalEmail = empPersonalInfo.PersonalEmail ?? employeepersonalinfo.PersonalEmail;
@@ -556,21 +542,18 @@ namespace HRMS_Application.BusinessLogic.Implements
                 _hrmsContext.EmpPersonalInfos.Update(employeepersonalinfo);
             }
 
-            // Save changes to the database
             await _hrmsContext.SaveChangesAsync();
 
             return true;
-        }/**/
+        }
 
         public async Task<bool> UpdateEmployeeAddresslInfoAsync(AddressInfoDTO addressInfo)
         {
-            // Check if the AddressInfo record exists for the given EmployeeCredentialId
             var employeeAddress = await _hrmsContext.AddressInfos
                 .FirstOrDefaultAsync(e => e.EmployeeCredentialId == addressInfo.EmployeeCredentialId);
 
             if (employeeAddress == null)
             {
-                // If no record exists, create a new AddressInfo entry
                 employeeAddress = new AddressInfo
                 {
                     EmployeeCredentialId = addressInfo.EmployeeCredentialId,
@@ -583,11 +566,10 @@ namespace HRMS_Application.BusinessLogic.Implements
                     IsActive =1
                 };
 
-                await _hrmsContext.AddressInfos.AddAsync(employeeAddress); // Insert new record
+                await _hrmsContext.AddressInfos.AddAsync(employeeAddress); 
             }
             else
             {
-                // If record exists, update the fields that are provided, keep existing values for others
                 employeeAddress.AddressLine1 = addressInfo.AddressLine1 ?? employeeAddress.AddressLine1;
                 employeeAddress.AddressLine2 = addressInfo.AddressLine2 ?? employeeAddress.AddressLine2;
                 employeeAddress.City = addressInfo.City ?? employeeAddress.City;
@@ -595,7 +577,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 employeeAddress.Country = addressInfo.Country ?? employeeAddress.Country;
                 employeeAddress.PinCode = addressInfo.PinCode ?? employeeAddress.PinCode;
 
-                _hrmsContext.AddressInfos.Update(employeeAddress); // Update the existing record
+                _hrmsContext.AddressInfos.Update(employeeAddress); 
             }
 
             await _hrmsContext.SaveChangesAsync();
@@ -605,11 +587,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public async Task<bool> UpdateEmployeeAccountInfoAsync(AccountDetailDTO accountDetail)
         {
-            // Check if the account already exists
             var existingAccountDetail = await _hrmsContext.AccountDetails
                 .FirstOrDefaultAsync(e => e.EmployeeCredentialId == accountDetail.EmployeeCredentialId);
 
-            // If account exists, update the existing fields
             if (existingAccountDetail != null)
             {
                 existingAccountDetail.AadharNumber = accountDetail.AadharNumber ?? existingAccountDetail.AadharNumber;
@@ -629,7 +609,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 
                 _hrmsContext.AccountDetails.Update(existingAccountDetail);
             }
-            // If account does not exist, create a new one
             else
             {
                 AccountDetail newAccountDetail = new AccountDetail
@@ -655,67 +634,18 @@ namespace HRMS_Application.BusinessLogic.Implements
                 await _hrmsContext.AccountDetails.AddAsync(newAccountDetail);
             }
 
-            // Save changes to the database
             await _hrmsContext.SaveChangesAsync();
 
             return true;
         }
-        /*  public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
-          {
-              var currentDate = DateTime.Now.Date;
-
-              var employeeDetail = _hrmsContext.EmployeeDetails
-        .FirstOrDefault(e => e.EmployeeCredentialId == empCredentialId);
-
-              if (employeeDetail == null)
-              {
-                  throw new Exception("Employee not found.");
-              }
-
-              var shiftRoster = _hrmsContext.ShiftRosters
-                  .Where(sr => sr.EmpCredentialId == empCredentialId
-                               && sr.Startdate.HasValue && sr.Startdate.Value.Date <= currentDate
-                               && sr.Enddate.HasValue && sr.Enddate.Value.Date >= currentDate)
-                  .Include(sr => sr.ShiftRosterType)
-                  .FirstOrDefault();
-
-              if (shiftRoster == null)
-              {
-                  throw new Exception("No shift roster found for the current date.");
-              }
-
-              var leaveAllocations = _hrmsContext.EmployeeLeaveAllocations
-                  .Where(la => la.EmpCredentialId == empCredentialId && la.IsActive == 1)
-                  .Include(la => la.LeaveTypeNavigation)
-                  .ToList();
-
-              var totalLeaveCount = leaveAllocations.Sum(la => la.NumberOfLeaves ?? 0);
-              var remainingLeaveCount = leaveAllocations.Sum(la => la.RemainingLeave ?? 0);
-
-              var leavePercentage = totalLeaveCount > 0 ? (remainingLeaveCount * 100) / totalLeaveCount : 0;
-
-              var result = new EmployeeShiftAndLeaveStatsDto
-              {
-                  ShiftType = shiftRoster.ShiftRosterType?.Type,
-                  ShiftTimeRange = shiftRoster.ShiftRosterType?.TimeRange,
-                  TotalLeaveCount = totalLeaveCount,
-                  RemainingLeaveCount = remainingLeaveCount,
-                  LeavePercentage = leavePercentage,
-                  Name = $"{employeeDetail.FirstName} {employeeDetail.LastName}",
-                  Email = employeeDetail.Email,
-              };
-
-              return result;
-          }*/
         public EmployeeShiftAndLeaveStatsDto GetEmployeeShiftAndLeaveStats(int empCredentialId)
         {
             var currentDate = DateTime.Now.Date;
             var currentYear = DateTime.Now.Year;
             var currentMonth = DateTime.Now.Month;
 
-            // Set the start and end date for the current month
             var startDate = new DateTime(currentYear, currentMonth, 1);
-            var endDate = startDate.AddMonths(1).AddDays(-1);  // Last day of the month
+            var endDate = startDate.AddMonths(1).AddDays(-1);  
             var totalWorkingDays = CalculateTotalWorkingDays(startDate);
 
             var employeeDetail = _hrmsContext.EmployeeDetails
@@ -747,7 +677,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             var remainingLeaveCount = leaveAllocations.Sum(la => la.RemainingLeave ?? 0);
             var leavePercentage = totalLeaveCount > 0 ? (remainingLeaveCount * 100) / totalLeaveCount : 0;
 
-            // Get holidays for the current month for the company
             var holidays = _hrmsContext.Holidays
                 .Where(h => h.CompanyId == employeeDetail.RequestCompanyId
                             && h.Date.HasValue
@@ -757,7 +686,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 .Select(h => h.Date.Value.Date)
                 .ToList();
 
-            // Calculate total days in the month excluding Sundays and holidays
             var totalDaysInMonth = (endDate - startDate).Days + 1;
             var weekends = Enumerable.Range(0, totalDaysInMonth)
                 .Select(d => startDate.AddDays(d))
@@ -766,23 +694,20 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             var holidaysCount = holidays.Count;
             var weekendsCount = weekends.Count;
-           // var totalWorkingDays = totalDaysInMonth - holidaysCount - weekendsCount;
 
-            // Get attendance records for the employee for the current month
             var presentDaysCount = _hrmsContext.Attendances
             .Where(a => a.EmpCredentialId == empCredentialId
-                && a.Status == "Present"  // Filter by status "Present"
+                && a.Status == "Present" 
                 && a.Date.HasValue
                 && a.Date.Value.Date >= startDate
                 && a.Date.Value.Date <= endDate)
-             .Select(a => a.Date.Value.Date)  // Select distinct dates
+             .Select(a => a.Date.Value.Date)  
              .Distinct()
              .Count();
 
 
             var attendancePercentage = totalWorkingDays > 0 ? (presentDaysCount / (double)totalWorkingDays) * 100 : 0;
 
-            // Construct the result
             var result = new EmployeeShiftAndLeaveStatsDto
             {
                 ShiftType = shiftRoster.ShiftRosterType?.Type,
@@ -803,12 +728,10 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public MonthlyAttendanceStatistics GetMonthlyStatistics(int empCredentialId, DateTime month)
         {
-            // Fetch attendance data for the employee for the given month
             var attendances = _hrmsContext.Attendances
                 .Where(a => a.EmpCredentialId == empCredentialId && a.Date.Value.Month == month.Month && a.Date.Value.Year == month.Year)
                 .ToList();
 
-            // Fetch the shift roster to get time ranges
             var shiftRoster = _hrmsContext.ShiftRosters
                 .Include(sr => sr.ShiftRosterType)
                 .FirstOrDefault(sr => sr.EmpCredentialId == empCredentialId);
@@ -826,25 +749,21 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             var totalworkhrs = (standardWorkDayHours);
 
-            // Calculate total working days
             var totalWorkingDays = CalculateTotalWorkingDays(month);
 
             var totalHoursWorked = totalworkhrs * totalWorkingDays;
-            // Initialize tovtal hours worked
-            double totalPresentHours = 0; // To calculate average work hours for present status
+            double totalPresentHours = 0; 
             double totalTimeIn = 0;
             double totalTimeOut = 0;
-            double totalOvertimeHours = 0; // To calculate total overtime hours for the month
+            double totalOvertimeHours = 0; 
 
-            TimeSpan totalWorkTime = TimeSpan.Zero; // To calculate total work time for the month
+            TimeSpan totalWorkTime = TimeSpan.Zero;
             TimeSpan totalOverTime = TimeSpan.Zero;
-            TimeSpan LessHours = TimeSpan.Zero; // Initialize LessHours at the start
+            TimeSpan LessHours = TimeSpan.Zero;
 
-            // List to hold date-wise attendance data
             var dateWiseAttendance = new List<DateWiseAttendance>();
 
-            DateWiseAttendance specificDayAttendance = null;
-
+            DateWiseAttendance? specificDayAttendance = null;
 
             foreach (var attendance in attendances)
             {
@@ -869,39 +788,35 @@ namespace HRMS_Application.BusinessLogic.Implements
                     if (workStart < workEnd)
                     {
                         TimeSpan workTimes = effectiveTimeOut - effectiveTimeIn;
-                        totalWorkTime += workTimes; // Accumulate total work time for all dates
+                        totalWorkTime += workTimes; 
                         totalOverTime += overtime;
                      
                         double workedHours = (workEnd - workStart).TotalHours;
                            if (workTimes.TotalHours < standardWorkDayHours)
                            {
-                                double lessHours = standardWorkDayHours - workTimes.TotalHours; // Calculate the difference in hours
-                                LessHours += TimeSpan.FromHours(lessHours); // Accumulate LessHours
+                                double lessHours = standardWorkDayHours - workTimes.TotalHours;
+                                LessHours += TimeSpan.FromHours(lessHours); 
                            }
-                        // If status is "Present", add to total present hours
 
                         if (attendance.Status == "Present")
                         {
                             totalPresentHours += workedHours;
                             totalTimeIn += attendance.TimeIn.Value.TimeOfDay.TotalHours;
                             totalTimeOut += attendance.Timeout.Value.TimeOfDay.TotalHours;
-                            totalOvertimeHours += overtime.TotalHours; // Add overtime hours
+                            totalOvertimeHours += overtime.TotalHours; 
 
-                            // Add date-wise entry to the list
                             var attendanceEntry = new DateWiseAttendance
                             {
                                 Date = attendance.Date.Value,
                                 TimeIn = attendance.TimeIn.Value.ToString(@"hh\:mm\:ss"),
                                 TimeOut = attendance.Timeout.Value.ToString(@"hh\:mm\:ss"),
-                                // WorkTime = (workEnd - workStart).ToString(@"hh\:mm"), // Add work time
-                                WorkTime = workTime.ToString(@"hh\:mm"),  // Work time in hh:mm format
+                                WorkTime = workTime.ToString(@"hh\:mm"), 
                                 Overtime = overtime.ToString(@"hh\:mm"),
                                 Status = attendance.Status
                             };
 
                             dateWiseAttendance.Add(attendanceEntry);
 
-                            // Check if it's the specific day (e.g., 2024-10-10)
                             if (attendance.Date.Value.Date == month.Date)
                             {
                                 specificDayAttendance = attendanceEntry;
@@ -913,27 +828,19 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
            
             var presentDaysCount = attendances.Count(a => a.Status == "Present");
-            //var avgworkhours = presentDaysCount > 0 ? totalPresentHours / totalWorkingDays : 0;
             var avgworkhours = presentDaysCount > 0 ? totalPresentHours : 0;
 
-            var averageWorkHours = TimeSpan.FromHours(avgworkhours);  // Prevent division by zero
+            var averageWorkHours = TimeSpan.FromHours(avgworkhours); 
             
             var averageTimeInHours = presentDaysCount > 0 ? totalTimeIn / presentDaysCount : 0;
             var averageTimeOutHours = presentDaysCount > 0 ? totalTimeOut / presentDaysCount : 0;
 
-            // Convert average hours to TimeSpan
             var averageTimeIn = TimeSpan.FromHours(averageTimeInHours);
             var averageTimeOut = TimeSpan.FromHours(averageTimeOutHours);
             
             double averageOvertimeHours = presentDaysCount > 0 ? totalOvertimeHours / presentDaysCount : 0;
             var averageOvertime = TimeSpan.FromHours(averageOvertimeHours);
 
-
-            /* // Format as hh:mm:ss
-             var formattedAverageTimeIn = averageTimeIn.ToString(@"hh\:mm\:ss");
-             var formattedAverageTimeOut = averageTimeOut.ToString(@"hh\:mm\:ss");*/
-
-            // Calculate counts for various attendance statuses
             var presentCount = attendances.Count(a => a.Status == "Present");
             var absentCount = attendances.Count(a => a.Status == "Absent");
             var leaveTakenCount = attendances.Count(a => a.Status == "Leave");
@@ -963,12 +870,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 EmployeecredntialId = empCredentialId,
                 TotalWorkingDays = totalWorkingDays,
-                TotalHoursWorked = totalHoursWorked,//Average Work Hours in a month
-                AverageWorkHours = averageWorkHours.ToString(@"hh\:mm"),//Employee Work Hours in a month
-                AverageOvertime = averageOvertime.ToString(@"hh\:mm"), // Average overtime in hh:mm format
+                TotalHoursWorked = totalHoursWorked,
+                AverageWorkHours = averageWorkHours.ToString(@"hh\:mm"),
+                AverageOvertime = averageOvertime.ToString(@"hh\:mm"),
                 TotalWorkplusOT = TotalWorkplusOTs,
                 TotalOverTime = totalOverTime.ToString(@"hh\:mm"),
-                LessHoursTime = LessHours.ToString(@"hh\:mm"), // Add LessHours to the return object
+                LessHoursTime = LessHours.ToString(@"hh\:mm"),
                 LateInCount = lateInCount,
                 EarlyOutCount = earlyOutCount,
                 AbsentCount = absentCount,
@@ -982,7 +889,6 @@ namespace HRMS_Application.BusinessLogic.Implements
                 RestDaysPercentage = restDaysPercentage,
                 PenaltyCount = PenaltyleaveTakenCount,
 
-                // Return specific day attendance if found
                 SpecificDayAttendance = specificDayAttendance,
                 DateWiseAttendance = dateWiseAttendance
 
@@ -990,7 +896,6 @@ namespace HRMS_Application.BusinessLogic.Implements
         }
         private int GetHolidayCount(DateTime month)
         {
-            // Fetch holidays from the Holiday table based on the month
             return _hrmsContext.Holidays
                 .Where(h => h.Date.HasValue && h.Date.Value.Month == month.Month && h.Date.Value.Year == month.Year && h.IsActive == 1)
                 .Count();
@@ -1045,20 +950,14 @@ namespace HRMS_Application.BusinessLogic.Implements
             var companyDetail = _hrmsContext.CompanyDetails
        .FirstOrDefault(c => c.RequestedCompanyId == companyId && c.IsActive == 1);
 
-            // Determine the company logo URL, if available
-            /*if (companyDetail == null)
-            {
-                throw new Exception("Company not found or inactive.");
-            }*/
+            
             var result = new UserDetailsDTO
             {
                
                 Name = $"{employeeDetail.FirstName} {employeeDetail.LastName}",
                 Email = employeeDetail.Email,
                 ImageUrl = employeeDetail.ImageUrl,
-                CompanyLogo = companyDetail?.CompanyLogo // If companyDetail is null, this will set CompanyLogo to null
-
-
+                CompanyLogo = companyDetail?.CompanyLogo 
             };
 
             return result;
