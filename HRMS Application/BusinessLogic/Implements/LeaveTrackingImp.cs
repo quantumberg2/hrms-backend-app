@@ -81,8 +81,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             DecodeToken();
             leaveTracking.EmpCredentialId = empCredentialId;
-
-
+            
             var overlappingLeave = await _hrmsContext.LeaveTrackings
             .Where(lt => lt.EmpCredentialId == empCredentialId &&
                      (lt.Status == "Pending" || lt.Status == "Approved") &&
@@ -105,13 +104,13 @@ namespace HRMS_Application.BusinessLogic.Implements
                         if (overlappingLeave != null)
                         {
                            if (overlappingLeave.Status == "Pending")
-                            {
+                           {
                                throw new Exception($"There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
-                             }
+                           }
                            else if (overlappingLeave.Status == "Approved")
                            {
                                  throw new Exception($"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.");
-                             }
+                           }
                         }             
              
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);

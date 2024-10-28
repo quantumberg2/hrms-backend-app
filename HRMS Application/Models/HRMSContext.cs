@@ -745,6 +745,8 @@ namespace HRMS_Application.Models
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.Property(e => e.CompanyConfiguredLeave).HasColumnName("Company_Configured_Leave");
+
                 entity.Property(e => e.CompanyId).HasColumnName("Company_id");
 
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
