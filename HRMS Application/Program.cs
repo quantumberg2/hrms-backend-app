@@ -67,7 +67,7 @@ builder.Services.AddScoped<IAdminDashboard, AdmindashboardImp>();
 builder.Services.AddScoped<IUpdateEmployeeDetails, UpdateEmployeeDetailsImp>();
 builder.Services.AddScoped<INews, NewsImp>();
 builder.Services.AddScoped<INewsPreview, NewPreviewImp>();
-
+builder.Services.AddScoped<IRegularization, RegularizationImp>();
 builder.Services.AddScoped<IContactUs, ContactUsImp>();
 builder.Services.AddScoped<IAlertEmailOperations,AlertMailOperationsImp>();
 builder.Services.AddScoped(_ =>
