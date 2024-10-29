@@ -272,6 +272,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                       && emp.ManagerId == managerId
                                       && emp.IsActive == 1
                                       && leave.IsActive == 1
+                                      && leaveType.Type != "Regularization"
                                 select new LeaveApprovalDTO
                                 {
                                     Id = leave.Id,
@@ -481,7 +482,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                  join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
                                  join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
                                  join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
-                                 where leave.Status == "Pending" && empCred.Id == employeeCredentialId
+                                 where leave.Status == "Pending" && empCred.Id == employeeCredentialId && leaveType.Type != "Regularization"
                                  select new LeavePendingDTO
                                  {
                                      id = leave.Id,
@@ -510,8 +511,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                                  join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
                                  join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
                                  where (leave.Status == "Rejected" || leave.Status == "Withdrawn" || leave.Status == "Approved")
-                                       && empCred.Id == employeeCredentialId
-                                 select new LeavePendingDTO
+                                       && empCred.Id == employeeCredentialId && leaveType.Type != "Regularization"
+                                select new LeavePendingDTO
                                  {
                                      id = leave.Id,
                                      employeecredentialId = empCred.Id,

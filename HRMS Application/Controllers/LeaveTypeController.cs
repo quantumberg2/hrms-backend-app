@@ -83,7 +83,7 @@ namespace HRMS_Application.Controllers
 
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(token);
-
+                
                 var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
                 if (companyIdClaim == null)
                 {
@@ -96,6 +96,7 @@ namespace HRMS_Application.Controllers
                 }
 
                 leaveType.CompanyId = companyId;
+              //  leaveType.CompanyConfiguredLeave = true;
 
                 _logger.LogInformation("LeaveType details insert method started");
 
