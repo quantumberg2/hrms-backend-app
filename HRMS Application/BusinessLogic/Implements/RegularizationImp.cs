@@ -51,6 +51,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                      && emp.ManagerId == managerId
                                      && emp.IsActive == 1
                                      && leave.IsActive == 1
+                                     && leaveType.Type == "Regularization"
                                select new LeaveApprovalDTO
                                {
                                    Id = leave.Id,
