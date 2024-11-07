@@ -20,42 +20,50 @@ namespace HRMS_Application.Controllers
         }
 
         [HttpGet]
-        [Authorize(new[] { "Admin","User","HR" })]
-        public ActionResult <List<LeaveType>> GetAllLeavetype()
+        //  [Authorize(new[] { "Admin","User","HR" })]
+        public ActionResult<List<LeaveType>> GetAllLeavetype()
         {
             try
             {
-                _logger.LogInformation("get all leavetypes details started");
+                _logger.LogInformation("Get all leave types details started");
+
+                // Check if an authorization token is provided
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
-                if (string.IsNullOrEmpty(token))
+                int? companyId = null;
+
+                if (!string.IsNullOrEmpty(token))
                 {
-                    return Unauthorized("Authorization token is missing or invalid.");
+                    // Decode the JWT token to extract the CompanyId
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(token);
+
+                    // Extract the CompanyId from the token
+                    var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
+                    if (companyIdClaim == null)
+                    {
+                        return Unauthorized("Company ID not found in token.");
+                    }
+
+                    // Parse the CompanyId
+                    if (!int.TryParse(companyIdClaim.Value, out int parsedCompanyId))
+                    {
+                        return BadRequest("Invalid Company ID in token.");
+                    }
+
+                    companyId = parsedCompanyId;
                 }
 
-                // Decode the JWT token to extract the CompanyId
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
+                // Fetch leave types based on whether a CompanyId is available
+                var result = companyId.HasValue
+                    ? _leavetype.GetAllLeaveType(companyId.Value) // Return leave types for specific company
+                    : _leavetype.GetRegularizationLeaveType();    // Return only the "Regularization" leave type if no token
 
-                // Extract the CompanyId from the token
-                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "CompanyId");
-                if (companyIdClaim == null)
-                {
-                    return Unauthorized("Company ID not found in token.");
-                }
-
-                // Parse the CompanyId
-                if (!int.TryParse(companyIdClaim.Value, out int companyId))
-                {
-                    return BadRequest("Invalid Company ID in token.");
-                }
-
-                var result = _leavetype.GetAllLeaveType(companyId);
-                return result;
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving the Leave Types details.");
-                return StatusCode(500, "An error occurred while fetching Leave Types data.");
+                _logger.LogError(ex, "An error occurred while retrieving the leave types details.");
+                return StatusCode(500, "An error occurred while fetching leave types data.");
             }
         }
         [HttpGet("GetById")]

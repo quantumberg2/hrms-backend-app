@@ -56,12 +56,27 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
+        /*  public List<LeaveType> GetAllLeaveType(int companyId)
+          {
+              var result = (from row in _context.LeaveTypes
+                            where row.IsActive == 1 && row.CompanyId == companyId
+                            select row).ToList();
+              return result;
+          }*/
         public List<LeaveType> GetAllLeaveType(int companyId)
         {
             var result = (from row in _context.LeaveTypes
-                          where row.IsActive == 1 && row.CompanyId == companyId
+                          where row.IsActive == 1
+                                && (row.CompanyId == companyId)
                           select row).ToList();
+
             return result;
+        }
+        public List<LeaveType> GetRegularizationLeaveType()
+        {
+            return _context.LeaveTypes
+                           .Where(row => row.IsActive == 1 && row.CompanyConfiguredLeave == true && row.CompanyId == null)
+                           .ToList();
         }
 
         public LeaveType GetLeaveTypeById(int id)
