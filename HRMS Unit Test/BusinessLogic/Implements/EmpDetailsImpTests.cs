@@ -252,7 +252,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-        [Fact]
+     /*   [Fact]
         public void CanCallGetAllEmployees()
         {
             // Act
@@ -260,7 +260,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Assert
             throw new NotImplementedException("Create or modify test");
-        }
+        }*/
 
         [Fact]
         public async Task CanCallGetEmployeeInfoAsync()
