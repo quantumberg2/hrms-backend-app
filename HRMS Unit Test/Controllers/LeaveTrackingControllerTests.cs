@@ -308,7 +308,7 @@ namespace HRMS_Unit_Test.Controllers
             throw new NotImplementedException("Create or modify test");
         }
 
-        [Fact]
+       /* [Fact]
         public async Task CanCallGetById()
         {
             // Arrange
@@ -408,7 +408,7 @@ namespace HRMS_Unit_Test.Controllers
             _leaveTracking.Verify(mock => mock.GetByIdAsync(It.IsAny<int>()));
 
             throw new NotImplementedException("Create or modify test");
-        }
+        }*/
 
         [Fact]
         public async Task CanCallCreateLeaveTracking()

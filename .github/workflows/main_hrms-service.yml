@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - hrms-backend
+name: Build and deploy ASP.Net Core app to Azure Web App - hrms-service
 
 on:
   push:
@@ -25,13 +25,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o "${{env.GITHUB_WORKSPACE}}\myapp"
+        run: dotnet publish -c Release -o "${{env.GITHUB_WORKSPACE}}/myapp"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.GITHUB_WORKSPACE}}\myapp
+          path: ${{env.GITHUB_WORKSPACE}}/myapp
 
   deploy:
     runs-on: windows-latest
@@ -51,15 +51,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D3B7CA1141174C0B8C94D6AA3844D460 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_80DC1CB763EC40EF933111BEDB6FD158 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_73C382FE0A2C48B9B2B630B6578EB0AB }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_EEAE56F7C4134EAF93A8F9EB2249F34B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5FBEA612B09F44DBA0B259CED0142CEA }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_CC22FA7C2C98469683C3D829F2314689 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'hrms-backend'
+          app-name: 'hrms-service'
           slot-name: 'Production'
           package: .
           
