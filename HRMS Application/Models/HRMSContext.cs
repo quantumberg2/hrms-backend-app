@@ -22,6 +22,7 @@ namespace HRMS_Application.Models
         public virtual DbSet<AddressInfo> AddressInfos { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Audit> Audits { get; set; }
+
         public virtual async Task<int> SaveChangesAsync(int? userId = null)
         {
             OnBeforeSaveChanges(userId);
@@ -92,6 +93,8 @@ namespace HRMS_Application.Models
         public virtual DbSet<NewsPreview> NewsPreviews { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<RequestedCompanyForm> RequestedCompanyForms { get; set; }
+        public virtual DbSet<Resignation> Resignations { get; set; }
+        public virtual DbSet<ResignationApprovalStatus> ResignationApprovalStatuses { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<ShiftRoster> ShiftRosters { get; set; }
         public virtual DbSet<ShiftRosterType> ShiftRosterTypes { get; set; }
@@ -855,6 +858,53 @@ namespace HRMS_Application.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Resignation>(entity =>
+            {
+                entity.ToTable("Resignation");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.EmpCredentialId).HasColumnName("Emp_CredentialId");
+
+                entity.Property(e => e.ExitDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FinalSettleMentDate).HasColumnType("datetime");
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
+                entity.Property(e => e.Reason).IsUnicode(false);
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<ResignationApprovalStatus>(entity =>
+            {
+                entity.ToTable("ResignationApprovalStatus");
+
+                entity.Property(e => e.AdminApprovalStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IsActive).HasColumnName("isActive");
+
+                entity.Property(e => e.ManagerApprovalStatus)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Resignation)
+                    .WithMany(p => p.ResignationApprovalStatuses)
+                    .HasForeignKey(d => d.ResignationId)
+                    .HasConstraintName("FK__Resignati__Resig__65370702");
             });
 
             modelBuilder.Entity<Role>(entity =>
