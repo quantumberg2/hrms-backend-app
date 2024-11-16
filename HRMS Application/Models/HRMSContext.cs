@@ -872,7 +872,7 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.ExitDate).HasColumnType("datetime");
 
-                entity.Property(e => e.FinalSettleMentDate).HasColumnType("datetime");
+                entity.Property(e => e.FinalSettlementDate).HasColumnType("datetime");
 
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
 

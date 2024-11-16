@@ -20,7 +20,7 @@ namespace HRMS_Application.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string Status { get; set; }
-        public DateTime? FinalSettleMentDate { get; set; }
+        public DateTime? FinalSettlementDate { get; set; }
         public short? IsActive { get; set; }
 
         public virtual ICollection<ResignationApprovalStatus> ResignationApprovalStatuses { get; set; }
