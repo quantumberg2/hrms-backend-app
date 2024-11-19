@@ -31,6 +31,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             resignation.CreatedDate = DateTime.Now;
 
             resignation.IsActive = 1;
+            resignation.Status = "Pending";
 
             var res = _context.Resignations.Add(resignation);
             if(res!=null)
