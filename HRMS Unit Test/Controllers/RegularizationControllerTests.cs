@@ -66,5 +66,20 @@ namespace HRMS_Unit_Test.Controllers
 
             throw new NotImplementedException("Create or modify test");
         }
+
+        [Fact]
+        public void CanCallHistoryleaves()
+        {
+            // Arrange
+            _regularization.Setup(mock => mock.GetHistoryRegularization(It.IsAny<int>())).Returns(new List<LeavePendingDTO>());
+
+            // Act
+            var result = _testClass.Historyleaves();
+
+            // Assert
+            _regularization.Verify(mock => mock.GetHistoryRegularization(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
     }
 }

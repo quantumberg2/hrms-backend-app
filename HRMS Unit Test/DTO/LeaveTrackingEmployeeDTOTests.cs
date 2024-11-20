@@ -1,7 +1,6 @@
-namespace HRMS_Unit_Test.Controllers
+namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using HRMS_Application.Controllers;
     using HRMS_Application.DTO;
     using Xunit;
 
@@ -44,7 +43,7 @@ namespace HRMS_Unit_Test.Controllers
         public void CanSetAndGetStatus()
         {
             // Arrange
-            var testValue = "TestValue1707056623";
+            var testValue = "TestValue10486411";
 
             // Act
             _testClass.Status = testValue;
@@ -57,7 +56,7 @@ namespace HRMS_Unit_Test.Controllers
         public void CanSetAndGetName()
         {
             // Arrange
-            var testValue = "TestValue2043772953";
+            var testValue = "TestValue607424395";
 
             // Act
             _testClass.Name = testValue;
@@ -70,7 +69,7 @@ namespace HRMS_Unit_Test.Controllers
         public void CanSetAndGetEmail()
         {
             // Arrange
-            var testValue = "TestValue605274977";
+            var testValue = "TestValue1482995229";
 
             // Act
             _testClass.Email = testValue;
