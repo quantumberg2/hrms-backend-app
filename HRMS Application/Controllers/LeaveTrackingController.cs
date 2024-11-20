@@ -400,7 +400,6 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Employee credential ID not found or invalid in the token.");
                 }
 
-
                 var leaveTracking = await _leaveTracking.UpdateLeaveAsyncchanges(employeeCredentialId, id, newStatus);
 
                 if (leaveTracking == null)
