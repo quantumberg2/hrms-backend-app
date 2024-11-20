@@ -9,6 +9,7 @@ namespace HRMS_Application.DTO
         public string Reason { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public DateTime? ExitDate { get; set; }
         public string? Comments { get; set; }
 
 

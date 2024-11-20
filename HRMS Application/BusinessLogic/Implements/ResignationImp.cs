@@ -43,7 +43,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 EmpCredentialId = empCredId,
                 Reason = resignation.Reason,
                 StartDate = resignation.StartDate,
-                ExitDate = resignation.StartDate?.AddDays(30), 
+                ExitDate = resignation.ExitDate, 
                 CreatedDate = DateTime.Now,
                 IsActive = 1,
                 Status = "Pending",
