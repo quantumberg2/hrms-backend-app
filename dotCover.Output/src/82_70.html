@@ -2,155 +2,83 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\AddressImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\EmpPersonalInfoControllerTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.DTO;
     using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
-    public class AddressImpTests
+    public class EmpPersonalInfoControllerTests
     {
-        private readonly AddressImp _testClass;
+        private readonly EmpPersonalInfoController _testClass;
+        private readonly Mock&lt;ILogger&lt;EmpPersonalInfoController&gt;&gt; _logger;
+        private readonly Mock&lt;IEmpPersonalInfo&gt; _empPersonalInfo;
         private HRMSContext _context;
 
-        public AddressImpTests()
+        public EmpPersonalInfoControllerTests()
         {
+            _logger = new Mock&lt;ILogger&lt;EmpPersonalInfoController&gt;&gt;();
+            _empPersonalInfo = new Mock&lt;IEmpPersonalInfo&gt;();
             _context = new HRMSContext();
-            _testClass = new AddressImp(_context);
+            _testClass = new EmpPersonalInfoController(_logger.Object, _empPersonalInfo.Object, _context);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new AddressImp(_context);
+            var instance = new EmpPersonalInfoController(_logger.Object, _empPersonalInfo.Object, _context);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void CanCalldeleteAddressInfo()
+        public void CanCallInsertEmpPersonalInfo()
         {
             // Arrange
-            var id = 1394012170;
-
-            // Act
-            var result = _testClass.deleteAddressInfo(id);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetAddressInfoById()
-        {
-            // Arrange
-            var id = 1037776991;
-
-            // Act
-            var result = _testClass.GetAddressInfoById(id);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetAddressInfoByEmpCredId()
-        {
-            // Arrange
-            var empCredId = 1603486236;
-
-            // Act
-            var result = _testClass.GetAddressInfoByEmpCredId(empCredId);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetAllAddressInfo()
-        {
-            // Act
-            var result = _testClass.GetAllAddressInfo();
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallInsertAddressInfot()
-        {
-            // Arrange
-            var address = new AddressInfo
+            var empPersonalInfo = new EmpPersonalInfoDTO
             {
-                Id = 93817432,
-                EmployeeCredentialId = 1599711591,
-                AddressLine1 = &quot;TestValue1803993366&quot;,
-                AddressLine2 = &quot;TestValue963299217&quot;,
-                City = &quot;TestValue14754039&quot;,
-                State = &quot;TestValue1018885706&quot;,
-                Country = &quot;TestValue224639886&quot;,
-                PinCode = &quot;TestValue453236898&quot;,
-                IsActive = (short)2483,
-                EmployeeCredential = new EmployeeCredential
-                {
-                    Id = 1949945657,
-                    UserName = &quot;TestValue1244133647&quot;,
-                    Password = &quot;TestValue647846752&quot;,
-                    Status = (short)22918,
-                    RequestedCompanyId = 115004150,
-                    Email = &quot;TestValue754347509&quot;,
-                    DefaultPassword = false,
-                    GenerateOtp = &quot;TestValue931122408&quot;,
-                    OtpExpiration = DateTime.UtcNow,
-                    IsActive = (short)9885,
-                    EmployeeLoginName = &quot;TestValue115098127&quot;,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 1717249882,
-                        Name = &quot;TestValue1487358695&quot;,
-                        PhoneNumber = &quot;TestValue1285360215&quot;,
-                        DomainName = &quot;TestValue753526003&quot;,
-                        Status = &quot;TestValue421465373&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue1726347170&quot;,
-                        IsActive = (short)13814,
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
-                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
-                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                }
+                FirstName = &quot;TestValue1641686470&quot;,
+                MiddleName = &quot;TestValue954372434&quot;,
+                LastName = &quot;TestValue1759069150&quot;,
+                EmployeeCredentialId = 2122078968,
+                Dob = DateTime.UtcNow,
+                DateOfJoining = DateTime.UtcNow,
+                ConfirmDate = DateTime.UtcNow,
+                EmpStatus = &quot;TestValue329374128&quot;,
+                EmailId = &quot;TestValue549682469&quot;,
+                PersonalEmail = &quot;TestValue1779196550&quot;,
+                MaritalStatus = &quot;TestValue353481913&quot;,
+                BloodGroup = &quot;TestValue1492827010&quot;,
+                SpouseName = &quot;TestValue2131004432&quot;,
+                PhysicallyChallenged = true,
+                EmergencyContact = &quot;TestValue460393806&quot;,
+                PAN = &quot;TestValue92419532&quot;,
+                Gender = &quot;TestValue1809320362&quot;,
+                Contact = &quot;TestValue2053998691&quot;
             };
-            var empCredentialId = 45391479;
+            var empCredentialId = 1629696420;
+
+            _empPersonalInfo.Setup(mock =&gt; mock.InsertEmpPersonalInfo(It.IsAny&lt;EmpPersonalInfoDTO&gt;(), It.IsAny&lt;int&gt;())).Returns(&quot;TestValue791043422&quot;);
 
             // Act
-            var result = _testClass.InsertAddressInfot(address, empCredentialId);
+            var result = _testClass.InsertEmpPersonalInfo(empPersonalInfo, empCredentialId);
 
             // Assert
+            _empPersonalInfo.Verify(mock =&gt; mock.InsertEmpPersonalInfo(It.IsAny&lt;EmpPersonalInfoDTO&gt;(), It.IsAny&lt;int&gt;()));
+
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
@@ -158,20 +86,24 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
         public void CanCallSoftDelete()
         {
             // Arrange
-            var id = 1703247345;
-            var isActive = (short)1038;
+            var id = 466704553;
+            var isActive = (short)26262;
+
+            _empPersonalInfo.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(false);
 
             // Act
             var result = _testClass.SoftDelete(id, isActive);
 
             // Assert
+            _empPersonalInfo.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
+
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[15,9,15,33,1],[16,9,16,10,1],[17,13,17,42,1],[18,13,18,51,1],[19,9,19,10,1],[23,9,23,10,1],[25,13,25,53,1],[28,13,28,38,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,33,1],[38,13,38,59,1],[41,13,41,72,0],[46,9,46,10,1],[48,13,48,33,1],[51,13,51,60,1],[54,13,54,72,0],[59,9,59,10,1],[61,13,61,40,1],[64,13,64,74,1],[67,13,67,72,0],[72,9,72,10,1],[74,13,74,57,1],[77,13,77,72,0],[82,9,82,10,1],[84,13,137,15,1],[138,13,138,44,1],[141,13,141,82,1],[144,13,144,72,0],[149,9,149,10,1],[151,13,151,33,1],[152,13,152,40,1],[155,13,155,62,1],[158,13,158,72,0]]);
+      highlightRanges([[19,9,19,48,1],[20,9,20,10,1],[21,13,21,70,1],[22,13,22,61,1],[23,13,23,42,1],[24,13,24,107,1],[25,9,25,10,1],[29,9,29,10,1],[31,13,31,109,1],[34,13,34,38,1],[35,9,35,10,1],[39,9,39,10,1],[41,13,61,15,1],[62,13,62,46,1],[64,13,64,151,1],[67,13,67,93,1],[70,13,70,122,0],[72,13,72,72,0],[77,9,77,10,1],[79,13,79,32,1],[80,13,80,41,1],[82,13,82,112,1],[85,13,85,62,1],[88,13,88,98,1],[90,13,90,72,1]]);
     </script>
   </body>
 </html>

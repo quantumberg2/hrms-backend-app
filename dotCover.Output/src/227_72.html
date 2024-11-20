@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\LeaveTrackingController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Models;
+using HRMS_Application.BusinessLogic.Interface;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using HRMS_Application.Authorization;
+using HRMS_Application.DTO;
+using HRMS_Application.Enums;
+using OfficeOpenXml.Drawing;
+using Azure.Storage.Blobs.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.Controllers
+{
+    [ApiController]
+    [Route(&quot;api/[controller]&quot;)]
+    public class LeaveTrackingController : ControllerBase
+    {
+        private readonly ILeaveTracking _leaveTracking;
+        private readonly ILogger&lt;LeaveTrackingController&gt; _logger;
+
+        public LeaveTrackingController(ILeaveTracking leaveTracking, ILogger&lt;LeaveTrackingController&gt; logger)
+        {
+            _leaveTracking = leaveTracking;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task&lt;IActionResult&gt; GetAll()
+        {
+            _logger.LogInformation(&quot;Get all leaves method started&quot;);
+            var leaveTrackings = await _leaveTracking.GetAllAsync();
+            return Ok(leaveTrackings);
+        }
+
+        [HttpGet(&quot;{id}&quot;)]
+        public async Task&lt;IActionResult&gt; GetById(int id)
+        {
+            _logger.LogInformation(&quot;Get leaves by Id method started&quot;);
+
+            var leaveTracking =  _leaveTracking.GetByIdAsync(id);
+            if (leaveTracking == null)
+            {
+                return NotFound();
+            }
+            return Ok(leaveTracking);
+        }
+
+        [HttpPost]
+        [Authorize(new[] { &quot;Admin&quot;, &quot;User&quot; })]
+        public async Task&lt;IActionResult&gt; CreateLeaveTracking([FromBody] LeaveTrackingDTO leaveTrackingDto)
+        {
+            _logger.LogInformation(&quot;Apply leave method started&quot;);
+
+            try
+            {
+                // Extract the token from the Authorization header
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;).Trim();
+
+                // Check if the token is present
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(&quot;Authorization header is missing or token is empty.&quot;);
+                }
+
+                // Decode the JWT token to extract claims
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized(&quot;Invalid token format.&quot;);
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+                var empCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;UserId&quot;);
+
+                if (empCredentialIdClaim == null)
+                {
+                    return Unauthorized(&quot;Employee credential ID not found in token.&quot;);
+                }
+
+                // Parse the empCredentialId from the claim
+                int empCredentialId = int.Parse(empCredentialIdClaim.Value);
+
+                // Map the DTO to the entity model
+                var leaveTracking = new LeaveTracking
+                {
+                    LeaveTypeId = leaveTrackingDto.LeaveTypeId,
+                    Startdate = leaveTrackingDto.StartDate,
+                    Enddate = leaveTrackingDto.EndDate,
+                    ReasonForLeave = leaveTrackingDto.ReasonForLeave,
+                    EmpCredentialId = empCredentialId,
+                    AppliedDate = leaveTrackingDto.Applied,
+                    Status = &quot;Pending&quot;,
+                    Files = leaveTrackingDto.Files,
+                    Session = leaveTrackingDto.Session,
+                    Contact = leaveTrackingDto.Contact,
+                    IsActive = 1,
+                    // Map other necessary fields here
+                };
+
+                // Call the service to create the leave tracking record
+                var result = await _leaveTracking.CreateAsync(leaveTracking, empCredentialId);
+
+                return Ok(result);  
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($&quot;An error occurred: {ex.Message}&quot;);
+            }
+        }
+
+        [HttpPost(&quot;Apply_Behalf&quot;)]
+        [Authorize(new[] { &quot;Admin&quot;,&quot;User&quot; })]
+        public async Task&lt;IActionResult&gt; ApllyLeaveBehalf([FromBody] LeaveTrackingDTO leaveTrackingDto, int empCredentialId)
+        {
+            _logger.LogInformation(&quot;Apply leave method started&quot;);
+
+            try
+            {
+               
+
+                // Map the DTO to the entity model
+                var leaveTracking = new LeaveTracking
+                {
+                    LeaveTypeId = leaveTrackingDto.LeaveTypeId,
+                    Startdate = leaveTrackingDto.StartDate,
+                    Enddate = leaveTrackingDto.EndDate,
+                    ReasonForLeave = leaveTrackingDto.ReasonForLeave,
+                    EmpCredentialId = empCredentialId,
+                    AppliedDate = leaveTrackingDto.Applied,
+                    Status = &quot;Pending&quot;,
+                    Files = leaveTrackingDto.Files,
+                    Session = leaveTrackingDto.Session,
+                    Contact = leaveTrackingDto.Contact,
+                    IsActive = 1,
+                    // Map other necessary fields here
+                };
+
+                // Call the service to create the leave tracking record
+                var result = await _leaveTracking.ApllyLeaveBehalf(leaveTracking, empCredentialId);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($&quot;An error occurred: {ex.Message}&quot;);
+            }
+        }
+
+        [HttpPut(&quot;{id}&quot;)]
+        public async Task&lt;IActionResult&gt; Update(int id, [FromBody] LeaveTracking leaveTracking)
+        {
+            _logger.LogInformation(&quot;Update leaves method started&quot;);
+
+            if (id != leaveTracking.Id)
+            {
+                return BadRequest(&quot;ID mismatch&quot;);
+            }
+
+            if (!ModelState.IsValid)  
+            {
+                return BadRequest(ModelState);
+            }
+
+            var updatedLeaveTracking = await _leaveTracking.UpdateAsync(leaveTracking);
+            if (updatedLeaveTracking == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedLeaveTracking);
+        }
+
+        [HttpPut(&quot;statusUpdate&quot;)]
+        [Authorize(new[] { &quot;Admin&quot;,&quot;User&quot; })]
+        public async Task&lt;IActionResult&gt; UpdateLeaveAsync(int id, string newStatus)
+        {
+            _logger.LogInformation(&quot;update leave status method started&quot;);
+
+            var res = await _leaveTracking.UpdateLeaveAsync(id, newStatus);
+            return Ok(res);
+        }
+
+        [HttpDelete(&quot;{id}&quot;)]
+        public async Task&lt;IActionResult&gt; Delete(int id)
+        {
+            _logger.LogInformation(&quot;delete leaves method started&quot;);
+
+            var result = await _leaveTracking.DeleteAsync(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok(&quot;Deleted&quot;);
+        }
+
+        /* [HttpGet(&quot;leaves/{status}&quot;)]
+         [Authorize(new[] { &quot;Manager&quot; })]
+
+         public async Task&lt;ActionResult&lt;List&lt;LeaveApprovalDTO&gt;&gt;&gt; GetLeavesByStatus(string status)
+         {
+             _logger.LogInformation(&quot;Get leaves by status method started&quot;);
+
+             var leaves = await _leaveTracking.GetLeavesByStatusAsync(status);
+
+             if (leaves == null || !leaves.Any())
+             {
+                 return NotFound(&quot;No leave records found with the given status.&quot;);
+             }
+
+             return Ok(leaves);
+         }*/
+
+        [HttpGet(&quot;leaves/{status}&quot;)]
+        [AllowAnonymous]
+        public async Task&lt;ActionResult&lt;List&lt;LeaveApprovalDTO&gt;&gt;&gt; GetLeavesByStatus(string status)
+        {
+            _logger.LogInformation(&quot;Get leaves by status method started&quot;);
+
+            // Extract EmpCredentialId from the token
+            /* var empCredentialId = User.Claims.FirstOrDefault(c =&gt; c.Type == &quot;UserId&quot;)?.Value;
+
+             if (string.IsNullOrEmpty(empCredentialId) || !int.TryParse(empCredentialId, out int managerId))
+             {
+                 return Unauthorized(&quot;Invalid or missing EmpCredentialId in token.&quot;);
+             }*/
+            var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;).Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized(&quot;Authorization header is missing or token is empty.&quot;);
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token))
+            {
+                return Unauthorized(&quot;Invalid token format.&quot;);
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+            var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;UserId&quot;)?.Value;
+
+            if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var managerId))
+            {
+                return Unauthorized(&quot;Employee credential ID not found or invalid in the token.&quot;);
+            }
+
+
+            // Get leaves by status and manager&#39;s EmpCredentialId
+            var leaves = await _leaveTracking.GetLeavesByStatusAsync(status, managerId);
+
+            if (leaves == null || !leaves.Any())
+            {
+                return NotFound(&quot;No leave records found with the given status.&quot;);
+            }
+
+            return Ok(leaves);
+        }
+
+        [HttpGet(&quot;summary&quot;)]
+        [Authorize(new[] { &quot;Admin&quot;, &quot;User&quot; })]
+
+        public async Task&lt;IActionResult&gt; GetLeaveSummary()
+        {
+            _logger.LogInformation(&quot;Get leave summary method started&quot;);
+
+            try
+            {
+                // Extract employee credential ID from the JWT token
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+                var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+                var employeeCredentialId = int.Parse(jwtToken.Claims.First(c =&gt; c.Type == &quot;UserId&quot;).Value); // Replace &#39;employee_id&#39; with the actual claim name
+
+
+                var leaveSummary = await _leaveTracking.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
+
+                return Ok(leaveSummary);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut(&quot;SoftDelete&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation(&quot;Soft update Leave tracking method started&quot;);
+            var res = _leaveTracking.SoftDelete(id, isActive);
+            return res;
+
+        }
+        [HttpGet(&quot;pending-leaves&quot;)]
+        public IActionResult GetPendingLeaves()
+        {
+            _logger.LogInformation(&quot;Apply leave method started&quot;);
+
+            try
+            {
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;).Trim();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(&quot;Authorization header is missing or token is empty.&quot;);
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized(&quot;Invalid token format.&quot;);
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+                var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;UserId&quot;)?.Value;
+
+                if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var employeeCredentialId))
+                {
+                    return Unauthorized(&quot;Employee credential ID not found or invalid in the token.&quot;);
+                }
+
+                var pendingLeaves = _leaveTracking.GetPendingLeaves(employeeCredentialId);
+
+                return Ok(pendingLeaves);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, &quot;An error occurred while fetching pending leaves&quot;);
+                return StatusCode(500, &quot;Internal server error: &quot; + ex.Message);
+            }
+        }
+        [HttpGet(&quot;History-leaves&quot;)]
+        public IActionResult Historyleaves()
+        {
+            _logger.LogInformation(&quot;History leave method started&quot;);
+
+            try
+            {
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;).Trim();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(&quot;Authorization header is missing or token is empty.&quot;);
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized(&quot;Invalid token format.&quot;);
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;UserId&quot;)?.Value;
+
+                if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var employeeCredentialId))
+                {
+                    return Unauthorized(&quot;Employee credential ID not found or invalid in the token.&quot;);
+                }
+
+                var pendingLeaves = _leaveTracking.GetHistoryLeaves(employeeCredentialId);
+
+                return Ok(pendingLeaves);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, &quot;An error occurred while fetching History leaves&quot;);
+                return StatusCode(500, &quot;Internal server error: &quot; + ex.Message);
+            }
+        }
+
+        [HttpPut(&quot;Leave-Withdrawn&quot;)]
+        [AllowAnonymous]
+        public async Task&lt;IActionResult&gt; UpdateLeaveStatus(int id, string newStatus)
+        {
+
+            try
+            {
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;).Trim();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(&quot;Authorization header is missing or token is empty.&quot;);
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized(&quot;Invalid token format.&quot;);
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+                var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;UserId&quot;)?.Value;
+
+                if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var employeeCredentialId))
+                {
+                    return Unauthorized(&quot;Employee credential ID not found or invalid in the token.&quot;);
+                }
+
+
+                var leaveTracking = await _leaveTracking.UpdateLeaveAsyncchanges(employeeCredentialId, id, newStatus);
+
+                if (leaveTracking == null)
+                {
+                    return NotFound(&quot;Leave record not found.&quot;);
+                }
+
+                return Ok(leaveTracking);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $&quot;Internal server error: {ex.Message}&quot;);
+            }
+        
+                  
+        }
+
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[23,9,23,110,1],[24,9,24,10,1],[25,13,25,44,1],[26,13,26,30,1],[27,9,27,10,1],[31,9,31,10,1],[32,13,32,69,1],[33,13,33,69,1],[34,13,34,39,1],[35,9,35,10,1],[39,9,39,10,1],[40,13,40,71,1],[42,13,42,66,1],[43,13,43,39,1],[44,13,44,14,0],[45,17,45,35,0],[47,13,47,38,1],[48,9,48,10,1],[53,9,53,10,1],[54,13,54,66,1],[57,13,57,14,1],[59,17,59,115,1],[62,17,62,49,0],[63,17,63,18,0],[64,21,64,95,0],[68,17,68,61,0],[69,17,69,50,0],[70,17,70,18,0],[71,21,71,66,0],[74,17,74,60,0],[75,17,75,84,0],[75,84,75,106,0],[75,106,75,108,0],[77,17,77,50,0],[78,17,78,18,0],[79,21,79,87,0],[83,17,83,77,0],[86,17,100,19,0],[103,17,103,95,0],[105,17,105,35,0],[107,13,107,33,1],[108,13,108,14,1],[109,17,109,71,1],[111,9,111,10,1],[116,9,116,10,1],[117,13,117,66,1],[120,13,120,14,1],[124,17,138,19,1],[141,17,141,100,1],[143,17,143,35,1],[145,13,145,33,0],[146,13,146,14,0],[147,17,147,71,0],[149,9,149,10,1],[153,9,153,10,1],[154,13,154,68,1],[156,13,156,40,1],[157,13,157,14,1],[158,17,158,50,1],[161,13,161,37,0],[162,13,162,14,0],[163,17,163,47,0],[166,13,166,88,0],[167,13,167,46,0],[168,13,168,14,0],[169,17,169,35,0],[172,13,172,45,0],[173,9,173,10,1],[178,9,178,10,1],[179,13,179,74,1],[181,13,181,76,1],[182,13,182,28,1],[183,9,183,10,1],[187,9,187,10,1],[188,13,188,68,1],[190,13,190,63,1],[191,13,191,25,1],[192,13,192,14,1],[193,17,193,35,1],[196,13,196,34,0],[197,9,197,10,1],[219,9,219,10,1],[220,13,220,75,1],[229,13,229,111,1],[231,13,231,45,0],[232,13,232,14,0],[233,17,233,91,0],[236,13,236,57,0],[237,13,237,46,0],[238,13,238,14,0],[239,17,239,62,0],[242,13,242,56,0],[243,13,243,85,0],[243,85,243,107,0],[243,107,243,116,0],[245,13,245,128,0],[246,13,246,14,0],[247,17,247,98,0],[252,13,252,89,0],[254,13,254,49,0],[255,13,255,14,0],[256,17,256,82,0],[259,13,259,31,0],[260,9,260,10,0],[266,9,266,10,1],[267,13,267,72,1],[270,13,270,14,1],[272,17,272,108,1],[273,17,273,82,0],[274,17,274,81,0],[274,81,274,99,0],[274,99,274,108,0],[277,17,277,108,0],[279,17,279,41,0],[281,13,281,33,1],[282,13,282,14,1],[283,17,283,65,1],[285,9,285,10,1],[291,9,291,10,1],[292,13,292,81,1],[293,13,293,63,1],[294,13,294,24,1],[296,9,296,10,1],[299,9,299,10,1],[300,13,300,66,1],[303,13,303,14,1],[304,17,304,115,1],[306,17,306,49,0],[307,17,307,18,0],[308,21,308,95,0],[311,17,311,61,0],[312,17,312,50,0],[313,17,313,18,0],[314,21,314,66,0],[317,17,317,60,0],[318,17,318,89,0],[318,89,318,111,0],[318,111,318,120,0],[320,17,320,143,0],[321,17,321,18,0],[322,21,322,102,0],[325,17,325,91,0],[327,17,327,42,0],[329,13,329,33,1],[330,13,330,14,1],[331,17,331,89,1],[332,17,332,80,1],[334,9,334,10,1],[337,9,337,10,1],[338,13,338,68,1],[341,13,341,14,1],[342,17,342,115,1],[344,17,344,49,0],[345,17,345,18,0],[346,21,346,95,0],[349,17,349,61,0],[350,17,350,50,0],[351,17,351,18,0],[352,21,352,66,0],[355,17,355,60,0],[357,17,357,89,0],[357,89,357,111,0],[357,111,357,120,0],[359,17,359,143,0],[360,17,360,18,0],[361,21,361,102,0],[364,17,364,91,0],[366,17,366,42,0],[368,13,368,33,1],[369,13,369,14,1],[370,17,370,89,1],[371,17,371,80,1],[373,9,373,10,1],[378,9,378,10,1],[381,13,381,14,1],[382,17,382,115,1],[384,17,384,49,0],[385,17,385,18,0],[386,21,386,95,0],[389,17,389,61,0],[390,17,390,50,0],[391,17,391,18,0],[392,21,392,66,0],[395,17,395,60,0],[396,17,396,89,0],[396,89,396,111,0],[396,111,396,120,0],[398,17,398,143,0],[399,17,399,18,0],[400,21,400,102,0],[404,17,404,119,0],[406,17,406,43,0],[407,17,407,18,0],[408,21,408,64,0],[411,17,411,42,0],[413,13,413,33,1],[414,13,414,14,1],[415,17,415,80,1],[419,9,419,10,1]]);
+    </script>
+  </body>
+</html>

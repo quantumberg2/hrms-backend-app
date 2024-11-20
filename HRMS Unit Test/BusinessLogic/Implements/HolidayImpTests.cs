@@ -52,15 +52,15 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-      /*  [Fact]
-        public void CanCallGetHoliday()
-        {
-            // Act
-            var result = _testClass.GetHoliday();
+        /*  [Fact]
+          public void CanCallGetHoliday()
+          {
+              // Act
+              var result = _testClass.GetHoliday();
 
-            // Assert
-            throw new NotImplementedException("Create or modify test");
-        }*/
+              // Assert
+              throw new NotImplementedException("Create or modify test");
+          }*/
 
         [Fact]
         public void CanCallGetHolidayById()
@@ -127,6 +127,36 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Act
             var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetHoliday()
+        {
+            // Arrange
+            var companyId = 1041395408;
+
+            // Act
+            var result = _testClass.GetHoliday(companyId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallUpdateHolidayType()
+        {
+            // Arrange
+            var id = 1739115864;
+            var name = "TestValue1766734704";
+            var date = new DateOnly?();
+            var occasion = "TestValue1604113605";
+            var requestedCompanyId = 6374819;
+
+            // Act
+            var result = _testClass.UpdateHolidayType(id, name, date, occasion, requestedCompanyId);
 
             // Assert
             throw new NotImplementedException("Create or modify test");

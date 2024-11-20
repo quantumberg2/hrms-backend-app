@@ -1,6 +1,6 @@
 ﻿namespace HRMS_Application.Controllers
 {
-    internal class LeaveTrackingEmployeeDTO
+    public class LeaveTrackingEmployeeDTO
     {
         public DateTime? Startdate { get; set; }
         public DateTime? Enddate { get; set; }

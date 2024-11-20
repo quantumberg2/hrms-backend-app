@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\NewPreviewImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.DTO;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class NewPreviewImpTests
+    {
+        private readonly NewPreviewImp _testClass;
+        private HRMSContext _hRMSContext;
+        private readonly Mock&lt;IAzureOperations&gt; _azureOperations;
+
+        public NewPreviewImpTests()
+        {
+            _hRMSContext = new HRMSContext();
+            _azureOperations = new Mock&lt;IAzureOperations&gt;();
+            _testClass = new NewPreviewImp(_hRMSContext, _azureOperations.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new NewPreviewImp(_hRMSContext, _azureOperations.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllNews()
+        {
+            // Act
+            var result = _testClass.GetAllNews();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallInsertNews()
+        {
+            // Arrange
+            var news = new NewsDTO
+            {
+                DisplayDate = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                Heading = &quot;TestValue677895247&quot;,
+                Desciption = &quot;TestValue1515483065&quot;,
+                ImgUrl = new Mock&lt;IFormFile&gt;().Object,
+                IsActive = (short)28585
+            };
+
+            _azureOperations.Setup(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;())).Returns(&quot;TestValue203401669&quot;);
+
+            // Act
+            var result = _testClass.InsertNews(news);
+
+            // Assert
+            _azureOperations.Verify(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallUpdateNews()
+        {
+            // Arrange
+            var id = 162004555;
+            var news = new NewsDTO
+            {
+                DisplayDate = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                Heading = &quot;TestValue1591885274&quot;,
+                Desciption = &quot;TestValue940809003&quot;,
+                ImgUrl = new Mock&lt;IFormFile&gt;().Object,
+                IsActive = (short)16171
+            };
+
+            _azureOperations.Setup(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;())).Returns(&quot;TestValue1937972778&quot;);
+
+            // Act
+            var result = _testClass.UpdateNews(id, news);
+
+            // Assert
+            _azureOperations.Verify(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 1142325179;
+            var isActive = (short)2776;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[18,9,18,36,1],[19,9,19,10,1],[20,13,20,46,1],[21,13,21,61,1],[22,13,22,83,1],[23,9,23,10,1],[27,9,27,10,1],[29,13,29,85,1],[32,13,32,38,1],[33,9,33,10,1],[37,9,37,10,1],[39,13,39,50,1],[42,13,42,72,0],[47,9,47,10,1],[49,13,57,15,1],[59,13,59,141,1],[62,13,62,54,1],[65,13,65,112,0],[67,13,67,72,0],[72,9,72,10,1],[74,13,74,32,1],[75,13,83,15,1],[85,13,85,142,1],[88,13,88,58,1],[91,13,91,112,0],[93,13,93,72,0],[98,9,98,10,1],[100,13,100,33,1],[101,13,101,40,1],[104,13,104,62,1],[107,13,107,72,0]]);
+    </script>
+  </body>
+</html>

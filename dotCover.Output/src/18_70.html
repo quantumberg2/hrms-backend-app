@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\FileTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\ErrorResponseTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -14,97 +14,55 @@ namespace HRMS_Unit_Test.Models
     using HRMS_Application.Models;
     using Xunit;
 
-    public partial class FileTests
+    public class ErrorResponseTests
     {
-        private readonly File _testClass;
+        private readonly ErrorResponse _testClass;
 
-        public FileTests()
+        public ErrorResponseTests()
         {
-            _testClass = new File();
+            _testClass = new ErrorResponse();
         }
 
         [Fact]
-        public void CanSetAndGetId()
+        public void CanCallToString()
         {
-            // Arrange
-            var testValue = 882227890;
-
             // Act
-            _testClass.Id = testValue;
+            var result = _testClass.ToString();
 
             // Assert
-            Assert.Equal(testValue, _testClass.Id);
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public void CanSetAndGetFileUrl()
+        public void CanSetAndGetStatusCode()
         {
             // Arrange
-            var testValue = &quot;TestValue151943408&quot;;
+            var testValue = 2075909827;
 
             // Act
-            _testClass.FileUrl = testValue;
+            _testClass.StatusCode = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.FileUrl);
+            Assert.Equal(testValue, _testClass.StatusCode);
         }
 
         [Fact]
-        public void CanSetAndGetObjectId()
+        public void CanSetAndGetMessage()
         {
             // Arrange
-            var testValue = 484462898;
+            var testValue = &quot;TestValue1793598490&quot;;
 
             // Act
-            _testClass.ObjectId = testValue;
+            _testClass.Message = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.ObjectId);
-        }
-
-        [Fact]
-        public void CanSetAndGetObjectName()
-        {
-            // Arrange
-            var testValue = &quot;TestValue1022028819&quot;;
-
-            // Act
-            _testClass.ObjectName = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.ObjectName);
-        }
-
-        [Fact]
-        public void CanSetAndGetIsActive()
-        {
-            // Arrange
-            var testValue = true;
-
-            // Act
-            _testClass.IsActive = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.IsActive);
-        }
-
-        [Fact]
-        public void CanSetAndGetTags()
-        {
-            // Arrange
-            var testValue = &quot;TestValue1137919858&quot;;
-
-            // Act
-            _testClass.Tags = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.Tags);
+            Assert.Equal(testValue, _testClass.Message);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,27,1],[12,9,12,10,1],[13,13,13,37,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,39,1],[23,13,23,39,1],[26,13,26,52,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,50,1],[36,13,36,44,1],[39,13,39,57,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,39,1],[49,13,49,45,1],[52,13,52,58,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,47,1],[65,13,65,60,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,34,1],[75,13,75,45,1],[78,13,78,58,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,51,1],[88,13,88,41,1],[91,13,91,54,1],[92,9,92,10,1]]);
+      highlightRanges([[11,9,11,36,1],[12,9,12,10,1],[13,13,13,46,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,48,1],[23,13,23,72,1],[28,9,28,10,1],[30,13,30,40,1],[33,13,33,47,1],[36,13,36,60,1],[37,9,37,10,1],[41,9,41,10,1],[43,13,43,51,1],[46,13,46,44,1],[49,13,49,57,1],[50,9,50,10,1]]);
     </script>
   </body>
 </html>

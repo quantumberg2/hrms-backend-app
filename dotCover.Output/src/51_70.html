@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\OtpEmailTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\EmpPersonalInfoDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -14,45 +14,253 @@ namespace HRMS_Unit_Test.DTO
     using HRMS_Application.DTO;
     using Xunit;
 
-    public class OtpEmailTests
+    public class EmpPersonalInfoDTOTests
     {
-        private readonly OtpEmail _testClass;
+        private readonly EmpPersonalInfoDTO _testClass;
 
-        public OtpEmailTests()
+        public EmpPersonalInfoDTOTests()
         {
-            _testClass = new OtpEmail();
+            _testClass = new EmpPersonalInfoDTO();
         }
 
         [Fact]
-        public void CanSetAndGetEmailAddress()
+        public void CanSetAndGetFirstName()
         {
             // Arrange
-            var testValue = &quot;TestValue1189336501&quot;;
+            var testValue = &quot;TestValue1429993003&quot;;
 
             // Act
-            _testClass.EmailAddress = testValue;
+            _testClass.FirstName = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.EmailAddress);
+            Assert.Equal(testValue, _testClass.FirstName);
         }
 
         [Fact]
-        public void CanSetAndGetOtp()
+        public void CanSetAndGetMiddleName()
         {
             // Arrange
-            var testValue = &quot;TestValue594259641&quot;;
+            var testValue = &quot;TestValue2037031438&quot;;
 
             // Act
-            _testClass.Otp = testValue;
+            _testClass.MiddleName = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Otp);
+            Assert.Equal(testValue, _testClass.MiddleName);
+        }
+
+        [Fact]
+        public void CanSetAndGetLastName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue327708041&quot;;
+
+            // Act
+            _testClass.LastName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LastName);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeeCredentialId()
+        {
+            // Arrange
+            var testValue = 196337166;
+
+            // Act
+            _testClass.EmployeeCredentialId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmployeeCredentialId);
+        }
+
+        [Fact]
+        public void CanSetAndGetDob()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.Dob = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Dob);
+        }
+
+        [Fact]
+        public void CanSetAndGetDateOfJoining()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.DateOfJoining = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.DateOfJoining);
+        }
+
+        [Fact]
+        public void CanSetAndGetConfirmDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.ConfirmDate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ConfirmDate);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmpStatus()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2014384942&quot;;
+
+            // Act
+            _testClass.EmpStatus = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmpStatus);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmailId()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1344984013&quot;;
+
+            // Act
+            _testClass.EmailId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmailId);
+        }
+
+        [Fact]
+        public void CanSetAndGetPersonalEmail()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1171737820&quot;;
+
+            // Act
+            _testClass.PersonalEmail = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PersonalEmail);
+        }
+
+        [Fact]
+        public void CanSetAndGetMaritalStatus()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1319302260&quot;;
+
+            // Act
+            _testClass.MaritalStatus = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.MaritalStatus);
+        }
+
+        [Fact]
+        public void CanSetAndGetBloodGroup()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1258110204&quot;;
+
+            // Act
+            _testClass.BloodGroup = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.BloodGroup);
+        }
+
+        [Fact]
+        public void CanSetAndGetSpouseName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue476373875&quot;;
+
+            // Act
+            _testClass.SpouseName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.SpouseName);
+        }
+
+        [Fact]
+        public void CanSetAndGetPhysicallyChallenged()
+        {
+            // Arrange
+            var testValue = true;
+
+            // Act
+            _testClass.PhysicallyChallenged = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PhysicallyChallenged);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmergencyContact()
+        {
+            // Arrange
+            var testValue = &quot;TestValue126550530&quot;;
+
+            // Act
+            _testClass.EmergencyContact = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmergencyContact);
+        }
+
+        [Fact]
+        public void CanSetAndGetPAN()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1674854342&quot;;
+
+            // Act
+            _testClass.PAN = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PAN);
+        }
+
+        [Fact]
+        public void CanSetAndGetGender()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1670330882&quot;;
+
+            // Act
+            _testClass.Gender = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Gender);
+        }
+
+        [Fact]
+        public void CanSetAndGetContact()
+        {
+            // Arrange
+            var testValue = &quot;TestValue355943638&quot;;
+
+            // Act
+            _testClass.Contact = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Contact);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,31,1],[12,9,12,10,1],[13,13,13,41,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,51,1],[23,13,23,49,1],[26,13,26,62,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,50,1],[36,13,36,40,1],[39,13,39,53,1],[40,9,40,10,1]]);
+      highlightRanges([[11,9,11,41,1],[12,9,12,10,1],[13,13,13,51,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,51,1],[23,13,23,46,1],[26,13,26,59,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,47,1],[39,13,39,60,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,45,1],[52,13,52,58,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,39,1],[62,13,62,57,1],[65,13,65,70,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,45,1],[75,13,75,40,1],[78,13,78,53,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,45,1],[88,13,88,50,1],[91,13,91,63,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,45,1],[101,13,101,48,1],[104,13,104,61,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,51,1],[114,13,114,46,1],[117,13,117,59,1],[118,9,118,10,1],[122,9,122,10,1],[124,13,124,51,1],[127,13,127,44,1],[130,13,130,57,1],[131,9,131,10,1],[135,9,135,10,1],[137,13,137,51,1],[140,13,140,50,1],[143,13,143,63,1],[144,9,144,10,1],[148,9,148,10,1],[150,13,150,51,1],[153,13,153,50,1],[156,13,156,63,1],[157,9,157,10,1],[161,9,161,10,1],[163,13,163,51,1],[166,13,166,47,1],[169,13,169,60,1],[170,9,170,10,1],[174,9,174,10,1],[176,13,176,50,1],[179,13,179,47,1],[182,13,182,60,1],[183,9,183,10,1],[187,9,187,10,1],[189,13,189,34,1],[192,13,192,57,1],[195,13,195,70,1],[196,9,196,10,1],[200,9,200,10,1],[202,13,202,50,1],[205,13,205,53,1],[208,13,208,66,1],[209,9,209,10,1],[213,9,213,10,1],[215,13,215,51,1],[218,13,218,40,1],[221,13,221,53,1],[222,9,222,10,1],[226,9,226,10,1],[228,13,228,51,1],[231,13,231,43,1],[234,13,234,56,1],[235,9,235,10,1],[239,9,239,10,1],[241,13,241,50,1],[244,13,244,44,1],[247,13,247,57,1],[248,9,248,10,1]]);
     </script>
   </body>
 </html>

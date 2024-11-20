@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\SelectCompanyRequestTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\FileStorageDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -12,34 +12,88 @@ namespace HRMS_Unit_Test.DTO
 {
     using System;
     using HRMS_Application.DTO;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
     using Xunit;
 
-    public class SelectCompanyRequestTests
+    public class FileStorageDTOTests
     {
-        private readonly SelectCompanyRequest _testClass;
+        private readonly FileStorageDTO _testClass;
 
-        public SelectCompanyRequestTests()
+        public FileStorageDTOTests()
         {
-            _testClass = new SelectCompanyRequest();
+            _testClass = new FileStorageDTO();
         }
 
         [Fact]
-        public void CanSetAndGetCompanyId()
+        public void CanSetAndGetObjectId()
         {
             // Arrange
-            var testValue = 1637965526;
+            var testValue = 1656932607;
 
             // Act
-            _testClass.CompanyId = testValue;
+            _testClass.ObjectId = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.CompanyId);
+            Assert.Equal(testValue, _testClass.ObjectId);
+        }
+
+        [Fact]
+        public void CanSetAndGetObjectName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue249082256&quot;;
+
+            // Act
+            _testClass.ObjectName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ObjectName);
+        }
+
+        [Fact]
+        public void CanSetAndGetIsActive()
+        {
+            // Arrange
+            var testValue = false;
+
+            // Act
+            _testClass.IsActive = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.IsActive);
+        }
+
+        [Fact]
+        public void CanSetAndGetTags()
+        {
+            // Arrange
+            var testValue = &quot;TestValue957001128&quot;;
+
+            // Act
+            _testClass.Tags = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Tags);
+        }
+
+        [Fact]
+        public void CanSetAndGetFileContent()
+        {
+            // Arrange
+            var testValue = new Mock&lt;IFormFile&gt;().Object;
+
+            // Act
+            _testClass.FileContent = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.FileContent);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,43,1],[12,9,12,10,1],[13,13,13,53,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,40,1],[23,13,23,46,1],[26,13,26,59,1],[27,9,27,10,1]]);
+      highlightRanges([[13,9,13,37,1],[14,9,14,10,1],[15,13,15,47,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,40,1],[25,13,25,45,1],[28,13,28,58,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,50,1],[38,13,38,47,1],[41,13,41,60,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,35,1],[51,13,51,45,1],[54,13,54,58,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,50,1],[64,13,64,41,1],[67,13,67,54,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,58,1],[77,13,77,48,1],[80,13,80,60,1],[81,9,81,10,1]]);
     </script>
   </body>
 </html>

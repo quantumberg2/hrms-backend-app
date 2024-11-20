@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\FileStorageController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class FileStorageController : ControllerBase
+    {
+        private readonly ILogger&lt;FileStorageController&gt; _logger;
+        private readonly IFileStorage _fileStorage;
+
+        public FileStorageController( ILogger&lt;FileStorageController&gt; logger,IFileStorage fileStorage)
+        {
+            _logger = logger;
+            _fileStorage = fileStorage;
+        }
+
+        [HttpGet(&quot;Get All Files&quot;)]
+        public List&lt;Models.File&gt; GetFiles()
+        {
+            _logger.LogInformation(&quot;Get all files method started&quot;);
+            var res = _fileStorage.GetFiles();
+            return res;
+        }
+
+        [HttpPost]
+        public string UploadFile([FromForm] FileStorageDTO file)
+        {
+            _logger.LogInformation(&quot;Upload file method started&quot;);
+            var res = _fileStorage.UploadFile(file);
+            return res;
+        }
+
+
+        [HttpPut]
+        public string UpdateFile(int id,[FromForm] FileStorageDTO files)
+        {       
+            _logger.LogInformation(&quot;Update file method started&quot;);
+            var res = _fileStorage.UpdateFile(id, files);
+            return res;
+        }
+
+        [HttpPut(&quot;SoftDelete&quot;)]
+        public bool SoftDelete(int id, bool isActive)
+        {
+            _logger.LogInformation(&quot;Soft delete method started&quot;);
+            var res = _fileStorage.SoftDelete(id, isActive);
+            return res;
+
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,102,1],[16,9,16,10,1],[17,13,17,30,1],[18,13,18,40,1],[19,9,19,10,1],[23,9,23,10,1],[24,13,24,68,1],[25,13,25,47,1],[26,13,26,24,1],[27,9,27,10,1],[31,9,31,10,1],[32,13,32,66,1],[33,13,33,53,1],[34,13,34,24,1],[35,9,35,10,1],[40,9,40,10,1],[41,13,41,66,1],[42,13,42,58,1],[43,13,43,24,1],[44,9,44,10,1],[48,9,48,10,1],[49,13,49,66,1],[50,13,50,61,1],[51,13,51,24,1],[53,9,53,10,1]]);
+    </script>
+  </body>
+</html>

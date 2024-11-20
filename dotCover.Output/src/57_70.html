@@ -2,171 +2,214 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\AddressInfoControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\LeaveSummaryDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Controllers
+namespace HRMS_Unit_Test.DTO
 {
     using System;
     using System.Collections.Generic;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using HRMS_Application.DTO;
     using Xunit;
 
-    public class AddressInfoControllerTests
+    public class LeaveSummaryDTOTests
     {
-        private readonly AddressInfoController _testClass;
-        private readonly Mock&lt;IAddressInfo&gt; _addressInfo;
-        private readonly Mock&lt;ILogger&lt;AddressInfoController&gt;&gt; _logger;
+        private readonly LeaveSummaryDTO _testClass;
 
-        public AddressInfoControllerTests()
+        public LeaveSummaryDTOTests()
         {
-            _addressInfo = new Mock&lt;IAddressInfo&gt;();
-            _logger = new Mock&lt;ILogger&lt;AddressInfoController&gt;&gt;();
-            _testClass = new AddressInfoController(_addressInfo.Object, _logger.Object);
+            _testClass = new LeaveSummaryDTO();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new AddressInfoController(_addressInfo.Object, _logger.Object);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetAllAddressInfo()
+        public void CanSetAndGetTotalAllocatedLeaves()
         {
             // Arrange
-            _addressInfo.Setup(mock =&gt; mock.GetAllAddressInfo()).Returns(new List&lt;AddressInfo&gt;());
+            var testValue = 904605409;
 
             // Act
-            var result = _testClass.GetAllAddressInfo();
+            _testClass.TotalAllocatedLeaves = testValue;
 
             // Assert
-            _addressInfo.Verify(mock =&gt; mock.GetAllAddressInfo());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.TotalAllocatedLeaves);
         }
 
         [Fact]
-        public void CanCallInsertAddressInfo()
+        public void CanSetAndGetApprovedLeaves()
         {
             // Arrange
-            var addresinfo = new AddressInfo
-            {
-                Id = 1073674243,
-                EmployeeCredentialId = 1796328223,
-                AddressLine1 = &quot;TestValue231301317&quot;,
-                AddressLine2 = &quot;TestValue1861585602&quot;,
-                City = &quot;TestValue1497544206&quot;,
-                State = &quot;TestValue988460627&quot;,
-                Country = &quot;TestValue1753537618&quot;,
-                PinCode = &quot;TestValue1990654590&quot;,
-                IsActive = (short)31236,
-                EmployeeCredential = new EmployeeCredential
-                {
-                    Id = 127347221,
-                    UserName = &quot;TestValue794235563&quot;,
-                    Password = &quot;TestValue633525628&quot;,
-                    Status = (short)10732,
-                    RequestedCompanyId = 476283762,
-                    Email = &quot;TestValue297925581&quot;,
-                    DefaultPassword = false,
-                    GenerateOtp = &quot;TestValue1596081949&quot;,
-                    OtpExpiration = DateTime.UtcNow,
-                    IsActive = (short)30168,
-                    EmployeeLoginName = &quot;TestValue218029018&quot;,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 1830423797,
-                        Name = &quot;TestValue559405852&quot;,
-                        PhoneNumber = &quot;TestValue1066244917&quot;,
-                        DomainName = &quot;TestValue424037101&quot;,
-                        Status = &quot;TestValue1925596144&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue39919076&quot;,
-                        IsActive = (short)32563,
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
-                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
-                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                }
-            };
-            var empCredentialId = 616814158;
-
-            _addressInfo.Setup(mock =&gt; mock.InsertAddressInfot(It.IsAny&lt;AddressInfo&gt;(), It.IsAny&lt;int&gt;())).Returns(&quot;TestValue721351425&quot;);
+            var testValue = 484458779;
 
             // Act
-            var result = _testClass.InsertAddressInfo(addresinfo, empCredentialId);
+            _testClass.ApprovedLeaves = testValue;
 
             // Assert
-            _addressInfo.Verify(mock =&gt; mock.InsertAddressInfot(It.IsAny&lt;AddressInfo&gt;(), It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.ApprovedLeaves);
         }
 
         [Fact]
-        public void CanCallDeleteAddressInfo()
+        public void CanSetAndGetPendingLeaves()
         {
             // Arrange
-            var id = 1231556047;
-
-            _addressInfo.Setup(mock =&gt; mock.deleteAddressInfo(It.IsAny&lt;int&gt;())).Returns(true);
+            var testValue = 337802626;
 
             // Act
-            var result = _testClass.DeleteAddressInfo(id);
+            _testClass.PendingLeaves = testValue;
 
             // Assert
-            _addressInfo.Verify(mock =&gt; mock.deleteAddressInfo(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.PendingLeaves);
         }
 
         [Fact]
-        public void CanCallSoftDelete()
+        public void CanSetAndGetRejectedLeaves()
         {
             // Arrange
-            var id = 1882173265;
-            var isActive = (short)5262;
-
-            _addressInfo.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(true);
+            var testValue = 893287016;
 
             // Act
-            var result = _testClass.SoftDelete(id, isActive);
+            _testClass.RejectedLeaves = testValue;
 
             // Assert
-            _addressInfo.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
+            Assert.Equal(testValue, _testClass.RejectedLeaves);
+        }
 
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        [Fact]
+        public void CanSetAndGetRemainingLeaves()
+        {
+            // Arrange
+            var testValue = 485871167;
+
+            // Act
+            _testClass.RemainingLeaves = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RemainingLeaves);
+        }
+
+        /*[Fact]
+        public void CanSetAndGetLeaveType()
+        {
+            // Arrange
+            var testValue = &quot;TestValue962795293&quot;;
+
+            // Act
+            _testClass.LeaveType = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveType);
+        }*/
+
+        /*  [Fact]
+          public void CanSetAndGetApprovedCount()
+          {
+              // Arrange
+              var testValue = 1324241054;
+
+              // Act
+              _testClass.ApprovedCount = testValue;
+
+              // Assert
+              Assert.Equal(testValue, _testClass.ApprovedCount);
+          }
+  */
+        /* [Fact]
+         public void CanSetAndGetPendingCount()
+         {
+             // Arrange
+             var testValue = 247685496;
+
+             // Act
+             _testClass.PendingCount = testValue;
+
+             // Assert
+             Assert.Equal(testValue, _testClass.PendingCount);
+         }
+ */
+        /*  [Fact]
+          public void CanSetAndGetRejectedCount()
+          {
+              // Arrange
+              var testValue = 741119222;
+
+              // Act
+              _testClass.RejectedCount = testValue;
+
+              // Assert
+              Assert.Equal(testValue, _testClass.RejectedCount);
+          }*/
+
+        [Fact]
+        public void CanSetAndGetLeaveSummaries()
+        {
+            // Arrange
+            var testValue = new List&lt;LeaveSummaryDTO&gt;();
+
+            // Act
+            _testClass.LeaveSummaries = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.LeaveSummaries);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveType()
+        {
+            // Arrange
+            var testValue = &quot;TestValue643210606&quot;;
+
+            // Act
+            _testClass.LeaveType = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveType);
+        }
+
+        [Fact]
+        public void CanSetAndGetApprovedCount()
+        {
+            // Arrange
+            var testValue = 1616167380;
+
+            // Act
+            _testClass.ApprovedCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ApprovedCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetPendingCount()
+        {
+            // Arrange
+            var testValue = 1160161227;
+
+            // Act
+            _testClass.PendingCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PendingCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetRejectedCount()
+        {
+            // Arrange
+            var testValue = 1013918365;
+
+            // Act
+            _testClass.RejectedCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RejectedCount);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[18,9,18,44,1],[19,9,19,10,1],[20,13,20,53,1],[21,13,21,66,1],[22,13,22,89,1],[23,9,23,10,1],[27,9,27,10,1],[29,13,29,91,1],[32,13,32,38,1],[33,9,33,10,1],[37,9,37,10,1],[39,13,39,99,1],[42,13,42,57,1],[45,13,45,67,1],[47,13,47,72,1],[52,9,52,10,1],[54,13,107,15,1],[108,13,108,45,1],[110,13,110,137,1],[113,13,113,84,1],[116,13,116,108,1],[118,13,118,72,0],[123,9,123,10,1],[125,13,125,33,1],[127,13,127,95,1],[130,13,130,59,1],[133,13,133,82,1],[135,13,135,72,1],[140,9,140,10,1],[142,13,142,33,1],[143,13,143,40,1],[145,13,145,107,1],[148,13,148,62,1],[151,13,151,94,1],[153,13,153,72,1]]);
+      highlightRanges([[12,9,12,38,1],[13,9,13,10,1],[14,13,14,48,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,39,1],[24,13,24,57,1],[27,13,27,70,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,39,1],[37,13,37,51,1],[40,13,40,64,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,39,1],[50,13,50,50,1],[53,13,53,63,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,39,1],[63,13,63,51,1],[66,13,66,64,1],[67,9,67,10,1],[71,9,71,10,1],[73,13,73,39,1],[76,13,76,52,1],[79,13,79,65,1],[80,9,80,10,1],[136,9,136,10,1],[138,13,138,57,1],[141,13,141,51,1],[144,13,144,63,1],[145,9,145,10,1],[149,9,149,10,1],[151,13,151,50,1],[154,13,154,46,1],[157,13,157,59,1],[158,9,158,10,1],[162,9,162,10,1],[164,13,164,40,1],[167,13,167,50,1],[170,13,170,63,1],[171,9,171,10,1],[175,9,175,10,1],[177,13,177,40,1],[180,13,180,49,1],[183,13,183,62,1],[184,9,184,10,1],[188,9,188,10,1],[190,13,190,40,1],[193,13,193,50,1],[196,13,196,63,1],[197,9,197,10,1]]);
     </script>
   </body>
 </html>

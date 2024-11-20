@@ -22,7 +22,7 @@
         public double AbsentPercentage { get; set; }  // calculate the percentage for the absentdays/no of absent * 100 for the month
         public double LeaveTakenPercentage { get;set; } // considering the status = leave  leavedays/no of leave in a month *100
         public double HolidayPercentage { get;  set; } // calculating the status = holiday holidays/ no of holidays in a month *100
-        public double RestDaysPercentage { get; internal set; }
+        public double RestDaysPercentage { get;  set; }
         public DateWiseAttendance SpecificDayAttendance { get; set; }
         public List<DateWiseAttendance> DateWiseAttendance { get; set; }
     }

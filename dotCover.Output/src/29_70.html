@@ -2,78 +2,108 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Middleware\ExceptionMiddlewareTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\ShiftRosterTypeTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Middleware
+namespace HRMS_Unit_Test.Models
 {
     using System;
-    using System.Threading.Tasks;
-    using HRMS_Application.Middleware;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Logging;
+    using System.Collections.Generic;
+    using HRMS_Application.Models;
     using Moq;
     using Xunit;
 
-    public class ExceptionMiddlewareTests
+    public partial class ShiftRosterTypeTests
     {
-        private readonly ExceptionMiddleware _testClass;
-        private readonly Mock&lt;ILogger&lt;ExceptionMiddleware&gt;&gt; _log;
+        private readonly ShiftRosterType _testClass;
 
-        public ExceptionMiddlewareTests()
+        public ShiftRosterTypeTests()
         {
-            _log = new Mock&lt;ILogger&lt;ExceptionMiddleware&gt;&gt;();
-            _testClass = new ExceptionMiddleware(_log.Object);
+            _testClass = new ShiftRosterType();
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new ExceptionMiddleware(_log.Object);
+            var instance = new ShiftRosterType();
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public async Task CanCallInvokeAsync()
+        public void CanSetAndGetId()
         {
             // Arrange
-            var context = new DefaultHttpContext();
-            RequestDelegate next = x =&gt; Task.CompletedTask;
+            var testValue = 192779282;
 
             // Act
-            await _testClass.InvokeAsync(context, next);
+            _testClass.Id = testValue;
 
             // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Id);
         }
-    }
 
-    public static class ExceptionMiddlewareExtensionTests
-    {
         [Fact]
-        public static void CanCallConfigureExceptionMiddleware()
+        public void CanSetAndGetType()
         {
             // Arrange
-            var app = new Mock&lt;IApplicationBuilder&gt;().Object;
+            var testValue = &quot;TestValue139762141&quot;;
 
             // Act
-            app.ConfigureExceptionMiddleware();
+            _testClass.Type = testValue;
 
             // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Type);
+        }
+
+        [Fact]
+        public void CanSetAndGetTimeRange()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1122451098&quot;;
+
+            // Act
+            _testClass.TimeRange = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TimeRange);
+        }
+
+        [Fact]
+        public void CanSetAndGetShiftRosters()
+        {
+            // Arrange
+            var testValue = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object;
+
+            // Act
+            _testClass.ShiftRosters = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.ShiftRosters);
+        }
+
+        [Fact]
+        public void CanSetAndGetCompanyRequestedId()
+        {
+            // Arrange
+            var testValue = 2013218399;
+
+            // Act
+            _testClass.CompanyRequestedId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.CompanyRequestedId);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[17,9,17,42,1],[18,9,18,10,1],[19,13,19,61,1],[20,13,20,63,1],[21,9,21,10,1],[25,9,25,10,1],[27,13,27,65,1],[30,13,30,38,1],[31,9,31,10,1],[35,9,35,10,1],[37,13,37,52,1],[38,13,38,41,1],[38,41,38,59,1],[38,59,38,60,1],[41,13,41,57,1],[44,13,44,72,1],[52,9,52,10,1],[54,13,54,62,1],[57,13,57,48,1],[60,13,60,72,1]]);
+      highlightRanges([[13,9,13,38,1],[14,9,14,10,1],[15,13,15,48,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,50,1],[25,13,25,38,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,39,1],[35,13,35,39,1],[38,13,38,52,1],[39,9,39,10,1],[43,9,43,10,1],[45,13,45,50,1],[48,13,48,41,1],[51,13,51,54,1],[52,9,52,10,1],[56,9,56,10,1],[58,13,58,51,1],[61,13,61,46,1],[64,13,64,59,1],[65,9,65,10,1],[69,9,69,10,1],[71,13,71,73,1],[74,13,74,49,1],[77,13,77,61,1],[78,9,78,10,1],[82,9,82,10,1],[84,13,84,40,1],[87,13,87,55,1],[90,13,90,68,1],[91,9,91,10,1]]);
     </script>
   </body>
 </html>

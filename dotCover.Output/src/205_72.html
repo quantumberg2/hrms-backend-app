@@ -2,124 +2,24 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\EmployeeSalaryImp.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\DTO\SelectCompanyRequest.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.Authorization;
-using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
-
-namespace HRMS_Application.BusinessLogic.Implements
+namespace HRMS_Application.DTO
 {
-
-    public class EmployeeSalaryImp : IEmployeeSalary
+    public class SelectCompanyRequest
     {
-        private HRMSContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IJwtUtils _jwtUtils;
-        private List&lt;string&gt;? dToken;
-        private int? _decodedToken;
-        public EmployeeSalaryImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
-        {
-            _context = context;
-            _httpContextAccessor = httpContextAccessor;
-            _jwtUtils = jwtUtils;
-        }
-        private void DecodeToken()
-        {
-            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
-            if (string.IsNullOrEmpty(token))
-            {
-                dToken = null;
-            }
-            else
-            {
-                var userId = _jwtUtils.ValidateJwtToken(token);
-                if (userId.HasValue)
-                {
-                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
-                    if (userDetails != null)
-                    {
-                        _decodedToken = userDetails.Id;
-                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
-                    }
-                    else
-                    {
-                        // Handle the case where the user is not found in the database
-                        dToken = null;
-                    }
-                }
-            }
-        }
-        public async Task&lt;bool&gt; deleteEmpsalary(int id)
-        {
-            DecodeToken();
-            var result = (from row in _context.EmpSalaries
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _context.EmpSalaries.Remove(result);
-            await _context.SaveChangesAsync(_decodedToken);
-            return true;
-        }
-
-        public List&lt;EmpSalary&gt; GetAllEmpSalary()
-        {
-            var result = (from row in _context.EmpSalaries
-                          where row.IsActive == 1
-                          select row).ToList();
-            return result;
-        }
-
-        public EmpSalary GetEmpSalaryById(int id)
-        {
-            var result = (from row in _context.EmpSalaries
-                          where row.Id == id &amp;&amp; row.IsActive == 1
-                          select row).FirstOrDefault();
-
-            return result;
-        }
-
-        public async Task&lt;string&gt; InsertEmpSalary(EmpSalary empSalary)
-        {
-            _context.EmpSalaries.Add(empSalary);
-            var result = await _context.SaveChangesAsync();
-            if (result != 0)
-            {
-                return &quot;new Department inserted successfully&quot;;
-
-            }
-            else
-            {
-                return &quot;failed to insert new data&quot;;
-            }
-        }
-
-        public bool SoftDelete(int id, short isActive)
-        {
-            var res = (from row in _context.EmpSalaries
-                       where row.Id == id
-                       select row).FirstOrDefault();
-            if (res != null)
-            {
-                res.IsActive = isActive;
-                _context.EmpSalaries.Update(res);
-                _context.SaveChanges();
-                return true;
-
-            }
-            return false;
-        }
+/*        public string Username { get; set; }
+*/        public int CompanyId { get; set; }
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[17,9,17,116,1],[18,9,18,10,1],[19,13,19,32,1],[20,13,20,56,1],[21,13,21,34,1],[22,9,22,10,1],[24,9,24,10,1],[25,13,25,126,1],[26,13,26,45,1],[27,13,27,14,1],[28,17,28,31,1],[29,13,29,14,1],[31,13,31,14,0],[32,17,32,64,0],[33,17,33,37,0],[34,17,34,18,0],[35,21,35,110,0],[36,21,36,45,0],[37,21,37,22,0],[38,25,38,56,0],[39,25,39,71,0],[39,71,39,84,0],[39,84,39,95,0],[40,21,40,22,0],[42,21,42,22,0],[44,25,44,39,0],[45,21,45,22,0],[46,17,46,18,0],[47,13,47,14,0],[48,9,48,10,1],[50,9,50,10,1],[51,13,51,27,1],[52,13,54,57,1],[55,13,55,49,0],[56,13,56,60,0],[57,13,57,25,0],[58,9,58,10,0],[61,9,61,10,1],[62,13,64,48,1],[65,13,65,27,0],[66,9,66,10,0],[69,9,69,10,1],[70,13,72,56,1],[74,13,74,27,0],[75,9,75,10,0],[78,9,78,10,1],[79,13,79,49,1],[80,13,80,60,0],[81,13,81,29,0],[82,13,82,14,0],[83,17,83,63,0],[87,13,87,14,0],[88,17,88,52,0],[90,9,90,10,0],[93,9,93,10,1],[94,13,96,53,1],[97,13,97,29,0],[98,13,98,14,0],[99,17,99,41,0],[100,17,100,50,0],[101,17,101,40,0],[102,17,102,29,0],[105,13,105,26,0],[106,9,106,10,0]]);
+      highlightRanges([[6,34,6,38,1],[6,39,6,43,1]]);
     </script>
   </body>
 </html>

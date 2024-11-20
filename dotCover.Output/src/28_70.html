@@ -2,57 +2,117 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\Users\AuthenticateRequestTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\ShiftRosterTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Models.Users
+namespace HRMS_Unit_Test.Models
 {
     using System;
-    using HRMS_Application.Models.Users;
+    using System.Collections.Generic;
+    using HRMS_Application.Models;
+    using Moq;
     using Xunit;
 
-    public class AuthenticateRequestTests
+    public partial class ShiftRosterTests
     {
-        private readonly AuthenticateRequest _testClass;
+        private readonly ShiftRoster _testClass;
 
-        public AuthenticateRequestTests()
+        public ShiftRosterTests()
         {
-            _testClass = new AuthenticateRequest();
+            _testClass = new ShiftRoster();
         }
 
         [Fact]
-        public void CanSetAndGetUsername()
+        public void CanSetAndGetId()
         {
             // Arrange
-            var testValue = &quot;TestValue988785361&quot;;
+            var testValue = 879117060;
 
             // Act
-            _testClass.Username = testValue;
+            _testClass.Id = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Username);
+            Assert.Equal(testValue, _testClass.Id);
         }
 
         [Fact]
-        public void CanSetAndGetPassword()
+        public void CanSetAndGetEmpCredentialId()
         {
             // Arrange
-            var testValue = &quot;TestValue1968849220&quot;;
+            var testValue = 440248;
 
             // Act
-            _testClass.Password = testValue;
+            _testClass.EmpCredentialId = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Password);
+            Assert.Equal(testValue, _testClass.EmpCredentialId);
+        }
+
+        [Fact]
+        public void CanSetAndGetShiftRosterTypeId()
+        {
+            // Arrange
+            var testValue = 916828253;
+
+            // Act
+            _testClass.ShiftRosterTypeId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ShiftRosterTypeId);
+        }
+
+        [Fact]
+        public void CanSetAndGetStartdate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.Startdate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Startdate);
+        }
+
+        [Fact]
+        public void CanSetAndGetEnddate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.Enddate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Enddate);
+        }
+
+        [Fact]
+        public void CanSetAndGetShiftRosterType()
+        {
+            // Arrange
+            var testValue = new ShiftRosterType
+            {
+                Id = 1535676266,
+                Type = &quot;TestValue1892546635&quot;,
+                TimeRange = &quot;TestValue489936907&quot;,
+                ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+            };
+
+            // Act
+            _testClass.ShiftRosterType = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.ShiftRosterType);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,42,1],[12,9,12,10,1],[13,13,13,52,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,50,1],[23,13,23,45,1],[26,13,26,58,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,45,1],[39,13,39,58,1],[40,9,40,10,1]]);
+      highlightRanges([[13,9,13,34,1],[14,9,14,10,1],[15,13,15,44,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,39,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,36,1],[38,13,38,52,1],[41,13,41,65,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,39,1],[51,13,51,54,1],[54,13,54,67,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,45,1],[64,13,64,46,1],[67,13,67,59,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,45,1],[77,13,77,44,1],[80,13,80,57,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,93,15,1],[96,13,96,52,1],[99,13,99,64,1],[100,9,100,10,1]]);
     </script>
   </body>
 </html>

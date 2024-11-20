@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Authorization\JwtMiddleware.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.Helpers;
+using Microsoft.Extensions.Options;
+
+namespace HRMS_Application.Authorization
+{
+    public class JwtMiddleware
+    {
+        private readonly RequestDelegate _next;
+        private readonly AppSettings _appSettings;
+
+        public JwtMiddleware(RequestDelegate next, IOptions&lt;AppSettings&gt; appSettings)
+        {
+            _next = next;
+            _appSettings = appSettings.Value;
+
+        }
+
+        public async Task Invoke(HttpContext context, IUser UserImp, IJwtUtils jwtUtils)
+        {
+            var token = context.Request.Headers[&quot;Authorization&quot;].FirstOrDefault()?.Split(&quot; &quot;).Last();
+            var userId = jwtUtils.ValidateJwtToken(token);
+            if (userId != null)
+            {
+                // attach user to context on successful jwt validation
+                context.Items[&quot;User&quot;] = UserImp.GetById(userId.Value);
+            }
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,86,1],[13,9,13,10,1],[14,13,14,26,1],[15,13,15,46,1],[17,9,17,10,1],[20,9,20,10,1],[21,13,21,102,1],[22,13,22,59,1],[23,13,23,32,1],[24,13,24,14,0],[26,17,26,71,0],[27,13,27,14,0],[28,9,28,10,1]]);
+    </script>
+  </body>
+</html>

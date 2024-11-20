@@ -79,17 +79,30 @@ namespace HRMS_Unit_Test.DTO
             Assert.Same(testValue, _testClass.Roles);
         }
 
-      /*  [Fact]
+        [Fact]
         public void CanSetAndGetJwtToken()
         {
             // Arrange
-            var testValue = "TestValue660878491";
+            var testValue = "TestValue1673772230";
 
             // Act
             _testClass.JwtToken = testValue;
 
             // Assert
             Assert.Equal(testValue, _testClass.JwtToken);
-        }*/
+        }
+
+        /*  [Fact]
+          public void CanSetAndGetJwtToken()
+          {
+              // Arrange
+              var testValue = "TestValue660878491";
+
+              // Act
+              _testClass.JwtToken = testValue;
+
+              // Assert
+              Assert.Equal(testValue, _testClass.JwtToken);
+          }*/
     }
 }

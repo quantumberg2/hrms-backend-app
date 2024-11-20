@@ -2,185 +2,24 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\EmployeeImportService .cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\DTO\OtpEmail.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using OfficeOpenXml;
-using HRMS_Application.Models;
-using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.DTO;
-using Microsoft.EntityFrameworkCore;
-
-namespace HRMS_Application.BusinessLogic.Implements
+namespace HRMS_Application.DTO
 {
-    public class EmployeeImportService : IEmployeeImportService
+    public class OtpEmail
     {
-        private readonly HRMSContext _context;
-        private readonly IEmailPassword _emailPasswordService;
-
-        public EmployeeImportService(HRMSContext context, IEmailPassword emailPasswordService)
-        {
-            _context = context;
-            _emailPasswordService = emailPasswordService;
-        }
-
-        public async Task&lt;(int Inserted, int Rejected, List&lt;string&gt; Errors)&gt; ImportEmployeesFromExcelAsync(Stream excelStream, int companyId)
-        {
-            // Set the license context
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-            using var package = new ExcelPackage(excelStream);
-            var worksheet = package.Workbook.Worksheets.First();
-            var rowCount = worksheet.Dimension.Rows;
-
-            var employees = new List&lt;EmployeeDto&gt;();
-            var errors = new List&lt;string&gt;();
-            int insertedCount = 0;
-            int rejectedCount = 0;
-
-            // Read the data starting from row 2, assuming row 1 has headings
-            for (int row = 2; row &lt;= rowCount; row++)
-            {
-                // Extract data from cells
-                var employeeNumber = worksheet.Cells[row, 1].Text;
-                var firstName = worksheet.Cells[row, 2].Text;
-                var middleName = worksheet.Cells[row, 3].Text;
-                var lastName = worksheet.Cells[row, 4].Text;
-                var designation = worksheet.Cells[row, 5].Text;
-                var email = worksheet.Cells[row, 6].Text;
-
-                // Validate fields
-                if (string.IsNullOrWhiteSpace(employeeNumber) || string.IsNullOrWhiteSpace(firstName) ||
-                    string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) ||
-                    !IsValidEmail(email))
-                {
-                    errors.Add($&quot;Row {row}: Invalid data. Ensure all required fields are filled correctly.&quot;);
-                    rejectedCount++;
-                    continue;
-                }
-
-                // Handle departmentId and positionId as null
-                int? deptId = null;
-                int? positionId = null;
-
-                // Create a new EmployeeDto
-                var employee = new EmployeeDto
-                {
-                    EmployeeNumber = employeeNumber,
-                    FirstName = firstName,
-                    MiddleName = middleName,
-                    LastName = lastName,
-                    Email = email,
-                    DeptId = deptId,
-                    PositionId = positionId,
-                    Designation = designation
-                };
-                employees.Add(employee);
-            }
-
-            foreach (var employeeDto in employees)
-            {
-                // Check if the email already exists for the same company
-                var existingEmail = await _context.EmployeeCredentials
-                    .SingleOrDefaultAsync(e =&gt; e.Email == employeeDto.Email &amp;&amp; e.RequestedCompanyId == companyId);
-
-                if (existingEmail != null)
-                {
-                    errors.Add($&quot;Email &#39;{employeeDto.Email}&#39; is already in use for company ID &#39;{companyId}&#39;.&quot;);
-                    rejectedCount++;
-                    continue; // Skip this record
-                }
-
-                var employeeCredential = new EmployeeCredential
-                {
-                    UserName = employeeDto.FirstName,
-                    Email = employeeDto.Email,
-                    Password = GeneratePassword(),
-                    DefaultPassword = true,
-                    RequestedCompanyId = companyId
-                };
-
-                await _context.EmployeeCredentials.AddAsync(employeeCredential);
-                await _context.SaveChangesAsync();
-
-                var employeeDetail = new EmployeeDetail
-                {
-                    EmployeeCredentialId = employeeCredential.Id,
-                    DeptId = employeeDto.DeptId,
-                    FirstName = employeeDto.FirstName,
-                    MiddleName = employeeDto.MiddleName,
-                    LastName = employeeDto.LastName,
-                    Email = employeeDto.Email,
-                    EmployeeNumber = employeeDto.EmployeeNumber,
-                    PositionId = employeeDto.PositionId,
-                    RequestCompanyId = companyId 
-                };
-
-                _context.EmployeeDetails.Add(employeeDetail);
-                await _context.SaveChangesAsync();
-
-                // Assign &quot;User&quot; role to the employee
-                var userRole = new UserRolesJ
-                {
-                    EmployeeCredentialId = employeeCredential.Id,
-                    RolesId = 2 
-                };
-
-                await _context.UserRolesJs.AddAsync(userRole);
-                await _context.SaveChangesAsync();
-
-                // Send email with username and password
-                await _emailPasswordService.SendOtpEmailAsync(new Generatepassword
-                {
-                    EmailAddress = employeeCredential.Email,
-                    Password = employeeCredential.Password,
-                    UserName = employeeCredential.UserName
-                });
-
-                insertedCount++;
-            }
-
-            return (Inserted: insertedCount, Rejected: rejectedCount, Errors: errors);
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private string GeneratePassword()
-        {
-            const string valid = &quot;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890&quot;;
-            var res = new char[8];
-            var rnd = new Random();
-            for (int i = 0; i &lt; res.Length; i++)
-            {
-                res[i] = valid[rnd.Next(valid.Length)];
-            }
-            return new string(res);
-        }
+        public string EmailAddress { get; set; }
+        public string Otp { get; set; }
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[19,9,19,95,1],[20,9,20,10,1],[21,13,21,32,1],[22,13,22,58,1],[23,9,23,10,1],[26,9,26,10,1],[28,13,28,72,1],[30,13,30,63,1],[31,13,31,65,1],[32,13,32,53,0],[34,13,34,53,0],[35,13,35,45,0],[36,13,36,35,0],[37,13,37,35,0],[40,18,40,29,0],[40,31,40,46,0],[40,48,40,53,0],[41,13,41,14,0],[43,17,43,67,0],[44,17,44,62,0],[45,17,45,63,0],[46,17,46,61,0],[47,17,47,64,0],[48,17,48,58,0],[51,17,53,42,0],[54,17,54,18,0],[55,21,55,110,0],[56,21,56,37,0],[57,21,57,30,0],[61,17,61,36,0],[62,17,62,40,0],[65,17,75,19,0],[76,17,76,41,0],[77,13,77,14,0],[79,13,79,20,0],[79,22,79,37,0],[79,38,79,40,0],[79,41,79,50,0],[80,13,80,14,0],[82,17,83,115,0],[85,17,85,43,0],[86,17,86,18,0],[87,21,87,112,0],[88,21,88,37,0],[89,21,89,30,0],[92,17,99,19,0],[101,17,101,81,0],[102,17,102,51,0],[104,17,115,19,0],[117,17,117,62,0],[118,17,118,51,0],[121,17,125,19,0],[127,17,127,63,0],[128,17,128,51,0],[131,17,136,20,0],[138,17,138,33,0],[139,13,139,14,0],[141,13,141,87,0],[142,9,142,10,0],[145,9,145,10,0],[147,13,147,14,0],[148,17,148,67,0],[149,17,149,46,0],[151,13,151,18,0],[152,13,152,14,0],[153,17,153,30,0],[155,9,155,10,0],[158,9,158,10,0],[160,13,160,35,0],[161,13,161,36,0],[162,18,162,27,0],[162,29,162,43,0],[162,45,162,48,0],[163,13,163,14,0],[164,17,164,56,0],[165,13,165,14,0],[166,13,166,36,0],[167,9,167,10,0]]);
+      highlightRanges([[5,38,5,42,1],[5,43,5,47,1],[6,29,6,33,1],[6,34,6,38,1]]);
     </script>
   </body>
 </html>

@@ -2,212 +2,414 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\CompanyrequestedControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\MonthlyAttendanceStatisticsTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Controllers
+namespace HRMS_Unit_Test.DTO
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
     using HRMS_Application.DTO;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
-    using Moq;
     using Xunit;
 
-    public class CompanyrequestedControllerTests
+    public class MonthlyAttendanceStatisticsTests
     {
-        private readonly CompanyrequestedController _testClass;
-        private readonly Mock&lt;ICompanyRequestedform&gt; _companyRequested;
-        private readonly Mock&lt;ILogger&lt;CompanyrequestedController&gt;&gt; _logger;
-        private HRMSContext _context;
+        private readonly MonthlyAttendanceStatistics _testClass;
 
-        public CompanyrequestedControllerTests()
+        public MonthlyAttendanceStatisticsTests()
         {
-            _companyRequested = new Mock&lt;ICompanyRequestedform&gt;();
-            _logger = new Mock&lt;ILogger&lt;CompanyrequestedController&gt;&gt;();
-            _context = new HRMSContext();
-            _testClass = new CompanyrequestedController(_companyRequested.Object, _logger.Object, _context);
+            _testClass = new MonthlyAttendanceStatistics();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new CompanyrequestedController(_companyRequested.Object, _logger.Object, _context);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetEmpCredential()
+        public void CanSetAndGetEmployeecredntialId()
         {
             // Arrange
-            _companyRequested.Setup(mock =&gt; mock.GetAllRequestedCompanyForm()).Returns(new List&lt;RequestedCompanyForm&gt;());
+            var testValue = 1801022154;
 
             // Act
-            var result = _testClass.GetEmpCredential();
+            _testClass.EmployeecredntialId = testValue;
 
             // Assert
-            _companyRequested.Verify(mock =&gt; mock.GetAllRequestedCompanyForm());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.EmployeecredntialId);
         }
 
         [Fact]
-        public void CanCallGetEmployeeCredentialsById()
+        public void CanSetAndGetTotalWorkingDays()
         {
             // Arrange
-            var id = 909928549;
+            var testValue = 1174509455;
 
-            _companyRequested.Setup(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;())).Returns(new RequestedCompanyForm
+            // Act
+            _testClass.TotalWorkingDays = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TotalWorkingDays);
+        }
+
+        [Fact]
+        public void CanSetAndGetTotalHoursWorked()
+        {
+            // Arrange
+            var testValue = 1829930264.91;
+
+            // Act
+            _testClass.TotalHoursWorked = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TotalHoursWorked);
+        }
+
+        [Fact]
+        public void CanSetAndGetAverageWorkHours()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2043829495&quot;;
+
+            // Act
+            _testClass.AverageWorkHours = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AverageWorkHours);
+        }
+
+        [Fact]
+        public void CanSetAndGetAverageOvertime()
+        {
+            // Arrange
+            var testValue = &quot;TestValue915592710&quot;;
+
+            // Act
+            _testClass.AverageOvertime = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AverageOvertime);
+        }
+
+        [Fact]
+        public void CanSetAndGetTotalWorkplusOT()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1570363458&quot;;
+
+            // Act
+            _testClass.TotalWorkplusOT = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TotalWorkplusOT);
+        }
+
+        [Fact]
+        public void CanSetAndGetTotalOverTime()
+        {
+            // Arrange
+            var testValue = &quot;TestValue549232777&quot;;
+
+            // Act
+            _testClass.TotalOverTime = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TotalOverTime);
+        }
+
+        [Fact]
+        public void CanSetAndGetLessHoursTime()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1055926367&quot;;
+
+            // Act
+            _testClass.LessHoursTime = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LessHoursTime);
+        }
+
+        [Fact]
+        public void CanSetAndGetAvgTimein()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1059333036&quot;;
+
+            // Act
+            _testClass.AvgTimein = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AvgTimein);
+        }
+
+        [Fact]
+        public void CanSetAndGetAvgTimeouT()
+        {
+            // Arrange
+            var testValue = &quot;TestValue875002627&quot;;
+
+            // Act
+            _testClass.AvgTimeouT = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AvgTimeouT);
+        }
+
+        [Fact]
+        public void CanSetAndGetLateInCount()
+        {
+            // Arrange
+            var testValue = 771821790;
+
+            // Act
+            _testClass.LateInCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LateInCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetEarlyOutCount()
+        {
+            // Arrange
+            var testValue = 386755877;
+
+            // Act
+            _testClass.EarlyOutCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EarlyOutCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetAbsentCount()
+        {
+            // Arrange
+            var testValue = 706058628;
+
+            // Act
+            _testClass.AbsentCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AbsentCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveTakenCount()
+        {
+            // Arrange
+            var testValue = 1732751813;
+
+            // Act
+            _testClass.LeaveTakenCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveTakenCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetPenaltyCount()
+        {
+            // Arrange
+            var testValue = 455311446;
+
+            // Act
+            _testClass.PenaltyCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PenaltyCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetPresentPercentage()
+        {
+            // Arrange
+            var testValue = 488963811.6;
+
+            // Act
+            _testClass.PresentPercentage = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PresentPercentage);
+        }
+
+        [Fact]
+        public void CanSetAndGetAbsentPercentage()
+        {
+            // Arrange
+            var testValue = 1809943078.68;
+
+            // Act
+            _testClass.AbsentPercentage = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AbsentPercentage);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveTakenPercentage()
+        {
+            // Arrange
+            var testValue = 134010474.84;
+
+            // Act
+            _testClass.LeaveTakenPercentage = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveTakenPercentage);
+        }
+
+        [Fact]
+        public void CanSetAndGetHolidayPercentage()
+        {
+            // Arrange
+            var testValue = 1118294753.4;
+
+            // Act
+            _testClass.HolidayPercentage = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.HolidayPercentage);
+        }
+
+        [Fact]
+        public void CanSetAndGetRestDaysPercentage()
+        {
+            // Arrange
+            var testValue = 1706185907.91;
+
+            // Act
+            _testClass.RestDaysPercentage = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RestDaysPercentage);
+        }
+
+        [Fact]
+        public void CanSetAndGetSpecificDayAttendance()
+        {
+            // Arrange
+            var testValue = new DateWiseAttendance
             {
-                Id = 634140502,
-                Name = &quot;TestValue393044128&quot;,
-                PhoneNumber = &quot;TestValue1089705126&quot;,
-                DomainName = &quot;TestValue1602044217&quot;,
-                Status = &quot;TestValue448385171&quot;,
-                InsertedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow,
-                Email = &quot;TestValue1638353311&quot;,
-                IsActive = (short)8409,
-                CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-            });
-
-            // Act
-            var result = _testClass.GetEmployeeCredentialsById(id);
-
-            // Assert
-            _companyRequested.Verify(mock =&gt; mock.GetById(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallDeleteRequestedCompanyForm()
-        {
-            // Arrange
-            var id = 1148091439;
-
-            _companyRequested.Setup(mock =&gt; mock.DeleteRequestedCompanyForm(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
-
-            // Act
-            var result = await _testClass.DeleteRequestedCompanyForm(id);
-
-            // Assert
-            _companyRequested.Verify(mock =&gt; mock.DeleteRequestedCompanyForm(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallInsertRequestedCompanyForm()
-        {
-            // Arrange
-            var requestedCompanyForm = new RequestedCompanyForm
-            {
-                Id = 2118866677,
-                Name = &quot;TestValue1211953008&quot;,
-                PhoneNumber = &quot;TestValue118736118&quot;,
-                DomainName = &quot;TestValue1707714847&quot;,
-                Status = &quot;TestValue816244637&quot;,
-                InsertedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow,
-                Email = &quot;TestValue764649943&quot;,
-                IsActive = (short)20247,
-                CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                Date = DateTime.UtcNow,
+                TimeIn = &quot;TestValue1911708379&quot;,
+                TimeOut = &quot;TestValue1415001624&quot;,
+                WorkTime = &quot;TestValue1687408333&quot;,
+                Overtime = &quot;TestValue1310768058&quot;,
+                Status = &quot;TestValue1099468133&quot;
             };
 
-            _companyRequested.Setup(mock =&gt; mock.InsertRequestedCompanyForm(It.IsAny&lt;RequestedCompanyForm&gt;())).ReturnsAsync(&quot;TestValue2094523348&quot;);
-
             // Act
-            var result = await _testClass.InsertRequestedCompanyForm(requestedCompanyForm);
+            _testClass.SpecificDayAttendance = testValue;
 
             // Assert
-            _companyRequested.Verify(mock =&gt; mock.InsertRequestedCompanyForm(It.IsAny&lt;RequestedCompanyForm&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Same(testValue, _testClass.SpecificDayAttendance);
         }
 
         [Fact]
-        public void CanCallSoftDelete()
+        public void CanSetAndGetDateWiseAttendance()
         {
             // Arrange
-            var id = 139800988;
-            var isActive = (short)2316;
-
-            _companyRequested.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(true);
+            var testValue = new List&lt;DateWiseAttendance&gt;();
 
             // Act
-            var result = _testClass.SoftDelete(id, isActive);
+            _testClass.DateWiseAttendance = testValue;
 
             // Assert
-            _companyRequested.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallVerifyOtp()
-        {
-            // Arrange
-            var request = new OtpEmail
-            {
-                EmailAddress = &quot;TestValue255230470&quot;,
-                Otp = &quot;TestValue2060189017&quot;
-            };
-
-            // Act
-            var result = await _testClass.VerifyOtp(request);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Same(testValue, _testClass.DateWiseAttendance);
         }
     }
 
-    public class OtpRequestTests
+    public class DateWiseAttendanceTests
     {
-        private readonly OtpRequest _testClass;
+        private readonly DateWiseAttendance _testClass;
 
-        public OtpRequestTests()
+        public DateWiseAttendanceTests()
         {
-            _testClass = new OtpRequest();
+            _testClass = new DateWiseAttendance();
         }
 
         [Fact]
-        public void CanSetAndGetEmail()
+        public void CanSetAndGetDate()
         {
             // Arrange
-            var testValue = &quot;TestValue1675935789&quot;;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.Email = testValue;
+            _testClass.Date = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Email);
+            Assert.Equal(testValue, _testClass.Date);
+        }
+
+        [Fact]
+        public void CanSetAndGetTimeIn()
+        {
+            // Arrange
+            var testValue = &quot;TestValue879906968&quot;;
+
+            // Act
+            _testClass.TimeIn = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TimeIn);
+        }
+
+        [Fact]
+        public void CanSetAndGetTimeOut()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1169239072&quot;;
+
+            // Act
+            _testClass.TimeOut = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TimeOut);
+        }
+
+        [Fact]
+        public void CanSetAndGetWorkTime()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1588472033&quot;;
+
+            // Act
+            _testClass.WorkTime = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.WorkTime);
+        }
+
+        [Fact]
+        public void CanSetAndGetOvertime()
+        {
+            // Arrange
+            var testValue = &quot;TestValue824199445&quot;;
+
+            // Act
+            _testClass.Overtime = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Overtime);
+        }
+
+        [Fact]
+        public void CanSetAndGetStatus()
+        {
+            // Arrange
+            var testValue = &quot;TestValue983021029&quot;;
+
+            // Act
+            _testClass.Status = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Status);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[21,9,21,49,1],[22,9,22,10,1],[23,13,23,67,1],[24,13,24,71,1],[25,13,25,42,1],[26,13,26,109,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,111,1],[36,13,36,38,1],[37,9,37,10,1],[41,9,41,10,1],[43,13,43,122,1],[46,13,46,56,1],[49,13,49,81,1],[51,13,51,72,1],[56,9,56,10,1],[58,13,58,32,1],[60,13,77,16,1],[80,13,80,68,1],[83,13,83,77,1],[85,13,85,72,1],[90,9,90,10,1],[92,13,92,33,1],[94,13,94,114,1],[97,13,97,74,1],[100,13,100,96,1],[102,13,102,72,1],[107,9,107,10,1],[109,13,126,15,1],[128,13,128,148,1],[131,13,131,92,1],[134,13,134,113,1],[136,13,136,72,1],[141,9,141,10,1],[143,13,143,32,1],[144,13,144,40,1],[146,13,146,112,1],[149,13,149,62,1],[152,13,152,99,1],[154,13,154,72,1],[159,9,159,10,1],[161,13,165,15,1],[168,13,168,62,1],[171,13,171,72,0],[179,9,179,33,1],[180,9,180,10,1],[181,13,181,43,1],[182,9,182,10,1],[186,9,186,10,1],[188,13,188,51,1],[191,13,191,42,1],[194,13,194,55,1],[195,9,195,10,1]]);
+      highlightRanges([[12,9,12,50,1],[13,9,13,10,1],[14,13,14,60,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,40,1],[24,13,24,56,1],[27,13,27,69,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,40,1],[37,13,37,53,1],[40,13,40,66,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,43,1],[50,13,50,53,1],[53,13,53,66,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,51,1],[63,13,63,53,1],[66,13,66,66,1],[67,9,67,10,1],[71,9,71,10,1],[73,13,73,50,1],[76,13,76,52,1],[79,13,79,65,1],[80,9,80,10,1],[84,9,84,10,1],[86,13,86,51,1],[89,13,89,52,1],[92,13,92,65,1],[93,9,93,10,1],[97,9,97,10,1],[99,13,99,50,1],[102,13,102,50,1],[105,13,105,63,1],[106,9,106,10,1],[110,9,110,10,1],[112,13,112,51,1],[115,13,115,50,1],[118,13,118,63,1],[119,9,119,10,1],[123,9,123,10,1],[125,13,125,51,1],[128,13,128,46,1],[131,13,131,59,1],[132,9,132,10,1],[136,9,136,10,1],[138,13,138,50,1],[141,13,141,47,1],[144,13,144,60,1],[145,9,145,10,1],[149,9,149,10,1],[151,13,151,39,1],[154,13,154,48,1],[157,13,157,61,1],[158,9,158,10,1],[162,9,162,10,1],[164,13,164,39,1],[167,13,167,50,1],[170,13,170,63,1],[171,9,171,10,1],[175,9,175,10,1],[177,13,177,39,1],[180,13,180,48,1],[183,13,183,61,1],[184,9,184,10,1],[188,9,188,10,1],[190,13,190,40,1],[193,13,193,52,1],[196,13,196,65,1],[197,9,197,10,1],[201,9,201,10,1],[203,13,203,39,1],[206,13,206,49,1],[209,13,209,62,1],[210,9,210,10,1],[214,9,214,10,1],[216,13,216,41,1],[219,13,219,54,1],[222,13,222,67,1],[223,9,223,10,1],[227,9,227,10,1],[229,13,229,43,1],[232,13,232,53,1],[235,13,235,66,1],[236,9,236,10,1],[240,9,240,10,1],[242,13,242,42,1],[245,13,245,57,1],[248,13,248,70,1],[249,9,249,10,1],[253,9,253,10,1],[255,13,255,42,1],[258,13,258,54,1],[261,13,261,67,1],[262,9,262,10,1],[266,9,266,10,1],[268,13,268,43,1],[271,13,271,55,1],[274,13,274,68,1],[275,9,275,10,1],[279,9,279,10,1],[281,13,289,15,1],[292,13,292,58,1],[295,13,295,70,1],[296,9,296,10,1],[300,9,300,10,1],[302,13,302,60,1],[305,13,305,55,1],[308,13,308,67,1],[309,9,309,10,1],[316,9,316,41,1],[317,9,317,10,1],[318,13,318,51,1],[319,9,319,10,1],[323,9,323,10,1],[325,13,325,45,1],[328,13,328,41,1],[331,13,331,54,1],[332,9,332,10,1],[336,9,336,10,1],[338,13,338,50,1],[341,13,341,43,1],[344,13,344,56,1],[345,9,345,10,1],[349,9,349,10,1],[351,13,351,51,1],[354,13,354,44,1],[357,13,357,57,1],[358,9,358,10,1],[362,9,362,10,1],[364,13,364,51,1],[367,13,367,45,1],[370,13,370,58,1],[371,9,371,10,1],[375,9,375,10,1],[377,13,377,50,1],[380,13,380,45,1],[383,13,383,58,1],[384,9,384,10,1],[388,9,388,10,1],[390,13,390,50,1],[393,13,393,43,1],[396,13,396,56,1],[397,9,397,10,1]]);
     </script>
   </body>
 </html>

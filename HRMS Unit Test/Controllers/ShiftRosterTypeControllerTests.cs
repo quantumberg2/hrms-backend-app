@@ -33,43 +33,43 @@ namespace HRMS_Unit_Test.Controllers
             Assert.NotNull(instance);
         }
 
-      /*  [Fact]
-        public void CanCallGetAllShiftRosterType()
-        {
-            // Arrange
-            _shiftRostetype.Setup(mock => mock.GetAllShiftRosterType()).Returns(new List<ShiftRosterType>());
+        /*  [Fact]
+          public void CanCallGetAllShiftRosterType()
+          {
+              // Arrange
+              _shiftRostetype.Setup(mock => mock.GetAllShiftRosterType()).Returns(new List<ShiftRosterType>());
 
-            // Act
-            var result = _testClass.GetAllShiftRosterType();
+              // Act
+              var result = _testClass.GetAllShiftRosterType();
 
-            // Assert
-            _shiftRostetype.Verify(mock => mock.GetAllShiftRosterType());
+              // Assert
+              _shiftRostetype.Verify(mock => mock.GetAllShiftRosterType());
 
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
-      /*  [Fact]
-        public async Task CanCallInsertPositions()
-        {
-            // Arrange
-            var shiftRosterType = new ShiftRosterType
-            {
-                Id = 970035281,
-                Type = "TestValue943023523",
-                TimeRange = "TestValue888588227",
-                ShiftRosters = new Mock<ICollection<ShiftRoster>>().Object
-            };
+              throw new NotImplementedException("Create or modify test");
+          }
+  */
+        /*  [Fact]
+          public async Task CanCallInsertPositions()
+          {
+              // Arrange
+              var shiftRosterType = new ShiftRosterType
+              {
+                  Id = 970035281,
+                  Type = "TestValue943023523",
+                  TimeRange = "TestValue888588227",
+                  ShiftRosters = new Mock<ICollection<ShiftRoster>>().Object
+              };
 
-            _shiftRostetype.Setup(mock => mock.InsertShiftRosterType(It.IsAny<ShiftRosterType>())).ReturnsAsync("TestValue647623448");
+              _shiftRostetype.Setup(mock => mock.InsertShiftRosterType(It.IsAny<ShiftRosterType>())).ReturnsAsync("TestValue647623448");
 
-            // Act
-            var result = await _testClass.InsertPositions(shiftRosterType);
+              // Act
+              var result = await _testClass.InsertPositions(shiftRosterType);
 
-            // Assert
-            _shiftRostetype.Verify(mock => mock.InsertShiftRosterType(It.IsAny<ShiftRosterType>()));
+              // Assert
+              _shiftRostetype.Verify(mock => mock.InsertShiftRosterType(It.IsAny<ShiftRosterType>()));
 
-            throw new NotImplementedException("Create or modify test");
-        }*/
+              throw new NotImplementedException("Create or modify test");
+          }*/
 
         [Fact]
         public async Task CanCallUpdatePosition()
@@ -109,6 +109,45 @@ namespace HRMS_Unit_Test.Controllers
 
             // Assert
             _shiftRostetype.Verify(mock => mock.deleteShiftRosterType(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetAllShiftRosterType()
+        {
+            // Arrange
+            _shiftRostetype.Setup(mock => mock.GetAllShiftRosterType(It.IsAny<int>())).Returns(new List<ShiftRosterType>());
+
+            // Act
+            var result = _testClass.GetAllShiftRosterType();
+
+            // Assert
+            _shiftRostetype.Verify(mock => mock.GetAllShiftRosterType(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallInsertPositions()
+        {
+            // Arrange
+            var shiftRosterType = new ShiftRosterType
+            {
+                Id = 951038129,
+                Type = "TestValue362503875",
+                TimeRange = "TestValue146019185",
+                CompanyRequestedId = 1692546480,
+                ShiftRosters = new Mock<ICollection<ShiftRoster>>().Object
+            };
+
+            _shiftRostetype.Setup(mock => mock.InsertShiftRosterType(It.IsAny<ShiftRosterType>(), It.IsAny<int>())).ReturnsAsync("TestValue180917000");
+
+            // Act
+            var result = await _testClass.InsertPositions(shiftRosterType);
+
+            // Assert
+            _shiftRostetype.Verify(mock => mock.InsertShiftRosterType(It.IsAny<ShiftRosterType>(), It.IsAny<int>()));
 
             throw new NotImplementedException("Create or modify test");
         }

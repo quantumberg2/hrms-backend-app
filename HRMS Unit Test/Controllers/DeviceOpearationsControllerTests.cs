@@ -1,3 +1,151 @@
+namespace HRMS_Unit_Test.Controllers
+{
+    using System;
+    using System.Collections.Generic;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
+
+    public class DeviceOpearationsControllerTests
+    {
+        private readonly DeviceOpearationsController _testClass;
+        private readonly Mock<ILogger<DeviceOpearationsController>> _logger;
+        private readonly Mock<IDeviceOperations> _deviceOperations;
+
+        public DeviceOpearationsControllerTests()
+        {
+            _logger = new Mock<ILogger<DeviceOpearationsController>>();
+            _deviceOperations = new Mock<IDeviceOperations>();
+            _testClass = new DeviceOpearationsController(_logger.Object, _deviceOperations.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new DeviceOpearationsController(_logger.Object, _deviceOperations.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllInfo()
+        {
+            // Arrange
+            _deviceOperations.Setup(mock => mock.GetAllInfo()).Returns(new List<DeviceTable>());
+
+            // Act
+            var result = _testClass.GetAllInfo();
+
+            // Assert
+            _deviceOperations.Verify(mock => mock.GetAllInfo());
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetByEmpCreId()
+        {
+            // Arrange
+            var empCredId = 1773428634;
+
+            _deviceOperations.Setup(mock => mock.GetByEmpCreId(It.IsAny<int>())).Returns(new List<DeviceTable>());
+
+            // Act
+            var result = _testClass.GetByEmpCreId(empCredId);
+
+            // Assert
+            _deviceOperations.Verify(mock => mock.GetByEmpCreId(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallInsertInfo()
+        {
+            // Arrange
+            var deviceInfo = new DeviceTable
+            {
+                Id = 1370215898,
+                EmpCode = 1076455495,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                WorkTime = DateTime.UtcNow,
+                OverTime = DateTime.UtcNow,
+                Remark = "TestValue1292146146",
+                ErlOut = DateTime.UtcNow,
+                LateIn = DateTime.UtcNow,
+                Name = "TestValue1451770824",
+                Status = "TestValue158862599",
+                IsActive = (short)20424
+            };
+
+            _deviceOperations.Setup(mock => mock.InsertInfo(It.IsAny<DeviceTable>())).Returns("TestValue1709155032");
+
+            // Act
+            var result = _testClass.InsertInfo(deviceInfo);
+
+            // Assert
+            _deviceOperations.Verify(mock => mock.InsertInfo(It.IsAny<DeviceTable>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallUpdateInfo()
+        {
+            // Arrange
+            var deviceInfo = new DeviceTable
+            {
+                Id = 2076165140,
+                EmpCode = 555658139,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                WorkTime = DateTime.UtcNow,
+                OverTime = DateTime.UtcNow,
+                Remark = "TestValue379893459",
+                ErlOut = DateTime.UtcNow,
+                LateIn = DateTime.UtcNow,
+                Name = "TestValue259468386",
+                Status = "TestValue1961197392",
+                IsActive = (short)15589
+            };
+
+            _deviceOperations.Setup(mock => mock.UpdateInfo(It.IsAny<DeviceTable>())).Returns("TestValue1053592883");
+
+            // Act
+            var result = _testClass.UpdateInfo(deviceInfo);
+
+            // Assert
+            _deviceOperations.Verify(mock => mock.UpdateInfo(It.IsAny<DeviceTable>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallDeleteInfo()
+        {
+            // Arrange
+            var id = 879820674;
+
+            _deviceOperations.Setup(mock => mock.DeleteInfo(It.IsAny<int>())).Returns(true);
+
+            // Act
+            var result = _testClass.DeleteInfo(id);
+
+            // Assert
+            _deviceOperations.Verify(mock => mock.DeleteInfo(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+    }
+}
 //namespace HRMS_Unit_Test.Controllers
 //{
 //    using System;

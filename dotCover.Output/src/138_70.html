@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Authorization\JwtMiddlewareTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.Authorization
+{
+    using System;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogics.Interface;
+    using HRMS_Application.Helpers;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Options;
+    using Moq;
+    using Xunit;
+
+    public class JwtMiddlewareTests
+    {
+        private readonly JwtMiddleware _testClass;
+        private RequestDelegate _next;
+        private readonly Mock&lt;IOptions&lt;AppSettings&gt;&gt; _appSettings;
+
+        public JwtMiddlewareTests()
+        {
+            _next = x =&gt; Task.CompletedTask;
+            _appSettings = new Mock&lt;IOptions&lt;AppSettings&gt;&gt;();
+            _testClass = new JwtMiddleware(_next, _appSettings.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new JwtMiddleware(_next, _appSettings.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCallInvoke()
+        {
+            // Arrange
+            var context = new DefaultHttpContext();
+            var UserImp = new Mock&lt;IUser&gt;().Object;
+            var jwtUtils = new Mock&lt;IJwtUtils&gt;().Object;
+
+            // Act
+            await _testClass.Invoke(context, UserImp, jwtUtils);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[19,9,19,36,1],[20,9,20,10,1],[21,13,21,26,1],[21,26,21,44,0],[21,44,21,45,1],[22,13,22,62,1],[23,13,23,72,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,74,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,52,1],[41,13,41,52,1],[42,13,42,57,1],[45,13,45,65,1],[48,13,48,72,1]]);
+    </script>
+  </body>
+</html>

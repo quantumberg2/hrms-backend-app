@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\RoleTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\NewsTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -16,30 +16,20 @@ namespace HRMS_Unit_Test.Models
     using Moq;
     using Xunit;
 
-    public partial class RoleTests
+    public partial class NewsTests
     {
-        private readonly Role _testClass;
+        private readonly News _testClass;
 
-        public RoleTests()
+        public NewsTests()
         {
-            _testClass = new Role();
-        }
-
-        [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new Role();
-
-            // Assert
-            Assert.NotNull(instance);
+            _testClass = new News();
         }
 
         [Fact]
         public void CanSetAndGetId()
         {
             // Arrange
-            var testValue = 1122708971;
+            var testValue = 46830919;
 
             // Act
             _testClass.Id = testValue;
@@ -49,48 +39,71 @@ namespace HRMS_Unit_Test.Models
         }
 
         [Fact]
-        public void CanSetAndGetName()
+        public void CanSetAndGetNewsPreviewId()
         {
             // Arrange
-            var testValue = &quot;TestValue988961526&quot;;
+            var testValue = 1693202676;
 
             // Act
-            _testClass.Name = testValue;
+            _testClass.NewsPreviewId = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Name);
+            Assert.Equal(testValue, _testClass.NewsPreviewId);
         }
 
         [Fact]
-        public void CanSetAndGetIsActive()
+        public void CanSetAndGetHeading()
         {
             // Arrange
-            var testValue = (short)13381;
+            var testValue = &quot;TestValue535036852&quot;;
 
             // Act
-            _testClass.IsActive = testValue;
+            _testClass.Heading = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.IsActive);
+            Assert.Equal(testValue, _testClass.Heading);
         }
 
         [Fact]
-        public void CanSetAndGetUserRolesJs()
+        public void CanSetAndGetDetails()
         {
             // Arrange
-            var testValue = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object;
+            var testValue = &quot;TestValue538381380&quot;;
 
             // Act
-            _testClass.UserRolesJs = testValue;
+            _testClass.Details = testValue;
 
             // Assert
-            Assert.Same(testValue, _testClass.UserRolesJs);
+            Assert.Equal(testValue, _testClass.Details);
+        }
+
+        [Fact]
+        public void CanSetAndGetNewsPreview()
+        {
+            // Arrange
+            var testValue = new NewsPreview
+            {
+                Id = 196170587,
+                DisplayDate = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                Heading = &quot;TestValue1457483946&quot;,
+                Description = &quot;TestValue1464126995&quot;,
+                ImgUrl = &quot;TestValue1801849058&quot;,
+                IsActive = (short)32480,
+                News = new Mock&lt;ICollection&lt;News&gt;&gt;().Object
+            };
+
+            // Act
+            _testClass.NewsPreview = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.NewsPreview);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[13,9,13,27,1],[14,9,14,10,1],[15,13,15,37,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,39,1],[25,13,25,38,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,40,1],[35,13,35,39,1],[38,13,38,52,1],[39,9,39,10,1],[43,9,43,10,1],[45,13,45,50,1],[48,13,48,41,1],[51,13,51,54,1],[52,9,52,10,1],[56,9,56,10,1],[58,13,58,42,1],[61,13,61,45,1],[64,13,64,58,1],[65,9,65,10,1],[69,9,69,10,1],[71,13,71,72,1],[74,13,74,48,1],[77,13,77,60,1],[78,9,78,10,1]]);
+      highlightRanges([[13,9,13,27,1],[14,9,14,10,1],[15,13,15,37,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,38,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,40,1],[38,13,38,50,1],[41,13,41,63,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,50,1],[51,13,51,44,1],[54,13,54,57,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,50,1],[64,13,64,44,1],[67,13,67,57,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,84,15,1],[87,13,87,48,1],[90,13,90,60,1],[91,9,91,10,1]]);
     </script>
   </body>
 </html>

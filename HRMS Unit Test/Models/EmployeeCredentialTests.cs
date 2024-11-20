@@ -327,5 +327,31 @@ namespace HRMS_Unit_Test.Models
             // Assert
             Assert.Same(testValue, _testClass.UserRolesJs);
         }
+
+        [Fact]
+        public void CanSetAndGetResignedDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.ResignedDate = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ResignedDate);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmpCredIdEmpCodeMappings()
+        {
+            // Arrange
+            var testValue = new Mock<ICollection<EmpCredIdEmpCodeMapping>>().Object;
+
+            // Act
+            _testClass.EmpCredIdEmpCodeMappings = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.EmpCredIdEmpCodeMappings);
+        }
     }
 }

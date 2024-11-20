@@ -339,5 +339,31 @@ namespace HRMS_Unit_Test.Models
             // Assert
             Assert.Same(testValue, _testClass.Position);
         }
+
+        [Fact]
+        public void CanSetAndGetNumberOfYearsExperience()
+        {
+            // Arrange
+            var testValue = "TestValue1982803014";
+
+            // Act
+            _testClass.NumberOfYearsExperience = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.NumberOfYearsExperience);
+        }
+
+        [Fact]
+        public void CanSetAndGetImageUrl()
+        {
+            // Arrange
+            var testValue = "TestValue213498013";
+
+            // Act
+            _testClass.ImageUrl = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ImageUrl);
+        }
     }
 }

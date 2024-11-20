@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\RolesImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\AccountDetailsImpTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -12,93 +12,150 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.Authorization;
     using HRMS_Application.BusinessLogic.Implements;
     using HRMS_Application.Models;
-    using Microsoft.AspNetCore.Http;
     using Moq;
     using Xunit;
 
-    public class RolesImpTests
+    public class AccountDetailsImpTests
     {
-        private readonly RolesImp _testClass;
+        private readonly AccountDetailsImp _testClass;
         private HRMSContext _context;
-        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
-        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
 
-        public RolesImpTests()
+        public AccountDetailsImpTests()
         {
             _context = new HRMSContext();
-            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
-            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
-            _testClass = new RolesImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+            _testClass = new AccountDetailsImp(_context);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new RolesImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+            var instance = new AccountDetailsImp(_context);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public async Task CanCalldeleteRole()
-        {
-            // Arrange
-            var id = 2064558276;
-
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1256278547);
-
-            // Act
-            var result = await _testClass.deleteRole(id);
-
-            // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetAllRoles()
+        public void CanCallGetAllAccountdetails()
         {
             // Act
-            var result = _testClass.GetAllRoles();
+            var result = _testClass.GetAllAccountdetails();
 
             // Assert
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public void CanCallGetRolesById()
+        public void CanCallGetAccountDetailsById()
         {
             // Arrange
-            var id = 132472818;
+            var id = 1540153590;
 
             // Act
-            var result = _testClass.GetRolesById(id);
+            var result = _testClass.GetAccountDetailsById(id);
 
             // Assert
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public async Task CanCallInsertRole()
+        public void CanCallGetAccountDetailsByAccNumber()
         {
             // Arrange
-            var role = new Role
+            var accountNumber = &quot;TestValue715214774&quot;;
+
+            // Act
+            var result = _testClass.GetAccountDetailsByAccNumber(accountNumber);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallInsertAccountDetails()
+        {
+            // Arrange
+            var accountDetail = new AccountDetail
             {
-                Id = 647399969,
-                Name = &quot;TestValue316464792&quot;,
-                IsActive = (short)1633,
-                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                Id = 222532061,
+                EmployeeCredentialId = 1948140358,
+                AccountNumber = &quot;TestValue1143391473&quot;,
+                IfscCode = &quot;TestValue325876005&quot;,
+                AccountType = &quot;TestValue1495806847&quot;,
+                BankName = &quot;TestValue800537314&quot;,
+                BranchName = &quot;TestValue810865388&quot;,
+                AadharNumber = &quot;TestValue774454845&quot;,
+                PfNumber = &quot;TestValue593840121&quot;,
+                UanNumber = &quot;TestValue31231027&quot;,
+                PfJoiningDate = DateTime.UtcNow,
+                EligibleForPf = true,
+                IsActive = (short)1074,
+                Country = &quot;TestValue800619629&quot;,
+                State = &quot;TestValue1695381045&quot;,
+                City = &quot;TestValue721704779&quot;,
+                Pin = 1719149899,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 1268541431,
+                    UserName = &quot;TestValue421598764&quot;,
+                    Password = &quot;TestValue559173542&quot;,
+                    Status = (short)26457,
+                    RequestedCompanyId = 77779009,
+                    Email = &quot;TestValue36261313&quot;,
+                    DefaultPassword = true,
+                    GenerateOtp = &quot;TestValue367602858&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)6660,
+                    EmployeeLoginName = &quot;TestValue1279962030&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 319338864,
+                        Name = &quot;TestValue1766541887&quot;,
+                        PhoneNumber = &quot;TestValue1616773518&quot;,
+                        DomainName = &quot;TestValue1621855993&quot;,
+                        Status = &quot;TestValue125139454&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue2147288549&quot;,
+                        IsActive = (short)11250,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                }
             };
 
             // Act
-            var result = await _testClass.InsertRole(role);
+            var result = _testClass.InsertAccountDetails(accountDetail);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCalldeleteAccountDetails()
+        {
+            // Arrange
+            var id = 1285323478;
+
+            // Act
+            var result = _testClass.deleteAccountDetails(id);
 
             // Assert
             throw new NotImplementedException(&quot;Create or modify test&quot;);
@@ -108,8 +165,8 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
         public void CanCallSoftDelete()
         {
             // Arrange
-            var id = 1577957449;
-            var isActive = (short)31300;
+            var id = 301368875;
+            var isActive = (short)27944;
 
             // Act
             var result = _testClass.SoftDelete(id, isActive);
@@ -121,7 +178,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[20,9,20,31,1],[21,9,21,10,1],[22,13,22,42,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,96,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,98,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,33,1],[44,13,44,100,1],[47,13,47,58,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,32,1],[72,13,72,54,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,88,15,1],[91,13,91,60,1],[94,13,94,72,0],[99,9,99,10,1],[101,13,101,33,1],[102,13,102,41,1],[105,13,105,62,1],[108,13,108,72,0]]);
+      highlightRanges([[15,9,15,40,1],[16,9,16,10,1],[17,13,17,42,1],[18,13,18,58,1],[19,9,19,10,1],[23,9,23,10,1],[25,13,25,60,1],[28,13,28,38,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,60,1],[38,13,38,72,0],[43,9,43,10,1],[45,13,45,33,1],[48,13,48,63,1],[51,13,51,72,0],[56,9,56,10,1],[58,13,58,54,1],[61,13,61,81,1],[64,13,64,72,0],[69,9,69,10,1],[71,13,132,15,1],[135,13,135,73,1],[138,13,138,72,0],[143,9,143,10,1],[145,13,145,33,1],[148,13,148,62,1],[151,13,151,72,0],[156,9,156,10,1],[158,13,158,32,1],[159,13,159,41,1],[162,13,162,62,1],[165,13,165,72,0]]);
     </script>
   </body>
 </html>

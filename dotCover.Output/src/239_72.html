@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\SubscribeMailTriggerController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.DTO;
+using HRMS_Application.Enums;
+using HRMS_Application.Helpers;
+using MailKit.Security;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class SubscribeMailTriggerController : ControllerBase
+    {
+        private readonly ILogger&lt;SubscribeMailTriggerController&gt; _logger;
+        public SubscribeMailTriggerController(ILogger&lt;SubscribeMailTriggerController&gt; logger)
+        {
+            _logger = logger;
+        }
+
+        [HttpPost(&quot;Subscribe&quot;)]
+        public async Task&lt;IActionResult&gt; SendSubscriptionMail([FromForm] SubscribeDTO objMail)
+        {
+            _logger.LogInformation(&quot;Send mail method started&quot;);
+
+            try
+            {
+                string toEmail = string.Empty;
+                string fromEmail = &quot;wequantumberg@gmail.com&quot;;
+                string password = &quot;kwoipnisqnwmmbyh&quot;;
+                string emailTemplate = constants.SubscribeMailTriggerTemplate;
+                string subject = string.Empty;
+
+                switch (objMail.appId)
+                {
+                    case AppId_s.Quantumberg:
+                        toEmail = &quot;srilakshmingr@gmail.com&quot;;
+                        emailTemplate = emailTemplate.Replace(&quot;[ImageUrl]&quot;, &quot;https://www.quantumberg.com/assets/QUANTUMBERG-LOGO1-af6161d6.png&quot;)
+                                                     .Replace(&quot;[User]&quot;, objMail.Email)
+                                                     .Replace(&quot;[Application]&quot;,&quot;Quantumberg&quot;)
+                                                     .Replace(&quot;[HR_Info]&quot;, &quot;Sihi&lt;br/&gt;Quantumberg&quot;)
+                                                     .Replace(&quot;[CompanyAddress]&quot;, &quot;Some Firm Ltd, 35 Avenue. City&quot;);
+                        subject = &quot;Quantumberg Support&quot;;
+                        break;
+
+                    case AppId_s.HRMS:
+                        toEmail = &quot;srilakshmingr@gmail.com&quot;;
+                        emailTemplate = emailTemplate.Replace(&quot;[ImageUrl]&quot;, &quot;https://www.quantumberg.com/assets/QUANTUMBERG-LOGO1-af6161d6.png&quot;)
+                                                   .Replace(&quot;[User]&quot;, objMail.Email)
+                                                   .Replace(&quot;[Application]&quot;, &quot;HRMS&quot;)
+                                                   .Replace(&quot;[HR_Info]&quot;, &quot;Krishna&lt;br/&gt;HRMS&quot;)
+                                                   .Replace(&quot;[CompanyAddress]&quot;, &quot;Some Firm Ltd, 35 Avenue. City&quot;);
+                        subject = &quot;HRMS Support&quot;;
+                        break;
+
+                    case AppId_s.DeviWebsite:
+                        toEmail = &quot;srilakshmingr@gmail.com&quot;;
+                        emailTemplate = emailTemplate.Replace(&quot;[ImageUrl]&quot;, &quot;https://www.quantumberg.com/assets/QUANTUMBERG-LOGO1-af6161d6.png&quot;)
+                                                    .Replace(&quot;[User]&quot;, objMail.Email)
+                                                    .Replace(&quot;[Application]&quot;, &quot;DeviWebsite&quot;)
+                                                    .Replace(&quot;[HR_Info]&quot;, &quot;Radha&lt;br/&gt;DeviWebsite&quot;)
+                                                    .Replace(&quot;[CompanyAddress]&quot;, &quot;Some Firm Ltd, 35 Avenue. City&quot;);
+                        subject = &quot;Devi Temple Website Support&quot;;
+                        break;
+
+                    case AppId_s.Triguna:
+                        toEmail = &quot;srilakshmingr@gmail.com&quot;;
+                        emailTemplate = emailTemplate.Replace(&quot;[ImageUrl]&quot;, &quot;https://www.quantumberg.com/assets/QUANTUMBERG-LOGO1-af6161d6.png&quot;)
+                                                    .Replace(&quot;[User]&quot;, objMail.Email)
+                                                    .Replace(&quot;[Application]&quot;, &quot;Triguna&quot;)
+                                                    .Replace(&quot;[HR_Info]&quot;, &quot;Karna&lt;br/&gt;Triguna&quot;)
+                                                   .Replace(&quot;[CompanyAddress]&quot;, &quot;Some Firm Ltd, 35 Avenue. City&quot;);
+                        subject = &quot;Triguna Support&quot;;
+                        break;
+
+                    default:
+                        return BadRequest(&quot;Invalid App ID.&quot;);
+                }
+
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress(&quot;App Support&quot;, fromEmail));
+                email.To.Add(MailboxAddress.Parse(toEmail));
+                email.Subject = subject;
+
+                var builder = new BodyBuilder { HtmlBody = emailTemplate };
+                email.Body = builder.ToMessageBody();
+
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+                smtp.Connect(&quot;smtp.gmail.com&quot;, 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate(fromEmail, password);
+                await smtp.SendAsync(email);
+                smtp.Disconnect(true);
+
+                _logger.LogInformation(&quot;Email sent successfully&quot;);
+                return Ok(&quot;Email sent successfully.&quot;);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, &quot;An error occurred while sending email&quot;);
+                return StatusCode(StatusCodes.Status500InternalServerError, &quot;An error occurred while sending email.&quot;);
+            }
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,94,1],[17,9,17,10,1],[18,13,18,30,1],[19,9,19,10,1],[23,9,23,10,1],[24,13,24,64,1],[27,13,27,14,1],[28,17,28,47,1],[29,17,29,62,1],[30,17,30,54,1],[31,17,31,79,1],[32,17,32,47,1],[34,17,34,39,1],[37,25,37,61,0],[38,25,42,117,0],[43,25,43,57,0],[44,25,44,31,0],[47,25,47,61,0],[48,25,52,115,0],[53,25,53,50,0],[54,25,54,31,0],[57,25,57,61,0],[58,25,62,116,0],[63,25,63,65,0],[64,25,64,31,0],[67,25,67,61,1],[68,25,72,115,1],[73,25,73,53,1],[74,25,74,31,1],[77,25,77,62,0],[80,17,80,47,1],[81,17,81,78,1],[82,17,82,61,1],[83,17,83,41,1],[85,17,85,76,1],[86,17,86,54,1],[88,17,88,68,1],[89,17,89,83,1],[90,17,90,56,1],[91,17,91,45,1],[92,17,92,39,1],[94,17,94,67,1],[95,17,95,55,1],[97,13,97,33,0],[98,13,98,14,0],[99,17,99,79,0],[100,17,100,119,0],[102,9,102,10,1]]);
+    </script>
+  </body>
+</html>

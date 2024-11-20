@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\RegularizationImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class RegularizationImp : IRegularization
+    {
+        private readonly HRMSContext _hrmsContext;
+
+        public RegularizationImp(HRMSContext hrmscontext)
+        {
+            _hrmsContext = hrmscontext;
+        }
+            public List&lt;LeavePendingDTO&gt; GetPendingRegularization(int employeeCredentialId, string status)
+        {
+            var pendingRegularization = (from leave in _hrmsContext.LeaveTrackings
+                                 join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
+                                 join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
+                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                 where leaveType.Type == &quot;Regularization&quot; &amp;&amp; empCred.Id == employeeCredentialId &amp;&amp; leave.Status == status
+                                 select new LeavePendingDTO
+                                 {
+                                     id = leave.Id,
+                                     employeecredentialId = empCred.Id,
+                                     Name = empDetail.FirstName + &quot; &quot; + empDetail.LastName,
+                                     LeaveType = leaveType.Type,
+                                     managername = _hrmsContext.EmployeeDetails
+                                        .Where(mgr =&gt; mgr.EmployeeCredentialId == empDetail.ManagerId)
+                                        .Select(mgr =&gt; mgr.FirstName + &quot; &quot; + mgr.LastName).FirstOrDefault(),
+                                     Reason = leave.ReasonForLeave,
+                                     StartDate = leave.Startdate,
+                                     EndDate = leave.Enddate,
+                                     Applieddate = leave.AppliedDate,
+                                     NoofDays = (leave.Enddate != null &amp;&amp; leave.Startdate != null)
+                                        ? (leave.Enddate.Value - leave.Startdate.Value).Days + 1
+                                        : 0
+                                 }).ToList();
+
+            return pendingRegularization;
+        }
+
+        public async Task&lt;List&lt;LeaveApprovalDTO&gt;&gt; GetRegularizationByStatusAsync(string status, int managerId)
+        {
+            var regularization = await(from leave in _hrmsContext.LeaveTrackings
+                               join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
+                               join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                               where leave.Status == status
+                                     &amp;&amp; emp.ManagerId == managerId
+                                     &amp;&amp; emp.IsActive == 1
+                                     &amp;&amp; leave.IsActive == 1
+                                     &amp;&amp; leaveType.Type == &quot;Regularization&quot;
+                               select new LeaveApprovalDTO
+                               {
+                                   Id = leave.Id,
+                                   EmployeeNumber = emp.EmployeeNumber,
+                                   Name = $&quot;{emp.FirstName} {emp.LastName}&quot;,
+                                   LeaveType = leaveType.Type,
+                                   StartDate = leave.Startdate ?? DateTime.MinValue,
+                                   EndDate = leave.Enddate ?? DateTime.MinValue,
+                                   NoofDays = (leave.Enddate.HasValue &amp;&amp; leave.Startdate.HasValue)
+                                       ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1
+                                       : 0
+                               }).ToListAsync();
+
+            return regularization;
+        }
+        public List&lt;LeavePendingDTO&gt; GetHistoryRegularization(int employeeCredentialId)
+        {
+            var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
+                                 join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
+                                 join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
+                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                 where (leave.Status == &quot;Rejected&quot; || leave.Status == &quot;Withdrawn&quot; || leave.Status == &quot;Approved&quot;)
+                                       &amp;&amp; empCred.Id == employeeCredentialId &amp;&amp; leaveType.Type == &quot;Regularization&quot;
+                                 select new LeavePendingDTO
+                                 {
+                                     id = leave.Id,
+                                     employeecredentialId = empCred.Id,
+                                     Name = empDetail.FirstName + &quot; &quot; + empDetail.LastName,
+                                     LeaveType = leaveType.Type,
+                                     Reason = leave.ReasonForLeave,
+                                     status = leave.Status,
+                                     StartDate = leave.Startdate,
+                                     EndDate = leave.Enddate,
+                                     Applieddate = leave.AppliedDate,
+                                     NoofDays = (leave.Enddate != null &amp;&amp; leave.Startdate != null)
+                                         ? (leave.Enddate.Value - leave.Startdate.Value).Days + 1
+                                         : 0
+                                 }).ToList();
+
+            return pendingLeaves;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,58,1],[14,9,14,10,1],[15,13,15,40,1],[16,9,16,10,1],[18,9,18,10,1],[19,13,40,46,1],[42,13,42,42,0],[43,9,43,10,0],[46,9,46,10,1],[47,13,66,49,1],[68,13,68,35,0],[69,9,69,10,0],[71,9,71,10,0],[72,13,92,46,0],[94,13,94,34,0],[95,9,95,10,0]]);
+    </script>
+  </body>
+</html>

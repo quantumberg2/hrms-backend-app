@@ -2,171 +2,85 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\EmployeeSalaryImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\RegularizationControllerTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using HRMS_Application.Authorization;
-    using HRMS_Application.BusinessLogic.Implements;
-    using HRMS_Application.Models;
-    using Microsoft.AspNetCore.Http;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.DTO;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
-    public class EmployeeSalaryImpTests
+    public class RegularizationControllerTests
     {
-        private readonly EmployeeSalaryImp _testClass;
-        private HRMSContext _context;
-        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
-        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly RegularizationController _testClass;
+        private readonly Mock&lt;IRegularization&gt; _regularization;
+        private readonly Mock&lt;ILogger&lt;RegularizationController&gt;&gt; _logger;
 
-        public EmployeeSalaryImpTests()
+        public RegularizationControllerTests()
         {
-            _context = new HRMSContext();
-            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
-            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
-            _testClass = new EmployeeSalaryImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+            _regularization = new Mock&lt;IRegularization&gt;();
+            _logger = new Mock&lt;ILogger&lt;RegularizationController&gt;&gt;();
+            _testClass = new RegularizationController(_regularization.Object, _logger.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new EmployeeSalaryImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+            var instance = new RegularizationController(_regularization.Object, _logger.Object);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public async Task CanCalldeleteEmpsalary()
+        public void CanCallGetPendingRegularization()
         {
             // Arrange
-            var id = 1495640883;
+            var status = &quot;TestValue1237225957&quot;;
 
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(963676786);
+            _regularization.Setup(mock =&gt; mock.GetPendingRegularization(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;())).Returns(new List&lt;LeavePendingDTO&gt;());
 
             // Act
-            var result = await _testClass.deleteEmpsalary(id);
+            var result = _testClass.GetPendingRegularization(status);
 
             // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            _regularization.Verify(mock =&gt; mock.GetPendingRegularization(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;()));
 
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public void CanCallGetAllEmpSalary()
-        {
-            // Act
-            var result = _testClass.GetAllEmpSalary();
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetEmpSalaryById()
+        public async Task CanCallGetLeavesByStatus()
         {
             // Arrange
-            var id = 1657720422;
+            var status = &quot;TestValue1788450002&quot;;
+
+            _regularization.Setup(mock =&gt; mock.GetRegularizationByStatusAsync(It.IsAny&lt;string&gt;(), It.IsAny&lt;int&gt;())).ReturnsAsync(new List&lt;LeaveApprovalDTO&gt;());
 
             // Act
-            var result = _testClass.GetEmpSalaryById(id);
+            var result = await _testClass.GetLeavesByStatus(status);
 
             // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
+            _regularization.Verify(mock =&gt; mock.GetRegularizationByStatusAsync(It.IsAny&lt;string&gt;(), It.IsAny&lt;int&gt;()));
 
-        [Fact]
-        public async Task CanCallInsertEmpSalary()
-        {
-            // Arrange
-            var empSalary = new EmpSalary
-            {
-                Id = 647865385,
-                EmployeeCredentialId = 1316105889,
-                SalaryRange = &quot;TestValue739361442&quot;,
-                AnnualIncome = 769595234.76M,
-                Loan = 758050277.49M,
-                Insurance = 1621871818.38M,
-                IsActive = (short)4028,
-                EmployeeCredential = new EmployeeCredential
-                {
-                    Id = 511242640,
-                    UserName = &quot;TestValue1826969757&quot;,
-                    Password = &quot;TestValue1291440500&quot;,
-                    Status = (short)2948,
-                    RequestedCompanyId = 1851004188,
-                    Email = &quot;TestValue79251199&quot;,
-                    DefaultPassword = false,
-                    GenerateOtp = &quot;TestValue752272191&quot;,
-                    OtpExpiration = DateTime.UtcNow,
-                    IsActive = (short)18236,
-                    EmployeeLoginName = &quot;TestValue2001664501&quot;,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 1810254777,
-                        Name = &quot;TestValue124178788&quot;,
-                        PhoneNumber = &quot;TestValue1405718172&quot;,
-                        DomainName = &quot;TestValue1221704867&quot;,
-                        Status = &quot;TestValue1409689828&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue1269718070&quot;,
-                        IsActive = (short)24716,
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
-                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
-                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                }
-            };
-
-            // Act
-            var result = await _testClass.InsertEmpSalary(empSalary);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallSoftDelete()
-        {
-            // Arrange
-            var id = 786596547;
-            var isActive = (short)18635;
-
-            // Act
-            var result = _testClass.SoftDelete(id, isActive);
-
-            // Assert
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[20,9,20,40,1],[21,9,21,10,1],[22,13,22,42,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,105,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,107,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,33,1],[44,13,44,99,1],[47,13,47,63,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,55,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,33,1],[72,13,72,58,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,133,15,1],[136,13,136,70,1],[139,13,139,72,0],[144,9,144,10,1],[146,13,146,32,1],[147,13,147,41,1],[150,13,150,62,1],[153,13,153,72,0]]);
+      highlightRanges([[19,9,19,47,1],[20,9,20,10,1],[21,13,21,59,1],[22,13,22,69,1],[23,13,23,95,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,97,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,48,1],[42,13,42,148,1],[45,13,45,70,1],[48,13,48,112,1],[50,13,50,72,0],[55,9,55,10,1],[57,13,57,48,1],[59,13,59,160,1],[62,13,62,69,1],[65,13,65,118,0],[67,13,67,72,0]]);
     </script>
   </body>
 </html>

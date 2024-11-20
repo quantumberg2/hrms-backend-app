@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\LeaveTrackingImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Helpers;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class LeaveTrackingImp : ILeaveTracking
+    {
+        private readonly HRMSContext _hrmsContext;
+        private readonly IAlertEmailOperations _alertEmail;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        private readonly IAzureOperations _azureOperations;
+
+        public LeaveTrackingImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IAlertEmailOperations alertEmail,IAzureOperations azureOperations)
+        {
+            _hrmsContext = hrmscontext;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+            _alertEmail = alertEmail;
+            _azureOperations = azureOperations;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _hrmsContext.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList();
+                    }
+                    else
+                    {
+                        dToken = null;
+                    }
+                }
+            }
+        }
+
+        public async Task&lt;IEnumerable&lt;LeaveTracking&gt;&gt; GetAllAsync()
+        {
+            var result = await (from row in _hrmsContext.LeaveTrackings
+                                where row.IsActive == 1
+                                select row).ToListAsync();
+            return result;
+        }
+
+        public LeaveTracking GetByIdAsync(int id)
+        {
+            var res = (from row in _hrmsContext.LeaveTrackings
+                       where row.Id == id &amp;&amp; row.IsActive == 1
+                       select row).FirstOrDefault();
+            return res ?? new LeaveTracking();
+        }
+
+
+        public async Task&lt;LeaveTracking&gt; UpdateAsync(LeaveTracking leaveTracking)
+        {
+             DecodeToken();
+
+            _hrmsContext.LeaveTrackings.Update(leaveTracking);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return leaveTracking;
+        }
+        public async Task&lt;LeaveTracking&gt; CreateAsync(LeaveTracking leaveTracking, int empCredentialId)
+        {
+            DecodeToken();
+            leaveTracking.EmpCredentialId = empCredentialId;
+
+            // Check for overlapping leave
+            var overlappingLeave = await _hrmsContext.LeaveTrackings
+                .Where(lt =&gt; lt.EmpCredentialId == empCredentialId &amp;&amp;
+                             (lt.Status == &quot;Pending&quot; || lt.Status == &quot;Approved&quot;) &amp;&amp;
+                             (
+                                 (leaveTracking.Startdate &gt;= lt.Startdate &amp;&amp; leaveTracking.Startdate &lt;= lt.Enddate) ||
+                                 (leaveTracking.Enddate &gt;= lt.Startdate &amp;&amp; leaveTracking.Enddate &lt;= lt.Enddate) ||
+                                 (leaveTracking.Startdate &lt;= lt.Startdate &amp;&amp; leaveTracking.Enddate &gt;= lt.Enddate) ||
+                                 (leaveTracking.Startdate &lt;= lt.Enddate &amp;&amp; leaveTracking.Enddate &gt; lt.Enddate)
+                             )).FirstOrDefaultAsync();
+
+            if (overlappingLeave != null)
+            {
+                string overlapStatusMessage = overlappingLeave.Status == &quot;Pending&quot;
+                    ? $&quot;There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString(&quot;yyyy-MM-dd&quot;)} to {overlappingLeave.Enddate?.ToString(&quot;yyyy-MM-dd&quot;)}.&quot;
+                    : $&quot;There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString(&quot;yyyy-MM-dd&quot;)} to {overlappingLeave.Enddate?.ToString(&quot;yyyy-MM-dd&quot;)}.&quot;;
+                throw new Exception(overlapStatusMessage);
+            }
+
+            // Add new leave request
+            await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+            // Fetch Employee Information
+            var empInfo = await (from ec in _hrmsContext.EmployeeCredentials
+                                 where ec.Id == empCredentialId
+                                 select new
+                                 {
+                                     Email = ec.Email,
+                                     UserName = ec.UserName
+                                 }).FirstOrDefaultAsync();
+
+            if (empInfo == null)
+            {
+                throw new Exception(&quot;Employee information not found.&quot;);
+            }
+
+            // Fetch Manager Information
+            var managerInfo = await (from ed in _hrmsContext.EmployeeDetails
+                                     join ec in _hrmsContext.EmployeeCredentials
+                                     on ed.ManagerId equals ec.Id
+                                     where ed.EmployeeCredentialId == empCredentialId
+                                     select new
+                                     {
+                                         ManagerEmail = ec.Email,
+                                         ManagerName = ec.UserName
+                                     }).FirstOrDefaultAsync();
+
+            if (managerInfo == null)
+            {
+                throw new Exception(&quot;Manager information not found.&quot;);
+            }
+
+            // Email Parameters and Body Messages
+            string employeeBodyMessage = &quot;Your leave request has been successfully submitted and is pending approval.&quot;;
+            string managerBodyMessage = $&quot;{empInfo.UserName} has submitted a leave request for {leaveTracking.Startdate?.ToString(&quot;yyyy-MM-dd&quot;)} to {leaveTracking.Enddate?.ToString(&quot;yyyy-MM-dd&quot;)} and is awaiting your approval.&quot;;
+
+            // Employee Email Parameters
+            var employeeParameters = new Dictionary&lt;string, string&gt;
+            {
+                { &quot;To&quot;, empInfo.Email },
+                { &quot;Subject&quot;, &quot;Leave Request Received&quot; },
+                { &quot;Name&quot;, empInfo.UserName },
+                { &quot;StartDate&quot;, leaveTracking.Startdate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty },
+                { &quot;EndDate&quot;, leaveTracking.Enddate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty },
+                { &quot;BodyMessage&quot;, employeeBodyMessage }
+            };
+
+            // Manager Email Parameters
+            var managerParameters = new Dictionary&lt;string, string&gt;
+        {
+            { &quot;To&quot;, managerInfo.ManagerEmail },
+            { &quot;Subject&quot;, &quot;Leave Request Pending Approval&quot; },
+            { &quot;Name&quot;, managerInfo.ManagerName },
+            { &quot;StartDate&quot;, leaveTracking.Startdate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty },
+            { &quot;EndDate&quot;, leaveTracking.Enddate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty },
+            { &quot;BodyMessage&quot;, managerBodyMessage }
+        };
+
+            // Send emails to both employee and manager
+            string employeeEmailTemplate = constants.LeaveNotificationTemplate;
+            string managerEmailTemplate = constants.LeaveNotificationTemplate;
+
+            foreach (var param in employeeParameters)
+            {
+                employeeEmailTemplate = employeeEmailTemplate.Replace($&quot;{{{{{param.Key}}}}}&quot;, param.Value);
+            }
+
+            foreach (var param in managerParameters)
+            {
+                managerEmailTemplate = managerEmailTemplate.Replace($&quot;{{{{{param.Key}}}}}&quot;, param.Value);
+            }
+
+            await _alertEmail.SendEmailAsync(employeeEmailTemplate, employeeParameters);
+            await _alertEmail.SendEmailAsync(managerEmailTemplate, managerParameters);
+
+            return leaveTracking;
+        }
+
+        public async Task&lt;LeaveTracking&gt; UpdateLeaveAsync(int id, string newStatus)
+        {
+            var leaveTracking = await (from row in _hrmsContext.LeaveTrackings
+                                       where row.Id == id
+                                       select row).FirstOrDefaultAsync();
+
+            if (leaveTracking != null)
+            {
+                leaveTracking.Status = newStatus;
+
+                if (newStatus == &quot;Approved&quot; &amp;&amp; leaveTracking.Startdate.HasValue &amp;&amp; leaveTracking.Enddate.HasValue)
+                {
+                    var empCredentialId = leaveTracking.EmpCredentialId;
+
+                    var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                                 where row.EmpCredentialId == empCredentialId &amp;&amp; row.IsActive == 1
+                                                 select row).FirstOrDefaultAsync();
+
+                    if (leaveAllocation != null)
+                    {
+                        int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+
+                        var remainingLeave = leaveAllocation.RemainingLeave - totalLeaveDays;
+
+                        if (leaveAllocation.RemainingLeave &gt; 0)
+                            leaveAllocation.RemainingLeave = remainingLeave;
+                    }
+                }
+
+                var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                                     join ec in _hrmsContext.EmployeeCredentials
+                                     on lt.EmpCredentialId equals ec.Id
+                                     where lt.Id == id
+                                     select new
+                                     {
+                                         Email = ec.Email,
+                                         UserName = ec.UserName,
+                                         StartDate = lt.Startdate,
+                                         EndDate = lt.Enddate,
+                                         EmpCredentialId = ec.Id
+                                     }).FirstOrDefaultAsync();
+
+                if (empInfo == null)
+                {
+                    throw new Exception(&quot;Employee information not found.&quot;);
+                }
+
+                var managerInfo = await (from ed in _hrmsContext.EmployeeDetails
+                                         join ec in _hrmsContext.EmployeeCredentials
+                                         on ed.ManagerId equals ec.Id
+                                         where ed.EmployeeCredentialId == empInfo.EmpCredentialId
+                                         select new
+                                         {
+                                             ManagerEmail = ec.Email
+                                         }).FirstOrDefaultAsync();
+
+                if (managerInfo == null)
+                {
+                    throw new Exception(&quot;Manager information not found.&quot;);
+                }
+
+                // Parameters for Employee Email
+                var employeeParameters = new Dictionary&lt;string, string&gt;
+        {
+            { &quot;To&quot;, empInfo.Email },
+            { &quot;EmployeeName&quot;, empInfo.UserName },
+            { &quot;StartDate&quot;, empInfo.StartDate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty },
+            { &quot;EndDate&quot;, empInfo.EndDate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty }
+        };
+
+                // Parameters for Manager Email
+                var managerParameters = new Dictionary&lt;string, string&gt;
+        {
+            { &quot;To&quot;, managerInfo.ManagerEmail },
+            { &quot;EmployeeName&quot;, empInfo.UserName },
+            { &quot;StartDate&quot;, empInfo.StartDate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty },
+            { &quot;EndDate&quot;, empInfo.EndDate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty }
+        };
+
+                string employeeBodyMessage = &quot;&quot;;
+                string managerBodyMessage = &quot;&quot;;
+
+                switch (newStatus.ToLower())
+                {
+                    case &quot;approved&quot;:
+                        employeeParameters[&quot;Subject&quot;] = &quot;Your Leave Request has been Approved&quot;;
+                        employeeBodyMessage = &quot;Your leave request has been approved. Enjoy your time off!&quot;;
+
+                        managerParameters[&quot;Subject&quot;] = &quot;Employee Leave Approved&quot;;
+                        managerBodyMessage = $&quot;{empInfo.UserName}&#39;s leave request has been approved.&quot;;
+                        break;
+                    case &quot;rejected&quot;:
+                        employeeParameters[&quot;Subject&quot;] = &quot;Your Leave Request has been Rejected&quot;;
+                        employeeBodyMessage = &quot;Unfortunately, your leave request has been rejected. Please contact your manager for more details.&quot;;
+
+                        managerParameters[&quot;Subject&quot;] = &quot;Employee Leave Rejected&quot;;
+                        managerBodyMessage = $&quot;{empInfo.UserName}&#39;s leave request has been rejected.&quot;;
+                        break;
+                    case &quot;withdraw&quot;:
+                        employeeParameters[&quot;Subject&quot;] = &quot;Your Leave Request has been Withdrawn&quot;;
+                        employeeBodyMessage = &quot;You have successfully withdrawn your leave request. If you have any concerns, feel free to contact your manager.&quot;;
+
+                        managerParameters[&quot;Subject&quot;] = &quot;Employee Leave Withdrawn&quot;;
+                        managerBodyMessage = $&quot;{empInfo.UserName} has withdrawn their leave request.&quot;;
+                        break;
+                    case &quot;pending&quot;:
+                        employeeParameters[&quot;Subject&quot;] = &quot;Your Leave Request is Currently Pending&quot;;
+                        employeeBodyMessage = &quot;We regret to inform you that your leave request is currently pending. If you have any concerns, feel free to contact your manager.&quot;;
+
+                        managerParameters[&quot;Subject&quot;] = &quot;Employee Leave Pending&quot;;
+                        managerBodyMessage = $&quot;{empInfo.UserName}&#39;s leave request is currently pending. Please review and take action as needed.&quot;;
+                        break;
+                    default:
+                        throw new Exception(&quot;Invalid status for email notification.&quot;);
+                }
+
+                employeeParameters[&quot;BodyMessage&quot;] = employeeBodyMessage;
+                managerParameters[&quot;BodyMessage&quot;] = managerBodyMessage;
+
+                // Replace placeholders in the email templates for both employee and manager
+                string employeeEmailTemplate = constants.LeaveNotificationTemplate;
+                string managerEmailTemplate = constants.LeaveNotificationTemplate;
+
+                foreach (var param in employeeParameters)
+                {
+                    employeeEmailTemplate = employeeEmailTemplate.Replace($&quot;{{{{{param.Key}}}}}&quot;, param.Value);
+                }
+
+                foreach (var param in managerParameters)
+                {
+                    managerEmailTemplate = managerEmailTemplate.Replace($&quot;{{{{{param.Key}}}}}&quot;, param.Value);
+                }
+
+                await _alertEmail.SendEmailAsync(employeeEmailTemplate, employeeParameters);
+                await _alertEmail.SendEmailAsync(managerEmailTemplate, managerParameters);
+
+                _hrmsContext.LeaveTrackings.Update(leaveTracking);
+                await _hrmsContext.SaveChangesAsync();
+            }
+
+            return leaveTracking;
+        }
+
+
+        public async Task&lt;bool&gt; DeleteAsync(int id)
+        {
+            DecodeToken();
+            var leaveTracking = await _hrmsContext.LeaveTrackings.FindAsync(id);
+            if (leaveTracking == null)
+            {
+                return false;
+            }
+
+            _hrmsContext.LeaveTrackings.Remove(leaveTracking);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+        public async Task&lt;List&lt;LeaveApprovalDTO&gt;&gt; GetLeavesByStatusAsync(string status, int managerId)
+        {
+            var leaves = await (from leave in _hrmsContext.LeaveTrackings
+                                join emp in _hrmsContext.EmployeeDetails on leave.EmpCredentialId equals emp.EmployeeCredentialId
+                                join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                where leave.Status == status
+                                      &amp;&amp; emp.ManagerId == managerId
+                                      &amp;&amp; emp.IsActive == 1
+                                      &amp;&amp; leave.IsActive == 1
+                                      &amp;&amp; leaveType.Type != &quot;Regularization&quot;
+                                select new LeaveApprovalDTO
+                                {
+                                    Id = leave.Id,
+                                    EmployeeNumber = emp.EmployeeNumber,
+                                    Name = $&quot;{emp.FirstName} {emp.LastName}&quot;,
+                                    LeaveType = leaveType.Type,
+                                    StartDate = leave.Startdate ?? DateTime.MinValue,
+                                    EndDate = leave.Enddate ?? DateTime.MinValue,
+                                    NoofDays = (leave.Enddate.HasValue &amp;&amp; leave.Startdate.HasValue)
+                                        ? (int)(leave.Enddate.Value - leave.Startdate.Value).TotalDays + 1
+                                        : 0
+                                }).ToListAsync();
+
+            return leaves;
+        }
+
+
+        public async Task&lt;LeaveSummaryDTO&gt; GetEmployeeLeaveSummaryAsync(int employeeCredentialId)
+        {
+            var allLeaveDetails = await _hrmsContext.LeaveTrackings
+                .Where(l =&gt; l.EmpCredentialId == employeeCredentialId)
+                .ToListAsync();
+
+            var totalApprovedCount = allLeaveDetails.Count(l =&gt; l.Status == &quot;Approved&quot;);
+            var totalPendingCount = allLeaveDetails.Count(l =&gt; l.Status == &quot;Pending&quot;);
+            var totalRejectedCount = allLeaveDetails.Count(l =&gt; l.Status == &quot;Rejected&quot;);
+
+
+            var leaveAllocations = await _hrmsContext.EmployeeLeaveAllocations
+                .Where(e =&gt; e.EmpCredentialId == employeeCredentialId)
+                .ToListAsync();
+
+
+            var leaveSummaries = leaveAllocations.Select(allocation =&gt; new LeaveSummaryDTO
+            {
+                LeaveType = _hrmsContext.LeaveTypes.FirstOrDefault(lt =&gt; lt.Id == allocation.LeaveType)?.Type ?? &quot;Unknown&quot;,
+                TotalAllocatedLeaves = allocation.NumberOfLeaves ?? 0,
+                ApprovedLeaves = allLeaveDetails
+                    .Where(l =&gt; l.LeaveTypeId == allocation.LeaveType &amp;&amp; l.Status == &quot;Approved&quot;)
+                    .Sum(l =&gt; (l.Enddate.HasValue &amp;&amp; l.Startdate.HasValue)
+                            ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                            : 0),
+                PendingLeaves = allLeaveDetails
+                    .Where(l =&gt; l.LeaveTypeId == allocation.LeaveType &amp;&amp; l.Status == &quot;Pending&quot;)
+                    .Sum(l =&gt; (l.Enddate.HasValue &amp;&amp; l.Startdate.HasValue)
+                            ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                            : 0),
+                RejectedLeaves = allLeaveDetails
+                    .Where(l =&gt; l.LeaveTypeId == allocation.LeaveType &amp;&amp; l.Status == &quot;Rejected&quot;)
+                    .Sum(l =&gt; (l.Enddate.HasValue &amp;&amp; l.Startdate.HasValue)
+                            ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                            : 0),
+                RemainingLeaves = allocation.NumberOfLeaves.HasValue
+                    ? allocation.NumberOfLeaves.Value - allLeaveDetails
+                        .Where(l =&gt; l.LeaveTypeId == allocation.LeaveType &amp;&amp; l.Status == &quot;Approved&quot;)
+                        .Sum(l =&gt; (l.Enddate.HasValue &amp;&amp; l.Startdate.HasValue)
+                                ? (int)(l.Enddate.Value - l.Startdate.Value).TotalDays + 1
+                                : 0)
+                    : 0,
+                ApprovedCount = totalApprovedCount,
+                PendingCount = totalPendingCount,
+                RejectedCount = totalRejectedCount
+            }).ToList();
+
+            var totalApprovedLeaves = leaveSummaries.Sum(x =&gt; x.ApprovedLeaves);
+            var totalPendingLeaves = leaveSummaries.Sum(x =&gt; x.PendingLeaves);
+            var totalRejectedLeaves = leaveSummaries.Sum(x =&gt; x.RejectedLeaves);
+            var totalRemainingLeaves = leaveSummaries.Sum(x =&gt; x.RemainingLeaves);
+            var totalAllocatedLeaves = leaveSummaries.Sum(x =&gt; x.TotalAllocatedLeaves);
+
+            return new LeaveSummaryDTO
+            {
+                LeaveType = &quot;All Leave Types&quot;,
+                TotalAllocatedLeaves = totalAllocatedLeaves,
+                ApprovedLeaves = totalApprovedLeaves,
+                PendingLeaves = totalPendingLeaves,
+                RejectedLeaves = totalRejectedLeaves,
+                RemainingLeaves = totalRemainingLeaves,
+                ApprovedCount = totalApprovedCount,
+                PendingCount = totalPendingCount,
+                RejectedCount = totalRejectedCount,
+                LeaveSummaries = leaveSummaries
+            };
+        }
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.LeaveTrackings
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.LeaveTrackings.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+       
+        public async Task&lt;LeaveTracking&gt; ApllyLeaveBehalf(LeaveTracking leaveTracking, int empCredentialId)
+        {
+         DecodeToken();
+
+        leaveTracking.EmpCredentialId = empCredentialId;
+
+         var leaveAllocation = await (from row in _hrmsContext.EmployeeLeaveAllocations
+                                 where row.EmpCredentialId == empCredentialId &amp;&amp; row.IsActive == 1
+                                 select row).FirstOrDefaultAsync();
+
+        var leaveType = await _hrmsContext.LeaveTypes
+        .Where(lt =&gt; lt.Id == leaveTracking.LeaveTypeId &amp;&amp; lt.IsActive == 1)
+        .FirstOrDefaultAsync();
+
+    var overlappingLeave = await _hrmsContext.LeaveTrackings
+        .Where(lt =&gt; lt.EmpCredentialId == empCredentialId &amp;&amp;
+                     ((leaveTracking.Startdate &gt;= lt.Startdate &amp;&amp; leaveTracking.Startdate &lt;= lt.Enddate) ||
+                      (leaveTracking.Enddate &gt;= lt.Startdate &amp;&amp; leaveTracking.Enddate &lt;= lt.Enddate) ||
+                      (leaveTracking.Startdate &lt;= lt.Startdate &amp;&amp; leaveTracking.Enddate &gt;= lt.Enddate)))
+        .Select(lt =&gt; new { lt.Status, lt.Startdate, lt.Enddate })
+        .FirstOrDefaultAsync();
+
+    if (overlappingLeave != null)
+    {
+        if (overlappingLeave.Status == &quot;Pending&quot;)
+        {
+            throw new Exception($&quot;There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString(&quot;yyyy-MM-dd&quot;)} to {overlappingLeave.Enddate?.ToString(&quot;yyyy-MM-dd&quot;)}.&quot;);
+        }
+        else if (overlappingLeave.Status == &quot;Approved&quot;)
+        {
+            throw new Exception($&quot;There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString(&quot;yyyy-MM-dd&quot;)} to {overlappingLeave.Enddate?.ToString(&quot;yyyy-MM-dd&quot;)}.&quot;);
+        }
+    }
+
+    if (leaveAllocation != null &amp;&amp; leaveType != null)
+    {
+        int totalLeaveDays = (leaveTracking.Enddate.Value - leaveTracking.Startdate.Value).Days + 1;
+
+        if (leaveType.Days &lt; totalLeaveDays)
+        {
+            throw new InvalidOperationException($&quot;Requested leave exceeds the allowed limit for {leaveType.Type}. Maximum allowed: {leaveType.Days} days.&quot;);
+        }
+
+        if (leaveAllocation.RemainingLeave &lt; totalLeaveDays)
+        {
+            throw new InvalidOperationException(&quot;Requested leave exceeds remaining leave.&quot;);
+        }
+
+        if (leaveTracking.Status == &quot;Pending&quot;)
+        {
+            leaveAllocation.RemainingLeave -= totalLeaveDays;
+
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+        }
+    }
+
+    await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
+    await _hrmsContext.SaveChangesAsync(_decodedToken);
+
+    var empInfo = await (from lt in _hrmsContext.LeaveTrackings
+                         join ec in _hrmsContext.EmployeeCredentials
+                         on lt.EmpCredentialId equals ec.Id
+                         where lt.EmpCredentialId == empCredentialId
+                         select new
+                         {
+                             Email = ec.Email,
+                             UserName = ec.UserName,
+                             StartDate = lt.Startdate,
+                             EndDate = lt.Enddate
+                         }).FirstOrDefaultAsync();
+
+    if (empInfo == null)
+    {
+        throw new Exception(&quot;Employee information not found.&quot;);
+    }
+
+    var parameters = new Dictionary&lt;string, string&gt;
+    {
+        { &quot;To&quot;, empInfo.Email },
+        { &quot;EmployeeName&quot;, empInfo.UserName },
+        { &quot;StartDate&quot;, empInfo.StartDate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty },
+        { &quot;EndDate&quot;, empInfo.EndDate?.ToString(&quot;yyyy-MM-dd&quot;) ?? string.Empty }
+    };
+
+    string emailTemplate = constants.LeaveNotificationTemplate;
+
+    string bodyMessage = &quot;A leave request has been successfully applied on your behalf and is pending approval.&quot;;
+
+    parameters[&quot;Subject&quot;] = &quot;Leave Request Applied on Your Behalf&quot;;
+    parameters[&quot;BodyMessage&quot;] = bodyMessage;
+
+    foreach (var param in parameters)
+    {
+        emailTemplate = emailTemplate.Replace($&quot;{{{{{param.Key}}}}}&quot;, param.Value);
+    }
+
+    await _alertEmail.SendEmailAsync(emailTemplate, parameters);
+    await _hrmsContext.SaveChangesAsync();
+
+    return leaveTracking;
+}
+
+
+        public List&lt;LeavePendingDTO&gt; GetPendingLeaves(int employeeCredentialId)
+        {
+            var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
+                                 join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
+                                 join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
+                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                 where leave.Status == &quot;Pending&quot; &amp;&amp; empCred.Id == employeeCredentialId &amp;&amp; leaveType.Type != &quot;Regularization&quot;
+                                 select new LeavePendingDTO
+                                 {
+                                     id = leave.Id,
+                                     employeecredentialId = empCred.Id,
+                                     Name = empDetail.FirstName + &quot; &quot; + empDetail.LastName,
+                                     LeaveType = leaveType.Type,
+                                     managername = _hrmsContext.EmployeeDetails
+                                        .Where(mgr =&gt; mgr.EmployeeCredentialId == empDetail.ManagerId)
+                                        .Select(mgr =&gt; mgr.FirstName + &quot; &quot; + mgr.LastName).FirstOrDefault(),
+                                     Reason = leave.ReasonForLeave,
+                                     StartDate = leave.Startdate,
+                                     EndDate = leave.Enddate,
+                                     Applieddate = leave.AppliedDate,
+                                     NoofDays = (leave.Enddate != null &amp;&amp; leave.Startdate != null)
+                                        ? (leave.Enddate.Value - leave.Startdate.Value).Days + 1
+                                        : 0
+                                 }).ToList();
+
+                                   return pendingLeaves;
+        }
+        
+            public List&lt;LeavePendingDTO&gt; GetHistoryLeaves(int employeeCredentialId)
+            {
+                             var pendingLeaves = (from leave in _hrmsContext.LeaveTrackings
+                                 join empCred in _hrmsContext.EmployeeCredentials on leave.EmpCredentialId equals empCred.Id
+                                 join empDetail in _hrmsContext.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
+                                 join leaveType in _hrmsContext.LeaveTypes on leave.LeaveTypeId equals leaveType.Id
+                                 where (leave.Status == &quot;Rejected&quot; || leave.Status == &quot;Withdrawn&quot; || leave.Status == &quot;Approved&quot;)
+                                       &amp;&amp; empCred.Id == employeeCredentialId &amp;&amp; leaveType.Type != &quot;Regularization&quot;
+                                select new LeavePendingDTO
+                                 {
+                                     id = leave.Id,
+                                     employeecredentialId = empCred.Id,
+                                     Name = empDetail.FirstName + &quot; &quot; + empDetail.LastName,
+                                     LeaveType = leaveType.Type,
+                                     Reason = leave.ReasonForLeave,
+                                     status = leave.Status,
+                                     StartDate = leave.Startdate,
+                                     EndDate = leave.Enddate,
+                                     Applieddate = leave.AppliedDate,
+                                     NoofDays = (leave.Enddate != null &amp;&amp; leave.Startdate != null)
+                                        ? (leave.Enddate.Value - leave.Startdate.Value).Days + 1
+                                        : 0
+                                 }).ToList();
+
+                            return pendingLeaves;
+            }
+            public async Task&lt;LeaveTracking&gt; UpdateLeaveAsyncchanges(int employeeCredentialId, int id, string newStatus)
+            {
+                 var leaveTracking = await _hrmsContext.LeaveTrackings
+                .FirstOrDefaultAsync(lt =&gt; lt.EmpCredentialId == employeeCredentialId &amp;&amp; lt.Id == id);
+
+                 if (leaveTracking != null)
+                 {
+                    leaveTracking.Status = newStatus;
+                    await _hrmsContext.SaveChangesAsync();
+                 }
+
+            return leaveTracking;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[21,9,21,186,1],[22,9,22,10,1],[23,13,23,40,1],[24,13,24,56,1],[25,13,25,34,1],[26,13,26,38,1],[27,13,27,48,1],[28,9,28,10,1],[30,9,30,10,0],[31,13,31,126,0],[32,13,32,45,0],[33,13,33,14,0],[34,17,34,31,0],[35,13,35,14,0],[37,13,37,14,0],[38,17,38,64,0],[39,17,39,37,0],[40,17,40,18,0],[41,21,41,114,0],[42,21,42,45,0],[43,21,43,22,0],[44,25,44,56,0],[45,25,45,71,0],[45,71,45,84,0],[45,84,45,95,0],[46,21,46,22,0],[48,21,48,22,0],[49,25,49,39,0],[50,21,50,22,0],[51,17,51,18,0],[52,13,52,14,0],[53,9,53,10,0],[56,9,56,10,0],[57,13,59,59,0],[60,13,60,27,0],[61,9,61,10,0],[64,9,64,10,0],[65,13,67,53,0],[68,13,68,47,0],[69,9,69,10,0],[73,9,73,10,0],[74,14,74,28,0],[76,13,76,63,0],[77,13,77,64,0],[78,13,78,34,0],[79,9,79,10,0],[81,9,81,10,0],[82,13,82,27,0],[83,13,83,61,0],[86,13,94,55,0],[96,13,96,42,0],[97,13,97,14,0],[98,17,100,191,0],[101,17,101,59,0],[105,13,105,71,0],[106,13,106,64,0],[109,13,115,59,0],[117,13,117,33,0],[118,13,118,14,0],[119,17,119,72,0],[123,13,131,63,0],[133,13,133,37,0],[134,13,134,14,0],[135,17,135,71,0],[139,13,139,120,0],[140,13,140,229,0],[143,13,151,15,0],[154,13,162,11,0],[165,13,165,80,0],[166,13,166,79,0],[168,13,168,20,0],[168,22,168,31,0],[168,32,168,34,0],[168,35,168,53,0],[169,13,169,14,0],[170,17,170,108,0],[171,13,171,14,0],[173,13,173,20,0],[173,22,173,31,0],[173,32,173,34,0],[173,35,173,52,0],[174,13,174,14,0],[175,17,175,106,0],[176,13,176,14,0],[178,13,178,89,0],[179,13,179,87,0],[181,13,181,34,0],[182,9,182,10,0],[185,9,185,10,0],[186,13,188,74,0],[190,13,190,39,0],[191,13,191,14,0],[192,17,192,50,0],[194,17,194,115,0],[195,17,195,18,0],[196,21,196,73,0],[198,21,200,84,0],[202,21,202,49,0],[203,21,203,22,0],[204,25,204,117,0],[206,25,206,94,0],[208,25,208,64,0],[209,29,209,77,0],[210,21,210,22,0],[211,17,211,18,0],[213,17,224,63,0],[226,17,226,37,0],[227,17,227,18,0],[228,21,228,76,0],[231,17,238,67,0],[240,17,240,41,0],[241,17,241,18,0],[242,21,242,75,0],[246,17,252,11,0],[255,17,261,11,0],[263,17,263,49,0],[264,17,264,48,0],[266,17,266,45,0],[269,25,269,96,0],[270,25,270,108,0],[272,25,272,82,0],[273,25,273,103,0],[274,25,274,31,0],[276,25,276,96,0],[277,25,277,148,0],[279,25,279,82,0],[280,25,280,103,0],[281,25,281,31,0],[283,25,283,97,0],[284,25,284,162,0],[286,25,286,83,0],[287,25,287,103,0],[288,25,288,31,0],[290,25,290,99,0],[291,25,291,180,0],[293,25,293,81,0],[294,25,294,147,0],[295,25,295,31,0],[297,25,297,87,0],[300,17,300,73,0],[301,17,301,71,0],[304,17,304,84,0],[305,17,305,83,0],[307,17,307,24,0],[307,26,307,35,0],[307,36,307,38,0],[307,39,307,57,0],[308,17,308,18,0],[309,21,309,112,0],[310,17,310,18,0],[312,17,312,24,0],[312,26,312,35,0],[312,36,312,38,0],[312,39,312,56,0],[313,17,313,18,0],[314,21,314,110,0],[315,17,315,18,0],[317,17,317,93,0],[318,17,318,91,0],[320,17,320,67,0],[321,17,321,55,0],[322,13,322,14,0],[324,13,324,34,0],[325,9,325,10,0],[329,9,329,10,0],[330,13,330,27,0],[331,13,331,81,0],[332,13,332,39,0],[333,13,333,14,0],[334,17,334,30,0],[337,13,337,63,0],[338,13,338,64,0],[339,13,339,25,0],[340,9,340,10,0],[342,9,342,10,0],[343,13,362,50,0],[364,13,364,27,0],[365,9,365,10,0],[369,9,369,10,0],[370,13,372,32,0],[374,13,374,65,0],[374,65,374,87,0],[374,87,374,89,0],[375,13,375,64,0],[375,64,375,85,0],[375,85,375,87,0],[376,13,376,65,0],[376,65,376,87,0],[376,87,376,89,0],[379,13,381,32,0],[384,13,384,72,0],[384,72,389,33,0],[389,33,389,96,0],[389,96,390,31,0],[390,31,392,32,0],[392,32,394,33,0],[394,33,394,95,0],[394,95,395,31,0],[395,31,397,32,0],[397,32,399,33,0],[399,33,399,96,0],[399,96,400,31,0],[400,31,402,32,0],[402,32,405,37,0],[405,37,405,100,0],[405,100,406,35,0],[406,35,408,36,0],[408,36,413,14,0],[413,14,413,25,0],[415,13,415,63,0],[415,63,415,79,0],[415,79,415,81,0],[416,13,416,62,0],[416,62,416,77,0],[416,77,416,79,0],[417,13,417,63,0],[417,63,417,79,0],[417,79,417,81,0],[418,13,418,64,0],[418,64,418,81,0],[418,81,418,83,0],[419,13,419,64,0],[419,64,419,86,0],[419,86,419,88,0],[421,13,433,15,0],[434,9,434,10,0],[436,9,436,10,0],[437,13,439,53,0],[440,13,440,29,0],[441,13,441,14,0],[442,17,442,41,0],[443,17,443,57,0],[444,17,444,44,0],[445,17,445,29,0],[448,13,448,26,0],[449,9,449,10,0],[452,9,452,10,0],[453,10,453,24,0],[455,9,455,57,0],[457,10,459,68,0],[461,9,463,32,0],[465,5,471,32,0],[473,5,473,34,0],[474,5,474,6,0],[475,9,475,50,0],[476,9,476,10,0],[477,13,477,200,0],[479,14,479,56,0],[480,9,480,10,0],[481,13,481,202,0],[483,5,483,6,0],[485,5,485,54,0],[486,5,486,6,0],[487,9,487,101,0],[489,9,489,45,0],[490,9,490,10,0],[491,13,491,157,0],[494,9,494,61,0],[495,9,495,10,0],[496,13,496,93,0],[499,9,499,47,0],[500,9,500,10,0],[501,13,501,62,0],[503,13,503,64,0],[504,9,504,10,0],[505,5,505,6,0],[507,5,507,63,0],[508,5,508,56,0],[510,5,520,51,0],[522,5,522,25,0],[523,5,523,6,0],[524,9,524,64,0],[527,5,533,7,0],[535,5,535,64,0],[537,5,537,114,0],[539,5,539,68,0],[540,5,540,45,0],[542,5,542,12,0],[542,14,542,23,0],[542,24,542,26,0],[542,27,542,37,0],[543,5,543,6,0],[544,9,544,84,0],[545,5,545,6,0],[547,5,547,65,0],[548,5,548,43,0],[550,5,550,26,0],[551,1,551,2,0],[555,9,555,10,0],[556,13,577,46,0],[579,36,579,57,0],[580,9,580,10,0],[583,13,583,14,0],[584,30,604,46,0],[606,29,606,50,0],[607,13,607,14,0],[609,13,609,14,0],[610,18,611,103,0],[613,18,613,44,0],[614,18,614,19,0],[615,21,615,54,0],[616,21,616,59,0],[617,18,617,19,0],[619,13,619,34,0],[620,9,620,10,0]]);
+    </script>
+  </body>
+</html>

@@ -2,110 +2,120 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\UserDtoTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Enums\UserTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.DTOs
+namespace HRMS_Unit_Test.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using HRMS_Application.DTOs;
+    using HRMS_Application.Entities;
+    using HRMS_Application.Enums;
     using Xunit;
 
-    public class UserDtoTests
+    public class UserTests
     {
-        private readonly UserDto _testClass;
+        private readonly User _testClass;
 
-        public UserDtoTests()
+        public UserTests()
         {
-            _testClass = new UserDto();
+            _testClass = new User();
         }
 
         [Fact]
-        public void CanSetAndGetUserName()
+        public void CanConstruct()
         {
-            // Arrange
-            var testValue = &quot;TestValue925123920&quot;;
-
             // Act
-            _testClass.UserName = testValue;
+            var instance = new User();
 
             // Assert
-            Assert.Equal(testValue, _testClass.UserName);
+            Assert.NotNull(instance);
         }
 
         [Fact]
-        public void CanSetAndGetUserId()
+        public void CanSetAndGetId()
         {
             // Arrange
-            var testValue = 190342609;
+            var testValue = 1273536563;
 
             // Act
-            _testClass.UserId = testValue;
+            _testClass.Id = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.UserId);
+            Assert.Equal(testValue, _testClass.Id);
         }
 
         [Fact]
-        public void CanSetAndGetEmail()
+        public void CanSetAndGetFirstName()
         {
             // Arrange
-            var testValue = &quot;TestValue725011518&quot;;
+            var testValue = &quot;TestValue1936168934&quot;;
 
             // Act
-            _testClass.Email = testValue;
+            _testClass.FirstName = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Email);
+            Assert.Equal(testValue, _testClass.FirstName);
         }
 
         [Fact]
-        public void CanSetAndGetRequestedCompanyId()
+        public void CanSetAndGetLastName()
         {
             // Arrange
-            var testValue = 572344161;
+            var testValue = &quot;TestValue95810396&quot;;
 
             // Act
-            _testClass.RequestedCompanyId = testValue;
+            _testClass.LastName = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.RequestedCompanyId);
+            Assert.Equal(testValue, _testClass.LastName);
         }
 
         [Fact]
-        public void CanSetAndGetCompanyIds()
+        public void CanSetAndGetUsername()
         {
             // Arrange
-            var testValue = new List&lt;int&gt;();
+            var testValue = &quot;TestValue700090902&quot;;
 
             // Act
-            _testClass.CompanyIds = testValue;
+            _testClass.Username = testValue;
 
             // Assert
-            Assert.Same(testValue, _testClass.CompanyIds);
+            Assert.Equal(testValue, _testClass.Username);
         }
 
         [Fact]
-        public void CanSetAndGetRoles()
+        public void CanSetAndGetRole()
         {
             // Arrange
-            var testValue = new List&lt;string&gt;();
+            var testValue = Role.HR;
 
             // Act
-            _testClass.Roles = testValue;
+            _testClass.Role = testValue;
 
             // Assert
-            Assert.Same(testValue, _testClass.Roles);
+            Assert.Equal(testValue, _testClass.Role);
+        }
+
+        [Fact]
+        public void CanSetAndGetPasswordHash()
+        {
+            // Arrange
+            var testValue = &quot;TestValue535223701&quot;;
+
+            // Act
+            _testClass.PasswordHash = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PasswordHash);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[12,9,12,30,1],[13,9,13,10,1],[14,13,14,40,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,50,1],[24,13,24,45,1],[27,13,27,58,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,39,1],[37,13,37,43,1],[40,13,40,56,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,50,1],[50,13,50,42,1],[53,13,53,55,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,39,1],[63,13,63,55,1],[66,13,66,68,1],[67,9,67,10,1],[71,9,71,10,1],[73,13,73,45,1],[76,13,76,47,1],[79,13,79,59,1],[80,9,80,10,1],[84,9,84,10,1],[86,13,86,48,1],[89,13,89,42,1],[92,13,92,54,1],[93,9,93,10,1]]);
+      highlightRanges([[12,9,12,27,1],[13,9,13,10,1],[14,13,14,37,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,39,1],[24,13,24,38,1],[25,9,25,10,1],[29,9,29,10,1],[31,13,31,40,1],[34,13,34,39,1],[37,13,37,52,1],[38,9,38,10,1],[42,9,42,10,1],[44,13,44,51,1],[47,13,47,46,1],[50,13,50,59,1],[51,9,51,10,1],[55,9,55,10,1],[57,13,57,49,1],[60,13,60,45,1],[63,13,63,58,1],[64,9,64,10,1],[68,9,68,10,1],[70,13,70,50,1],[73,13,73,45,1],[76,13,76,58,1],[77,9,77,10,1],[81,9,81,10,1],[83,13,83,37,1],[86,13,86,41,1],[89,13,89,54,1],[90,9,90,10,1],[94,9,94,10,1],[96,13,96,50,1],[99,13,99,49,1],[102,13,102,62,1],[103,9,103,10,1]]);
     </script>
   </body>
 </html>

@@ -20,24 +20,26 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
         private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
         private readonly Mock<IJwtUtils> _jwtUtils;
         private readonly Mock<IEmailPassword> _emailPasswordService;
+        private readonly Mock<IAzureOperations> _azureOperations;
 
         public EmpDetailsImpTests()
         {
+            _azureOperations = new Mock<IAzureOperations>();
             _hrmsContext = new HRMSContext();
             _httpContextAccessor = new Mock<IHttpContextAccessor>();
             _jwtUtils = new Mock<IJwtUtils>();
             _emailPasswordService = new Mock<IEmailPassword>();
-         //   _testClass = new EmpDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object);
+            //   _testClass = new EmpDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-       //     var instance = new EmpDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object);
+            //     var instance = new EmpDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object);
 
             // Assert
-          //  Assert.NotNull(instance);
+            //  Assert.NotNull(instance);
         }
 
         [Fact]
@@ -161,7 +163,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
                     AccountDetails = new Mock<ICollection<AccountDetail>>().Object,
                     AddressInfos = new Mock<ICollection<AddressInfo>>().Object,
                     Attendances = new Mock<ICollection<Attendance>>().Object,
-                  //  DeviceTables = new Mock<ICollection<DeviceTable>>().Object,
+                    //  DeviceTables = new Mock<ICollection<DeviceTable>>().Object,
                     EmpPersonalInfos = new Mock<ICollection<EmpPersonalInfo>>().Object,
                     EmpSalaries = new Mock<ICollection<EmpSalary>>().Object,
                     EmployeeDetails = new Mock<ICollection<EmployeeDetail>>().Object,
@@ -202,7 +204,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             _emailPasswordService.Setup(mock => mock.SendOtpEmailAsync(It.IsAny<Generatepassword>())).Verifiable();
 
             // Act
-        //    var result = await _testClass.InsertEmployeeAsync(employeeDetail, companyId);
+            //    var result = await _testClass.InsertEmployeeAsync(employeeDetail, companyId);
 
             // Assert
             _jwtUtils.Verify(mock => mock.ValidateJwtToken(It.IsAny<string>()));
@@ -230,7 +232,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             _jwtUtils.Setup(mock => mock.ValidateJwtToken(It.IsAny<string>())).Returns(2118608685);
 
             // Act
-     //       var result = await _testClass.UpdateEmployeeDetail(id, depId, fname, mname, lname, positionid, Designation, Email, employeecredentialId, EmployeeNumber, requsetCompanyId);
+            //       var result = await _testClass.UpdateEmployeeDetail(id, depId, fname, mname, lname, positionid, Designation, Email, employeecredentialId, EmployeeNumber, requsetCompanyId);
 
             // Assert
             _jwtUtils.Verify(mock => mock.ValidateJwtToken(It.IsAny<string>()));
@@ -252,15 +254,15 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-     /*   [Fact]
-        public void CanCallGetAllEmployees()
-        {
-            // Act
-            var result = _testClass.GetAllEmployees();
+        /*   [Fact]
+           public void CanCallGetAllEmployees()
+           {
+               // Act
+               var result = _testClass.GetAllEmployees();
 
-            // Assert
-            throw new NotImplementedException("Create or modify test");
-        }*/
+               // Assert
+               throw new NotImplementedException("Create or modify test");
+           }*/
 
         [Fact]
         public async Task CanCallGetEmployeeInfoAsync()
@@ -344,7 +346,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             };
 
             // Act
-           // var result = await _testClass.UpdateEmployeeInfoAsync(updateEmployeeInfo);
+            // var result = await _testClass.UpdateEmployeeInfoAsync(updateEmployeeInfo);
 
             // Assert
             throw new NotImplementedException("Create or modify test");
@@ -474,7 +476,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             };
 
             // Act
-           // var result = await _testClass.UpdateEmployeeAccountInfoAsync(accountDetail);
+            // var result = await _testClass.UpdateEmployeeAccountInfoAsync(accountDetail);
 
             // Assert
             throw new NotImplementedException("Create or modify test");
@@ -488,6 +490,94 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Act
             var result = _testClass.GetEmployeeShiftAndLeaveStats(empCredentialId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetAllEmployees()
+        {
+            // Arrange
+            var companyId = 1149453750;
+
+            // Act
+            var result = _testClass.GetAllEmployees(companyId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetFilters()
+        {
+            // Arrange
+            var globalSearch = new GlobalsearchEmp { FilterBy = "TestValue1659685909" };
+            var companyId = 1197635541;
+
+            // Act
+            var result = _testClass.GetFilters(globalSearch, companyId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetFiltersbymanager()
+        {
+            // Arrange
+            var globalSearch = new GlobalsearchEmp { FilterBy = "TestValue198060944" };
+            var companyId = 752186682;
+            var managerId = 114359651;
+
+            // Act
+            var result = _testClass.GetFiltersbymanager(globalSearch, companyId, managerId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetMonthlyStatistics()
+        {
+            // Arrange
+            var empCredentialId = 633652502;
+            var month = DateTime.UtcNow;
+
+            // Act
+            var result = _testClass.GetMonthlyStatistics(empCredentialId, month);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallUpdateImageUrl()
+        {
+            // Arrange
+            var empcredId = 1575074126;
+            var @file = new Mock<IFormFile>().Object;
+
+            _azureOperations.Setup(mock => mock.StoreFilesInAzure(It.IsAny<IFormFile>(), It.IsAny<string>())).Returns("TestValue2082394434");
+
+            // Act
+            var result = await _testClass.UpdateImageUrl(empcredId, file);
+
+            // Assert
+            _azureOperations.Verify(mock => mock.StoreFilesInAzure(It.IsAny<IFormFile>(), It.IsAny<string>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetUserDetails()
+        {
+            // Arrange
+            var empcredId = 601319064;
+            var companyId = 1616919382;
+
+            // Act
+            var result = _testClass.GetUserDetails(empcredId, companyId);
 
             // Assert
             throw new NotImplementedException("Create or modify test");

@@ -2,179 +2,111 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\EmpLeaveAllocationImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\NewsPreviewControllerTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.Authorization;
-    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.DTO;
     using HRMS_Application.Models;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
-    public class EmpLeaveAllocationImpTests
+    public class NewsPreviewControllerTests
     {
-        private readonly EmpLeaveAllocationImp _testClass;
-        private HRMSContext _hrmscontext;
-        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
-        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly NewsPreviewController _testClass;
+        private readonly Mock&lt;ILogger&lt;NewsPreviewController&gt;&gt; _logger;
+        private readonly Mock&lt;INewsPreview&gt; _news;
 
-        public EmpLeaveAllocationImpTests()
+        public NewsPreviewControllerTests()
         {
-            _hrmscontext = new HRMSContext();
-            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
-            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
-            _testClass = new EmpLeaveAllocationImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
+            _logger = new Mock&lt;ILogger&lt;NewsPreviewController&gt;&gt;();
+            _news = new Mock&lt;INewsPreview&gt;();
+            _testClass = new NewsPreviewController(_logger.Object, _news.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new EmpLeaveAllocationImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
+            var instance = new NewsPreviewController(_logger.Object, _news.Object);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public async Task CanCallDeleteEmployeeLeave()
+        public void CanCallGetAllNews()
         {
             // Arrange
-            var id = 983472324;
-
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(604350987);
+            _news.Setup(mock =&gt; mock.GetAllNews()).Returns(new List&lt;NewsPreview&gt;());
 
             // Act
-            var result = await _testClass.DeleteEmployeeLeave(id);
+            var result = _testClass.GetAllNews();
 
             // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            _news.Verify(mock =&gt; mock.GetAllNews());
 
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public void CanCallGetAllEmpLeave()
-        {
-            // Act
-            var result = _testClass.GetAllEmpLeave();
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetByEmpLeavebyId()
+        public void CanCallInsertNews()
         {
             // Arrange
-            var id = 1344304356;
-
-            // Act
-            var result = _testClass.GetByEmpLeavebyId(id);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallInsertEmployeeLeave()
-        {
-            // Arrange
-            var employeeLeave = new EmployeeLeaveAllocation
+            var news = new NewsDTO
             {
-                Id = 1087749373,
-                Year = 968114993,
-                EmpCredentialId = 1528933554,
-                NumberOfLeaves = 1227104086,
-                RemainingLeave = 379937235,
-                LeaveType = 84792293,
-                IsActive = (short)20352,
-                EmpCredential = new EmployeeCredential
-                {
-                    Id = 866180302,
-                    UserName = &quot;TestValue1720166111&quot;,
-                    Password = &quot;TestValue1407889532&quot;,
-                    Status = (short)27653,
-                    RequestedCompanyId = 1473471021,
-                    Email = &quot;TestValue1590862362&quot;,
-                    DefaultPassword = false,
-                    GenerateOtp = &quot;TestValue1193461475&quot;,
-                    OtpExpiration = DateTime.UtcNow,
-                    IsActive = (short)25655,
-                    EmployeeLoginName = &quot;TestValue1073470420&quot;,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 403499727,
-                        Name = &quot;TestValue1813342893&quot;,
-                        PhoneNumber = &quot;TestValue1792811340&quot;,
-                        DomainName = &quot;TestValue1155727693&quot;,
-                        Status = &quot;TestValue1652399793&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue1740665821&quot;,
-                        IsActive = (short)17524,
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
-                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
-                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                },
-                LeaveTypeNavigation = new LeaveType
-                {
-                    Id = 2130844381,
-                    Type = &quot;TestValue617183953&quot;,
-                    Days = 826391200,
-                    CompanyId = 737424447,
-                    Year = 164110523,
-                    IsActive = (short)15413,
-                    Company = new RequestedCompanyForm
-                    {
-                        Id = 659368254,
-                        Name = &quot;TestValue310930879&quot;,
-                        PhoneNumber = &quot;TestValue1033787263&quot;,
-                        DomainName = &quot;TestValue1548199004&quot;,
-                        Status = &quot;TestValue1972980699&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue200528966&quot;,
-                        IsActive = (short)26895,
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
-                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object
-                }
+                DisplayDate = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                Heading = &quot;TestValue1569924970&quot;,
+                Desciption = &quot;TestValue424981777&quot;,
+                ImgUrl = new Mock&lt;IFormFile&gt;().Object,
+                IsActive = (short)19934
             };
 
+            _news.Setup(mock =&gt; mock.InsertNews(It.IsAny&lt;NewsDTO&gt;())).Returns(&quot;TestValue1375883673&quot;);
+
             // Act
-            var result = await _testClass.InsertEmployeeLeave(employeeLeave);
+            var result = _testClass.InsertNews(news);
 
             // Assert
+            _news.Verify(mock =&gt; mock.InsertNews(It.IsAny&lt;NewsDTO&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallUpdateNews()
+        {
+            // Arrange
+            var id = 2099542340;
+            var news = new NewsDTO
+            {
+                DisplayDate = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                Heading = &quot;TestValue719690823&quot;,
+                Desciption = &quot;TestValue806344800&quot;,
+                ImgUrl = new Mock&lt;IFormFile&gt;().Object,
+                IsActive = (short)15759
+            };
+
+            _news.Setup(mock =&gt; mock.UpdateNews(It.IsAny&lt;int&gt;(), It.IsAny&lt;NewsDTO&gt;())).Returns(&quot;TestValue675839625&quot;);
+
+            // Act
+            var result = _testClass.UpdateNews(id, news);
+
+            // Assert
+            _news.Verify(mock =&gt; mock.UpdateNews(It.IsAny&lt;int&gt;(), It.IsAny&lt;NewsDTO&gt;()));
+
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
@@ -182,20 +114,24 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
         public void CanCallSoftDelete()
         {
             // Arrange
-            var id = 33660961;
-            var isActive = (short)10156;
+            var id = 1482708210;
+            var isActive = (short)16987;
+
+            _news.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(false);
 
             // Act
             var result = _testClass.SoftDelete(id, isActive);
 
             // Assert
+            _news.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
+
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[20,9,20,44,1],[21,9,21,10,1],[22,13,22,46,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,113,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,115,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,32,1],[44,13,44,99,1],[47,13,47,67,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,54,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,33,1],[72,13,72,59,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,162,15,1],[165,13,165,78,1],[168,13,168,72,0],[173,9,173,10,1],[175,13,175,31,1],[176,13,176,41,1],[179,13,179,62,1],[182,13,182,72,0]]);
+      highlightRanges([[20,9,20,44,1],[21,9,21,10,1],[22,13,22,66,1],[23,13,23,46,1],[24,13,24,82,1],[25,9,25,10,1],[29,9,29,10,1],[31,13,31,84,1],[34,13,34,38,1],[35,9,35,10,1],[39,9,39,10,1],[41,13,41,85,1],[44,13,44,50,1],[47,13,47,53,1],[49,13,49,72,1],[54,9,54,10,1],[56,13,64,15,1],[66,13,66,102,1],[69,13,69,54,1],[72,13,72,72,1],[74,13,74,72,1],[79,9,79,10,1],[81,13,81,33,1],[82,13,90,15,1],[92,13,92,118,1],[95,13,95,58,1],[98,13,98,89,1],[100,13,100,72,1],[105,9,105,10,1],[107,13,107,33,1],[108,13,108,41,1],[110,13,110,101,1],[113,13,113,62,1],[116,13,116,87,1],[118,13,118,72,1]]);
     </script>
   </body>
 </html>

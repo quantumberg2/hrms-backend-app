@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\FileStorageImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using System.Linq.Expressions;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class FileStorageImp : IFileStorage
+    {
+        private readonly IAzureOperations _azureOperations;
+        private readonly ILocalStorageOperations _localStorageOperations;   
+        private readonly IConfiguration _configuration;
+        private readonly HRMSContext _hRMSContext;
+
+        public FileStorageImp(IAzureOperations azureOperations,ILocalStorageOperations localStorageOperations,IConfiguration configuration,HRMSContext hRMSContext)
+        {
+            _azureOperations = azureOperations;
+            _localStorageOperations = localStorageOperations;
+            _configuration = configuration;
+            _hRMSContext = hRMSContext;
+        }
+
+        public List&lt;Models.File&gt; GetFiles()
+        {
+            var files = (from row in _hRMSContext.Files
+                         where row.IsActive == true
+                         select row).ToList();
+            return files;
+        }
+
+
+        public string UploadFile(FileStorageDTO files)
+        {
+            bool UseLocalDatabase = _configuration.GetValue&lt;bool&gt;(&quot;DatabaseSettings:UseLocalDatabase&quot;);
+
+            string url;
+
+            if(UseLocalDatabase)
+            {
+                url = _localStorageOperations.StoreFiles(files.FileContent, &quot;HRMS_Files&quot;);
+            }
+            else
+            {
+                url = _azureOperations.StoreFilesInAzure(files.FileContent, &quot;hrms-files&quot;);
+            }
+
+            Models.File objnewFile = new Models.File
+            {
+                ObjectId = files.ObjectId,  
+                ObjectName = files.ObjectName,
+                Tags = files.Tags,
+                IsActive = files.IsActive,
+                FileUrl = url
+            };
+
+            _hRMSContext.Files.Add(objnewFile);
+            var res = _hRMSContext.SaveChanges();
+
+            if(res!=0)
+            {
+                return &quot;File uploaded successfully&quot;;
+            }
+            return &quot;Failed to upload file&quot;;
+        }
+
+        public string UpdateFile(int id, FileStorageDTO files)
+        {
+           var file = (from row in _hRMSContext.Files
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if(file==null)
+            {
+                return &quot;File not found&quot;;
+            }
+
+            bool UseLocalDatabase = _configuration.GetValue&lt;bool&gt;(&quot;DatabaseSettings:UseLocalDatabase&quot;);
+
+            string url;
+
+            if (UseLocalDatabase)
+            {
+                url = files.FileContent!=null? _localStorageOperations.StoreFiles(files.FileContent, &quot;HRMS_Files&quot;) :file.FileUrl;
+            }
+            else
+            {
+                url = files.FileContent != null ? _azureOperations.StoreFilesInAzure(files.FileContent, &quot;hrms-files&quot;) : file.FileUrl;
+            }
+
+            file.ObjectId = files?.ObjectId??file.ObjectId;
+            file.ObjectName = files?.ObjectName ??file.ObjectName;
+            file.Tags = files?.Tags??file.Tags;
+            file.FileUrl = url;
+
+            _hRMSContext.Files.Update(file);
+            var res = _hRMSContext.SaveChanges();
+
+            if(res !=  0 )
+            {
+                return &quot;File updated successfully&quot;;
+            }
+
+            return &quot;failed to update File&quot;;
+        }
+
+        public bool SoftDelete(int id, bool isActive)
+        {
+            var file = (from row in _hRMSContext.Files
+                        where row.Id == id
+                        select row).SingleOrDefault();
+
+            if (file!=null)
+            {
+                file.IsActive = isActive;
+                _hRMSContext.Files.Update(file);
+                _hRMSContext.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,164,1],[16,9,16,10,1],[17,13,17,48,1],[18,13,18,62,1],[19,13,19,44,1],[20,13,20,40,1],[21,9,21,10,1],[24,9,24,10,1],[25,13,27,47,1],[28,13,28,26,0],[29,9,29,10,0],[33,9,33,10,1],[34,13,34,104,1],[38,13,38,33,0],[39,13,39,14,0],[40,17,40,91,0],[41,13,41,14,0],[43,13,43,14,0],[44,17,44,91,0],[45,13,45,14,0],[47,13,54,15,0],[56,13,56,48,0],[57,13,57,50,0],[59,13,59,23,0],[60,13,60,14,0],[61,17,61,53,0],[63,13,63,44,0],[64,9,64,10,0],[67,9,67,10,1],[68,12,70,53,1],[71,13,71,27,0],[72,13,72,14,0],[73,17,73,41,0],[76,13,76,104,0],[80,13,80,34,0],[81,13,81,14,0],[82,17,82,130,0],[83,13,83,14,0],[85,13,85,14,0],[86,17,86,134,0],[87,13,87,14,0],[89,13,89,60,0],[90,13,90,67,0],[91,13,91,48,0],[92,13,92,32,0],[94,13,94,45,0],[95,13,95,50,0],[97,13,97,27,0],[98,13,98,14,0],[99,17,99,52,0],[102,13,102,44,0],[103,9,103,10,0],[106,9,106,10,1],[107,13,109,55,1],[111,13,111,28,0],[112,13,112,14,0],[113,17,113,42,0],[114,17,114,49,0],[115,17,115,44,0],[116,17,116,29,0],[119,13,119,26,0],[120,9,120,10,0]]);
+    </script>
+  </body>
+</html>

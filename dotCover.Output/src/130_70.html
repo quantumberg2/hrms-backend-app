@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\RegularizationImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Xunit;
+
+    public class RegularizationImpTests
+    {
+        private readonly RegularizationImp _testClass;
+        private HRMSContext _hrmscontext;
+
+        public RegularizationImpTests()
+        {
+            _hrmscontext = new HRMSContext();
+            _testClass = new RegularizationImp(_hrmscontext);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new RegularizationImp(_hrmscontext);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetPendingRegularization()
+        {
+            // Arrange
+            var employeeCredentialId = 1356694736;
+            var status = &quot;TestValue1758406281&quot;;
+
+            // Act
+            var result = _testClass.GetPendingRegularization(employeeCredentialId, status);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetRegularizationByStatusAsync()
+        {
+            // Arrange
+            var status = &quot;TestValue1088245753&quot;;
+            var managerId = 1494507674;
+
+            // Act
+            var result = await _testClass.GetRegularizationByStatusAsync(status, managerId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,40,1],[15,9,15,10,1],[16,13,16,46,1],[17,13,17,62,1],[18,9,18,10,1],[22,9,22,10,1],[24,13,24,64,1],[27,13,27,38,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,51,1],[35,13,35,48,1],[38,13,38,92,1],[41,13,41,72,0],[46,9,46,10,1],[48,13,48,48,1],[49,13,49,40,1],[52,13,52,93,1],[55,13,55,72,0]]);
+    </script>
+  </body>
+</html>

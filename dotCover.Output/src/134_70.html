@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\UpdateEmployeeDetailsImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.DTO;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class UpdateEmployeeDetailsImpTests
+    {
+        private readonly UpdateEmployeeDetailsImp _testClass;
+        private HRMSContext _hrmsContext;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly Mock&lt;IEmailPassword&gt; _emailPasswordService;
+        private readonly Mock&lt;IAzureOperations&gt; _azureOperations;
+
+        public UpdateEmployeeDetailsImpTests()
+        {
+            _hrmsContext = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _emailPasswordService = new Mock&lt;IEmailPassword&gt;();
+            _azureOperations = new Mock&lt;IAzureOperations&gt;();
+            _testClass = new UpdateEmployeeDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object, _azureOperations.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new UpdateEmployeeDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object, _azureOperations.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeeAccountInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 868450807;
+
+            // Act
+            var result = await _testClass.GetEmployeeAccountInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeeAddressInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 592517259;
+
+            // Act
+            var result = await _testClass.GetEmployeeAddressInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeeInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 1731196584;
+
+            // Act
+            var result = await _testClass.GetEmployeeInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeePersonalInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 105383563;
+
+            // Act
+            var result = await _testClass.GetEmployeePersonalInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeeAccountInfoAsync()
+        {
+            // Arrange
+            var accountDetail = new AccountDetail
+            {
+                Id = 1374626493,
+                EmployeeCredentialId = 293720264,
+                AccountNumber = &quot;TestValue225967635&quot;,
+                IfscCode = &quot;TestValue848966083&quot;,
+                AccountType = &quot;TestValue1090574159&quot;,
+                BankName = &quot;TestValue832854710&quot;,
+                BranchName = &quot;TestValue445509298&quot;,
+                AadharNumber = &quot;TestValue1840822801&quot;,
+                PfNumber = &quot;TestValue809090889&quot;,
+                UanNumber = &quot;TestValue1239212942&quot;,
+                PfJoiningDate = DateTime.UtcNow,
+                EligibleForPf = false,
+                IsActive = (short)24582,
+                Country = &quot;TestValue447476442&quot;,
+                State = &quot;TestValue911952704&quot;,
+                City = &quot;TestValue1281456235&quot;,
+                Pin = 1078823500,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 86300897,
+                    UserName = &quot;TestValue1012028737&quot;,
+                    Password = &quot;TestValue317512114&quot;,
+                    Status = (short)24611,
+                    RequestedCompanyId = 1623008228,
+                    Email = &quot;TestValue1658155571&quot;,
+                    DefaultPassword = true,
+                    GenerateOtp = &quot;TestValue1513426596&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)13062,
+                    EmployeeLoginName = &quot;TestValue1675903519&quot;,
+                    ResignedDate = DateTime.UtcNow,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1296763081,
+                        Name = &quot;TestValue157153344&quot;,
+                        PhoneNumber = &quot;TestValue1129492714&quot;,
+                        DomainName = &quot;TestValue1944062929&quot;,
+                        Status = &quot;TestValue1327328936&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1189003968&quot;,
+                        IsActive = (short)17890,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    EmpCredIdEmpCodeMappings = new Mock&lt;ICollection&lt;EmpCredIdEmpCodeMapping&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                }
+            };
+
+            // Act
+            var result = await _testClass.UpdateEmployeeAccountInfoAsync(accountDetail);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeeAddresslInfoAsync()
+        {
+            // Arrange
+            var addressInfo = new AddressInfoDTO
+            {
+                EmployeeCredentialId = 895695059,
+                AddressLine1 = &quot;TestValue523456257&quot;,
+                AddressLine2 = &quot;TestValue1785724304&quot;,
+                City = &quot;TestValue2049051249&quot;,
+                State = &quot;TestValue1665603554&quot;,
+                Country = &quot;TestValue988528015&quot;,
+                PinCode = &quot;TestValue321443662&quot;,
+                IsActive = (short)29543
+            };
+
+            // Act
+            var result = await _testClass.UpdateEmployeeAddresslInfoAsync(addressInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeeInfoAsync()
+        {
+            // Arrange
+            var updateEmployeeInfo = new UpdateEmployeeInfoDTO
+            {
+                EmployeeCredentialId = 508265241,
+                EmployeeName = &quot;TestValue1101277793&quot;,
+                NickName = &quot;TestValue980844883&quot;,
+                EmailAddress = &quot;TestValue850170429&quot;,
+                EmpLoginName = &quot;TestValue1424213380&quot;,
+                MobileNumber = &quot;TestValue599680042&quot;,
+                Extension = &quot;TestValue2025588449&quot;,
+                gender = &quot;TestValue607867761&quot;
+            };
+
+            // Act
+            var result = await _testClass.UpdateEmployeeInfoAsync(updateEmployeeInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeepersonalInfoAsync()
+        {
+            // Arrange
+            var empPersonalInfo = new EmpPersonalInfoDTO
+            {
+                FirstName = &quot;TestValue1113975126&quot;,
+                MiddleName = &quot;TestValue1769552756&quot;,
+                LastName = &quot;TestValue2003905717&quot;,
+                EmployeeCredentialId = 275005145,
+                Dob = DateTime.UtcNow,
+                DateOfJoining = DateTime.UtcNow,
+                ConfirmDate = DateTime.UtcNow,
+                EmpStatus = &quot;TestValue118204197&quot;,
+                EmailId = &quot;TestValue629858982&quot;,
+                PersonalEmail = &quot;TestValue1863954569&quot;,
+                MaritalStatus = &quot;TestValue379172086&quot;,
+                BloodGroup = &quot;TestValue860024686&quot;,
+                SpouseName = &quot;TestValue2140348314&quot;,
+                PhysicallyChallenged = true,
+                EmergencyContact = &quot;TestValue1683575276&quot;,
+                PAN = &quot;TestValue288355954&quot;,
+                Gender = &quot;TestValue711330087&quot;,
+                Contact = &quot;TestValue1012511607&quot;
+            };
+
+            // Act
+            var result = await _testClass.UpdateEmployeepersonalInfoAsync(empPersonalInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[24,9,24,47,1],[25,9,25,10,1],[26,13,26,46,1],[27,13,27,69,1],[28,13,28,47,1],[29,13,29,64,1],[30,13,30,61,1],[31,13,31,171,1],[32,9,32,10,1],[36,9,36,10,1],[38,13,38,173,1],[41,13,41,38,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,50,1],[51,13,51,93,1],[54,13,54,72,0],[59,9,59,10,1],[61,13,61,50,1],[64,13,64,93,1],[67,13,67,72,0],[72,9,72,10,1],[74,13,74,51,1],[77,13,77,86,1],[80,13,80,72,0],[85,9,85,10,1],[87,13,87,50,1],[90,13,90,94,1],[93,13,93,72,0],[98,9,98,10,1],[100,13,162,15,1],[165,13,165,89,1],[168,13,168,72,0],[173,9,173,10,1],[175,13,185,15,1],[188,13,188,88,1],[191,13,191,72,0],[196,9,196,10,1],[198,13,208,15,1],[211,13,211,87,1],[214,13,214,72,0],[219,9,219,10,1],[221,13,241,15,1],[244,13,244,92,1],[247,13,247,72,0]]);
+    </script>
+  </body>
+</html>

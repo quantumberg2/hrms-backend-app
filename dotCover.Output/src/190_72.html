@@ -2,91 +2,27 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\UserServiceController.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\DTO\EmployeeLeaveAllocationRequest.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.Authorization;
-using HRMS_Application.BusinessLogics.Implements;
-using HRMS_Application.Entities;
-using HRMS_Application.Models.Users;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using HRMS_Application.Models;
-using HRMS_Application.DTO;
-using System.IdentityModel.Tokens.Jwt;
-
-namespace HRMS_Application.Controllers
+namespace HRMS_Application.DTO
 {
-    [Route(&quot;api/[controller]&quot;)]
-    [ApiController]
-    public class UserServiceController : ControllerBase
+    public class EmployeeLeaveAllocationRequest
     {
-        private readonly IUserService _userService;
-        private readonly ILogger&lt;UserServiceController&gt; _logger;
-        
-
-        public UserServiceController(IUserService userService, ILogger&lt;UserServiceController&gt; logger)
-        {
-            _userService = userService;
-            _logger = logger;
-           
-        }
-
-        [AllowAnonymous]
-        [HttpPost(&quot;[action]&quot;)]
-        public IActionResult Authenticate(AuthenticateRequest model)
-        {
-            _logger.LogInformation(&quot;Authenticate method started&quot;);
-            var response = _userService.Authenticate(model);
-            return Ok(response);
-        }
-
-        [Authorize(&quot;Admin&quot;)]
-        //[AllowAnonymous]
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            _logger.LogInformation(&quot;Get all method started&quot;);
-            var users = _userService.GetAll();
-            return Ok(users);
-        }
-
-        [HttpGet(&quot;{id:int}&quot;)]
-        public IActionResult GetById(int id)
-        {
-             _logger.LogInformation(&quot;Get by id method started&quot;);
-            // only admins can access other Employee records
-            var currentUser = (EmployeeDetail)HttpContext.Items[&quot;User&quot;];
-            if (id != currentUser.Id)// &amp;&amp; currentUser.Role != Role.Admin)
-                return Unauthorized(new { message = &quot;Unauthorized&quot; });
-
-            var user = _userService.GetById(id);
-            return Ok(user);
-        }
-     
-        [HttpPost(&quot;select-company&quot;)]
-        public IActionResult SelectCompany([FromBody] SelectCompanyRequest model)
-        {
-            var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer&quot;, &quot;&quot;);
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var Userid = int.Parse(jwtToken.Claims.First(claim =&gt; claim.Type == &quot;UserId&quot;).Value);
-            var response = _userService.SelectCompany(model,Userid);
-
-            if (response == null)
-                return Unauthorized(new { message = &quot;Invalid company selection&quot; });
-
-            return Ok(response);
-        }
+        public int? Year { get; set; }
+        public int? EmpCredentialId { get; set; } // For single credential ID
+        public int? NumberOfLeaves { get; set; }
+        public int? RemainingLeave { get; set; }
+        public int? LeaveType { get; set; }
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[21,9,21,102,1],[22,9,22,10,1],[23,13,23,40,1],[24,13,24,30,1],[26,9,26,10,1],[31,9,31,10,1],[32,13,32,67,1],[33,13,33,61,1],[34,13,34,33,1],[35,9,35,10,1],[41,9,41,10,1],[42,13,42,62,1],[43,13,43,47,1],[44,13,44,30,1],[45,9,45,10,1],[49,9,49,10,1],[50,14,50,65,1],[52,13,52,73,1],[53,13,53,38,0],[54,17,54,71,0],[56,13,56,49,0],[57,13,57,29,0],[58,9,58,10,0],[62,9,62,10,1],[63,13,63,103,1],[64,13,64,57,0],[65,13,65,56,0],[66,13,66,67,0],[66,67,66,89,0],[66,89,66,98,0],[67,13,67,69,0],[69,13,69,34,0],[70,17,70,84,0],[72,13,72,33,0],[73,9,73,10,0]]);
+      highlightRanges([[5,28,5,32,1],[5,33,5,37,1],[6,39,6,43,1],[6,44,6,48,1],[7,38,7,42,1],[7,43,7,47,1],[8,38,8,42,1],[8,43,8,47,1],[9,33,9,37,1],[9,38,9,42,1]]);
     </script>
   </body>
 </html>

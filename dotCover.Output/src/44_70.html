@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\ForgotpasswordRequestTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\CompanyDetailsDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -12,73 +12,257 @@ namespace HRMS_Unit_Test.DTO
 {
     using System;
     using HRMS_Application.DTO;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
     using Xunit;
 
-    public class ForgotpasswordRequestTests
+    public class CompanyDetailsDTOTests
     {
-        private readonly ForgotpasswordRequest _testClass;
+        private readonly CompanyDetailsDTO _testClass;
 
-        public ForgotpasswordRequestTests()
+        public CompanyDetailsDTOTests()
         {
-            _testClass = new ForgotpasswordRequest();
+            _testClass = new CompanyDetailsDTO();
         }
 
         [Fact]
-        public void CanSetAndGetEmail()
+        public void CanSetAndGetName()
         {
             // Arrange
-            var testValue = &quot;TestValue1844221008&quot;;
+            var testValue = &quot;TestValue954115636&quot;;
 
             // Act
-            _testClass.Email = testValue;
+            _testClass.Name = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Email);
+            Assert.Equal(testValue, _testClass.Name);
         }
 
         [Fact]
-        public void CanSetAndGetOtp()
+        public void CanSetAndGetAddress()
         {
             // Arrange
-            var testValue = &quot;TestValue220064790&quot;;
+            var testValue = &quot;TestValue1514388996&quot;;
 
             // Act
-            _testClass.Otp = testValue;
+            _testClass.Address = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Otp);
+            Assert.Equal(testValue, _testClass.Address);
         }
 
         [Fact]
-        public void CanSetAndGetNewPassword()
+        public void CanSetAndGetCountry()
         {
             // Arrange
-            var testValue = &quot;TestValue219654027&quot;;
+            var testValue = &quot;TestValue1982719657&quot;;
 
             // Act
-            _testClass.NewPassword = testValue;
+            _testClass.Country = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.NewPassword);
+            Assert.Equal(testValue, _testClass.Country);
         }
 
         [Fact]
-        public void CanSetAndGetConfirmPassword()
+        public void CanSetAndGetStates()
         {
             // Arrange
-            var testValue = &quot;TestValue1862952017&quot;;
+            var testValue = &quot;TestValue1595694292&quot;;
 
             // Act
-            _testClass.ConfirmPassword = testValue;
+            _testClass.States = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.ConfirmPassword);
+            Assert.Equal(testValue, _testClass.States);
+        }
+
+        [Fact]
+        public void CanSetAndGetIndustry()
+        {
+            // Arrange
+            var testValue = &quot;TestValue414517636&quot;;
+
+            // Act
+            _testClass.Industry = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Industry);
+        }
+
+        [Fact]
+        public void CanSetAndGetTimeZone()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1658447579&quot;;
+
+            // Act
+            _testClass.TimeZone = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TimeZone);
+        }
+
+        [Fact]
+        public void CanSetAndGetCurrency()
+        {
+            // Arrange
+            var testValue = &quot;TestValue335900106&quot;;
+
+            // Act
+            _testClass.Currency = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Currency);
+        }
+
+        [Fact]
+        public void CanSetAndGetPfNo()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1047942916&quot;;
+
+            // Act
+            _testClass.PfNo = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PfNo);
+        }
+
+        [Fact]
+        public void CanSetAndGetTanNo()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1644779741&quot;;
+
+            // Act
+            _testClass.TanNo = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TanNo);
+        }
+
+        [Fact]
+        public void CanSetAndGetEsiNo()
+        {
+            // Arrange
+            var testValue = &quot;TestValue397365771&quot;;
+
+            // Act
+            _testClass.EsiNo = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EsiNo);
+        }
+
+        [Fact]
+        public void CanSetAndGetPanNo()
+        {
+            // Arrange
+            var testValue = &quot;TestValue494921690&quot;;
+
+            // Act
+            _testClass.PanNo = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PanNo);
+        }
+
+        [Fact]
+        public void CanSetAndGetGstNo()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1412867183&quot;;
+
+            // Act
+            _testClass.GstNo = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.GstNo);
+        }
+
+        [Fact]
+        public void CanSetAndGetRegistrationNo()
+        {
+            // Arrange
+            var testValue = &quot;TestValue184915292&quot;;
+
+            // Act
+            _testClass.RegistrationNo = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RegistrationNo);
+        }
+
+        [Fact]
+        public void CanSetAndGetTwitter()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1509917597&quot;;
+
+            // Act
+            _testClass.Twitter = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Twitter);
+        }
+
+        [Fact]
+        public void CanSetAndGetFacebook()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1868863902&quot;;
+
+            // Act
+            _testClass.Facebook = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Facebook);
+        }
+
+        [Fact]
+        public void CanSetAndGetLinkedIn()
+        {
+            // Arrange
+            var testValue = &quot;TestValue901927633&quot;;
+
+            // Act
+            _testClass.LinkedIn = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LinkedIn);
+        }
+
+        [Fact]
+        public void CanSetAndGetCompanyLogo()
+        {
+            // Arrange
+            var testValue = new Mock&lt;IFormFile&gt;().Object;
+
+            // Act
+            _testClass.CompanyLogo = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.CompanyLogo);
+        }
+
+        [Fact]
+        public void CanSetAndGetIsActive()
+        {
+            // Arrange
+            var testValue = (short)14195;
+
+            // Act
+            _testClass.IsActive = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.IsActive);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,44,1],[12,9,12,10,1],[13,13,13,54,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,51,1],[23,13,23,42,1],[26,13,26,55,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,50,1],[36,13,36,40,1],[39,13,39,53,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,48,1],[52,13,52,61,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,52,1],[65,13,65,65,1],[66,9,66,10,1]]);
+      highlightRanges([[13,9,13,40,1],[14,9,14,10,1],[15,13,15,50,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,50,1],[25,13,25,41,1],[28,13,28,54,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,51,1],[38,13,38,44,1],[41,13,41,57,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,51,1],[51,13,51,44,1],[54,13,54,57,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,51,1],[64,13,64,43,1],[67,13,67,56,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,50,1],[77,13,77,45,1],[80,13,80,58,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,87,51,1],[90,13,90,45,1],[93,13,93,58,1],[94,9,94,10,1],[98,9,98,10,1],[100,13,100,50,1],[103,13,103,45,1],[106,13,106,58,1],[107,9,107,10,1],[111,9,111,10,1],[113,13,113,51,1],[116,13,116,41,1],[119,13,119,54,1],[120,9,120,10,1],[124,9,124,10,1],[126,13,126,51,1],[129,13,129,42,1],[132,13,132,55,1],[133,9,133,10,1],[137,9,137,10,1],[139,13,139,50,1],[142,13,142,42,1],[145,13,145,55,1],[146,9,146,10,1],[150,9,150,10,1],[152,13,152,50,1],[155,13,155,42,1],[158,13,158,55,1],[159,9,159,10,1],[163,9,163,10,1],[165,13,165,51,1],[168,13,168,42,1],[171,13,171,55,1],[172,9,172,10,1],[176,9,176,10,1],[178,13,178,50,1],[181,13,181,51,1],[184,13,184,64,1],[185,9,185,10,1],[189,9,189,10,1],[191,13,191,51,1],[194,13,194,44,1],[197,13,197,57,1],[198,9,198,10,1],[202,9,202,10,1],[204,13,204,51,1],[207,13,207,45,1],[210,13,210,58,1],[211,9,211,10,1],[215,9,215,10,1],[217,13,217,50,1],[220,13,220,45,1],[223,13,223,58,1],[224,9,224,10,1],[228,9,228,10,1],[230,13,230,58,1],[233,13,233,48,1],[236,13,236,60,1],[237,9,237,10,1],[241,9,241,10,1],[243,13,243,42,1],[246,13,246,45,1],[249,13,249,58,1],[250,9,250,10,1]]);
     </script>
   </body>
 </html>

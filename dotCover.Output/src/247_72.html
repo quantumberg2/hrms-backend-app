@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\AlertMailOperationsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using System.Net.Mail;
+using System.Net;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class AlertMailOperationsImp : IAlertEmailOperations
+    {
+        private readonly SmtpClient _smtpClient;
+        public AlertMailOperationsImp()
+        {
+            _smtpClient = new SmtpClient(&quot;smtp.gmail.com&quot;)
+            {
+                // Your Gmail email and password (used to authenticate with the SMTP server)
+                Credentials = new NetworkCredential(&quot;wequantumberg@gmail.com&quot;, &quot;kwoipnisqnwmmbyh&quot;),
+                Port = 587, // The SMTP port for Gmail&#39;s service
+                EnableSsl = true // Enabling SSL to securely send the email
+            };
+        }
+
+        public async Task SendEmailAsync(string emailTemplate, Dictionary&lt;string, string&gt; parameters)
+        {
+            string subject = parameters.ContainsKey(&quot;Subject&quot;) ? parameters[&quot;Subject&quot;] : &quot;Notification&quot;;
+
+            string body = emailTemplate;
+            foreach (var param in parameters)
+            {
+                body = body.Replace($&quot;{{{{{param.Key}}}}}&quot;, param.Value);
+            }
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(&quot;wequantumberg@gmail.com&quot;, &quot;HRMS website&quot;),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+
+            mailMessage.To.Add(parameters[&quot;To&quot;]);
+
+            try
+            {
+                // Send email asynchronously
+                await _smtpClient.SendMailAsync(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(&quot;Error sending email: &quot; + ex.Message);
+            }
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[10,9,10,40,1],[11,9,11,10,1],[12,13,18,15,1],[19,9,19,10,1],[22,9,22,10,1],[23,13,23,105,1],[25,13,25,41,1],[26,13,26,20,1],[26,22,26,31,0],[26,32,26,34,1],[26,35,26,45,1],[27,13,27,14,0],[28,17,28,74,0],[29,13,29,14,0],[31,13,37,15,1],[39,13,39,50,1],[42,13,42,14,0],[44,17,44,62,0],[45,13,45,14,0],[46,13,46,33,0],[47,13,47,14,0],[48,17,48,73,0],[49,13,49,14,0],[50,9,50,10,0]]);
+    </script>
+  </body>
+</html>

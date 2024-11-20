@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\ShiftRostertypeImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class ShiftRostertypeImpTests
+    {
+        private readonly ShiftRostertypeImp _testClass;
+        private HRMSContext _context;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+
+        public ShiftRostertypeImpTests()
+        {
+            _context = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _testClass = new ShiftRostertypeImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new ShiftRostertypeImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCalldeleteShiftRosterType()
+        {
+            // Arrange
+            var id = 232054075;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1050883869);
+
+            // Act
+            var result = await _testClass.deleteShiftRosterType(id);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        /* [Fact]
+         public void CanCallGetAllShiftRosterType()
+         {
+             // Act
+             var result = _testClass.GetAllShiftRosterType();
+
+             // Assert
+             throw new NotImplementedException(&quot;Create or modify test&quot;);
+         }
+ */
+        [Fact]
+        public void CanCallGetShiftRosterTypeId()
+        {
+            // Arrange
+            var id = 473614537;
+
+            // Act
+            var result = _testClass.GetShiftRosterTypeId(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        /* [Fact]
+         public async Task CanCallInsertShiftRosterType()
+         {
+             // Arrange
+             var shiftRosterType = new ShiftRosterType
+             {
+                 Id = 2129928359,
+                 Type = &quot;TestValue1105516027&quot;,
+                 TimeRange = &quot;TestValue38375188&quot;,
+                 ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+             };
+
+             _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(4555692);
+
+             // Act
+             var result = await _testClass.InsertShiftRosterType(shiftRosterType);
+
+             // Assert
+             _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+             throw new NotImplementedException(&quot;Create or modify test&quot;);
+         }
+ */
+        [Fact]
+        public async Task CanCallupdateShiftRosterType()
+        {
+            // Arrange
+            var id = 1827068943;
+            var Type = &quot;TestValue927337169&quot;;
+            var TimeRange = &quot;TestValue902798576&quot;;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1738888599);
+
+            // Act
+            var result = await _testClass.updateShiftRosterType(id, Type, TimeRange);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllShiftRosterType()
+        {
+            // Arrange
+            var CompanyId = 854251198;
+
+            // Act
+            var result = _testClass.GetAllShiftRosterType(CompanyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertShiftRosterType()
+        {
+            // Arrange
+            var shiftRosterType = new ShiftRosterType
+            {
+                Id = 1814189828,
+                Type = &quot;TestValue1860394167&quot;,
+                TimeRange = &quot;TestValue1698365325&quot;,
+                CompanyRequestedId = 39705046,
+                ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+            };
+            var companyId = 783591161;
+
+            // Act
+            var result = await _testClass.InsertShiftRosterType(shiftRosterType, companyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,41,1],[21,9,21,10,1],[22,13,22,42,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,106,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,108,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,32,1],[44,13,44,100,1],[47,13,47,69,1],[50,13,50,81,0],[52,13,52,72,0],[67,9,67,10,1],[69,13,69,32,1],[72,13,72,62,1],[75,13,75,72,0],[103,9,103,10,1],[105,13,105,33,1],[106,13,106,45,1],[107,13,107,50,1],[109,13,109,100,1],[112,13,112,86,1],[115,13,115,81,0],[117,13,117,72,0],[122,9,122,10,1],[124,13,124,39,1],[127,13,127,70,1],[130,13,130,72,0],[135,9,135,10,1],[137,13,144,15,1],[145,13,145,39,1],[148,13,148,93,1],[151,13,151,72,0]]);
+    </script>
+  </body>
+</html>

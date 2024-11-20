@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\OrgChartServiceImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class OrgChartServiceImp : IOrgChartService
+    {
+        private readonly HRMSContext _hrmsContext;
+
+        public OrgChartServiceImp(HRMSContext hrmsContext)
+        {
+            _hrmsContext = hrmsContext;
+        }
+        public async Task&lt;OrgChartNode&gt; GetOrganizationChartAsync(int companyId)
+        {
+            var employees = await _hrmsContext.EmployeeDetails
+                            .Where(e =&gt; e.IsActive == 1 &amp;&amp; e.RequestCompanyId == companyId)
+                            .ToListAsync();
+
+            var positions = await _hrmsContext.Positions
+                            .Where(p =&gt; p.IsActive == 1 &amp;&amp; p.RequestedCompanyId == companyId)
+                            .ToListAsync();
+
+            var employeeLookup = new Dictionary&lt;int, EmployeeDetail&gt;();
+
+            foreach (var employee in employees)
+            {
+                if (!employee.EmployeeCredentialId.HasValue || employeeLookup.ContainsKey(employee.EmployeeCredentialId.Value))
+                {
+                    continue; 
+                }
+
+                employeeLookup[employee.EmployeeCredentialId.Value] = employee;
+            }
+            var positionLookup = positions.ToDictionary(p =&gt; p.Id, p =&gt; p.Name);
+            var ceo = await _hrmsContext.EmployeeDetails
+                .Join(
+                    _hrmsContext.Positions,
+                    emp =&gt; emp.PositionId,
+                    pos =&gt; pos.Id,
+                    (emp, pos) =&gt; new { emp, pos }
+                )
+                .Where(ep =&gt; ep.pos.Name == &quot;CEO&quot; &amp;&amp; (ep.emp.ManagerId == 0 || ep.emp.ManagerId == null) &amp;&amp; ep.emp.RequestCompanyId == companyId)
+                .Select(ep =&gt; ep.emp)
+                .FirstOrDefaultAsync();
+            if (ceo == null)
+            {
+              throw new Exception(&quot;No CEO found with ManagerId &quot;);
+            }
+            return BuildNode(ceo, employeeLookup, positionLookup);
+        }
+        private OrgChartNode BuildNode( EmployeeDetail employee, Dictionary&lt;int, EmployeeDetail&gt; employeeLookup, Dictionary&lt;int, string&gt; positionLookup)
+        {
+            var positionName = employee.PositionId.HasValue &amp;&amp; positionLookup.ContainsKey(employee.PositionId.Value)
+           ? positionLookup[employee.PositionId.Value]
+           : &quot;Unknown Position&quot;;
+            var node = new OrgChartNode
+            {
+                FullName = $&quot;{employee.FirstName} {employee.LastName}&quot;,
+                PositionName = positionName,
+                Email = employee.Email, 
+                Subordinates = new List&lt;OrgChartNode&gt;() 
+            };
+
+            var subordinates = employeeLookup.Values
+                .Where(e =&gt; e.ManagerId == employee.EmployeeCredentialId).ToList();
+
+            foreach (var subordinate in subordinates)
+            {
+                node.Subordinates.Add(BuildNode(subordinate, employeeLookup, positionLookup));
+            }
+
+            return node;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,59,1],[13,9,13,10,1],[14,13,14,40,1],[15,9,15,10,1],[17,9,17,10,1],[18,13,20,44,1],[22,13,24,44,0],[26,13,26,72,0],[28,13,28,20,0],[28,22,28,34,0],[28,35,28,37,0],[28,38,28,47,0],[29,13,29,14,0],[30,17,30,128,0],[31,17,31,18,0],[32,21,32,30,0],[35,17,35,80,0],[36,13,36,14,0],[37,13,37,62,0],[37,62,37,66,0],[37,66,37,73,0],[37,73,37,79,0],[37,79,37,81,0],[38,13,47,40,0],[48,13,48,29,0],[49,13,49,14,0],[50,15,50,67,0],[52,13,52,67,0],[53,9,53,10,0],[55,9,55,10,0],[56,13,58,33,0],[59,13,65,15,0],[67,13,68,29,0],[68,29,68,73,0],[68,73,68,84,0],[70,13,70,20,0],[70,22,70,37,0],[70,38,70,40,0],[70,41,70,53,0],[71,13,71,14,0],[72,17,72,95,0],[73,13,73,14,0],[75,13,75,25,0],[76,9,76,10,0]]);
+    </script>
+  </body>
+</html>

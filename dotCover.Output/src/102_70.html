@@ -2,146 +2,108 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\PositionImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\UserServiceTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.BusinessLogics.Implements
 {
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
     using HRMS_Application.Authorization;
-    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogics.Implements;
+    using HRMS_Application.DTO;
+    using HRMS_Application.DTOs;
+    using HRMS_Application.Helpers;
     using HRMS_Application.Models;
-    using Microsoft.AspNetCore.Http;
+    using HRMS_Application.Models.Users;
+    using Microsoft.Extensions.Options;
     using Moq;
     using Xunit;
 
-    public class PositionImpTests
+    public class UserServiceTests
     {
-        private readonly PositionImp _testClass;
+        private readonly UserService _testClass;
         private HRMSContext _hrmsContext;
-        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
         private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly Mock&lt;IOptions&lt;AppSettings&gt;&gt; _appSettings;
 
-        public PositionImpTests()
+        public UserServiceTests()
         {
             _hrmsContext = new HRMSContext();
-            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
             _jwtUtils = new Mock&lt;IJwtUtils&gt;();
-            _testClass = new PositionImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object);
+            _appSettings = new Mock&lt;IOptions&lt;AppSettings&gt;&gt;();
+            _testClass = new UserService(_hrmsContext, _jwtUtils.Object, _appSettings.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new PositionImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object);
+            var instance = new UserService(_hrmsContext, _jwtUtils.Object, _appSettings.Object);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public async Task CanCalldeletePosition()
+        public void CanCallAuthenticate()
         {
             // Arrange
-            var id = 1457742087;
-
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(196500154);
-
-            // Act
-            var result = await _testClass.deletePosition(id);
-
-            // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetPositions()
-        {
-            // Act
-            var result = _testClass.GetPositions();
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallInsertPositions()
-        {
-            // Arrange
-            var position = new Position
+            var model = new AuthenticateRequest
             {
-                Id = 1817098939,
-                Name = &quot;TestValue1982961522&quot;,
-                RequestedCompanyId = 1302106034,
-                IsActive = (short)22108,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 1564897481,
-                    Name = &quot;TestValue1830776363&quot;,
-                    PhoneNumber = &quot;TestValue475154624&quot;,
-                    DomainName = &quot;TestValue2124661263&quot;,
-                    Status = &quot;TestValue984789266&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue1157923186&quot;,
-                    IsActive = (short)27617,
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                Username = &quot;TestValue1822580608&quot;,
+                Password = &quot;TestValue1408824786&quot;
             };
 
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(303046542);
+            _jwtUtils.Setup(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;())).Returns(&quot;TestValue1996317196&quot;);
 
             // Act
-            var result = await _testClass.InsertPositions(position);
+            var result = _testClass.Authenticate(model);
 
             // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            _jwtUtils.Verify(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;()));
 
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public async Task CanCallupdateposition()
+        public void CanCallSelectCompany()
         {
             // Arrange
-            var id = 1914298303;
-            var name = &quot;TestValue447422260&quot;;
-            var requestedcompanyId = 248227402;
+            var model = new SelectCompanyRequest { CompanyId = 1464199589 };
+            var Userid = 2065783220;
 
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(377518819);
+            _jwtUtils.Setup(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;())).Returns(&quot;TestValue682944920&quot;);
 
             // Act
-            var result = await _testClass.updateposition(id, name, requestedcompanyId);
+            var result = _testClass.SelectCompany(model, Userid);
 
             // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            _jwtUtils.Verify(mock =&gt; mock.GenerateJwtToken(It.IsAny&lt;UserDto&gt;()));
 
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public void CanCallSoftDelete()
+        public void CanCallGetAll()
+        {
+            // Act
+            var result = _testClass.GetAll();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetById()
         {
             // Arrange
-            var id = 485799381;
-            var isActive = (short)6119;
+            var id = 1288879463;
 
             // Act
-            var result = _testClass.SoftDelete(id, isActive);
+            var result = _testClass.GetById(id);
 
             // Assert
             throw new NotImplementedException(&quot;Create or modify test&quot;);
@@ -150,7 +112,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[20,9,20,34,1],[21,9,21,10,1],[22,13,22,46,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,103,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,105,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,33,1],[44,13,44,99,1],[47,13,47,62,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,52,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,94,15,1],[96,13,96,99,1],[99,13,99,69,1],[102,13,102,81,0],[104,13,104,72,0],[109,9,109,10,1],[111,13,111,33,1],[112,13,112,45,1],[113,13,113,48,1],[115,13,115,99,1],[118,13,118,88,1],[121,13,121,81,0],[123,13,123,72,0],[128,9,128,10,1],[130,13,130,32,1],[131,13,131,40,1],[134,13,134,62,1],[137,13,137,72,0]]);
+      highlightRanges([[22,9,22,34,1],[23,9,23,10,1],[24,13,24,46,1],[25,13,25,47,1],[26,13,26,62,1],[27,13,27,95,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,97,1],[37,13,37,38,1],[38,9,38,10,1],[42,9,42,10,1],[44,13,48,15,1],[50,13,50,112,1],[53,13,53,57,1],[56,13,56,82,0],[58,13,58,72,0],[63,9,63,10,1],[65,13,65,77,1],[66,13,66,37,1],[68,13,68,111,1],[71,13,71,66,1],[74,13,74,82,0],[76,13,76,72,0],[81,9,81,10,1],[83,13,83,46,1],[86,13,86,72,0],[91,9,91,10,1],[93,13,93,33,1],[96,13,96,49,1],[99,13,99,72,0]]);
     </script>
   </body>
 </html>

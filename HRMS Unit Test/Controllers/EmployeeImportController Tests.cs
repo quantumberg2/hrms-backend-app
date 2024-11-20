@@ -14,21 +14,23 @@ namespace HRMS_Unit_Test.Controllers
     {
         private readonly EmployeeImportController _testClass;
         private readonly Mock<IEmployeeImportService> _employeeImportService;
+        private readonly Mock<IAzureOperations> _azureOperations;
 
         public EmployeeImportControllerTests()
         {
+            _azureOperations = new Mock<IAzureOperations>();
             _employeeImportService = new Mock<IEmployeeImportService>();
-         //   _testClass = new EmployeeImportController(_employeeImportService.Object);
+            //   _testClass = new EmployeeImportController(_employeeImportService.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-          //  var instance = new EmployeeImportController(_employeeImportService.Object);
+            //  var instance = new EmployeeImportController(_employeeImportService.Object);
 
             // Assert
-         //   Assert.NotNull(instance);
+            //   Assert.NotNull(instance);
         }
 
         [Fact]
@@ -37,14 +39,29 @@ namespace HRMS_Unit_Test.Controllers
             // Arrange
             var @file = new Mock<IFormFile>().Object;
 
-          //  _employeeImportService.Setup(mock => mock.ImportEmployeesFromExcelAsync(It.IsAny<Stream>(), It.IsAny<int>()))
-          //      .ReturnsAsync((Inserted: 0, Rejected: 0, Errors: new List<string>()));
+            //  _employeeImportService.Setup(mock => mock.ImportEmployeesFromExcelAsync(It.IsAny<Stream>(), It.IsAny<int>()))
+            //      .ReturnsAsync((Inserted: 0, Rejected: 0, Errors: new List<string>()));
 
             // Act
             var result = await _testClass.ImportEmployees(file);
 
             // Assert
-         //   _employeeImportService.Verify(mock => mock.ImportEmployeesFromExcelAsync(It.IsAny<Stream>(), It.IsAny<int>()));
+            //   _employeeImportService.Verify(mock => mock.ImportEmployeesFromExcelAsync(It.IsAny<Stream>(), It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallDownloadEmployeeFile()
+        {
+            // Arrange
+            _azureOperations.Setup(mock => mock.FetchBulkEmployeeDetailsFile(It.IsAny<string>())).ReturnsAsync(new MemoryStream());
+
+            // Act
+            var result = await _testClass.DownloadEmployeeFile();
+
+            // Assert
+            _azureOperations.Verify(mock => mock.FetchBulkEmployeeDetailsFile(It.IsAny<string>()));
 
             throw new NotImplementedException("Create or modify test");
         }

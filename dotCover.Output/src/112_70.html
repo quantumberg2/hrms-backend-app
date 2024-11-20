@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\DeviceOperationsImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Xunit;
+
+    public class DeviceOperationsImpTests
+    {
+        private readonly DeviceOperationsImp _testClass;
+        private HRMSContext _context;
+
+        public DeviceOperationsImpTests()
+        {
+            _context = new HRMSContext();
+            _testClass = new DeviceOperationsImp(_context);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new DeviceOperationsImp(_context);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllInfo()
+        {
+            // Act
+            var result = _testClass.GetAllInfo();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetByEmpCreId()
+        {
+            // Arrange
+            var empCredId = 1432013585;
+
+            // Act
+            var result = _testClass.GetByEmpCreId(empCredId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallInsertInfo()
+        {
+            // Arrange
+            var deviceInfo = new DeviceTable
+            {
+                Id = 1077205121,
+                EmpCode = 183012333,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                WorkTime = DateTime.UtcNow,
+                OverTime = DateTime.UtcNow,
+                Remark = &quot;TestValue1583753403&quot;,
+                ErlOut = DateTime.UtcNow,
+                LateIn = DateTime.UtcNow,
+                Name = &quot;TestValue443670877&quot;,
+                Status = &quot;TestValue1231103648&quot;,
+                IsActive = (short)27978
+            };
+
+            // Act
+            var result = _testClass.InsertInfo(deviceInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallUpdateInfo()
+        {
+            // Arrange
+            var deviceInfo = new DeviceTable
+            {
+                Id = 1927147359,
+                EmpCode = 1349195724,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                WorkTime = DateTime.UtcNow,
+                OverTime = DateTime.UtcNow,
+                Remark = &quot;TestValue26464771&quot;,
+                ErlOut = DateTime.UtcNow,
+                LateIn = DateTime.UtcNow,
+                Name = &quot;TestValue1927643278&quot;,
+                Status = &quot;TestValue1864485979&quot;,
+                IsActive = (short)25841
+            };
+
+            // Act
+            var result = _testClass.UpdateInfo(deviceInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallDeleteInfo()
+        {
+            // Arrange
+            var id = 1911179226;
+
+            // Act
+            var result = _testClass.DeleteInfo(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+//namespace HRMS_Unit_Test.BusinessLogic.Implements
+//{
+//    using System;
+//    using System.Collections.Generic;
+//    using HRMS_Application.BusinessLogic.Implements;
+//    using HRMS_Application.Models;
+//    using Moq;
+//    using Xunit;
+
+//    public class DeviceOperationsImpTests
+//    {
+//        private readonly DeviceOperationsImp _testClass;
+//        private HRMSContext _context;
+
+//        public DeviceOperationsImpTests()
+//        {
+//            _context = new HRMSContext();
+//            _testClass = new DeviceOperationsImp(_context);
+//        }
+
+//        [Fact]
+//        public void CanConstruct()
+//        {
+//            // Act
+//            var instance = new DeviceOperationsImp(_context);
+
+//            // Assert
+//            Assert.NotNull(instance);
+//        }
+
+//        [Fact]
+//        public void CanCallGetAllInfo()
+//        {
+//            // Act
+//            var result = _testClass.GetAllInfo();
+
+//            // Assert
+//            throw new NotImplementedException(&quot;Create or modify test&quot;);
+//        }
+
+//        [Fact]
+//        public void CanCallGetByEmpCreId()
+//        {
+//            // Arrange
+//            var empCredId = 430235671;
+
+//            // Act
+//            var result = _testClass.GetByEmpCreId(empCredId);
+
+//            // Assert
+//            throw new NotImplementedException(&quot;Create or modify test&quot;);
+//        }
+
+//        [Fact]
+//        public void CanCallInsertInfo()
+//        {
+//            // Arrange
+//            var deviceInfo = new DeviceTable
+//            {
+//                Id = 1945420976,
+//                EmpCredentialId = 1875077102,
+//                TimeIn = DateTime.UtcNow,
+//                TimeOut = DateTime.UtcNow,
+//                InsertedDate = DateTime.UtcNow,
+//                WorkTime = DateTime.UtcNow,
+//                OverTime = DateTime.UtcNow,
+//                Remark = &quot;TestValue1490448034&quot;,
+//                ErlOut = DateTime.UtcNow,
+//                LateIn = DateTime.UtcNow,
+//                Name = &quot;TestValue1029441425&quot;,
+//                Status = &quot;TestValue1822299095&quot;,
+//                IsActive = (short)30086,
+//                EmpCredential = new EmployeeCredential
+//                {
+//                    Id = 1422341184,
+//                    UserName = &quot;TestValue1109081004&quot;,
+//                    Password = &quot;TestValue2062249053&quot;,
+//                    Status = (short)20039,
+//                    RequestedCompanyId = 109316810,
+//                    Email = &quot;TestValue971491318&quot;,
+//                    DefaultPassword = false,
+//                    GenerateOtp = &quot;TestValue1231228453&quot;,
+//                    OtpExpiration = DateTime.UtcNow,
+//                    IsActive = (short)27006,
+//                    EmployeeLoginName = &quot;TestValue1687673331&quot;,
+//                    RequestedCompany = new RequestedCompanyForm
+//                    {
+//                        Id = 1602930073,
+//                        Name = &quot;TestValue1858465957&quot;,
+//                        PhoneNumber = &quot;TestValue1041971331&quot;,
+//                        DomainName = &quot;TestValue1284450229&quot;,
+//                        Status = &quot;TestValue910163358&quot;,
+//                        InsertedDate = DateTime.UtcNow,
+//                        UpdatedDate = DateTime.UtcNow,
+//                        Email = &quot;TestValue927305974&quot;,
+//                        IsActive = (short)32707,
+//                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+//                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+//                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+//                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+//                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+//                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+//                    },
+//                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+//                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+//                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+//                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+//                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+//                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+//                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+//                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+//                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+//                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+//                }
+//            };
+
+//            // Act
+//            var result = _testClass.InsertInfo(deviceInfo);
+
+//            // Assert
+//            throw new NotImplementedException(&quot;Create or modify test&quot;);
+//        }
+
+//        [Fact]
+//        public void CanCallUpdateInfo()
+//        {
+//            // Arrange
+//            var deviceInfo = new DeviceTable
+//            {
+//                Id = 523748736,
+//                EmpCredentialId = 249494441,
+//                TimeIn = DateTime.UtcNow,
+//                TimeOut = DateTime.UtcNow,
+//                InsertedDate = DateTime.UtcNow,
+//                WorkTime = DateTime.UtcNow,
+//                OverTime = DateTime.UtcNow,
+//                Remark = &quot;TestValue392920262&quot;,
+//                ErlOut = DateTime.UtcNow,
+//                LateIn = DateTime.UtcNow,
+//                Name = &quot;TestValue724818720&quot;,
+//                Status = &quot;TestValue106761516&quot;,
+//                IsActive = (short)16043,
+//                EmpCredential = new EmployeeCredential
+//                {
+//                    Id = 521851759,
+//                    UserName = &quot;TestValue918229057&quot;,
+//                    Password = &quot;TestValue1698279282&quot;,
+//                    Status = (short)21148,
+//                    RequestedCompanyId = 840515191,
+//                    Email = &quot;TestValue1442598991&quot;,
+//                    DefaultPassword = false,
+//                    GenerateOtp = &quot;TestValue165528183&quot;,
+//                    OtpExpiration = DateTime.UtcNow,
+//                    IsActive = (short)11373,
+//                    EmployeeLoginName = &quot;TestValue966367557&quot;,
+//                    RequestedCompany = new RequestedCompanyForm
+//                    {
+//                        Id = 2115068108,
+//                        Name = &quot;TestValue297582655&quot;,
+//                        PhoneNumber = &quot;TestValue1608137661&quot;,
+//                        DomainName = &quot;TestValue207514047&quot;,
+//                        Status = &quot;TestValue1904411350&quot;,
+//                        InsertedDate = DateTime.UtcNow,
+//                        UpdatedDate = DateTime.UtcNow,
+//                        Email = &quot;TestValue297872774&quot;,
+//                        IsActive = (short)3468,
+//                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+//                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+//                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+//                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+//                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+//                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+//                    },
+//                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+//                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+//                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+//                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+//                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+//                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+//                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+//                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+//                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+//                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+//                }
+//            };
+
+//            // Act
+//            var result = _testClass.UpdateInfo(deviceInfo);
+
+//            // Assert
+//            throw new NotImplementedException(&quot;Create or modify test&quot;);
+//        }
+
+//        [Fact]
+//        public void CanCallDeleteInfo()
+//        {
+//            // Arrange
+//            var id = 28712376;
+
+//            // Act
+//            var result = _testClass.DeleteInfo(id);
+
+//            // Assert
+//            throw new NotImplementedException(&quot;Create or modify test&quot;);
+//        }
+//    }
+//}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,42,1],[14,9,14,10,1],[15,13,15,42,1],[16,13,16,60,1],[17,9,17,10,1],[21,9,21,10,1],[23,13,23,62,1],[26,13,26,38,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,50,1],[36,13,36,72,0],[41,9,41,10,1],[43,13,43,40,1],[46,13,46,62,1],[49,13,49,72,0],[54,9,54,10,1],[56,13,71,15,1],[74,13,74,60,1],[77,13,77,72,0],[82,9,82,10,1],[84,13,99,15,1],[102,13,102,60,1],[105,13,105,72,0],[110,9,110,10,1],[112,13,112,33,1],[115,13,115,52,1],[118,13,118,72,0]]);
+    </script>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
+    using System.Threading.Tasks;
     using Azure.Storage.Blobs;
     using HRMS_Application.BusinessLogic.Implements;
     using Microsoft.AspNetCore.Http;
@@ -37,6 +38,19 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Act
             var result = _testClass.StoreFilesInAzure(fileObj, containerName);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallFetchBulkEmployeeDetailsFile()
+        {
+            // Arrange
+            var url = "TestValue808158736";
+
+            // Act
+            var result = await _testClass.FetchBulkEmployeeDetailsFile(url);
 
             // Assert
             throw new NotImplementedException("Create or modify test");

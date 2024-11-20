@@ -2,70 +2,57 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\AttendanceDTOTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Helpers\AppExceptionTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.DTO
+namespace HRMS_Unit_Test.Helpers
 {
     using System;
-    using HRMS_Application.DTO;
+    using HRMS_Application.Helpers;
     using Xunit;
 
-    public class AttendanceDTOTests
+    public class AppExceptionTests
     {
-        private readonly AttendanceDTO _testClass;
+        private readonly AppException _testClass;
+        private string _message;
+        private object[] _args;
 
-        public AttendanceDTOTests()
+        public AppExceptionTests()
         {
-            _testClass = new AttendanceDTO();
+            _message = &quot;TestValue98062793&quot;;
+            _args = new[] { new object(), new object(), new object() };
+            _testClass = new AppException(_message, _args);
         }
 
         [Fact]
-        public void CanSetAndGetTimeIn()
+        public void CanConstruct()
         {
-            // Arrange
-            var testValue = DateTime.UtcNow;
-
             // Act
-            _testClass.TimeIn = testValue;
+            var instance = new AppException();
 
             // Assert
-            Assert.Equal(testValue, _testClass.TimeIn);
-        }
-
-        [Fact]
-        public void CanSetAndGetTimeOut()
-        {
-            // Arrange
-            var testValue = DateTime.UtcNow;
+            Assert.NotNull(instance);
 
             // Act
-            _testClass.TimeOut = testValue;
+            instance = new AppException(_message);
 
             // Assert
-            Assert.Equal(testValue, _testClass.TimeOut);
-        }
-
-        [Fact]
-        public void CanSetAndGetStatus()
-        {
-            // Arrange
-            var testValue = &quot;TestValue398908296&quot;;
+            Assert.NotNull(instance);
 
             // Act
-            _testClass.Status = testValue;
+            instance = new AppException(_message, _args);
 
             // Assert
-            Assert.Equal(testValue, _testClass.Status);
+            Assert.NotNull(instance);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,36,1],[12,9,12,10,1],[13,13,13,46,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,45,1],[23,13,23,43,1],[26,13,26,56,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,45,1],[36,13,36,44,1],[39,13,39,57,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,43,1],[52,13,52,56,1],[53,9,53,10,1]]);
+      highlightRanges([[13,9,13,35,1],[14,9,14,10,1],[15,13,15,44,1],[16,13,16,72,1],[17,13,17,60,1],[18,9,18,10,1],[22,9,22,10,1],[24,13,24,47,1],[27,13,27,38,1],[30,13,30,51,1],[33,13,33,38,1],[36,13,36,58,1],[39,13,39,38,1],[40,9,40,10,1]]);
     </script>
   </body>
 </html>

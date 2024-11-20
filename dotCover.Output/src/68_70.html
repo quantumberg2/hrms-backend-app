@@ -2,169 +2,83 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\EmpSalaryControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\UserDetailsDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Controllers
+namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using HRMS_Application.DTO;
     using Xunit;
 
-    public class EmpSalaryControllerTests
+    public class UserDetailsDTOTests
     {
-        private readonly EmpSalaryController _testClass;
-        private readonly Mock&lt;IEmployeeSalary&gt; _empsalry;
-        private readonly Mock&lt;ILogger&lt;EmpSalaryController&gt;&gt; _logger;
+        private readonly UserDetailsDTO _testClass;
 
-        public EmpSalaryControllerTests()
+        public UserDetailsDTOTests()
         {
-            _empsalry = new Mock&lt;IEmployeeSalary&gt;();
-            _logger = new Mock&lt;ILogger&lt;EmpSalaryController&gt;&gt;();
-            _testClass = new EmpSalaryController(_empsalry.Object, _logger.Object);
+            _testClass = new UserDetailsDTO();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new EmpSalaryController(_empsalry.Object, _logger.Object);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetAllEmpsalary()
+        public void CanSetAndGetName()
         {
             // Arrange
-            _empsalry.Setup(mock =&gt; mock.GetAllEmpSalary()).Returns(new List&lt;EmpSalary&gt;());
+            var testValue = &quot;TestValue577386476&quot;;
 
             // Act
-            var result = _testClass.GetAllEmpsalary();
+            _testClass.Name = testValue;
 
             // Assert
-            _empsalry.Verify(mock =&gt; mock.GetAllEmpSalary());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Name);
         }
 
         [Fact]
-        public async Task CanCallInsertEmpsalary()
+        public void CanSetAndGetEmail()
         {
             // Arrange
-            var empSalary = new EmpSalary
-            {
-                Id = 1464058878,
-                EmployeeCredentialId = 1820768029,
-                SalaryRange = &quot;TestValue770548162&quot;,
-                AnnualIncome = 682383529.08M,
-                Loan = 1806499950.75M,
-                Insurance = 209593667.25M,
-                IsActive = (short)11111,
-                EmployeeCredential = new EmployeeCredential
-                {
-                    Id = 402444804,
-                    UserName = &quot;TestValue1821503698&quot;,
-                    Password = &quot;TestValue1532765468&quot;,
-                    Status = (short)27702,
-                    RequestedCompanyId = 518924543,
-                    Email = &quot;TestValue1704141027&quot;,
-                    DefaultPassword = false,
-                    GenerateOtp = &quot;TestValue831663690&quot;,
-                    OtpExpiration = DateTime.UtcNow,
-                    IsActive = (short)7290,
-                    EmployeeLoginName = &quot;TestValue1345805269&quot;,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 227840373,
-                        Name = &quot;TestValue646711990&quot;,
-                        PhoneNumber = &quot;TestValue518084508&quot;,
-                        DomainName = &quot;TestValue86722438&quot;,
-                        Status = &quot;TestValue810371293&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue177937108&quot;,
-                        IsActive = (short)1973,
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
-                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
-                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                }
-            };
-
-            _empsalry.Setup(mock =&gt; mock.InsertEmpSalary(It.IsAny&lt;EmpSalary&gt;())).ReturnsAsync(&quot;TestValue2063120281&quot;);
+            var testValue = &quot;TestValue393807093&quot;;
 
             // Act
-            var result = await _testClass.InsertEmpsalary(empSalary);
+            _testClass.Email = testValue;
 
             // Assert
-            _empsalry.Verify(mock =&gt; mock.InsertEmpSalary(It.IsAny&lt;EmpSalary&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Email);
         }
 
         [Fact]
-        public async Task CanCallDeleteEmpsalary()
+        public void CanSetAndGetImageUrl()
         {
             // Arrange
-            var id = 1947112838;
-
-            _empsalry.Setup(mock =&gt; mock.deleteEmpsalary(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+            var testValue = &quot;TestValue1316089879&quot;;
 
             // Act
-            var result = await _testClass.DeleteEmpsalary(id);
+            _testClass.ImageUrl = testValue;
 
             // Assert
-            _empsalry.Verify(mock =&gt; mock.deleteEmpsalary(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.ImageUrl);
         }
 
         [Fact]
-        public void CanCallSoftDelete()
+        public void CanSetAndGetCompanyLogo()
         {
             // Arrange
-            var id = 1716832033;
-            var isActive = (short)28788;
-
-            _empsalry.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(false);
+            var testValue = &quot;TestValue1941916273&quot;;
 
             // Act
-            var result = _testClass.SoftDelete(id, isActive);
+            _testClass.CompanyLogo = testValue;
 
             // Assert
-            _empsalry.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.CompanyLogo);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[19,9,19,42,1],[20,9,20,10,1],[21,13,21,53,1],[22,13,22,64,1],[23,13,23,84,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,86,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,92,1],[43,13,43,55,1],[46,13,46,62,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,106,15,1],[108,13,108,118,1],[111,13,111,70,1],[114,13,114,83,1],[116,13,116,72,1],[121,9,121,10,1],[123,13,123,33,1],[125,13,125,95,1],[128,13,128,63,1],[131,13,131,77,1],[133,13,133,72,1],[138,9,138,10,1],[140,13,140,33,1],[141,13,141,41,1],[143,13,143,105,1],[146,13,146,62,1],[149,13,149,91,1],[151,13,151,72,1]]);
+      highlightRanges([[11,9,11,37,1],[12,9,12,10,1],[13,13,13,47,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,50,1],[23,13,23,41,1],[26,13,26,54,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,50,1],[36,13,36,42,1],[39,13,39,55,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,51,1],[49,13,49,45,1],[52,13,52,58,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,48,1],[65,13,65,61,1],[66,9,66,10,1]]);
     </script>
   </body>
 </html>

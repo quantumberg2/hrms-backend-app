@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\EmpDetailsImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.DTO;
+    using HRMS_Application.GlobalSearch;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class EmpDetailsImpTests
+    {
+        private readonly EmpDetailsImp _testClass;
+        private HRMSContext _hrmsContext;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly Mock&lt;IEmailPassword&gt; _emailPasswordService;
+        private readonly Mock&lt;IAzureOperations&gt; _azureOperations;
+
+        public EmpDetailsImpTests()
+        {
+            _azureOperations = new Mock&lt;IAzureOperations&gt;();
+            _hrmsContext = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _emailPasswordService = new Mock&lt;IEmailPassword&gt;();
+            //   _testClass = new EmpDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            //     var instance = new EmpDetailsImp(_hrmsContext, _httpContextAccessor.Object, _jwtUtils.Object, _emailPasswordService.Object);
+
+            // Assert
+            //  Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteEmployeeDetail()
+        {
+            // Arrange
+            var id = 1131361402;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(343397826);
+
+            // Act
+            var result = await _testClass.DeleteEmployeeDetail(id);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllUser()
+        {
+            // Act
+            var result = _testClass.GetAllUser();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetById()
+        {
+            // Arrange
+            var id = 1805374430;
+
+            // Act
+            var result = _testClass.GetById(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertEmployeeAsync()
+        {
+            // Arrange
+            var employeeDetail = new EmployeeDetail
+            {
+                Id = 1574321451,
+                DeptId = 1030957147,
+                FirstName = &quot;TestValue651282411&quot;,
+                MiddleName = &quot;TestValue1470129563&quot;,
+                LastName = &quot;TestValue2058146445&quot;,
+                PositionId = 1283953631,
+                EmployeeCredentialId = 285280672,
+                EmployeeNumber = &quot;TestValue1236913052&quot;,
+                Email = &quot;TestValue2068136735&quot;,
+                RequestCompanyId = 302673087,
+                IsActive = (short)2540,
+                ManagerId = 1121002246,
+                NickName = &quot;TestValue1503927736&quot;,
+                Extension = &quot;TestValue1618823313&quot;,
+                MobileNumber = &quot;TestValue1220237132&quot;,
+                Dept = new Department
+                {
+                    Id = 1060963121,
+                    Name = &quot;TestValue1382562523&quot;,
+                    RequestedCompanyId = 1335232533,
+                    IsActive = (short)11490,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 2082973764,
+                        Name = &quot;TestValue355228296&quot;,
+                        PhoneNumber = &quot;TestValue1603196413&quot;,
+                        DomainName = &quot;TestValue1574837780&quot;,
+                        Status = &quot;TestValue1391561918&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1884990071&quot;,
+                        IsActive = (short)5513,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                },
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 136062502,
+                    UserName = &quot;TestValue1342717614&quot;,
+                    Password = &quot;TestValue1763890213&quot;,
+                    Status = (short)16948,
+                    RequestedCompanyId = 483124954,
+                    Email = &quot;TestValue482983087&quot;,
+                    DefaultPassword = true,
+                    GenerateOtp = &quot;TestValue1866137929&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)12146,
+                    EmployeeLoginName = &quot;TestValue1262926212&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 2141959309,
+                        Name = &quot;TestValue1353074768&quot;,
+                        PhoneNumber = &quot;TestValue311296293&quot;,
+                        DomainName = &quot;TestValue291101969&quot;,
+                        Status = &quot;TestValue1463017&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1857487386&quot;,
+                        IsActive = (short)27143,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    //  DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                Position = new Position
+                {
+                    Id = 1591289791,
+                    Name = &quot;TestValue1417512264&quot;,
+                    RequestedCompanyId = 2115617069,
+                    IsActive = (short)2260,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 304402987,
+                        Name = &quot;TestValue1376709453&quot;,
+                        PhoneNumber = &quot;TestValue940235963&quot;,
+                        DomainName = &quot;TestValue1353805747&quot;,
+                        Status = &quot;TestValue1155648940&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue378281364&quot;,
+                        IsActive = (short)28531,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
+                }
+            };
+            var companyId = 74628526;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(429856822);
+            _emailPasswordService.Setup(mock =&gt; mock.SendOtpEmailAsync(It.IsAny&lt;Generatepassword&gt;())).Verifiable();
+
+            // Act
+            //    var result = await _testClass.InsertEmployeeAsync(employeeDetail, companyId);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            _emailPasswordService.Verify(mock =&gt; mock.SendOtpEmailAsync(It.IsAny&lt;Generatepassword&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeeDetail()
+        {
+            // Arrange
+            var id = 1603603014;
+            var depId = 1407204140;
+            var fname = &quot;TestValue1732623139&quot;;
+            var mname = &quot;TestValue1696780460&quot;;
+            var lname = &quot;TestValue1147891129&quot;;
+            var positionid = 1090046705;
+            var Designation = &quot;TestValue1620506486&quot;;
+            var Email = &quot;TestValue957336953&quot;;
+            var employeecredentialId = 1967031780;
+            var EmployeeNumber = &quot;TestValue1831032493&quot;;
+            var requsetCompanyId = 2023184664;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(2118608685);
+
+            // Act
+            //       var result = await _testClass.UpdateEmployeeDetail(id, depId, fname, mname, lname, positionid, Designation, Email, employeecredentialId, EmployeeNumber, requsetCompanyId);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 1785273454;
+            var isActive = (short)12553;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        /*   [Fact]
+           public void CanCallGetAllEmployees()
+           {
+               // Act
+               var result = _testClass.GetAllEmployees();
+
+               // Assert
+               throw new NotImplementedException(&quot;Create or modify test&quot;);
+           }*/
+
+        [Fact]
+        public async Task CanCallGetEmployeeInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 2104794567;
+
+            // Act
+            var result = await _testClass.GetEmployeeInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeePersonalInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 1066487459;
+
+            // Act
+            var result = await _testClass.GetEmployeePersonalInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeeAddressInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 29487755;
+
+            // Act
+            var result = await _testClass.GetEmployeeAddressInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeeAccountInfoAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 1023936240;
+
+            // Act
+            var result = await _testClass.GetEmployeeAccountInfoAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        /*[Fact]
+        public void CanCallGetFilters()
+        {
+            // Arrange
+            var globalSearch = new GlobalsearchEmp { FilterBy = &quot;TestValue461978069&quot; };
+
+            // Act
+            var result = _testClass.GetFilters(globalSearch);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }*/
+
+        [Fact]
+        public async Task CanCallUpdateEmployeeInfoAsync()
+        {
+            // Arrange
+            var updateEmployeeInfo = new UpdateEmployeeInfoDTO
+            {
+                EmployeeCredentialId = 2081510747,
+                EmployeeName = &quot;TestValue645224557&quot;,
+                NickName = &quot;TestValue1971758950&quot;,
+                EmailAddress = &quot;TestValue2131031636&quot;,
+                EmpLoginName = &quot;TestValue2121533301&quot;,
+                MobileNumber = &quot;TestValue1916856649&quot;,
+                Extension = &quot;TestValue213245416&quot;,
+                gender = &quot;TestValue1979143162&quot;
+            };
+
+            // Act
+            // var result = await _testClass.UpdateEmployeeInfoAsync(updateEmployeeInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeepersonalInfoAsync()
+        {
+            // Arrange
+            var empPersonalInfo = new EmpPersonalInfoDTO
+            {
+                FirstName = &quot;TestValue2113491808&quot;,
+                MiddleName = &quot;TestValue823654250&quot;,
+                LastName = &quot;TestValue1904477682&quot;,
+                EmployeeCredentialId = 1474959661,
+                Dob = DateTime.UtcNow,
+                DateOfJoining = DateTime.UtcNow,
+                ConfirmDate = DateTime.UtcNow,
+                EmpStatus = &quot;TestValue104701723&quot;,
+                EmailId = &quot;TestValue1522900563&quot;,
+                PersonalEmail = &quot;TestValue1791509403&quot;,
+                MaritalStatus = &quot;TestValue824942016&quot;,
+                BloodGroup = &quot;TestValue1806806845&quot;,
+                SpouseName = &quot;TestValue734755169&quot;,
+                PhysicallyChallenged = false,
+                EmergencyContact = &quot;TestValue761999480&quot;,
+                PAN = &quot;TestValue1290694487&quot;,
+                Gender = &quot;TestValue1058899959&quot;,
+                Contact = &quot;TestValue236980900&quot;
+            };
+
+            // Act
+            var result = await _testClass.UpdateEmployeepersonalInfoAsync(empPersonalInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeeAddresslInfoAsync()
+        {
+            // Arrange
+            var addressInfo = new AddressInfoDTO
+            {
+                EmployeeCredentialId = 821584157,
+                AddressLine1 = &quot;TestValue1771741658&quot;,
+                AddressLine2 = &quot;TestValue1733963418&quot;,
+                City = &quot;TestValue92432405&quot;,
+                State = &quot;TestValue510330762&quot;,
+                Country = &quot;TestValue1629130375&quot;,
+                PinCode = &quot;TestValue1419398533&quot;,
+                IsActive = (short)30840
+            };
+
+            // Act
+            var result = await _testClass.UpdateEmployeeAddresslInfoAsync(addressInfo);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateEmployeeAccountInfoAsync()
+        {
+            // Arrange
+            var accountDetail = new AccountDetail
+            {
+                Id = 1324317992,
+                EmployeeCredentialId = 131712700,
+                AccountNumber = &quot;TestValue2063786942&quot;,
+                IfscCode = &quot;TestValue1935857213&quot;,
+                AccountType = &quot;TestValue1576887616&quot;,
+                BankName = &quot;TestValue146849735&quot;,
+                BranchName = &quot;TestValue1620055025&quot;,
+                AadharNumber = &quot;TestValue1433154486&quot;,
+                PfNumber = &quot;TestValue1963250137&quot;,
+                UanNumber = &quot;TestValue1483535044&quot;,
+                PfJoiningDate = DateTime.UtcNow,
+                EligibleForPf = false,
+                IsActive = (short)17150,
+                Country = &quot;TestValue796852236&quot;,
+                State = &quot;TestValue1200342918&quot;,
+                City = &quot;TestValue492072119&quot;,
+                Pin = 1726330770,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 500284101,
+                    UserName = &quot;TestValue2141247698&quot;,
+                    Password = &quot;TestValue2145297890&quot;,
+                    Status = (short)4546,
+                    RequestedCompanyId = 331732290,
+                    Email = &quot;TestValue409036126&quot;,
+                    DefaultPassword = false,
+                    GenerateOtp = &quot;TestValue1318767229&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)15603,
+                    EmployeeLoginName = &quot;TestValue408243657&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1150174793,
+                        Name = &quot;TestValue359289978&quot;,
+                        PhoneNumber = &quot;TestValue387569883&quot;,
+                        DomainName = &quot;TestValue1824424244&quot;,
+                        Status = &quot;TestValue1850398301&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue350012787&quot;,
+                        IsActive = (short)10590,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                }
+            };
+
+            // Act
+            // var result = await _testClass.UpdateEmployeeAccountInfoAsync(accountDetail);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetEmployeeShiftAndLeaveStats()
+        {
+            // Arrange
+            var empCredentialId = 949905746;
+
+            // Act
+            var result = _testClass.GetEmployeeShiftAndLeaveStats(empCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllEmployees()
+        {
+            // Arrange
+            var companyId = 1149453750;
+
+            // Act
+            var result = _testClass.GetAllEmployees(companyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetFilters()
+        {
+            // Arrange
+            var globalSearch = new GlobalsearchEmp { FilterBy = &quot;TestValue1659685909&quot; };
+            var companyId = 1197635541;
+
+            // Act
+            var result = _testClass.GetFilters(globalSearch, companyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetFiltersbymanager()
+        {
+            // Arrange
+            var globalSearch = new GlobalsearchEmp { FilterBy = &quot;TestValue198060944&quot; };
+            var companyId = 752186682;
+            var managerId = 114359651;
+
+            // Act
+            var result = _testClass.GetFiltersbymanager(globalSearch, companyId, managerId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetMonthlyStatistics()
+        {
+            // Arrange
+            var empCredentialId = 633652502;
+            var month = DateTime.UtcNow;
+
+            // Act
+            var result = _testClass.GetMonthlyStatistics(empCredentialId, month);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateImageUrl()
+        {
+            // Arrange
+            var empcredId = 1575074126;
+            var @file = new Mock&lt;IFormFile&gt;().Object;
+
+            _azureOperations.Setup(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;())).Returns(&quot;TestValue2082394434&quot;);
+
+            // Act
+            var result = await _testClass.UpdateImageUrl(empcredId, file);
+
+            // Assert
+            _azureOperations.Verify(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetUserDetails()
+        {
+            // Arrange
+            var empcredId = 601319064;
+            var companyId = 1616919382;
+
+            // Act
+            var result = _testClass.GetUserDetails(empcredId, companyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[25,9,25,36,1],[26,9,26,10,1],[27,13,27,61,1],[28,13,28,46,1],[29,13,29,69,1],[30,13,30,47,1],[31,13,31,64,1],[33,9,33,10,1],[37,9,37,10,1],[43,9,43,10,1],[47,9,47,10,1],[49,13,49,33,1],[51,13,51,99,1],[54,13,54,68,1],[57,13,57,81,0],[59,13,59,72,0],[64,9,64,10,1],[66,13,66,50,1],[69,13,69,72,0],[74,9,74,10,1],[76,13,76,33,1],[79,13,79,49,1],[82,13,82,72,0],[87,9,87,10,1],[89,13,200,15,1],[201,13,201,38,1],[203,13,203,99,1],[204,13,204,116,1],[210,13,210,81,1],[211,13,211,104,0],[213,13,213,72,0],[218,9,218,10,1],[220,13,220,33,1],[221,13,221,36,1],[222,13,222,47,1],[223,13,223,47,1],[224,13,224,47,1],[225,13,225,41,1],[226,13,226,53,1],[227,13,227,46,1],[228,13,228,51,1],[229,13,229,56,1],[230,13,230,47,1],[232,13,232,100,1],[238,13,238,81,1],[240,13,240,72,0],[245,9,245,10,1],[247,13,247,33,1],[248,13,248,41,1],[251,13,251,62,1],[254,13,254,72,0],[269,9,269,10,1],[271,13,271,51,1],[274,13,274,86,1],[277,13,277,72,0],[282,9,282,10,1],[284,13,284,51,1],[287,13,287,94,1],[290,13,290,72,0],[295,9,295,10,1],[297,13,297,49,1],[300,13,300,93,1],[303,13,303,72,0],[308,9,308,10,1],[310,13,310,51,1],[313,13,313,93,1],[316,13,316,72,0],[334,9,334,10,1],[336,13,346,15,1],[352,13,352,72,1],[357,9,357,10,1],[359,13,379,15,1],[382,13,382,92,1],[385,13,385,72,0],[390,9,390,10,1],[392,13,402,15,1],[405,13,405,88,1],[408,13,408,72,0],[413,9,413,10,1],[415,13,476,15,1],[482,13,482,72,1],[487,9,487,10,1],[489,13,489,45,1],[492,13,492,84,1],[495,13,495,72,0],[500,9,500,10,1],[502,13,502,40,1],[505,13,505,64,1],[508,13,508,72,0],[513,9,513,10,1],[515,13,515,89,1],[516,13,516,40,1],[519,13,519,73,1],[522,13,522,72,0],[527,9,527,10,1],[529,13,529,88,1],[530,13,530,39,1],[531,13,531,39,1],[534,13,534,93,1],[537,13,537,72,0],[542,9,542,10,1],[544,13,544,45,1],[545,13,545,41,1],[548,13,548,82,1],[551,13,551,72,0],[556,9,556,10,1],[558,13,558,40,1],[559,13,559,54,1],[561,13,561,142,1],[564,13,564,75,1],[567,13,567,112,0],[569,13,569,72,0],[574,9,574,10,1],[576,13,576,39,1],[577,13,577,40,1],[580,13,580,74,1],[583,13,583,72,0]]);
+    </script>
+  </body>
+</html>

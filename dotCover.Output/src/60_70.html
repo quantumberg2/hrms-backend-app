@@ -2,204 +2,111 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\DepartmentControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\NewsDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Controllers
+namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
+    using HRMS_Application.DTO;
+    using Microsoft.AspNetCore.Http;
     using Moq;
     using Xunit;
 
-    public class DepartmentControllerTests
+    public class NewsDTOTests
     {
-        private readonly DepartmentController _testClass;
-        private readonly Mock&lt;IDepartment&gt; _department;
-        private readonly Mock&lt;ILogger&lt;DepartmentController&gt;&gt; _logger;
+        private readonly NewsDTO _testClass;
 
-        public DepartmentControllerTests()
+        public NewsDTOTests()
         {
-            _department = new Mock&lt;IDepartment&gt;();
-            _logger = new Mock&lt;ILogger&lt;DepartmentController&gt;&gt;();
-            _testClass = new DepartmentController(_department.Object, _logger.Object);
+            _testClass = new NewsDTO();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new DepartmentController(_department.Object, _logger.Object);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetAllDepartments()
+        public void CanSetAndGetDisplayDate()
         {
             // Arrange
-            _department.Setup(mock =&gt; mock.GetAllDepartment()).Returns(new List&lt;Department&gt;());
+            var testValue = DateTime.UtcNow;
 
             // Act
-            var result = _testClass.GetAllDepartments();
+            _testClass.DisplayDate = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.GetAllDepartment());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.DisplayDate);
         }
 
         [Fact]
-        public void CanCallGetDepartmentsByName()
+        public void CanSetAndGetInsertedDate()
         {
             // Arrange
-            var name = &quot;TestValue333713848&quot;;
-
-            _department.Setup(mock =&gt; mock.GetDepartmentsByName(It.IsAny&lt;string&gt;())).Returns(new List&lt;Department&gt;());
+            var testValue = DateTime.UtcNow;
 
             // Act
-            var result = _testClass.GetDepartmentsByName(name);
+            _testClass.InsertedDate = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.GetDepartmentsByName(It.IsAny&lt;string&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.InsertedDate);
         }
 
         [Fact]
-        public async Task CanCallInsertDepartments()
+        public void CanSetAndGetHeading()
         {
             // Arrange
-            var department = new Department
-            {
-                Id = 1267420575,
-                Name = &quot;TestValue1722159908&quot;,
-                RequestedCompanyId = 2018066746,
-                IsActive = (short)3734,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 404316770,
-                    Name = &quot;TestValue1226933723&quot;,
-                    PhoneNumber = &quot;TestValue285923838&quot;,
-                    DomainName = &quot;TestValue1055626069&quot;,
-                    Status = &quot;TestValue797089338&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue1424781438&quot;,
-                    IsActive = (short)21155,
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-            };
-
-            _department.Setup(mock =&gt; mock.InsertDepartment(It.IsAny&lt;Department&gt;())).ReturnsAsync(&quot;TestValue2073592075&quot;);
+            var testValue = &quot;TestValue2110445186&quot;;
 
             // Act
-            var result = await _testClass.InsertDepartments(department);
+            _testClass.Heading = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.InsertDepartment(It.IsAny&lt;Department&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Heading);
         }
 
         [Fact]
-        public async Task CanCallUpdateDepartment()
+        public void CanSetAndGetDesciption()
         {
             // Arrange
-            var id = 870145925;
-            var name = &quot;TestValue614268264&quot;;
-            var requestedcompanyId = 1512067543;
-
-            _department.Setup(mock =&gt; mock.UpdateDepartment(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;())).ReturnsAsync(new Department
-            {
-                Id = 151375346,
-                Name = &quot;TestValue791182037&quot;,
-                RequestedCompanyId = 1607447361,
-                IsActive = (short)31668,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 1541703180,
-                    Name = &quot;TestValue1233881016&quot;,
-                    PhoneNumber = &quot;TestValue1426002413&quot;,
-                    DomainName = &quot;TestValue209074708&quot;,
-                    Status = &quot;TestValue696980295&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue2053601795&quot;,
-                    IsActive = (short)4572,
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                },
-                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object
-            });
+            var testValue = &quot;TestValue1601287632&quot;;
 
             // Act
-            var result = await _testClass.UpdateDepartment(id, name, requestedcompanyId);
+            _testClass.Desciption = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.UpdateDepartment(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;int?&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Desciption);
         }
 
         [Fact]
-        public async Task CanCallDeleteDepartment()
+        public void CanSetAndGetImgUrl()
         {
             // Arrange
-            var id = 1347448562;
-
-            _department.Setup(mock =&gt; mock.deleteDepartment(It.IsAny&lt;int&gt;())).ReturnsAsync(false);
+            var testValue = new Mock&lt;IFormFile&gt;().Object;
 
             // Act
-            var result = await _testClass.DeleteDepartment(id);
+            _testClass.ImgUrl = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.deleteDepartment(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Same(testValue, _testClass.ImgUrl);
         }
 
         [Fact]
-        public void CanCallSoftDelete()
+        public void CanSetAndGetIsActive()
         {
             // Arrange
-            var id = 1459735789;
-            var isActive = (short)24421;
-
-            _department.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(false);
+            var testValue = (short)24659;
 
             // Act
-            var result = _testClass.SoftDelete(id, isActive);
+            _testClass.IsActive = testValue;
 
             // Assert
-            _department.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.IsActive);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[19,9,19,43,1],[20,9,20,10,1],[21,13,21,51,1],[22,13,22,65,1],[23,13,23,87,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,89,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,96,1],[43,13,43,57,1],[46,13,46,65,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,55,45,1],[57,13,57,118,1],[60,13,60,64,1],[63,13,63,87,1],[65,13,65,72,1],[70,9,70,10,1],[72,13,97,15,1],[99,13,99,122,1],[102,13,102,73,1],[105,13,105,87,1],[107,13,107,72,1],[112,9,112,10,1],[114,13,114,32,1],[115,13,115,45,1],[116,13,116,49,1],[118,13,143,16,1],[146,13,146,90,1],[149,13,149,118,1],[151,13,151,72,1],[156,9,156,10,1],[158,13,158,33,1],[160,13,160,99,1],[163,13,163,64,1],[166,13,166,80,1],[168,13,168,72,1],[173,9,173,10,1],[175,13,175,33,1],[176,13,176,41,1],[178,13,178,107,1],[181,13,181,62,1],[184,13,184,93,1],[186,13,186,72,1]]);
+      highlightRanges([[13,9,13,30,1],[14,9,14,10,1],[15,13,15,40,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,45,1],[25,13,25,48,1],[28,13,28,61,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,45,1],[38,13,38,49,1],[41,13,41,62,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,51,1],[51,13,51,44,1],[54,13,54,57,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,51,1],[64,13,64,47,1],[67,13,67,60,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,58,1],[77,13,77,43,1],[80,13,80,55,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,87,42,1],[90,13,90,45,1],[93,13,93,58,1],[94,9,94,10,1]]);
     </script>
   </body>
 </html>

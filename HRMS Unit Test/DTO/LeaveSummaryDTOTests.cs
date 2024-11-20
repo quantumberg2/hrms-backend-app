@@ -92,44 +92,44 @@ namespace HRMS_Unit_Test.DTO
             Assert.Equal(testValue, _testClass.LeaveType);
         }*/
 
-      /*  [Fact]
-        public void CanSetAndGetApprovedCount()
-        {
-            // Arrange
-            var testValue = 1324241054;
+        /*  [Fact]
+          public void CanSetAndGetApprovedCount()
+          {
+              // Arrange
+              var testValue = 1324241054;
 
-            // Act
-            _testClass.ApprovedCount = testValue;
+              // Act
+              _testClass.ApprovedCount = testValue;
 
-            // Assert
-            Assert.Equal(testValue, _testClass.ApprovedCount);
-        }
-*/
-       /* [Fact]
-        public void CanSetAndGetPendingCount()
-        {
-            // Arrange
-            var testValue = 247685496;
+              // Assert
+              Assert.Equal(testValue, _testClass.ApprovedCount);
+          }
+  */
+        /* [Fact]
+         public void CanSetAndGetPendingCount()
+         {
+             // Arrange
+             var testValue = 247685496;
 
-            // Act
-            _testClass.PendingCount = testValue;
+             // Act
+             _testClass.PendingCount = testValue;
 
-            // Assert
-            Assert.Equal(testValue, _testClass.PendingCount);
-        }
-*/
-      /*  [Fact]
-        public void CanSetAndGetRejectedCount()
-        {
-            // Arrange
-            var testValue = 741119222;
+             // Assert
+             Assert.Equal(testValue, _testClass.PendingCount);
+         }
+ */
+        /*  [Fact]
+          public void CanSetAndGetRejectedCount()
+          {
+              // Arrange
+              var testValue = 741119222;
 
-            // Act
-            _testClass.RejectedCount = testValue;
+              // Act
+              _testClass.RejectedCount = testValue;
 
-            // Assert
-            Assert.Equal(testValue, _testClass.RejectedCount);
-        }*/
+              // Assert
+              Assert.Equal(testValue, _testClass.RejectedCount);
+          }*/
 
         [Fact]
         public void CanSetAndGetLeaveSummaries()
@@ -142,6 +142,58 @@ namespace HRMS_Unit_Test.DTO
 
             // Assert
             Assert.Same(testValue, _testClass.LeaveSummaries);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveType()
+        {
+            // Arrange
+            var testValue = "TestValue643210606";
+
+            // Act
+            _testClass.LeaveType = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveType);
+        }
+
+        [Fact]
+        public void CanSetAndGetApprovedCount()
+        {
+            // Arrange
+            var testValue = 1616167380;
+
+            // Act
+            _testClass.ApprovedCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ApprovedCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetPendingCount()
+        {
+            // Arrange
+            var testValue = 1160161227;
+
+            // Act
+            _testClass.PendingCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PendingCount);
+        }
+
+        [Fact]
+        public void CanSetAndGetRejectedCount()
+        {
+            // Arrange
+            var testValue = 1013918365;
+
+            // Act
+            _testClass.RejectedCount = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.RejectedCount);
         }
     }
 }

@@ -51,5 +51,31 @@ namespace HRMS_Unit_Test.DTO
             // Assert
             Assert.Equal(testValue, _testClass.Status);
         }
+
+        [Fact]
+        public void CanSetAndGetShift()
+        {
+            // Arrange
+            var testValue = "TestValue833921580";
+
+            // Act
+            _testClass.Shift = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Shift);
+        }
+
+        [Fact]
+        public void CanSetAndGetDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.Date = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Date);
+        }
     }
 }

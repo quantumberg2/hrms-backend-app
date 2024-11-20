@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\ShiftRosterImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class ShiftRosterImpTests
+    {
+        private readonly ShiftRosterImp _testClass;
+        private HRMSContext _context;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+
+        public ShiftRosterImpTests()
+        {
+            _context = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _testClass = new ShiftRosterImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new ShiftRosterImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCalldeleteShiftRoster()
+        {
+            // Arrange
+            var id = 845574464;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(2064906638);
+
+            // Act
+            var result = await _testClass.deleteShiftRoster(id);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllShiftRoster()
+        {
+            // Act
+            var result = _testClass.GetAllShiftRoster();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetShiftRosterId()
+        {
+            // Arrange
+            var id = 319891783;
+
+            // Act
+            var result = _testClass.GetShiftRosterId(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertShiftRoster()
+        {
+            // Arrange
+            var shiftRoster = new ShiftRoster
+            {
+                Id = 1945774675,
+                EmpCredentialId = 552766395,
+                ShiftRosterTypeId = 1695571812,
+                Startdate = DateTime.UtcNow,
+                Enddate = DateTime.UtcNow,
+                ShiftRosterType = new ShiftRosterType
+                {
+                    Id = 38735928,
+                    Type = &quot;TestValue183766751&quot;,
+                    TimeRange = &quot;TestValue307555530&quot;,
+                    ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+                }
+            };
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1648179795);
+
+            // Act
+            var result = await _testClass.InsertShiftRoster(shiftRoster);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,37,1],[21,9,21,10,1],[22,13,22,42,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,102,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,104,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,32,1],[44,13,44,100,1],[47,13,47,65,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,57,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,32,1],[72,13,72,58,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,96,15,1],[98,13,98,100,1],[101,13,101,74,1],[104,13,104,81,0],[106,13,106,72,0]]);
+    </script>
+  </body>
+</html>

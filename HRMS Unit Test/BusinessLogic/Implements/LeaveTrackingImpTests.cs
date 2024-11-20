@@ -5,6 +5,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
     using System.Threading.Tasks;
     using HRMS_Application.Authorization;
     using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
     using HRMS_Application.Models;
     using Microsoft.AspNetCore.Http;
     using Moq;
@@ -16,13 +17,17 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
         private HRMSContext _hrmscontext;
         private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
         private readonly Mock<IJwtUtils> _jwtUtils;
+        private readonly Mock<IAlertEmailOperations> _alertEmail;
+        private readonly Mock<IAzureOperations> _azureOperations;
 
         public LeaveTrackingImpTests()
         {
+            _azureOperations = new Mock<IAzureOperations>();
+            _alertEmail = new Mock<IAlertEmailOperations>();
             _hrmscontext = new HRMSContext();
             _httpContextAccessor = new Mock<IHttpContextAccessor>();
             _jwtUtils = new Mock<IJwtUtils>();
-          //  _testClass = new LeaveTrackingImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
+            //  _testClass = new LeaveTrackingImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
         }
 
 
@@ -34,8 +39,8 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Assert
             Assert.NotNull(result);
-            Assert.IsAssignableFrom<IEnumerable<LeaveTracking>>(result); 
-            Assert.True(result.Any(), "Expected at least one leave record"); 
+            Assert.IsAssignableFrom<IEnumerable<LeaveTracking>>(result);
+            Assert.True(result.Any(), "Expected at least one leave record");
         }
 
 
@@ -281,25 +286,25 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             var status = "TestValue1739392206";
 
             // Act
-       //     var result = await _testClass.GetLeavesByStatusAsync(status);
+            //     var result = await _testClass.GetLeavesByStatusAsync(status);
 
             // Assert
             throw new NotImplementedException("Create or modify test");
         }
 
-       /* [Fact]
-        public async Task CanCallGetEmployeeLeaveSummaryAsync()
-        {
-            // Arrange
-            var employeeCredentialId = 2082649406;
+        /* [Fact]
+         public async Task CanCallGetEmployeeLeaveSummaryAsync()
+         {
+             // Arrange
+             var employeeCredentialId = 2082649406;
 
-            // Act
-            var result = await _testClass.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
+             // Act
+             var result = await _testClass.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
 
-            // Assert
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
+             // Assert
+             throw new NotImplementedException("Create or modify test");
+         }
+ */
         [Fact]
         public void CanCallSoftDelete()
         {
@@ -453,6 +458,42 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Act
             var result = await _testClass.UpdateLeaveAsyncchanges(employeeCredentialId, id, newStatus);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new LeaveTrackingImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object, _alertEmail.Object, _azureOperations.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetByIdAsync()
+        {
+            // Arrange
+            var id = 547390339;
+
+            // Act
+            var result = _testClass.GetByIdAsync(id);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeeLeaveSummaryAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 1383461375;
+
+            // Act
+            var result = await _testClass.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
 
             // Assert
             throw new NotImplementedException("Create or modify test");

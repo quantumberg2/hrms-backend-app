@@ -1,3 +1,124 @@
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Xunit;
+
+    public class DeviceOperationsImpTests
+    {
+        private readonly DeviceOperationsImp _testClass;
+        private HRMSContext _context;
+
+        public DeviceOperationsImpTests()
+        {
+            _context = new HRMSContext();
+            _testClass = new DeviceOperationsImp(_context);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new DeviceOperationsImp(_context);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetAllInfo()
+        {
+            // Act
+            var result = _testClass.GetAllInfo();
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetByEmpCreId()
+        {
+            // Arrange
+            var empCredId = 1432013585;
+
+            // Act
+            var result = _testClass.GetByEmpCreId(empCredId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallInsertInfo()
+        {
+            // Arrange
+            var deviceInfo = new DeviceTable
+            {
+                Id = 1077205121,
+                EmpCode = 183012333,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                WorkTime = DateTime.UtcNow,
+                OverTime = DateTime.UtcNow,
+                Remark = "TestValue1583753403",
+                ErlOut = DateTime.UtcNow,
+                LateIn = DateTime.UtcNow,
+                Name = "TestValue443670877",
+                Status = "TestValue1231103648",
+                IsActive = (short)27978
+            };
+
+            // Act
+            var result = _testClass.InsertInfo(deviceInfo);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallUpdateInfo()
+        {
+            // Arrange
+            var deviceInfo = new DeviceTable
+            {
+                Id = 1927147359,
+                EmpCode = 1349195724,
+                TimeIn = DateTime.UtcNow,
+                TimeOut = DateTime.UtcNow,
+                InsertedDate = DateTime.UtcNow,
+                WorkTime = DateTime.UtcNow,
+                OverTime = DateTime.UtcNow,
+                Remark = "TestValue26464771",
+                ErlOut = DateTime.UtcNow,
+                LateIn = DateTime.UtcNow,
+                Name = "TestValue1927643278",
+                Status = "TestValue1864485979",
+                IsActive = (short)25841
+            };
+
+            // Act
+            var result = _testClass.UpdateInfo(deviceInfo);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallDeleteInfo()
+        {
+            // Arrange
+            var id = 1911179226;
+
+            // Act
+            var result = _testClass.DeleteInfo(id);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+    }
+}
 //namespace HRMS_Unit_Test.BusinessLogic.Implements
 //{
 //    using System;

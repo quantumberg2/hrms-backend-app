@@ -35,10 +35,10 @@ namespace HRMS_Unit_Test.Models
             var testValue = 76663375;
 
             // Act
-           // _testClass.EmpCredentialId = testValue;
+            // _testClass.EmpCredentialId = testValue;
 
             // Assert
-           // Assert.Equal(testValue, _testClass.EmpCredentialId);
+            // Assert.Equal(testValue, _testClass.EmpCredentialId);
         }
 
         [Fact]
@@ -234,8 +234,21 @@ namespace HRMS_Unit_Test.Models
             // Act
             //_testClass.EmpCredential = testValue;
 
-           // Assert
-          //  Assert.Same(testValue, _testClass.EmpCredential);
+            // Assert
+            //  Assert.Same(testValue, _testClass.EmpCredential);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmpCode()
+        {
+            // Arrange
+            var testValue = 1775029644;
+
+            // Act
+            _testClass.EmpCode = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmpCode);
         }
     }
 }

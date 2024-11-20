@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\RolesImp.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\CompanyDetailsController.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -10,115 +10,201 @@
     <pre id="content" class="source-code">
 using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.DTO;
 using HRMS_Application.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
-namespace HRMS_Application.BusinessLogic.Implements
+namespace HRMS_Application.Controllers
 {
-    public class RolesImp : IRoles
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class CompanyDetailsController : ControllerBase
     {
-        private HRMSContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IJwtUtils _jwtUtils;
-        private List&lt;string&gt;? dToken;
-        private int? _decodedToken;
-        public RolesImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        private readonly ICompanyDetails _companyDetails;
+        private ILogger&lt;CompanyDetailsController&gt; _logger;
+
+        public CompanyDetailsController(ICompanyDetails companyDetails, ILogger&lt;CompanyDetailsController&gt; logger)
         {
-            _context = context;
-            _httpContextAccessor = httpContextAccessor;
-            _jwtUtils = jwtUtils;
+            _companyDetails = companyDetails;
+            _logger = logger;
         }
-        private void DecodeToken()
+
+        [HttpGet]
+        public List&lt;CompanyDetail&gt; GetAllCompanyDetails()
         {
-            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            _logger.LogInformation(&quot;get all company details started&quot;);
+            var result = _companyDetails.GetAllCompanyDetails();
+            return result;
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public List&lt;CompanyDetail&gt; GetCompanyDetail(int id)
+        {
+            _logger.LogInformation(&quot;getbyid company details started&quot;);
+            var result = _companyDetails.GetCompanyDetailstById(id);
+            return result;
+        }
+
+        [HttpGet(&quot;GetDetailsByCompanyID&quot;)]
+        [AllowAnonymous]
+        public IActionResult GetCompanyDetailsByCompanyID()
+        {
+            // Get JWT token from the Authorization header
+            var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer&quot;, &quot;&quot;).Trim();
+
             if (string.IsNullOrEmpty(token))
             {
-                dToken = null;
+                return Unauthorized(&quot;Authorization token is missing or invalid.&quot;);
             }
-            else
+
+            // Parse the JWT token
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            // Extract CompanyId from token claims
+            var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;CompanyId&quot;);
+
+            if (companyIdClaim == null)
             {
-                var userId = _jwtUtils.ValidateJwtToken(token);
-                if (userId.HasValue)
+                return Unauthorized(&quot;Company ID not found in token.&quot;);
+            }
+
+            if (!int.TryParse(companyIdClaim.Value, out int companyId))
+            {
+                return BadRequest(&quot;Invalid Company ID in token.&quot;);
+            }
+
+            // Fetch company details using the companyId from the token
+            var companyDetails = _companyDetails.GetCompanyDetailstByCompanyId(companyId);
+
+            if (companyDetails != null &amp;&amp; companyDetails.Count &gt; 0)
+            {
+                return Ok(companyDetails);
+            }
+
+            return NotFound(&quot;No active company details found for the specified company.&quot;);
+        }
+
+       
+        [HttpPost]
+        [Authorize(new[] { &quot;Admin&quot;})]
+        public IActionResult InsertCompanyDetails([FromForm] CompanyDetailsDTO companyDetail)
+        {
+            try
+            {
+                _logger.LogInformation(&quot;InsertCompanyDetails method started&quot;);
+
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer&quot;, &quot;&quot;).Trim();
+                if (string.IsNullOrEmpty(token))
                 {
-                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
-                    if (userDetails != null)
-                    {
-                        _decodedToken = userDetails.Id;
-                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
-                    }
-                    else
-                    {
-                        // Handle the case where the user is not found in the database
-                        dToken = null;
-                    }
+                    return Unauthorized(&quot;Authorization token is missing or invalid.&quot;);
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;CompanyId&quot;);
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized(&quot;Company ID not found in token.&quot;);
+                }
+
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                      return BadRequest(&quot;Invalid Company ID in token.&quot;);
+                }
+
+                var result = _companyDetails.InsertCompanyDetails(companyDetail,companyId);
+
+                if (result !=null)
+                {
+                    return Ok(new { Message = &quot;Company details inserted successfully.&quot;, CompanyId = result });
+                }
+                else
+                {
+                    return StatusCode(500, &quot;An error occurred while inserting company details.&quot;);
                 }
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, &quot;An error occurred while inserting company details.&quot;);
+                return StatusCode(500, &quot;An error occurred while inserting company details.&quot;);
+            }
         }
-        public async Task&lt;bool&gt; deleteRole(int id)
+        [HttpPut(&quot;CompanyLogo&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+        public IActionResult UpdateComanyLogo(IFormFile Comapanylogo)
         {
-            DecodeToken();
-            var result = (from row in _context.Roles
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _context.Roles.Remove(result);
-            await _context.SaveChangesAsync(_decodedToken);
-            return true;
+            try
+            {
+                _logger.LogInformation(&quot;Update comapnyLogo method started&quot;);
+
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer&quot;, &quot;&quot;).Trim();
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized(&quot;Authorization token is missing or invalid.&quot;);
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;CompanyId&quot;);
+                if (companyIdClaim == null)
+                {
+                    return Unauthorized(&quot;Company ID not found in token.&quot;);
+                }
+
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest(&quot;Invalid Company ID in token.&quot;);
+                }
+
+                //companyDetail.RequestedCompanyId = companyId;
+
+                var result = _companyDetails.updateCompanyLogo(Comapanylogo, companyId);
+
+                if (result != null)
+                {
+                    return Ok(new { Message = &quot;CompanyLogo Updated successfully.&quot;, CompanyId = result });
+                }
+                else
+                {
+                    return StatusCode(500, &quot;An error occurred while inserting company details.&quot;);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, &quot;An error occurred while inserting company details.&quot;);
+                return StatusCode(500, &quot;An error occurred while inserting company details.&quot;);
+            }
         }
 
-        public List&lt;Role&gt; GetAllRoles()
+        [HttpDelete]
+        public bool DeletecompanyDetails(int id)
         {
-            var result = (from row in _context.Roles
-                          where row.IsActive == 1
-                          select row).ToList();
+            _logger.LogInformation(&quot;company details delete method started&quot;);
+            var result = _companyDetails.deleteCompanyDetails(id);
             return result;
         }
 
-        public Role GetRolesById(int id)
-        {
-            var result = (from row in _context.Roles
-                          where row.Id == id &amp;&amp; row.IsActive == 1
-                          select row).FirstOrDefault();
-           
-            return result;
-        }
-
-        public async Task&lt;string&gt; InsertRole(Role role)
-        {
-           await _context.Roles.AddAsync(role);
-            var result = await _context.SaveChangesAsync(_decodedToken);
-            if (result != 0)
-            {
-                return &quot;new Department inserted successfully&quot;;
-
-            }
-            else
-            {
-                return &quot;failed to insert new data&quot;;
-            }
-        }
-
+        [HttpPut(&quot;SoftDelete&quot;)]
+/*        [Authorize(new[] { &quot;Admin&quot; })]
+*/
         public bool SoftDelete(int id, short isActive)
         {
-            var res = (from row in _context.Roles
-                       where row.Id == id
-                       select row).FirstOrDefault();
-            if (res != null)
-            {
-                res.IsActive = isActive;
-                _context.Roles.Update(res);
-                _context.SaveChanges();
-                return true;
+            _logger.LogInformation(&quot;Soft update Company details method started&quot;);
+            var res = _companyDetails.SoftDelete(id, isActive);
+            return res;
 
-            }
-            return false;
         }
+
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[16,9,16,107,1],[17,9,17,10,1],[18,13,18,32,1],[19,13,19,56,1],[20,13,20,34,1],[21,9,21,10,1],[23,9,23,10,1],[24,13,24,126,1],[25,13,25,45,1],[26,13,26,14,1],[27,17,27,31,1],[28,13,28,14,1],[30,13,30,14,0],[31,17,31,64,0],[32,17,32,37,0],[33,17,33,18,0],[34,21,34,110,0],[35,21,35,45,0],[36,21,36,22,0],[37,25,37,56,0],[38,25,38,71,0],[38,71,38,84,0],[38,84,38,95,0],[39,21,39,22,0],[41,21,41,22,0],[43,25,43,39,0],[44,21,44,22,0],[45,17,45,18,0],[46,13,46,14,0],[47,9,47,10,1],[49,9,49,10,1],[50,13,50,27,1],[51,13,53,57,1],[54,13,54,43,0],[55,13,55,60,0],[56,13,56,25,0],[57,9,57,10,0],[60,9,60,10,1],[61,13,63,48,1],[64,13,64,27,0],[65,9,65,10,0],[68,9,68,10,1],[69,13,71,56,1],[73,13,73,27,0],[74,9,74,10,0],[77,9,77,10,1],[78,12,78,48,1],[79,13,79,73,0],[80,13,80,29,0],[81,13,81,14,0],[82,17,82,63,0],[86,13,86,14,0],[87,17,87,52,0],[89,9,89,10,0],[92,9,92,10,1],[93,13,95,53,1],[96,13,96,29,0],[97,13,97,14,0],[98,17,98,41,0],[99,17,99,44,0],[100,17,100,40,0],[101,17,101,29,0],[104,13,104,26,0],[105,9,105,10,0]]);
+      highlightRanges([[18,9,18,114,1],[19,9,19,10,1],[20,13,20,46,1],[21,13,21,30,1],[22,9,22,10,1],[26,9,26,10,1],[27,13,27,71,1],[28,13,28,65,1],[29,13,29,27,1],[30,9,30,10,1],[33,9,33,10,1],[34,13,34,71,1],[35,13,35,69,1],[36,13,36,27,1],[37,9,37,10,1],[42,9,42,10,1],[44,13,44,110,1],[46,13,46,45,0],[47,13,47,14,0],[48,17,48,83,0],[52,13,52,57,0],[53,13,53,56,0],[56,13,56,74,0],[56,74,56,99,0],[56,99,56,101,0],[58,13,58,40,0],[59,13,59,14,0],[60,17,60,71,0],[63,13,63,72,0],[64,13,64,14,0],[65,17,65,67,0],[69,13,69,91,0],[71,13,71,68,0],[72,13,72,14,0],[73,17,73,43,0],[76,13,76,91,0],[77,9,77,10,0],[83,9,83,10,1],[85,13,85,14,1],[86,17,86,79,1],[88,17,88,114,1],[89,17,89,49,0],[90,17,90,18,0],[91,21,91,87,0],[94,17,94,61,0],[95,17,95,60,0],[97,17,97,78,0],[97,78,97,103,0],[97,103,97,105,0],[98,17,98,44,0],[99,17,99,18,0],[100,21,100,75,0],[103,17,103,76,0],[104,17,104,18,0],[105,23,105,73,0],[108,17,108,92,0],[110,17,110,35,0],[111,17,111,18,0],[112,21,112,111,0],[115,17,115,18,0],[116,21,116,98,0],[119,13,119,33,1],[120,13,120,14,1],[121,17,121,92,1],[122,17,122,94,1],[124,9,124,10,1],[128,9,128,10,1],[130,13,130,14,1],[131,17,131,77,1],[133,17,133,114,1],[134,17,134,49,0],[135,17,135,18,0],[136,21,136,87,0],[139,17,139,61,0],[140,17,140,60,0],[142,17,142,78,0],[142,78,142,103,0],[142,103,142,105,0],[143,17,143,44,0],[144,17,144,18,0],[145,21,145,75,0],[148,17,148,76,0],[149,17,149,18,0],[150,21,150,71,0],[155,17,155,89,0],[157,17,157,36,0],[158,17,158,18,0],[159,21,159,106,0],[162,17,162,18,0],[163,21,163,98,0],[166,13,166,33,1],[167,13,167,14,1],[168,17,168,92,1],[169,17,169,94,1],[171,9,171,10,1],[175,9,175,10,1],[176,13,176,77,1],[177,13,177,67,1],[178,13,178,27,1],[179,9,179,10,1],[185,9,185,10,1],[186,13,186,82,1],[187,13,187,64,1],[188,13,188,24,1],[190,9,190,10,1]]);
     </script>
   </body>
 </html>

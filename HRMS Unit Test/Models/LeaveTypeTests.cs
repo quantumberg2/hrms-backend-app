@@ -158,5 +158,18 @@ namespace HRMS_Unit_Test.Models
             // Assert
             Assert.Same(testValue, _testClass.LeaveTrackings);
         }
+
+        [Fact]
+        public void CanSetAndGetCompanyConfiguredLeave()
+        {
+            // Arrange
+            var testValue = false;
+
+            // Act
+            _testClass.CompanyConfiguredLeave = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.CompanyConfiguredLeave);
+        }
     }
 }

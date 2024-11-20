@@ -95,5 +95,44 @@ namespace HRMS_Application.Controllers
 
             return Ok(leaves);
         }
+        [HttpGet("History-Regularization")]
+        public IActionResult Historyleaves()
+        {
+            _logger.LogInformation("History Regularization method started");
+
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization header is missing or token is empty.");
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized("Invalid token format.");
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
+
+                if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var employeeCredentialId))
+                {
+                    return Unauthorized("Employee credential ID not found or invalid in the token.");
+                }
+
+                var pendingLeaves = _regularization.GetHistoryRegularization(employeeCredentialId);
+
+                return Ok(pendingLeaves);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching History Regularization");
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
     }
 }

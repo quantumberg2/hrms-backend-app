@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\EmpLeaveAllocationImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+
+    public class EmpLeaveAllocationImp : IEmpLeaveAllocation
+    {
+        private readonly HRMSContext _hrmsContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public EmpLeaveAllocationImp(HRMSContext hrmscontext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        {
+            _hrmsContext = hrmscontext;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _hrmsContext.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; DeleteEmployeeLeave(int id)
+        {
+            DecodeToken();
+            var result = (from row in _hrmsContext.EmployeeLeaveAllocations
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _hrmsContext.EmployeeLeaveAllocations.Remove(result);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;EmployeeLeaveAllocation&gt; GetAllEmpLeave()
+        {
+            var result = (from row in _hrmsContext.EmployeeLeaveAllocations
+                          where row.IsActive == 1
+                          select row).ToList();
+            return result;
+        }
+
+        public EmployeeLeaveAllocation GetByEmpLeavebyId(int id)
+        {
+            var res = (from row in _hrmsContext.EmployeeLeaveAllocations
+                       where row.Id == id &amp;&amp; row.IsActive == 1
+                       select row).FirstOrDefault();
+            return res;
+        }
+
+        public async Task&lt;string&gt; InsertEmployeeLeave(EmployeeLeaveAllocation employeeLeave)
+        {
+            await _hrmsContext.EmployeeLeaveAllocations.AddAsync(employeeLeave);
+            var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;new Employeeleave inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.EmployeeLeaveAllocations
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.EmployeeLeaveAllocations.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+        public async Task GrantLeaveAllocationAsync(EmployeeLeaveAllocationRequest request)
+        {
+            if (request.EmpCredentialId == null)
+            {
+                throw new ArgumentException(&quot;Employee credential ID is required.&quot;);
+            }
+
+            var empCredentialId = request.EmpCredentialId.Value;
+
+            var existingAllocation = await _hrmsContext.EmployeeLeaveAllocations
+                .FirstOrDefaultAsync(e =&gt; e.EmpCredentialId == empCredentialId &amp;&amp; e.Year == request.Year &amp;&amp; e.IsActive == 1 &amp;&amp; e.LeaveType == request.LeaveType);
+
+            if (existingAllocation != null)
+            {
+                existingAllocation.NumberOfLeaves = request.NumberOfLeaves;
+                existingAllocation.RemainingLeave = request.RemainingLeave ?? request.NumberOfLeaves;
+                existingAllocation.LeaveType = request.LeaveType;
+
+                _hrmsContext.EmployeeLeaveAllocations.Update(existingAllocation); 
+            }
+            else
+            {
+                var newLeaveAllocation = new EmployeeLeaveAllocation
+                {
+                    Year = request.Year,
+                    EmpCredentialId = empCredentialId,
+                    NumberOfLeaves = request.NumberOfLeaves,
+                    RemainingLeave = request.RemainingLeave ?? request.NumberOfLeaves,
+                    LeaveType = request.LeaveType,
+                    IsActive = 1
+                };
+
+                await _hrmsContext.EmployeeLeaveAllocations.AddAsync(newLeaveAllocation);
+            }
+
+            await _hrmsContext.SaveChangesAsync();
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[17,9,17,124,1],[18,9,18,10,1],[19,13,19,40,1],[20,13,20,56,1],[21,13,21,34,1],[22,9,22,10,1],[24,9,24,10,1],[25,13,25,126,1],[26,13,26,45,1],[27,13,27,14,1],[28,17,28,31,1],[29,13,29,14,1],[31,13,31,14,0],[32,17,32,64,0],[33,17,33,37,0],[34,17,34,18,0],[35,21,35,114,0],[36,21,36,45,0],[37,21,37,22,0],[38,25,38,56,0],[39,25,39,71,0],[39,71,39,84,0],[39,84,39,95,0],[40,21,40,22,0],[42,21,42,22,0],[44,25,44,39,0],[45,21,45,22,0],[46,17,46,18,0],[47,13,47,14,0],[48,9,48,10,1],[50,9,50,10,1],[51,13,51,27,1],[52,13,54,57,1],[55,13,55,66,0],[56,13,56,64,0],[57,13,57,25,0],[58,9,58,10,0],[61,9,61,10,1],[62,13,64,48,1],[65,13,65,27,0],[66,9,66,10,0],[69,9,69,10,1],[70,13,72,53,1],[73,13,73,24,0],[74,9,74,10,0],[77,9,77,10,1],[78,13,78,81,1],[79,13,79,77,0],[80,13,80,29,0],[81,13,81,14,0],[82,17,82,66,0],[86,13,86,14,0],[87,17,87,52,0],[89,9,89,10,0],[92,9,92,10,1],[93,13,95,53,1],[96,13,96,29,0],[97,13,97,14,0],[98,17,98,41,0],[99,17,99,67,0],[100,17,100,44,0],[101,17,101,29,0],[104,13,104,26,0],[105,9,105,10,0],[107,9,107,10,1],[108,13,108,49,1],[109,13,109,14,0],[110,17,110,84,0],[113,13,113,65,1],[115,13,116,162,1],[118,13,118,44,0],[119,13,119,14,0],[120,17,120,76,0],[121,17,121,102,0],[122,17,122,66,0],[124,17,124,82,0],[125,13,125,14,0],[127,13,127,14,0],[128,17,136,19,0],[138,17,138,90,0],[139,13,139,14,0],[141,13,141,51,0],[142,9,142,10,0]]);
+    </script>
+  </body>
+</html>

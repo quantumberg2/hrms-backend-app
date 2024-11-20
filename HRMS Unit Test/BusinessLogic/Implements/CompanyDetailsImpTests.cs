@@ -3,7 +3,10 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
     using System;
     using System.Collections.Generic;
     using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.DTO;
     using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
     using Moq;
     using Xunit;
 
@@ -11,21 +14,23 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
     {
         private readonly CompanyDetailsImp _testClass;
         private HRMSContext _context;
+        private readonly Mock<IAzureOperations> _azureOperations;
 
         public CompanyDetailsImpTests()
         {
+            _azureOperations = new Mock<IAzureOperations>();
             _context = new HRMSContext();
-          //  _testClass = new CompanyDetailsImp(_context);
+            //  _testClass = new CompanyDetailsImp(_context);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-        //    var instance = new CompanyDetailsImp(_context);
+            //    var instance = new CompanyDetailsImp(_context);
 
             // Assert
-        //    Assert.NotNull(instance);
+            //    Assert.NotNull(instance);
         }
 
         [Fact]
@@ -64,18 +69,18 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-       /* [Fact]
-        public void CanCallGetCompanyDetailstByName()
-        {
-            // Arrange
-            var companyName = "TestValue566928608";
+        /* [Fact]
+         public void CanCallGetCompanyDetailstByName()
+         {
+             // Arrange
+             var companyName = "TestValue566928608";
 
-            // Act
-            var result = _testClass.GetCompanyDetailstByName(companyName);
+             // Act
+             var result = _testClass.GetCompanyDetailstByName(companyName);
 
-            // Assert
-            throw new NotImplementedException("Create or modify test");
-        }*/
+             // Assert
+             throw new NotImplementedException("Create or modify test");
+         }*/
 
         [Fact]
         public void CanCallInsertCompanyDetails()
@@ -124,7 +129,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             };
 
             // Act
-       //     var result = _testClass.InsertCompanyDetails(companyDetail);
+            //     var result = _testClass.InsertCompanyDetails(companyDetail);
 
             // Assert
             throw new NotImplementedException("Create or modify test");
@@ -141,6 +146,37 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             var result = _testClass.SoftDelete(id, isActive);
 
             // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetCompanyDetailstByCompanyId()
+        {
+            // Arrange
+            var CompanyId = 1912759851;
+
+            // Act
+            var result = _testClass.GetCompanyDetailstByCompanyId(CompanyId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallupdateCompanyLogo()
+        {
+            // Arrange
+            var companyLogo = new Mock<IFormFile>().Object;
+            var companyId = 213170221;
+
+            _azureOperations.Setup(mock => mock.StoreFilesInAzure(It.IsAny<IFormFile>(), It.IsAny<string>())).Returns("TestValue409604947");
+
+            // Act
+            var result = _testClass.updateCompanyLogo(companyLogo, companyId);
+
+            // Assert
+            _azureOperations.Verify(mock => mock.StoreFilesInAzure(It.IsAny<IFormFile>(), It.IsAny<string>()));
+
             throw new NotImplementedException("Create or modify test");
         }
     }

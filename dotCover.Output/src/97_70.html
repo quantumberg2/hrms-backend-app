@@ -2,150 +2,170 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\HolidayImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\ShiftRosterTypeControllerTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using HRMS_Application.Authorization;
-    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
     using HRMS_Application.Models;
-    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
-    public class HolidayImpTests
+    public class ShiftRosterTypeControllerTests
     {
-        private readonly HolidayImp _testClass;
-        private HRMSContext _context;
-        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
-        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly ShiftRosterTypeController _testClass;
+        private readonly Mock&lt;IShiftRostertype&gt; _shiftRostetype;
+        private readonly Mock&lt;ILogger&lt;ShiftRosterTypeController&gt;&gt; _logger;
 
-        public HolidayImpTests()
+        public ShiftRosterTypeControllerTests()
         {
-            _context = new HRMSContext();
-            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
-            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
-            _testClass = new HolidayImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+            _shiftRostetype = new Mock&lt;IShiftRostertype&gt;();
+            _logger = new Mock&lt;ILogger&lt;ShiftRosterTypeController&gt;&gt;();
+            _testClass = new ShiftRosterTypeController(_shiftRostetype.Object, _logger.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new HolidayImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+            var instance = new ShiftRosterTypeController(_shiftRostetype.Object, _logger.Object);
 
             // Assert
             Assert.NotNull(instance);
         }
 
+        /*  [Fact]
+          public void CanCallGetAllShiftRosterType()
+          {
+              // Arrange
+              _shiftRostetype.Setup(mock =&gt; mock.GetAllShiftRosterType()).Returns(new List&lt;ShiftRosterType&gt;());
+
+              // Act
+              var result = _testClass.GetAllShiftRosterType();
+
+              // Assert
+              _shiftRostetype.Verify(mock =&gt; mock.GetAllShiftRosterType());
+
+              throw new NotImplementedException(&quot;Create or modify test&quot;);
+          }
+  */
+        /*  [Fact]
+          public async Task CanCallInsertPositions()
+          {
+              // Arrange
+              var shiftRosterType = new ShiftRosterType
+              {
+                  Id = 970035281,
+                  Type = &quot;TestValue943023523&quot;,
+                  TimeRange = &quot;TestValue888588227&quot;,
+                  ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+              };
+
+              _shiftRostetype.Setup(mock =&gt; mock.InsertShiftRosterType(It.IsAny&lt;ShiftRosterType&gt;())).ReturnsAsync(&quot;TestValue647623448&quot;);
+
+              // Act
+              var result = await _testClass.InsertPositions(shiftRosterType);
+
+              // Assert
+              _shiftRostetype.Verify(mock =&gt; mock.InsertShiftRosterType(It.IsAny&lt;ShiftRosterType&gt;()));
+
+              throw new NotImplementedException(&quot;Create or modify test&quot;);
+          }*/
+
         [Fact]
-        public async Task CanCalldeleteHoliday()
+        public async Task CanCallUpdatePosition()
         {
             // Arrange
-            var id = 809510154;
+            var id = 1747570573;
+            var Type = &quot;TestValue1076915682&quot;;
+            var TimeRange = &quot;TestValue1706529583&quot;;
 
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1885764628);
-
-            // Act
-            var result = await _testClass.deleteHoliday(id);
-
-            // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetHoliday()
-        {
-            // Act
-            var result = _testClass.GetHoliday();
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetHolidayById()
-        {
-            // Arrange
-            var id = 1986397526;
-
-            // Act
-            var result = _testClass.GetHolidayById(id);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallInsertHoliday()
-        {
-            // Arrange
-            var holiday = new Holiday
+            _shiftRostetype.Setup(mock =&gt; mock.updateShiftRosterType(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;string&gt;())).ReturnsAsync(new ShiftRosterType
             {
-                Id = 1465478278,
-                Date = DateTime.UtcNow,
-                Type = &quot;TestValue980729764&quot;,
-                CompanyId = 1782622757,
-                Occasion = &quot;TestValue1266887987&quot;,
-                IsActive = (short)1055,
-                Company = new RequestedCompanyForm
-                {
-                    Id = 62045596,
-                    Name = &quot;TestValue1991257234&quot;,
-                    PhoneNumber = &quot;TestValue688731213&quot;,
-                    DomainName = &quot;TestValue91036164&quot;,
-                    Status = &quot;TestValue156296462&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue1028125245&quot;,
-                    IsActive = (short)15830,
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                }
+                Id = 402744524,
+                Type = &quot;TestValue2024337644&quot;,
+                TimeRange = &quot;TestValue1139896086&quot;,
+                ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
+            });
+
+            // Act
+            var result = await _testClass.UpdatePosition(id, Type, TimeRange);
+
+            // Assert
+            _shiftRostetype.Verify(mock =&gt; mock.updateShiftRosterType(It.IsAny&lt;int&gt;(), It.IsAny&lt;string&gt;(), It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeletePosition()
+        {
+            // Arrange
+            var id = 660154360;
+
+            _shiftRostetype.Setup(mock =&gt; mock.deleteShiftRosterType(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+
+            // Act
+            var result = await _testClass.DeletePosition(id);
+
+            // Assert
+            _shiftRostetype.Verify(mock =&gt; mock.deleteShiftRosterType(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllShiftRosterType()
+        {
+            // Arrange
+            _shiftRostetype.Setup(mock =&gt; mock.GetAllShiftRosterType(It.IsAny&lt;int&gt;())).Returns(new List&lt;ShiftRosterType&gt;());
+
+            // Act
+            var result = _testClass.GetAllShiftRosterType();
+
+            // Assert
+            _shiftRostetype.Verify(mock =&gt; mock.GetAllShiftRosterType(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertPositions()
+        {
+            // Arrange
+            var shiftRosterType = new ShiftRosterType
+            {
+                Id = 951038129,
+                Type = &quot;TestValue362503875&quot;,
+                TimeRange = &quot;TestValue146019185&quot;,
+                CompanyRequestedId = 1692546480,
+                ShiftRosters = new Mock&lt;ICollection&lt;ShiftRoster&gt;&gt;().Object
             };
 
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(488074802);
+            _shiftRostetype.Setup(mock =&gt; mock.InsertShiftRosterType(It.IsAny&lt;ShiftRosterType&gt;(), It.IsAny&lt;int&gt;())).ReturnsAsync(&quot;TestValue180917000&quot;);
 
             // Act
-            var result = await _testClass.InsertHoliday(holiday);
+            var result = await _testClass.InsertPositions(shiftRosterType);
 
             // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            _shiftRostetype.Verify(mock =&gt; mock.InsertShiftRosterType(It.IsAny&lt;ShiftRosterType&gt;(), It.IsAny&lt;int&gt;()));
 
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallSoftDelete()
-        {
-            // Arrange
-            var id = 414652977;
-            var isActive = (short)11683;
-
-            // Act
-            var result = _testClass.SoftDelete(id, isActive);
-
-            // Assert
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[20,9,20,33,1],[21,9,21,10,1],[22,13,22,42,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,98,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,100,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,32,1],[44,13,44,100,1],[47,13,47,61,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,50,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,33,1],[72,13,72,56,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,108,15,1],[110,13,110,99,1],[113,13,113,66,1],[116,13,116,81,0],[118,13,118,72,0],[123,9,123,10,1],[125,13,125,32,1],[126,13,126,41,1],[129,13,129,62,1],[132,13,132,72,0]]);
+      highlightRanges([[19,9,19,48,1],[20,9,20,10,1],[21,13,21,60,1],[22,13,22,70,1],[23,13,23,96,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,98,1],[33,13,33,38,1],[34,9,34,10,1],[76,9,76,10,1],[78,13,78,33,1],[79,13,79,46,1],[80,13,80,51,1],[82,13,88,16,1],[91,13,91,79,1],[94,13,94,129,1],[96,13,96,72,1],[101,9,101,10,1],[103,13,103,32,1],[105,13,105,107,1],[108,13,108,62,1],[111,13,111,89,1],[113,13,113,72,1],[118,9,118,10,1],[120,13,120,125,1],[123,13,123,61,1],[126,13,126,89,1],[128,13,128,72,0],[133,9,133,10,1],[135,13,142,15,1],[144,13,144,152,1],[147,13,147,76,1],[150,13,150,118,1],[152,13,152,72,0]]);
     </script>
   </body>
 </html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\NewPreviewImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using System.Collections.Immutable;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class NewPreviewImp : INewsPreview
+    {
+        private readonly HRMSContext _hRMSContext;
+        private readonly IAzureOperations _azureOperations;
+        public NewPreviewImp( HRMSContext hRMSContext, IAzureOperations azureOperations)
+        {
+            _hRMSContext = hRMSContext;
+            _azureOperations = azureOperations;
+
+        }
+
+        public List&lt;NewsPreview&gt; GetAllNews()
+        {
+             var newsInfo = (from row in _hRMSContext.NewsPreviews
+                             select row).ToList();
+            return newsInfo;
+        }
+
+        public string InsertNews(NewsDTO news)
+        {
+            string url;
+
+            url = _azureOperations.StoreFilesInAzure(news.ImgUrl, &quot;hrms-news&quot;);
+
+            NewsPreview objNews = new NewsPreview
+            {
+                Description = news.Desciption,
+                InsertedDate = news.InsertedDate,
+                DisplayDate = news.DisplayDate,
+                Heading = news.Heading,
+                ImgUrl = url,
+                IsActive = 1              
+            };
+
+            if (objNews != null)
+            {
+                _hRMSContext.NewsPreviews.Add(objNews);
+                _hRMSContext.SaveChanges();
+                return &quot;New data inserted successfully&quot;;
+
+            }
+            return &quot;Failed to insert new data&quot;;
+          
+        }
+
+        public string UpdateNews(int id, NewsDTO news)
+        {
+            var res = (from row in _hRMSContext.NewsPreviews
+                       where row.Id == id
+                       select row).SingleOrDefault();
+            if (res == null)
+            {
+                return &quot;No data found&quot;;
+            }
+
+            string url = _azureOperations.StoreFilesInAzure(news.ImgUrl, &quot;hrms-news&quot;);
+
+            res.DisplayDate = news?.DisplayDate ?? res.DisplayDate;
+            res.InsertedDate = news?.InsertedDate ?? res.DisplayDate;
+            res.Heading = news?.Heading ?? res.Heading;
+            res.Description = news?.Desciption ?? res.Description;
+            res.ImgUrl = url;
+
+            if(res!=null)
+            {
+                _hRMSContext.NewsPreviews.Update(res);
+                _hRMSContext.SaveChanges();
+                return &quot;News updated successfully&quot;;
+            }
+            return &quot;Failed to update news data&quot;;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hRMSContext.NewsPreviews
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if(res!=null)
+            {
+                res.IsActive = isActive;
+                _hRMSContext.NewsPreviews.Update(res);
+                _hRMSContext.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,89,1],[13,9,13,10,1],[14,13,14,40,1],[15,13,15,48,1],[17,9,17,10,1],[20,9,20,10,1],[21,14,22,51,1],[23,13,23,29,0],[24,9,24,10,0],[27,9,27,10,1],[30,13,30,80,1],[32,13,40,15,1],[42,13,42,33,1],[43,13,43,14,1],[44,17,44,56,1],[45,17,45,44,0],[46,17,46,57,0],[49,13,49,48,0],[51,9,51,10,0],[54,9,54,10,1],[55,13,57,54,1],[58,13,58,29,0],[59,13,59,14,0],[60,17,60,40,0],[63,13,63,87,0],[65,13,65,68,0],[66,13,66,70,0],[67,13,67,56,0],[68,13,68,67,0],[69,13,69,30,0],[71,13,71,26,0],[72,13,72,14,0],[73,17,73,55,0],[74,17,74,44,0],[75,17,75,52,0],[77,13,77,49,0],[78,9,78,10,0],[81,9,81,10,1],[82,13,84,53,1],[85,13,85,26,0],[86,13,86,14,0],[87,17,87,41,0],[88,17,88,55,0],[89,17,89,44,0],[90,17,90,29,0],[93,13,93,26,0],[94,9,94,10,0]]);
+    </script>
+  </body>
+</html>

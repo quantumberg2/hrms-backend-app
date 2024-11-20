@@ -2,120 +2,78 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Enums\UserTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Middleware\ExceptionMiddlewareTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Entities
+namespace HRMS_Unit_Test.Middleware
 {
     using System;
-    using HRMS_Application.Entities;
-    using HRMS_Application.Enums;
+    using System.Threading.Tasks;
+    using HRMS_Application.Middleware;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Moq;
     using Xunit;
 
-    public class UserTests
+    public class ExceptionMiddlewareTests
     {
-        private readonly User _testClass;
+        private readonly ExceptionMiddleware _testClass;
+        private readonly Mock&lt;ILogger&lt;ExceptionMiddleware&gt;&gt; _log;
 
-        public UserTests()
+        public ExceptionMiddlewareTests()
         {
-            _testClass = new User();
+            _log = new Mock&lt;ILogger&lt;ExceptionMiddleware&gt;&gt;();
+            _testClass = new ExceptionMiddleware(_log.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new User();
+            var instance = new ExceptionMiddleware(_log.Object);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void CanSetAndGetId()
+        public async Task CanCallInvokeAsync()
         {
             // Arrange
-            var testValue = 1273536563;
+            var context = new DefaultHttpContext();
+            RequestDelegate next = x =&gt; Task.CompletedTask;
 
             // Act
-            _testClass.Id = testValue;
+            await _testClass.InvokeAsync(context, next);
 
             // Assert
-            Assert.Equal(testValue, _testClass.Id);
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
+    }
 
+    public static class ExceptionMiddlewareExtensionTests
+    {
         [Fact]
-        public void CanSetAndGetFirstName()
+        public static void CanCallConfigureExceptionMiddleware()
         {
             // Arrange
-            var testValue = &quot;TestValue1936168934&quot;;
+            var app = new Mock&lt;IApplicationBuilder&gt;().Object;
 
             // Act
-            _testClass.FirstName = testValue;
+            app.ConfigureExceptionMiddleware();
 
             // Assert
-            Assert.Equal(testValue, _testClass.FirstName);
-        }
-
-        [Fact]
-        public void CanSetAndGetLastName()
-        {
-            // Arrange
-            var testValue = &quot;TestValue95810396&quot;;
-
-            // Act
-            _testClass.LastName = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.LastName);
-        }
-
-        [Fact]
-        public void CanSetAndGetUsername()
-        {
-            // Arrange
-            var testValue = &quot;TestValue700090902&quot;;
-
-            // Act
-            _testClass.Username = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.Username);
-        }
-
-        [Fact]
-        public void CanSetAndGetRole()
-        {
-            // Arrange
-            var testValue = Role.Faculty;
-
-            // Act
-            _testClass.Role = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.Role);
-        }
-
-        [Fact]
-        public void CanSetAndGetPasswordHash()
-        {
-            // Arrange
-            var testValue = &quot;TestValue535223701&quot;;
-
-            // Act
-            _testClass.PasswordHash = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.PasswordHash);
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[12,9,12,27,1],[13,9,13,10,1],[14,13,14,37,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,39,1],[24,13,24,38,1],[25,9,25,10,1],[29,9,29,10,1],[31,13,31,40,1],[34,13,34,39,1],[37,13,37,52,1],[38,9,38,10,1],[42,9,42,10,1],[44,13,44,51,1],[47,13,47,46,1],[50,13,50,59,1],[51,9,51,10,1],[55,9,55,10,1],[57,13,57,49,1],[60,13,60,45,1],[63,13,63,58,1],[64,9,64,10,1],[68,9,68,10,1],[70,13,70,50,1],[73,13,73,45,1],[76,13,76,58,1],[77,9,77,10,1],[81,9,81,10,1],[83,13,83,42,1],[86,13,86,41,1],[89,13,89,54,1],[90,9,90,10,1],[94,9,94,10,1],[96,13,96,50,1],[99,13,99,49,1],[102,13,102,62,1],[103,9,103,10,1]]);
+      highlightRanges([[17,9,17,42,1],[18,9,18,10,1],[19,13,19,61,1],[20,13,20,63,1],[21,9,21,10,1],[25,9,25,10,1],[27,13,27,65,1],[30,13,30,38,1],[31,9,31,10,1],[35,9,35,10,1],[37,13,37,52,1],[38,13,38,41,1],[38,41,38,59,1],[38,59,38,60,1],[41,13,41,57,1],[44,13,44,72,1],[52,9,52,10,1],[54,13,54,62,1],[57,13,57,48,1],[60,13,60,72,1]]);
     </script>
   </body>
 </html>

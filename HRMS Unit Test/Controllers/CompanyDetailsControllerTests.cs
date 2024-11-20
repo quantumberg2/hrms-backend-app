@@ -4,7 +4,9 @@ namespace HRMS_Unit_Test.Controllers
     using System.Collections.Generic;
     using HRMS_Application.BusinessLogic.Interface;
     using HRMS_Application.Controllers;
+    using HRMS_Application.DTO;
     using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
@@ -64,80 +66,80 @@ namespace HRMS_Unit_Test.Controllers
             throw new NotImplementedException("Create or modify test");
         }
 
-     /*   [Fact]
-        public void CanCallGetCompanyDetailstByName()
-        {
-            // Arrange
-            var companyName = "TestValue1179821945";
+        /*   [Fact]
+           public void CanCallGetCompanyDetailstByName()
+           {
+               // Arrange
+               var companyName = "TestValue1179821945";
 
-            _companyDetails.Setup(mock => mock.GetCompanyDetailstByName(It.IsAny<string>())).Returns(new List<CompanyDetail>());
+               _companyDetails.Setup(mock => mock.GetCompanyDetailstByName(It.IsAny<string>())).Returns(new List<CompanyDetail>());
 
-            // Act
-            var result = _testClass.GetCompanyDetailstByName(companyName);
+               // Act
+               var result = _testClass.GetCompanyDetailstByName(companyName);
 
-            // Assert
-            _companyDetails.Verify(mock => mock.GetCompanyDetailstByName(It.IsAny<string>()));
+               // Assert
+               _companyDetails.Verify(mock => mock.GetCompanyDetailstByName(It.IsAny<string>()));
 
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
-       /* [Fact]
-        public void CanCallInsertcompanyDetails()
-        {
-            // Arrange
-            var companyDetail = new CompanyDetail
-            {
-                Id = 309145918,
-                Name = "TestValue1157471599",
-                Address = "TestValue1851747088",
-                Country = "TestValue724213383",
-                States = "TestValue1870053642",
-                Industry = "TestValue719330310",
-                TimeZone = "TestValue858197823",
-                Currency = "TestValue1544395847",
-                PfNo = "TestValue1033413874",
-                TanNo = "TestValue969944425",
-                EsiNo = "TestValue1504819985",
-                PanNo = "TestValue777929445",
-                GstNo = "TestValue592965103",
-                RegistrationNo = "TestValue1594314947",
-                Twitter = "TestValue274469434",
-                Facebook = "TestValue423335407",
-                LinkedIn = "TestValue192678419",
-                CompanyLogo = "TestValue1494910042",
-                RequestedCompanyId = 1469859788,
-                IsActive = (short)21918,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 2127226664,
-                    Name = "TestValue1822489063",
-                    PhoneNumber = "TestValue764427471",
-                    DomainName = "TestValue762041962",
-                    Status = "TestValue1269652813",
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = "TestValue1421668471",
-                    IsActive = (short)18744,
-                    CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
-                    Departments = new Mock<ICollection<Department>>().Object,
-                    EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
-                    Holidays = new Mock<ICollection<Holiday>>().Object,
-                    LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
-                    Positions = new Mock<ICollection<Position>>().Object
-                }
-            };
+               throw new NotImplementedException("Create or modify test");
+           }
+   */
+        /* [Fact]
+         public void CanCallInsertcompanyDetails()
+         {
+             // Arrange
+             var companyDetail = new CompanyDetail
+             {
+                 Id = 309145918,
+                 Name = "TestValue1157471599",
+                 Address = "TestValue1851747088",
+                 Country = "TestValue724213383",
+                 States = "TestValue1870053642",
+                 Industry = "TestValue719330310",
+                 TimeZone = "TestValue858197823",
+                 Currency = "TestValue1544395847",
+                 PfNo = "TestValue1033413874",
+                 TanNo = "TestValue969944425",
+                 EsiNo = "TestValue1504819985",
+                 PanNo = "TestValue777929445",
+                 GstNo = "TestValue592965103",
+                 RegistrationNo = "TestValue1594314947",
+                 Twitter = "TestValue274469434",
+                 Facebook = "TestValue423335407",
+                 LinkedIn = "TestValue192678419",
+                 CompanyLogo = "TestValue1494910042",
+                 RequestedCompanyId = 1469859788,
+                 IsActive = (short)21918,
+                 RequestedCompany = new RequestedCompanyForm
+                 {
+                     Id = 2127226664,
+                     Name = "TestValue1822489063",
+                     PhoneNumber = "TestValue764427471",
+                     DomainName = "TestValue762041962",
+                     Status = "TestValue1269652813",
+                     InsertedDate = DateTime.UtcNow,
+                     UpdatedDate = DateTime.UtcNow,
+                     Email = "TestValue1421668471",
+                     IsActive = (short)18744,
+                     CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                     Departments = new Mock<ICollection<Department>>().Object,
+                     EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                     Holidays = new Mock<ICollection<Holiday>>().Object,
+                     LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                     Positions = new Mock<ICollection<Position>>().Object
+                 }
+             };
 
-            _companyDetails.Setup(mock => mock.InsertCompanyDetails(It.IsAny<CompanyDetail>())).Returns(1093375089);
+             _companyDetails.Setup(mock => mock.InsertCompanyDetails(It.IsAny<CompanyDetail>())).Returns(1093375089);
 
-            // Act
-            var result = _testClass.InsertcompanyDetails(companyDetail);
+             // Act
+             var result = _testClass.InsertcompanyDetails(companyDetail);
 
-            // Assert
-            _companyDetails.Verify(mock => mock.InsertCompanyDetails(It.IsAny<CompanyDetail>()));
+             // Assert
+             _companyDetails.Verify(mock => mock.InsertCompanyDetails(It.IsAny<CompanyDetail>()));
 
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
+             throw new NotImplementedException("Create or modify test");
+         }
+ */
         [Fact]
         public void CanCallDeletecompanyDetails()
         {
@@ -169,6 +171,75 @@ namespace HRMS_Unit_Test.Controllers
 
             // Assert
             _companyDetails.Verify(mock => mock.SoftDelete(It.IsAny<int>(), It.IsAny<short>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetCompanyDetailsByCompanyID()
+        {
+            // Arrange
+            _companyDetails.Setup(mock => mock.GetCompanyDetailstByCompanyId(It.IsAny<int>())).Returns(new List<ComanyLogoDTO>());
+
+            // Act
+            var result = _testClass.GetCompanyDetailsByCompanyID();
+
+            // Assert
+            _companyDetails.Verify(mock => mock.GetCompanyDetailstByCompanyId(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallInsertCompanyDetails()
+        {
+            // Arrange
+            var companyDetail = new CompanyDetailsDTO
+            {
+                Name = "TestValue1935335648",
+                Address = "TestValue1371340013",
+                Country = "TestValue609290860",
+                States = "TestValue5942312",
+                Industry = "TestValue613989665",
+                TimeZone = "TestValue361137820",
+                Currency = "TestValue239434901",
+                PfNo = "TestValue865974840",
+                TanNo = "TestValue872425940",
+                EsiNo = "TestValue224227037",
+                PanNo = "TestValue142690555",
+                GstNo = "TestValue437272482",
+                RegistrationNo = "TestValue929845210",
+                Twitter = "TestValue979240122",
+                Facebook = "TestValue372418209",
+                LinkedIn = "TestValue529345298",
+                CompanyLogo = new Mock<IFormFile>().Object,
+                IsActive = (short)21044
+            };
+
+            _companyDetails.Setup(mock => mock.InsertCompanyDetails(It.IsAny<CompanyDetailsDTO>(), It.IsAny<int>())).Returns("TestValue1054413050");
+
+            // Act
+            var result = _testClass.InsertCompanyDetails(companyDetail);
+
+            // Assert
+            _companyDetails.Verify(mock => mock.InsertCompanyDetails(It.IsAny<CompanyDetailsDTO>(), It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallUpdateComanyLogo()
+        {
+            // Arrange
+            var Comapanylogo = new Mock<IFormFile>().Object;
+
+            _companyDetails.Setup(mock => mock.updateCompanyLogo(It.IsAny<IFormFile>(), It.IsAny<int>())).Returns("TestValue451941164");
+
+            // Act
+            var result = _testClass.UpdateComanyLogo(Comapanylogo);
+
+            // Assert
+            _companyDetails.Verify(mock => mock.updateCompanyLogo(It.IsAny<IFormFile>(), It.IsAny<int>()));
 
             throw new NotImplementedException("Create or modify test");
         }

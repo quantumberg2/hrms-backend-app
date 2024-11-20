@@ -33,21 +33,21 @@ namespace HRMS_Unit_Test.Controllers
             Assert.NotNull(instance);
         }
 
-    /*    [Fact]
-        public void CanCallGetAllHolidayDetails()
-        {
-            // Arrange
-            _holiday.Setup(mock => mock.GetHoliday()).Returns(new List<Holiday>());
+        /*    [Fact]
+            public void CanCallGetAllHolidayDetails()
+            {
+                // Arrange
+                _holiday.Setup(mock => mock.GetHoliday()).Returns(new List<Holiday>());
 
-            // Act
-            var result = _testClass.GetAllHolidayDetails();
+                // Act
+                var result = _testClass.GetAllHolidayDetails();
 
-            // Assert
-            _holiday.Verify(mock => mock.GetHoliday());
+                // Assert
+                _holiday.Verify(mock => mock.GetHoliday());
 
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
+                throw new NotImplementedException("Create or modify test");
+            }
+    */
         [Fact]
         public void CanCallGetHoliday()
         {
@@ -165,6 +165,68 @@ namespace HRMS_Unit_Test.Controllers
 
             // Assert
             _holiday.Verify(mock => mock.SoftDelete(It.IsAny<int>(), It.IsAny<short>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetAllHolidayDetails()
+        {
+            // Arrange
+            _holiday.Setup(mock => mock.GetHoliday(It.IsAny<int>())).Returns(new List<Holiday>());
+
+            // Act
+            var result = _testClass.GetAllHolidayDetails();
+
+            // Assert
+            _holiday.Verify(mock => mock.GetHoliday(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallUpdateHolidayType()
+        {
+            // Arrange
+            var id = 107262890;
+            var name = "TestValue56429015";
+            var date = new DateOnly?();
+            var Occation = "TestValue362824472";
+            var requestedCompanyId = 1983897448;
+
+            _holiday.Setup(mock => mock.UpdateHolidayType(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DateOnly?>(), It.IsAny<string>(), It.IsAny<int?>())).Returns(new Holiday
+            {
+                Id = 937584925,
+                Date = DateTime.UtcNow,
+                Type = "TestValue1285903314",
+                CompanyId = 1503590924,
+                Occasion = "TestValue399922959",
+                IsActive = (short)22724,
+                Company = new RequestedCompanyForm
+                {
+                    Id = 1254102387,
+                    Name = "TestValue1035260877",
+                    PhoneNumber = "TestValue87460570",
+                    DomainName = "TestValue1454244157",
+                    Status = "TestValue2074182313",
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = "TestValue1349244204",
+                    IsActive = (short)15802,
+                    CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                    Departments = new Mock<ICollection<Department>>().Object,
+                    EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                    Holidays = new Mock<ICollection<Holiday>>().Object,
+                    LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                    Positions = new Mock<ICollection<Position>>().Object
+                }
+            });
+
+            // Act
+            var result = _testClass.UpdateHolidayType(id, name, date, Occation, requestedCompanyId);
+
+            // Assert
+            _holiday.Verify(mock => mock.UpdateHolidayType(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DateOnly?>(), It.IsAny<string>(), It.IsAny<int?>()));
 
             throw new NotImplementedException("Create or modify test");
         }

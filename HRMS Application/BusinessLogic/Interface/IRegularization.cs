@@ -6,6 +6,6 @@ namespace HRMS_Application.BusinessLogic.Interface
     {
         public List<LeavePendingDTO> GetPendingRegularization(int employeeCredentialId, string status);
         public Task<List<LeaveApprovalDTO>> GetRegularizationByStatusAsync(string status, int managerId);
-
+        public List<LeavePendingDTO> GetHistoryRegularization(int employeeCredentialId);
     }
 }

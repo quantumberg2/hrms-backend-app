@@ -2,188 +2,85 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\EmployeeAttendanceImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\OrgChartControllerTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using HRMS_Application.Authorization;
-    using HRMS_Application.BusinessLogic.Implements;
-    using HRMS_Application.Models;
-    using Microsoft.AspNetCore.Http;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.DTO;
     using Moq;
     using Xunit;
 
-    public class EmployeeAttendanceImpTests
+    public class OrgChartControllerTests
     {
-        private readonly EmployeeAttendanceImp _testClass;
-        private HRMSContext _hrmscontext;
-        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
-        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly OrgChartController _testClass;
+        private readonly Mock&lt;IOrgChartService&gt; _orgChartService;
 
-        public EmployeeAttendanceImpTests()
+        public OrgChartControllerTests()
         {
-            _hrmscontext = new HRMSContext();
-            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
-            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
-            _testClass = new EmployeeAttendanceImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
+            _orgChartService = new Mock&lt;IOrgChartService&gt;();
+            _testClass = new OrgChartController(_orgChartService.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new EmployeeAttendanceImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
+            var instance = new OrgChartController(_orgChartService.Object);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public async Task CanCallDeleteEmployeeAttendance()
+        public void CanCallGetManagersWithEmployees()
         {
             // Arrange
-            var id = 992932509;
-
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(995783520);
+            //  _orgChartService.Setup(mock =&gt; mock.GetManagersWithEmployees()).Returns(new List&lt;OrgChartNode&gt;());
 
             // Act
-            var result = await _testClass.DeleteEmployeeAttendance(id);
+            //  var result = _testClass.GetManagersWithEmployees();
 
             // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            //  _orgChartService.Verify(mock =&gt; mock.GetManagersWithEmployees());
 
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
 
         [Fact]
-        public void CanCallGetAllEmpAttendence()
-        {
-            // Act
-            var result = _testClass.GetAllEmpAttendence();
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetAttendanceByCredId()
+        public async Task CanCallGetOrganizationChart()
         {
             // Arrange
-            var empCredId = 2066192304;
-
-            // Act
-            var result = _testClass.GetAttendanceByCredId(empCredId);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public void CanCallGetById()
-        {
-            // Arrange
-            var id = 1039809459;
-
-            // Act
-            var result = _testClass.GetById(id);
-
-            // Assert
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallInsertEmployeeAttendence()
-        {
-            // Arrange
-            var employeeAttendence = new Attendance
+            _orgChartService.Setup(mock =&gt; mock.GetOrganizationChartAsync(It.IsAny&lt;int&gt;())).ReturnsAsync(new OrgChartNode
             {
-                Id = 1759309293,
-                EmpCredentialId = 1346022540,
-                NumberOfHours = 1045132276.3199999,
-                Status = &quot;TestValue795136988&quot;,
-                EmpCredential = new EmployeeCredential
-                {
-                    Id = 1154125216,
-                    UserName = &quot;TestValue193236254&quot;,
-                    Password = &quot;TestValue160522950&quot;,
-                    Status = (short)10224,
-                    RequestedCompanyId = 734431021,
-                    Email = &quot;TestValue4260011&quot;,
-                    DefaultPassword = true,
-                    GenerateOtp = &quot;TestValue1972409427&quot;,
-                    OtpExpiration = DateTime.UtcNow,
-                    IsActive = (short)499,
-                    EmployeeLoginName = &quot;TestValue1519922785&quot;,
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 1843126279,
-                        Name = &quot;TestValue1359622341&quot;,
-                        PhoneNumber = &quot;TestValue390147472&quot;,
-                        DomainName = &quot;TestValue973079794&quot;,
-                        Status = &quot;TestValue1382316786&quot;,
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = &quot;TestValue937401256&quot;,
-                        IsActive = (short)13776,
-                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                    },
-                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
-                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
-                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
-                    DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
-                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
-                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
-                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
-                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
-                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
-                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
-                }
-            };
-
-            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1885336006);
+                FullName = &quot;TestValue1514577541&quot;,
+                PositionName = &quot;TestValue943581590&quot;,
+                Email = &quot;TestValue1415395874&quot;,
+                ImageURl = &quot;TestValue1832689187&quot;,
+                Subordinates = new List&lt;OrgChartNode&gt;()
+            });
 
             // Act
-            var result = await _testClass.InsertEmployeeAttendence(employeeAttendence);
+            var result = await _testClass.GetOrganizationChart();
 
             // Assert
-            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+            _orgChartService.Verify(mock =&gt; mock.GetOrganizationChartAsync(It.IsAny&lt;int&gt;()));
 
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
-        }
-
-        [Fact]
-        public async Task CanCallUpdateEmployeeAttendence()
-        {
-            // Arrange
-            var id = 795632507;
-            var Timein = DateTime.UtcNow;
-            var Timeout = DateTime.UtcNow;
-            var Remark = &quot;TestValue1997865304&quot;;
-            var empcredentialId = 1545452393;
-
-            // Act
-            var result = await _testClass.UpdateEmployeeAttendence(id, Timein, Timeout, Remark, empcredentialId);
-
-            // Assert
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[20,9,20,44,1],[21,9,21,10,1],[22,13,22,46,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,113,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,115,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,32,1],[44,13,44,99,1],[47,13,47,72,1],[50,13,50,81,0],[52,13,52,72,0],[57,9,57,10,1],[59,13,59,59,1],[62,13,62,72,0],[67,9,67,10,1],[69,13,69,40,1],[72,13,72,70,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,82,33,1],[85,13,85,49,1],[88,13,88,72,0],[93,9,93,10,1],[95,13,143,15,1],[145,13,145,100,1],[148,13,148,88,1],[151,13,151,81,0],[153,13,153,72,0],[158,9,158,10,1],[160,13,160,32,1],[161,13,161,42,1],[162,13,162,43,1],[163,13,163,48,1],[164,13,164,46,1],[167,13,167,114,1],[170,13,170,72,0]]);
+      highlightRanges([[17,9,17,41,1],[18,9,18,10,1],[19,13,19,61,1],[20,13,20,74,1],[21,9,21,10,1],[25,9,25,10,1],[27,13,27,76,1],[30,13,30,38,1],[31,9,31,10,1],[35,9,35,10,1],[45,13,45,72,1],[50,9,50,10,1],[52,13,59,16,1],[62,13,62,66,1],[65,13,65,94,1],[67,13,67,72,0]]);
     </script>
   </body>
 </html>

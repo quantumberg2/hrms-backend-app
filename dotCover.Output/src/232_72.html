@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\NewsPreviewController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class NewsPreviewController : ControllerBase
+    {
+        private readonly ILogger&lt;NewsPreviewController&gt; _logger;
+        private readonly INewsPreview _news;
+        public NewsPreviewController(ILogger&lt;NewsPreviewController&gt; logger, INewsPreview news)
+        {
+            _logger = logger;
+            _news = news;
+        }
+
+        [HttpGet]
+        public List&lt;NewsPreview&gt; GetAllNews()
+        {
+            _logger.LogInformation(&quot;Get all News method started&quot;);
+            var res = _news.GetAllNews();
+            return res;
+        }
+
+        [HttpPost]
+        public string InsertNews([FromForm] NewsDTO news)
+        {
+            _logger.LogInformation(&quot;Upload News method started&quot;);
+             var res = _news.InsertNews(news);
+            return res;
+        }
+        [HttpPut]
+        public string UpdateNews(int id, NewsDTO news)
+        {
+            _logger.LogInformation(&quot;update News method started&quot;);
+            var res= _news.UpdateNews(id, news);
+            return res;
+
+        }
+        [HttpPut(&quot;SoftDelete&quot;)]
+        public bool SoftDelete(int id, short isActive)
+        {
+            _logger.LogInformation(&quot;Delete News method started&quot;);
+            var res = _news.SoftDelete(id, isActive);
+            return res;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,95,1],[16,9,16,10,1],[17,13,17,30,1],[18,13,18,26,1],[19,9,19,10,1],[23,9,23,10,1],[24,13,24,67,1],[25,13,25,42,1],[26,13,26,24,1],[27,9,27,10,1],[31,9,31,10,1],[32,13,32,66,1],[33,14,33,47,1],[34,13,34,24,1],[35,9,35,10,1],[38,9,38,10,1],[39,13,39,66,1],[40,13,40,49,1],[41,13,41,24,1],[43,9,43,10,1],[46,9,46,10,1],[47,13,47,66,1],[48,13,48,54,1],[49,13,49,24,1],[50,9,50,10,1]]);
+    </script>
+  </body>
+</html>

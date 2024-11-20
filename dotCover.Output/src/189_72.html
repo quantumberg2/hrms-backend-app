@@ -2,87 +2,34 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\UserRoleController.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\DTO\EmployeeDto.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using HRMS_Application.Authorization;
-
-namespace HRMS_Application.Controllers
+namespace HRMS_Application.DTO
 {
-    [Route(&quot;api/[controller]&quot;)]
-    [ApiController]
-    public class UserRoleController : ControllerBase
+    public class EmployeeDto
     {
-        private readonly IUserRoles _userRole;
-        private readonly ILogger&lt;UserRoleController&gt; _logger;
+        public string EmployeeNumber { get; set; }
+        public string Email { get; set; }
+        public string Designation { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public int? DeptId { get; set; }
+        public int? PositionId { get; set; }
+        public string? YearsExperience { get; set; }
+        public int? isActive { get; set; }
 
 
-        public UserRoleController(IUserRoles userRoles, ILogger&lt;UserRoleController&gt; logger)
-        {
-            _userRole = userRoles;
-            _logger = logger;
-        }
-        [HttpGet]
-        //[Authorize(new[] { &quot;Admin&quot;, &quot;Developer&quot; })]
-        public List&lt;UserRolesJ&gt; GetAllUserRoles()
-        {
-            _logger.LogInformation(&quot;Get all department method started&quot;);
-            var dept = _userRole.GetAlluserRole();
-            return dept;
-        }
-
-        [HttpPost(&quot;insertEmployees&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        public async Task&lt;string&gt; InsertUserRole([FromBody] UserRolesJ userRole)
-        {
-            _logger.LogInformation(&quot;Insert department method started&quot;);
-
-            var status = await _userRole.InsertuserRoles(userRole);
-            return status;
-        }
-
-      /*  [HttpPut(&quot;UpdateAll/{id}&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        // [Route(&quot;UpdateAll&quot;)]
-        public Department UpdateDepartment(int id, string? name, int? requestedcompanyId)
-        {
-            _logger.LogInformation(&quot;Update method started&quot;);
-            var status = _department.UpdateDepartment(id, name, requestedcompanyId);
-            return status;
-        }*/
-
-        [HttpDelete(&quot;{id}&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        public async Task&lt;bool&gt; DeleteUserRole(int id)
-        {
-            _logger.LogInformation(&quot;Delete method started&quot;);
-            var status = await _userRole.deleteUserRole(id);
-            return status;
-        }
-
-        [HttpPut(&quot;SoftDelete&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-
-        public bool SoftDelete(int id, short isActive)
-        {
-            _logger.LogInformation(&quot;Soft update user roles method started&quot;);
-            var res = _userRole.SoftDelete(id, isActive);
-            return res;
-
-        }
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[17,9,17,92,1],[18,9,18,10,1],[19,13,19,35,1],[20,13,20,30,1],[21,9,21,10,1],[25,9,25,10,1],[26,13,26,73,1],[27,13,27,51,1],[28,13,28,25,1],[29,9,29,10,1],[34,9,34,10,1],[35,13,35,72,1],[37,13,37,68,1],[38,13,38,27,1],[39,9,39,10,1],[54,9,54,10,1],[55,13,55,61,1],[56,13,56,61,1],[57,13,57,27,1],[58,9,58,10,1],[64,9,64,10,1],[65,13,65,77,1],[66,13,66,58,1],[67,13,67,24,1],[69,9,69,10,1]]);
+      highlightRanges([[5,40,5,44,1],[5,45,5,49,1],[6,31,6,35,1],[6,36,6,40,1],[7,37,7,41,1],[7,42,7,46,1],[8,35,8,39,1],[8,40,8,44,1],[9,36,9,40,1],[9,41,9,45,1],[10,34,10,38,1],[10,39,10,43,1],[11,30,11,34,1],[11,35,11,39,1],[12,34,12,38,1],[12,39,12,43,1],[13,42,13,46,1],[13,47,13,51,1],[14,32,14,36,1],[14,37,14,41,1]]);
     </script>
   </body>
 </html>

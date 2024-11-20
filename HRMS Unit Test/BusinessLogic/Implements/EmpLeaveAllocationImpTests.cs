@@ -5,6 +5,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
     using System.Threading.Tasks;
     using HRMS_Application.Authorization;
     using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.DTO;
     using HRMS_Application.Models;
     using Microsoft.AspNetCore.Http;
     using Moq;
@@ -177,6 +178,26 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Act
             var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallGrantLeaveAllocationAsync()
+        {
+            // Arrange
+            var request = new EmployeeLeaveAllocationRequest
+            {
+                Year = 167172263,
+                EmpCredentialId = 636728005,
+                NumberOfLeaves = 1335543387,
+                RemainingLeave = 521562267,
+                LeaveType = 1336067234
+            };
+
+            // Act
+            await _testClass.GrantLeaveAllocationAsync(request);
 
             // Assert
             throw new NotImplementedException("Create or modify test");

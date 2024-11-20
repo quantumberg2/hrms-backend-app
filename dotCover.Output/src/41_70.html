@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\EmployeeViewTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\AdminDashboardDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -11,113 +11,186 @@
 namespace HRMS_Unit_Test.DTO
 {
     using System;
+    using System.Collections.Generic;
     using HRMS_Application.DTO;
     using Xunit;
 
-    public class EmployeeViewTests
+    public class MonthlyCountDTOTests
     {
-        private readonly EmployeeView _testClass;
+        private readonly MonthlyCountDTO _testClass;
 
-        public EmployeeViewTests()
+        public MonthlyCountDTOTests()
         {
-            _testClass = new EmployeeView();
+            _testClass = new MonthlyCountDTO();
         }
 
         [Fact]
-        public void CanSetAndGetEmployeeId()
+        public void CanSetAndGetYear()
         {
             // Arrange
-            var testValue = 18628338;
+            var testValue = 942421224;
 
             // Act
-            _testClass.EmployeeId = testValue;
+            _testClass.Year = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.EmployeeId);
+            Assert.Equal(testValue, _testClass.Year);
         }
 
         [Fact]
-        public void CanSetAndGetEmployeeName()
+        public void CanSetAndGetMonth()
         {
             // Arrange
-            var testValue = &quot;TestValue1617778297&quot;;
+            var testValue = &quot;TestValue1708125859&quot;;
 
             // Act
-            _testClass.EmployeeName = testValue;
+            _testClass.Month = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.EmployeeName);
+            Assert.Equal(testValue, _testClass.Month);
         }
 
         [Fact]
-        public void CanSetAndGetAddress()
+        public void CanSetAndGetJoinedCount()
         {
             // Arrange
-            var testValue = &quot;TestValue1445555755&quot;;
+            var testValue = 808980784;
 
             // Act
-            _testClass.Address = testValue;
+            _testClass.JoinedCount = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Address);
+            Assert.Equal(testValue, _testClass.JoinedCount);
         }
 
         [Fact]
-        public void CanSetAndGetGender()
+        public void CanSetAndGetResignedCount()
         {
             // Arrange
-            var testValue = &quot;TestValue1169984526&quot;;
+            var testValue = 113853995;
 
             // Act
-            _testClass.Gender = testValue;
+            _testClass.ResignedCount = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Gender);
+            Assert.Equal(testValue, _testClass.ResignedCount);
+        }
+    }
+
+    public class ExperienceCountDTOTests
+    {
+        private readonly ExperienceCountDTO _testClass;
+
+        public ExperienceCountDTOTests()
+        {
+            _testClass = new ExperienceCountDTO();
         }
 
         [Fact]
-        public void CanSetAndGetDOB()
+        public void CanSetAndGetYears()
         {
             // Arrange
-            var testValue = &quot;TestValue2040165132&quot;;
+            var testValue = &quot;TestValue1674634773&quot;;
 
             // Act
-            _testClass.DOB = testValue;
+            _testClass.Years = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.DOB);
+            Assert.Equal(testValue, _testClass.Years);
         }
 
         [Fact]
-        public void CanSetAndGetDesignation()
+        public void CanSetAndGetCount()
         {
             // Arrange
-            var testValue = &quot;TestValue108275387&quot;;
+            var testValue = 295257589;
 
             // Act
-            _testClass.Designation = testValue;
+            _testClass.Count = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Designation);
+            Assert.Equal(testValue, _testClass.Count);
+        }
+    }
+
+    public class AdminDashboardDTOTests
+    {
+        private readonly AdminDashboardDTO _testClass;
+
+        public AdminDashboardDTOTests()
+        {
+            _testClass = new AdminDashboardDTO();
         }
 
         [Fact]
-        public void CanSetAndGetManager()
+        public void CanSetAndGetTotalEmployees()
         {
             // Arrange
-            var testValue = &quot;TestValue1109642688&quot;;
+            var testValue = 368377103;
 
             // Act
-            _testClass.Manager = testValue;
+            _testClass.TotalEmployees = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Manager);
+            Assert.Equal(testValue, _testClass.TotalEmployees);
+        }
+
+        [Fact]
+        public void CanSetAndGetNewEmployees()
+        {
+            // Arrange
+            var testValue = 138521806;
+
+            // Act
+            _testClass.NewEmployees = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.NewEmployees);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeesJoinedMonthWise()
+        {
+            // Arrange
+            var testValue = new List&lt;MonthlyCountDTO&gt;();
+
+            // Act
+            _testClass.EmployeesJoinedMonthWise = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.EmployeesJoinedMonthWise);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmployeesResignedMonthWise()
+        {
+            // Arrange
+            var testValue = new List&lt;MonthlyCountDTO&gt;();
+
+            // Act
+            _testClass.EmployeesResignedMonthWise = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.EmployeesResignedMonthWise);
+        }
+
+        [Fact]
+        public void CanSetAndGetExperienceCounts()
+        {
+            // Arrange
+            var testValue = new List&lt;ExperienceCountDTO&gt;();
+
+            // Act
+            _testClass.ExperienceCounts = testValue;
+
+            // Assert
+            Assert.Same(testValue, _testClass.ExperienceCounts);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,35,1],[12,9,12,10,1],[13,13,13,45,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,38,1],[23,13,23,47,1],[26,13,26,60,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,49,1],[39,13,39,62,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,51,1],[49,13,49,44,1],[52,13,52,57,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,43,1],[65,13,65,56,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,51,1],[75,13,75,40,1],[78,13,78,53,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,50,1],[88,13,88,48,1],[91,13,91,61,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,51,1],[101,13,101,44,1],[104,13,104,57,1],[105,9,105,10,1]]);
+      highlightRanges([[12,9,12,38,1],[13,9,13,10,1],[14,13,14,48,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,39,1],[24,13,24,41,1],[27,13,27,54,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,51,1],[37,13,37,42,1],[40,13,40,55,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,39,1],[50,13,50,48,1],[53,13,53,61,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,39,1],[63,13,63,50,1],[66,13,66,63,1],[67,9,67,10,1],[74,9,74,41,1],[75,9,75,10,1],[76,13,76,51,1],[77,9,77,10,1],[81,9,81,10,1],[83,13,83,51,1],[86,13,86,42,1],[89,13,89,55,1],[90,9,90,10,1],[94,9,94,10,1],[96,13,96,39,1],[99,13,99,42,1],[102,13,102,55,1],[103,9,103,10,1],[110,9,110,40,1],[111,9,111,10,1],[112,13,112,50,1],[113,9,113,10,1],[117,9,117,10,1],[119,13,119,39,1],[122,13,122,51,1],[125,13,125,64,1],[126,9,126,10,1],[130,9,130,10,1],[132,13,132,39,1],[135,13,135,49,1],[138,13,138,62,1],[139,9,139,10,1],[143,9,143,10,1],[145,13,145,57,1],[148,13,148,61,1],[151,13,151,73,1],[152,9,152,10,1],[156,9,156,10,1],[158,13,158,57,1],[161,13,161,63,1],[164,13,164,75,1],[165,9,165,10,1],[169,9,169,10,1],[171,13,171,60,1],[174,13,174,53,1],[177,13,177,65,1],[178,9,178,10,1]]);
     </script>
   </body>
 </html>

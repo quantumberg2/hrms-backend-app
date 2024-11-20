@@ -23,11 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BusinessLogic\Interface\" />
+    <ProjectReference Include="..\HRMS Application\HRMS Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HRMS Application\HRMS Application.csproj" />
+    <Folder Include="BusinessLogic\Interface\" />
   </ItemGroup>
 
 </Project>

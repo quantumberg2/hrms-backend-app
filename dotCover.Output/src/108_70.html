@@ -2,127 +2,198 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Authorization\AuthorizeAttributeTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\CompanyDetailsImpTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Authorization
+namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
     using System.Collections.Generic;
-    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.DTO;
+    using HRMS_Application.Models;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Abstractions;
-    using Microsoft.AspNetCore.Mvc.ActionConstraints;
-    using Microsoft.AspNetCore.Mvc.Filters;
-    using Microsoft.AspNetCore.Mvc.ModelBinding;
-    using Microsoft.AspNetCore.Mvc.Routing;
-    using Microsoft.AspNetCore.Routing;
     using Moq;
     using Xunit;
 
-    public class AuthorizeAttributeTests
+    public class CompanyDetailsImpTests
     {
-        private readonly AuthorizeAttribute _testClass;
-        private string[] _roles;
+        private readonly CompanyDetailsImp _testClass;
+        private HRMSContext _context;
+        private readonly Mock&lt;IAzureOperations&gt; _azureOperations;
 
-        public AuthorizeAttributeTests()
+        public CompanyDetailsImpTests()
         {
-            _roles = new[] { &quot;TestValue307337822&quot;, &quot;TestValue1589331138&quot;, &quot;TestValue1455852817&quot; };
-            _testClass = new AuthorizeAttribute(_roles);
+            _azureOperations = new Mock&lt;IAzureOperations&gt;();
+            _context = new HRMSContext();
+            //  _testClass = new CompanyDetailsImp(_context);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new AuthorizeAttribute(_roles);
+            //    var instance = new CompanyDetailsImp(_context);
 
             // Assert
-            Assert.NotNull(instance);
+            //    Assert.NotNull(instance);
         }
 
         [Fact]
-        public void CanCallOnAuthorization()
+        public void CanCalldeleteCompanyDetails()
         {
             // Arrange
-            var context = new AuthorizationFilterContext(new ActionContext
-            {
-                ActionDescriptor = new ActionDescriptor
-                {
-                    RouteValues = new Mock&lt;IDictionary&lt;string, string&gt;&gt;().Object,
-                    AttributeRouteInfo = new AttributeRouteInfo
-                    {
-                        Template = &quot;TestValue544539662&quot;,
-                        Order = 784310236,
-                        Name = &quot;TestValue842384596&quot;,
-                        SuppressLinkGeneration = false,
-                        SuppressPathMatching = true
-                    },
-                    ActionConstraints = new[] { new Mock&lt;IActionConstraintMetadata&gt;().Object, new Mock&lt;IActionConstraintMetadata&gt;().Object, new Mock&lt;IActionConstraintMetadata&gt;().Object },
-                    EndpointMetadata = new[] { new object(), new object(), new object() },
-                    Parameters = new[] {
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue1249567415&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue531683493&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue1964333175&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        }
-                    },
-                    BoundProperties = new[] {
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue560692243&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue1630473598&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        },
-                        new ParameterDescriptor
-                        {
-                            Name = &quot;TestValue2017492749&quot;,
-                            ParameterType = typeof(string),
-                            BindingInfo = new BindingInfo()
-                        }
-                    },
-                    FilterDescriptors = new[] { new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 1127721816), new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 1271480197), new FilterDescriptor(new Mock&lt;IFilterMetadata&gt;().Object, 1106528143) },
-                    DisplayName = &quot;TestValue758921232&quot;,
-                    Properties = new Mock&lt;IDictionary&lt;object, object&gt;&gt;().Object
-                },
-                HttpContext = new DefaultHttpContext(),
-                RouteData = new RouteData()
-            }, new[] { new Mock&lt;IFilterMetadata&gt;().Object, new Mock&lt;IFilterMetadata&gt;().Object, new Mock&lt;IFilterMetadata&gt;().Object });
+            var id = 2135225435;
 
             // Act
-            _testClass.OnAuthorization(context);
+            var result = _testClass.deleteCompanyDetails(id);
 
             // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetAllCompanyDetails()
+        {
+            // Act
+            var result = _testClass.GetAllCompanyDetails();
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetCompanyDetailstById()
+        {
+            // Arrange
+            var id = 1415456953;
+
+            // Act
+            var result = _testClass.GetCompanyDetailstById(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        /* [Fact]
+         public void CanCallGetCompanyDetailstByName()
+         {
+             // Arrange
+             var companyName = &quot;TestValue566928608&quot;;
+
+             // Act
+             var result = _testClass.GetCompanyDetailstByName(companyName);
+
+             // Assert
+             throw new NotImplementedException(&quot;Create or modify test&quot;);
+         }*/
+
+        [Fact]
+        public void CanCallInsertCompanyDetails()
+        {
+            // Arrange
+            var companyDetail = new CompanyDetail
+            {
+                Id = 843301029,
+                Name = &quot;TestValue849453386&quot;,
+                Address = &quot;TestValue835783508&quot;,
+                Country = &quot;TestValue1370744713&quot;,
+                States = &quot;TestValue2088237923&quot;,
+                Industry = &quot;TestValue25205987&quot;,
+                TimeZone = &quot;TestValue947713085&quot;,
+                Currency = &quot;TestValue1827728215&quot;,
+                PfNo = &quot;TestValue1164806978&quot;,
+                TanNo = &quot;TestValue1558792427&quot;,
+                EsiNo = &quot;TestValue340143196&quot;,
+                PanNo = &quot;TestValue1184400570&quot;,
+                GstNo = &quot;TestValue1182386774&quot;,
+                RegistrationNo = &quot;TestValue1102214648&quot;,
+                Twitter = &quot;TestValue1188411501&quot;,
+                Facebook = &quot;TestValue404019633&quot;,
+                LinkedIn = &quot;TestValue1078755900&quot;,
+                CompanyLogo = &quot;TestValue391119822&quot;,
+                RequestedCompanyId = 947311784,
+                IsActive = (short)10638,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 760391035,
+                    Name = &quot;TestValue542607409&quot;,
+                    PhoneNumber = &quot;TestValue457093547&quot;,
+                    DomainName = &quot;TestValue1219862060&quot;,
+                    Status = &quot;TestValue251230889&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1753416085&quot;,
+                    IsActive = (short)23089,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                }
+            };
+
+            // Act
+            //     var result = _testClass.InsertCompanyDetails(companyDetail);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 341374462;
+            var isActive = (short)20875;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetCompanyDetailstByCompanyId()
+        {
+            // Arrange
+            var CompanyId = 1912759851;
+
+            // Act
+            var result = _testClass.GetCompanyDetailstByCompanyId(CompanyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallupdateCompanyLogo()
+        {
+            // Arrange
+            var companyLogo = new Mock&lt;IFormFile&gt;().Object;
+            var companyId = 213170221;
+
+            _azureOperations.Setup(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;())).Returns(&quot;TestValue409604947&quot;);
+
+            // Act
+            var result = _testClass.updateCompanyLogo(companyLogo, companyId);
+
+            // Assert
+            _azureOperations.Verify(mock =&gt; mock.StoreFilesInAzure(It.IsAny&lt;IFormFile&gt;(), It.IsAny&lt;string&gt;()));
+
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[22,9,22,41,1],[23,9,23,10,1],[24,13,24,99,1],[25,13,25,57,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,59,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,103,134,1],[106,13,106,49,1],[109,13,109,72,1]]);
+      highlightRanges([[19,9,19,40,1],[20,9,20,10,1],[21,13,21,61,1],[22,13,22,42,1],[24,9,24,10,1],[28,9,28,10,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,33,1],[43,13,43,62,1],[46,13,46,72,0],[51,9,51,10,1],[53,13,53,60,1],[56,13,56,72,0],[61,9,61,10,1],[63,13,63,33,1],[66,13,66,64,1],[69,13,69,72,0],[87,9,87,10,1],[89,13,129,15,1],[135,13,135,72,1],[140,9,140,10,1],[142,13,142,32,1],[143,13,143,41,1],[146,13,146,62,1],[149,13,149,72,0],[154,9,154,10,1],[156,13,156,40,1],[159,13,159,78,1],[162,13,162,72,0],[167,9,167,10,1],[169,13,169,60,1],[170,13,170,39,1],[172,13,172,141,1],[175,13,175,79,1],[178,13,178,112,0],[180,13,180,72,0]]);
     </script>
   </body>
 </html>

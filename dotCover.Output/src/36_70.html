@@ -2,135 +2,44 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\AddressInfoDTOTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Enums\AppSettingsTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.DTO
+namespace HRMS_Unit_Test.Helpers
 {
     using System;
-    using HRMS_Application.DTO;
+    using HRMS_Application.Helpers;
     using Xunit;
 
-    public class AddressInfoDTOTests
+    public class AppSettingsTests
     {
-        private readonly AddressInfoDTO _testClass;
+        private readonly AppSettings _testClass;
 
-        public AddressInfoDTOTests()
+        public AppSettingsTests()
         {
-            _testClass = new AddressInfoDTO();
+            _testClass = new AppSettings();
         }
 
         [Fact]
-        public void CanSetAndGetEmployeeCredentialId()
+        public void CanSetAndGetSecret()
         {
             // Arrange
-            var testValue = 615200737;
+            var testValue = &quot;TestValue958653664&quot;;
 
             // Act
-            _testClass.EmployeeCredentialId = testValue;
+            _testClass.Secret = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.EmployeeCredentialId);
-        }
-
-        [Fact]
-        public void CanSetAndGetAddressLine1()
-        {
-            // Arrange
-            var testValue = &quot;TestValue1963389297&quot;;
-
-            // Act
-            _testClass.AddressLine1 = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.AddressLine1);
-        }
-
-        [Fact]
-        public void CanSetAndGetAddressLine2()
-        {
-            // Arrange
-            var testValue = &quot;TestValue452581858&quot;;
-
-            // Act
-            _testClass.AddressLine2 = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.AddressLine2);
-        }
-
-        [Fact]
-        public void CanSetAndGetCity()
-        {
-            // Arrange
-            var testValue = &quot;TestValue1264790561&quot;;
-
-            // Act
-            _testClass.City = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.City);
-        }
-
-        [Fact]
-        public void CanSetAndGetState()
-        {
-            // Arrange
-            var testValue = &quot;TestValue707459423&quot;;
-
-            // Act
-            _testClass.State = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.State);
-        }
-
-        [Fact]
-        public void CanSetAndGetCountry()
-        {
-            // Arrange
-            var testValue = &quot;TestValue1590810437&quot;;
-
-            // Act
-            _testClass.Country = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.Country);
-        }
-
-        [Fact]
-        public void CanSetAndGetPinCode()
-        {
-            // Arrange
-            var testValue = &quot;TestValue1360574249&quot;;
-
-            // Act
-            _testClass.PinCode = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.PinCode);
-        }
-
-        [Fact]
-        public void CanSetAndGetIsActive()
-        {
-            // Arrange
-            var testValue = (short)23978;
-
-            // Act
-            _testClass.IsActive = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.IsActive);
+            Assert.Equal(testValue, _testClass.Secret);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,37,1],[12,9,12,10,1],[13,13,13,47,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,39,1],[23,13,23,57,1],[26,13,26,70,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,49,1],[39,13,39,62,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,49,1],[52,13,52,62,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,41,1],[65,13,65,54,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,50,1],[75,13,75,42,1],[78,13,78,55,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,51,1],[88,13,88,44,1],[91,13,91,57,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,51,1],[101,13,101,44,1],[104,13,104,57,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,42,1],[114,13,114,45,1],[117,13,117,58,1],[118,9,118,10,1]]);
+      highlightRanges([[11,9,11,34,1],[12,9,12,10,1],[13,13,13,44,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,50,1],[23,13,23,43,1],[26,13,26,56,1],[27,9,27,10,1]]);
     </script>
   </body>
 </html>

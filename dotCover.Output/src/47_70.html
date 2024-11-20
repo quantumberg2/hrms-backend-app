@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\LeavePendingDTOTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\EmployeeDtoTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -14,162 +14,149 @@ namespace HRMS_Unit_Test.DTO
     using HRMS_Application.DTO;
     using Xunit;
 
-    public class LeavePendingDTOTests
+    public class EmployeeDtoTests
     {
-        private readonly LeavePendingDTO _testClass;
+        private readonly EmployeeDto _testClass;
 
-        public LeavePendingDTOTests()
+        public EmployeeDtoTests()
         {
-            _testClass = new LeavePendingDTO();
+            _testClass = new EmployeeDto();
         }
 
         [Fact]
-        public void CanSetAndGetid()
+        public void CanSetAndGetEmployeeNumber()
         {
             // Arrange
-            var testValue = 1080130809;
+            var testValue = &quot;TestValue289568202&quot;;
 
             // Act
-            _testClass.id = testValue;
+            _testClass.EmployeeNumber = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.id);
+            Assert.Equal(testValue, _testClass.EmployeeNumber);
         }
 
         [Fact]
-        public void CanSetAndGetemployeecredentialId()
+        public void CanSetAndGetEmail()
         {
             // Arrange
-            var testValue = 1080030310;
+            var testValue = &quot;TestValue1108401882&quot;;
 
             // Act
-            _testClass.employeecredentialId = testValue;
+            _testClass.Email = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.employeecredentialId);
+            Assert.Equal(testValue, _testClass.Email);
         }
 
         [Fact]
-        public void CanSetAndGetName()
+        public void CanSetAndGetDesignation()
         {
             // Arrange
-            var testValue = &quot;TestValue814722933&quot;;
+            var testValue = &quot;TestValue754472780&quot;;
 
             // Act
-            _testClass.Name = testValue;
+            _testClass.Designation = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Name);
+            Assert.Equal(testValue, _testClass.Designation);
         }
 
         [Fact]
-        public void CanSetAndGetLeaveType()
+        public void CanSetAndGetFirstName()
         {
             // Arrange
-            var testValue = &quot;TestValue1027729903&quot;;
+            var testValue = &quot;TestValue1317128629&quot;;
 
             // Act
-            _testClass.LeaveType = testValue;
+            _testClass.FirstName = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.LeaveType);
+            Assert.Equal(testValue, _testClass.FirstName);
         }
 
         [Fact]
-        public void CanSetAndGetmanagername()
+        public void CanSetAndGetMiddleName()
         {
             // Arrange
-            var testValue = &quot;TestValue762703739&quot;;
+            var testValue = &quot;TestValue793404771&quot;;
 
             // Act
-            _testClass.managername = testValue;
+            _testClass.MiddleName = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.managername);
+            Assert.Equal(testValue, _testClass.MiddleName);
         }
 
         [Fact]
-        public void CanSetAndGetReason()
+        public void CanSetAndGetLastName()
         {
             // Arrange
-            var testValue = &quot;TestValue1773621147&quot;;
+            var testValue = &quot;TestValue559900373&quot;;
 
             // Act
-            _testClass.Reason = testValue;
+            _testClass.LastName = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Reason);
+            Assert.Equal(testValue, _testClass.LastName);
         }
 
         [Fact]
-        public void CanSetAndGetStartDate()
+        public void CanSetAndGetDeptId()
         {
             // Arrange
-            var testValue = DateTime.UtcNow;
+            var testValue = 1156515174;
 
             // Act
-            _testClass.StartDate = testValue;
+            _testClass.DeptId = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.StartDate);
+            Assert.Equal(testValue, _testClass.DeptId);
         }
 
         [Fact]
-        public void CanSetAndGetEndDate()
+        public void CanSetAndGetPositionId()
         {
             // Arrange
-            var testValue = DateTime.UtcNow;
+            var testValue = 1745300382;
 
             // Act
-            _testClass.EndDate = testValue;
+            _testClass.PositionId = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.EndDate);
+            Assert.Equal(testValue, _testClass.PositionId);
         }
 
         [Fact]
-        public void CanSetAndGetApplieddate()
+        public void CanSetAndGetYearsExperience()
         {
             // Arrange
-            var testValue = DateTime.UtcNow;
+            var testValue = &quot;TestValue2068281599&quot;;
 
             // Act
-            _testClass.Applieddate = testValue;
+            _testClass.YearsExperience = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Applieddate);
+            Assert.Equal(testValue, _testClass.YearsExperience);
         }
 
         [Fact]
-        public void CanSetAndGetNoofDays()
+        public void CanSetAndGetisActive()
         {
             // Arrange
-            var testValue = 1475000459;
+            var testValue = 506393358;
 
             // Act
-            _testClass.NoofDays = testValue;
+            _testClass.isActive = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.NoofDays);
-        }
-
-        [Fact]
-        public void CanSetAndGetstatus()
-        {
-            // Arrange
-            var testValue = &quot;TestValue1099237470&quot;;
-
-            // Act
-            _testClass.status = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.status);
+            Assert.Equal(testValue, _testClass.isActive);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,38,1],[12,9,12,10,1],[13,13,13,48,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,40,1],[23,13,23,39,1],[26,13,26,52,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,40,1],[36,13,36,57,1],[39,13,39,70,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,41,1],[52,13,52,54,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,46,1],[65,13,65,59,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,50,1],[75,13,75,48,1],[78,13,78,61,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,51,1],[88,13,88,43,1],[91,13,91,56,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,45,1],[101,13,101,46,1],[104,13,104,59,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,45,1],[114,13,114,44,1],[117,13,117,57,1],[118,9,118,10,1],[122,9,122,10,1],[124,13,124,45,1],[127,13,127,48,1],[130,13,130,61,1],[131,9,131,10,1],[135,9,135,10,1],[137,13,137,40,1],[140,13,140,45,1],[143,13,143,58,1],[144,9,144,10,1],[148,9,148,10,1],[150,13,150,51,1],[153,13,153,43,1],[156,13,156,56,1],[157,9,157,10,1]]);
+      highlightRanges([[11,9,11,34,1],[12,9,12,10,1],[13,13,13,44,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,50,1],[23,13,23,51,1],[26,13,26,64,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,42,1],[39,13,39,55,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,50,1],[49,13,49,48,1],[52,13,52,61,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,51,1],[62,13,62,46,1],[65,13,65,59,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,50,1],[75,13,75,47,1],[78,13,78,60,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,50,1],[88,13,88,45,1],[91,13,91,58,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,40,1],[101,13,101,43,1],[104,13,104,56,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,40,1],[114,13,114,47,1],[117,13,117,60,1],[118,9,118,10,1],[122,9,122,10,1],[124,13,124,51,1],[127,13,127,52,1],[130,13,130,65,1],[131,9,131,10,1],[135,9,135,10,1],[137,13,137,39,1],[140,13,140,45,1],[143,13,143,58,1],[144,9,144,10,1]]);
     </script>
   </body>
 </html>

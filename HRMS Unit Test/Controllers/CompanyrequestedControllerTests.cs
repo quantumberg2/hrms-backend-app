@@ -125,10 +125,10 @@ namespace HRMS_Unit_Test.Controllers
                 Positions = new Mock<ICollection<Position>>().Object
             };
 
-        //    _companyRequested.Setup(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>())).ReturnsAsync("TestValue2094523348");
+            //    _companyRequested.Setup(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>())).ReturnsAsync("TestValue2094523348");
 
             // Act
-        //    var result = await _testClass.InsertRequestedCompanyForm(requestedCompanyForm);
+            //    var result = await _testClass.InsertRequestedCompanyForm(requestedCompanyForm);
 
             // Assert
             _companyRequested.Verify(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>()));
@@ -168,6 +168,40 @@ namespace HRMS_Unit_Test.Controllers
             var result = await _testClass.VerifyOtp(request);
 
             // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallPostRequestedCompanyForm()
+        {
+            // Arrange
+            var requestedCompanyForm = new RequestedCompanyForm
+            {
+                Id = 1752109647,
+                Name = "TestValue1119967675",
+                PhoneNumber = "TestValue196030367",
+                DomainName = "TestValue1936575690",
+                Status = "TestValue1072417395",
+                InsertedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow,
+                Email = "TestValue487673999",
+                IsActive = (short)12429,
+                CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                Departments = new Mock<ICollection<Department>>().Object,
+                EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                Holidays = new Mock<ICollection<Holiday>>().Object,
+                LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                Positions = new Mock<ICollection<Position>>().Object
+            };
+
+            _companyRequested.Setup(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>())).ReturnsAsync("TestValue933497691");
+
+            // Act
+            var result = await _testClass.PostRequestedCompanyForm(requestedCompanyForm);
+
+            // Assert
+            _companyRequested.Verify(mock => mock.InsertRequestedCompanyForm(It.IsAny<RequestedCompanyForm>()));
+
             throw new NotImplementedException("Create or modify test");
         }
     }

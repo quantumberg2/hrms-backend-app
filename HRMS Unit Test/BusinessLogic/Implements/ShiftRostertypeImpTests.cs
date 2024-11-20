@@ -52,16 +52,16 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-       /* [Fact]
-        public void CanCallGetAllShiftRosterType()
-        {
-            // Act
-            var result = _testClass.GetAllShiftRosterType();
+        /* [Fact]
+         public void CanCallGetAllShiftRosterType()
+         {
+             // Act
+             var result = _testClass.GetAllShiftRosterType();
 
-            // Assert
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
+             // Assert
+             throw new NotImplementedException("Create or modify test");
+         }
+ */
         [Fact]
         public void CanCallGetShiftRosterTypeId()
         {
@@ -75,29 +75,29 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-       /* [Fact]
-        public async Task CanCallInsertShiftRosterType()
-        {
-            // Arrange
-            var shiftRosterType = new ShiftRosterType
-            {
-                Id = 2129928359,
-                Type = "TestValue1105516027",
-                TimeRange = "TestValue38375188",
-                ShiftRosters = new Mock<ICollection<ShiftRoster>>().Object
-            };
+        /* [Fact]
+         public async Task CanCallInsertShiftRosterType()
+         {
+             // Arrange
+             var shiftRosterType = new ShiftRosterType
+             {
+                 Id = 2129928359,
+                 Type = "TestValue1105516027",
+                 TimeRange = "TestValue38375188",
+                 ShiftRosters = new Mock<ICollection<ShiftRoster>>().Object
+             };
 
-            _jwtUtils.Setup(mock => mock.ValidateJwtToken(It.IsAny<string>())).Returns(4555692);
+             _jwtUtils.Setup(mock => mock.ValidateJwtToken(It.IsAny<string>())).Returns(4555692);
 
-            // Act
-            var result = await _testClass.InsertShiftRosterType(shiftRosterType);
+             // Act
+             var result = await _testClass.InsertShiftRosterType(shiftRosterType);
 
-            // Assert
-            _jwtUtils.Verify(mock => mock.ValidateJwtToken(It.IsAny<string>()));
+             // Assert
+             _jwtUtils.Verify(mock => mock.ValidateJwtToken(It.IsAny<string>()));
 
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
+             throw new NotImplementedException("Create or modify test");
+         }
+ */
         [Fact]
         public async Task CanCallupdateShiftRosterType()
         {
@@ -114,6 +114,40 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             // Assert
             _jwtUtils.Verify(mock => mock.ValidateJwtToken(It.IsAny<string>()));
 
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetAllShiftRosterType()
+        {
+            // Arrange
+            var CompanyId = 854251198;
+
+            // Act
+            var result = _testClass.GetAllShiftRosterType(CompanyId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallInsertShiftRosterType()
+        {
+            // Arrange
+            var shiftRosterType = new ShiftRosterType
+            {
+                Id = 1814189828,
+                Type = "TestValue1860394167",
+                TimeRange = "TestValue1698365325",
+                CompanyRequestedId = 39705046,
+                ShiftRosters = new Mock<ICollection<ShiftRoster>>().Object
+            };
+            var companyId = 783591161;
+
+            // Act
+            var result = await _testClass.InsertShiftRosterType(shiftRosterType, companyId);
+
+            // Assert
             throw new NotImplementedException("Create or modify test");
         }
     }

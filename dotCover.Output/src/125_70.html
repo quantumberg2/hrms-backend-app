@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\LocalStorageOperationsImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using HRMS_Application.BusinessLogic.Implements;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class LocalStorageOperationsImpTests
+    {
+        private readonly LocalStorageOperationsImp _testClass;
+
+        public LocalStorageOperationsImpTests()
+        {
+            _testClass = new LocalStorageOperationsImp();
+        }
+
+        [Fact]
+        public void CanCallStoreFiles()
+        {
+            // Arrange
+            var @file = new Mock&lt;IFormFile&gt;().Object;
+            var directory = &quot;TestValue1774457603&quot;;
+
+            // Act
+            var result = _testClass.StoreFiles(file, directory);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,48,1],[14,9,14,10,1],[15,13,15,58,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,54,1],[23,13,23,51,1],[26,13,26,65,1],[29,13,29,72,0]]);
+    </script>
+  </body>
+</html>

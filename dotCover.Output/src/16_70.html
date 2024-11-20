@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\EmpSalaryTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\EmpPersonalInfoTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -16,20 +16,20 @@ namespace HRMS_Unit_Test.Models
     using Moq;
     using Xunit;
 
-    public partial class EmpSalaryTests
+    public partial class EmpPersonalInfoTests
     {
-        private readonly EmpSalary _testClass;
+        private readonly EmpPersonalInfo _testClass;
 
-        public EmpSalaryTests()
+        public EmpPersonalInfoTests()
         {
-            _testClass = new EmpSalary();
+            _testClass = new EmpPersonalInfo();
         }
 
         [Fact]
         public void CanSetAndGetId()
         {
             // Arrange
-            var testValue = 1375467494;
+            var testValue = 1679091244;
 
             // Act
             _testClass.Id = testValue;
@@ -42,7 +42,7 @@ namespace HRMS_Unit_Test.Models
         public void CanSetAndGetEmployeeCredentialId()
         {
             // Arrange
-            var testValue = 897651715;
+            var testValue = 758966256;
 
             // Act
             _testClass.EmployeeCredentialId = testValue;
@@ -52,62 +52,153 @@ namespace HRMS_Unit_Test.Models
         }
 
         [Fact]
-        public void CanSetAndGetSalaryRange()
+        public void CanSetAndGetDob()
         {
             // Arrange
-            var testValue = &quot;TestValue80124889&quot;;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.SalaryRange = testValue;
+            _testClass.Dob = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.SalaryRange);
+            Assert.Equal(testValue, _testClass.Dob);
         }
 
         [Fact]
-        public void CanSetAndGetAnnualIncome()
+        public void CanSetAndGetDateOfJoining()
         {
             // Arrange
-            var testValue = 1820666072.61M;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.AnnualIncome = testValue;
+            _testClass.DateOfJoining = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.AnnualIncome);
+            Assert.Equal(testValue, _testClass.DateOfJoining);
         }
 
         [Fact]
-        public void CanSetAndGetLoan()
+        public void CanSetAndGetConfirmDate()
         {
             // Arrange
-            var testValue = 927292386.24M;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.Loan = testValue;
+            _testClass.ConfirmDate = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Loan);
+            Assert.Equal(testValue, _testClass.ConfirmDate);
         }
 
         [Fact]
-        public void CanSetAndGetInsurance()
+        public void CanSetAndGetEmpStatus()
         {
             // Arrange
-            var testValue = 1330969789.71M;
+            var testValue = &quot;TestValue1120099554&quot;;
 
             // Act
-            _testClass.Insurance = testValue;
+            _testClass.EmpStatus = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Insurance);
+            Assert.Equal(testValue, _testClass.EmpStatus);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmailId()
+        {
+            // Arrange
+            var testValue = &quot;TestValue359478284&quot;;
+
+            // Act
+            _testClass.EmailId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmailId);
+        }
+
+        [Fact]
+        public void CanSetAndGetPersonalEmail()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1194885375&quot;;
+
+            // Act
+            _testClass.PersonalEmail = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PersonalEmail);
+        }
+
+        [Fact]
+        public void CanSetAndGetMaritalStatus()
+        {
+            // Arrange
+            var testValue = &quot;TestValue620311092&quot;;
+
+            // Act
+            _testClass.MaritalStatus = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.MaritalStatus);
+        }
+
+        [Fact]
+        public void CanSetAndGetBloodGroup()
+        {
+            // Arrange
+            var testValue = &quot;TestValue725955163&quot;;
+
+            // Act
+            _testClass.BloodGroup = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.BloodGroup);
+        }
+
+        [Fact]
+        public void CanSetAndGetSpouseName()
+        {
+            // Arrange
+            var testValue = &quot;TestValue512946660&quot;;
+
+            // Act
+            _testClass.SpouseName = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.SpouseName);
+        }
+
+        [Fact]
+        public void CanSetAndGetPhysicallyChallenged()
+        {
+            // Arrange
+            var testValue = false;
+
+            // Act
+            _testClass.PhysicallyChallenged = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.PhysicallyChallenged);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmergencyContact()
+        {
+            // Arrange
+            var testValue = &quot;TestValue944174217&quot;;
+
+            // Act
+            _testClass.EmergencyContact = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.EmergencyContact);
         }
 
         [Fact]
         public void CanSetAndGetIsActive()
         {
             // Arrange
-            var testValue = (short)137;
+            var testValue = (short)11969;
 
             // Act
             _testClass.IsActive = testValue;
@@ -117,33 +208,59 @@ namespace HRMS_Unit_Test.Models
         }
 
         [Fact]
+        public void CanSetAndGetGender()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1821134536&quot;;
+
+            // Act
+            _testClass.Gender = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Gender);
+        }
+
+        [Fact]
+        public void CanSetAndGetPan()
+        {
+            // Arrange
+            var testValue = &quot;TestValue2122082830&quot;;
+
+            // Act
+            _testClass.Pan = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Pan);
+        }
+
+        [Fact]
         public void CanSetAndGetEmployeeCredential()
         {
             // Arrange
             var testValue = new EmployeeCredential
             {
-                Id = 1838180800,
-                UserName = &quot;TestValue816637058&quot;,
-                Password = &quot;TestValue1217993855&quot;,
-                Status = (short)8138,
-                RequestedCompanyId = 568553754,
-                Email = &quot;TestValue1517647956&quot;,
+                Id = 427820079,
+                UserName = &quot;TestValue1242378333&quot;,
+                Password = &quot;TestValue1458428249&quot;,
+                Status = (short)27030,
+                RequestedCompanyId = 901624680,
+                Email = &quot;TestValue292564948&quot;,
                 DefaultPassword = true,
-                GenerateOtp = &quot;TestValue1525708603&quot;,
+                GenerateOtp = &quot;TestValue1968183456&quot;,
                 OtpExpiration = DateTime.UtcNow,
-                IsActive = (short)10341,
-                EmployeeLoginName = &quot;TestValue744826438&quot;,
+                IsActive = (short)11923,
+                EmployeeLoginName = &quot;TestValue678841367&quot;,
                 RequestedCompany = new RequestedCompanyForm
                 {
-                    Id = 2130352771,
-                    Name = &quot;TestValue566774540&quot;,
-                    PhoneNumber = &quot;TestValue665888824&quot;,
-                    DomainName = &quot;TestValue1878521386&quot;,
-                    Status = &quot;TestValue560691030&quot;,
+                    Id = 1428526562,
+                    Name = &quot;TestValue1570302955&quot;,
+                    PhoneNumber = &quot;TestValue1997955094&quot;,
+                    DomainName = &quot;TestValue611273711&quot;,
+                    Status = &quot;TestValue1035258010&quot;,
                     InsertedDate = DateTime.UtcNow,
                     UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue1402436347&quot;,
-                    IsActive = (short)5392,
+                    Email = &quot;TestValue1843793249&quot;,
+                    IsActive = (short)23085,
                     CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
                     Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
                     EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
@@ -154,7 +271,7 @@ namespace HRMS_Unit_Test.Models
                 AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
                 AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
                 Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
-                DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
                 EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
                 EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
                 EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
@@ -173,7 +290,7 @@ namespace HRMS_Unit_Test.Models
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[13,9,13,32,1],[14,9,14,10,1],[15,13,15,42,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,40,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,39,1],[38,13,38,57,1],[41,13,41,70,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,49,1],[51,13,51,48,1],[54,13,54,61,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,44,1],[64,13,64,49,1],[67,13,67,62,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,43,1],[77,13,77,41,1],[80,13,80,54,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,87,44,1],[90,13,90,46,1],[93,13,93,59,1],[94,9,94,10,1],[98,9,98,10,1],[100,13,100,40,1],[103,13,103,45,1],[106,13,106,58,1],[107,9,107,10,1],[111,9,111,10,1],[113,13,154,15,1],[157,13,157,55,1],[160,13,160,67,1],[161,9,161,10,1]]);
+      highlightRanges([[13,9,13,38,1],[14,9,14,10,1],[15,13,15,48,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,40,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,39,1],[38,13,38,57,1],[41,13,41,70,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,45,1],[51,13,51,40,1],[54,13,54,53,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,45,1],[64,13,64,50,1],[67,13,67,63,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,45,1],[77,13,77,48,1],[80,13,80,61,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,87,51,1],[90,13,90,46,1],[93,13,93,59,1],[94,9,94,10,1],[98,9,98,10,1],[100,13,100,50,1],[103,13,103,44,1],[106,13,106,57,1],[107,9,107,10,1],[111,9,111,10,1],[113,13,113,51,1],[116,13,116,50,1],[119,13,119,63,1],[120,9,120,10,1],[124,9,124,10,1],[126,13,126,50,1],[129,13,129,50,1],[132,13,132,63,1],[133,9,133,10,1],[137,9,137,10,1],[139,13,139,50,1],[142,13,142,47,1],[145,13,145,60,1],[146,9,146,10,1],[150,9,150,10,1],[152,13,152,50,1],[155,13,155,47,1],[158,13,158,60,1],[159,9,159,10,1],[163,9,163,10,1],[165,13,165,35,1],[168,13,168,57,1],[171,13,171,70,1],[172,9,172,10,1],[176,9,176,10,1],[178,13,178,50,1],[181,13,181,53,1],[184,13,184,66,1],[185,9,185,10,1],[189,9,189,10,1],[191,13,191,42,1],[194,13,194,45,1],[197,13,197,58,1],[198,9,198,10,1],[202,9,202,10,1],[204,13,204,51,1],[207,13,207,43,1],[210,13,210,56,1],[211,9,211,10,1],[215,9,215,10,1],[217,13,217,51,1],[220,13,220,40,1],[223,13,223,53,1],[224,9,224,10,1],[228,9,228,10,1],[230,13,271,15,1],[274,13,274,55,1],[277,13,277,67,1],[278,9,278,10,1]]);
     </script>
   </body>
 </html>

@@ -279,5 +279,37 @@ namespace HRMS_Unit_Test.Controllers
 
             throw new NotImplementedException("Create or modify test");
         }
+
+        [Fact]
+        public void CanCallGetAttendanceByCredIdWithNoParameters()
+        {
+            // Arrange
+            _employeeAttendence.Setup(mock => mock.GetAttendanceByCredId(It.IsAny<int>())).Returns(new List<AttendanceDTO>());
+
+            // Act
+            var result = _testClass.GetAttendanceByCredId();
+
+            // Assert
+            _employeeAttendence.Verify(mock => mock.GetAttendanceByCredId(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetAttendanceByCredIdWithEmpCredId()
+        {
+            // Arrange
+            var empCredId = 209288718;
+
+            _employeeAttendence.Setup(mock => mock.GetAttendanceByCredId(It.IsAny<int>())).Returns(new List<AttendanceDTO>());
+
+            // Act
+            var result = _testClass.GetAttendanceByCredId(empCredId);
+
+            // Assert
+            _employeeAttendence.Verify(mock => mock.GetAttendanceByCredId(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
     }
 }

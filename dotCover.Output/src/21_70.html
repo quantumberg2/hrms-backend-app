@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\LeaveTypeTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Models\LeaveTrackingTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -16,30 +16,20 @@ namespace HRMS_Unit_Test.Models
     using Moq;
     using Xunit;
 
-    public partial class LeaveTypeTests
+    public partial class LeaveTrackingTests
     {
-        private readonly LeaveType _testClass;
+        private readonly LeaveTracking _testClass;
 
-        public LeaveTypeTests()
+        public LeaveTrackingTests()
         {
-            _testClass = new LeaveType();
-        }
-
-        [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new LeaveType();
-
-            // Assert
-            Assert.NotNull(instance);
+            _testClass = new LeaveTracking();
         }
 
         [Fact]
         public void CanSetAndGetId()
         {
             // Arrange
-            var testValue = 13306488;
+            var testValue = 942084573;
 
             // Act
             _testClass.Id = testValue;
@@ -49,62 +39,140 @@ namespace HRMS_Unit_Test.Models
         }
 
         [Fact]
-        public void CanSetAndGetType()
+        public void CanSetAndGetEmpCredentialId()
         {
             // Arrange
-            var testValue = &quot;TestValue1643615209&quot;;
+            var testValue = 957345286;
 
             // Act
-            _testClass.Type = testValue;
+            _testClass.EmpCredentialId = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Type);
+            Assert.Equal(testValue, _testClass.EmpCredentialId);
         }
 
         [Fact]
-        public void CanSetAndGetDays()
+        public void CanSetAndGetStartdate()
         {
             // Arrange
-            var testValue = 351073162;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.Days = testValue;
+            _testClass.Startdate = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Days);
+            Assert.Equal(testValue, _testClass.Startdate);
         }
 
         [Fact]
-        public void CanSetAndGetCompanyId()
+        public void CanSetAndGetEnddate()
         {
             // Arrange
-            var testValue = 1475615131;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.CompanyId = testValue;
+            _testClass.Enddate = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.CompanyId);
+            Assert.Equal(testValue, _testClass.Enddate);
         }
 
         [Fact]
-        public void CanSetAndGetYear()
+        public void CanSetAndGetAppliedDate()
         {
             // Arrange
-            var testValue = 1345271077;
+            var testValue = DateTime.UtcNow;
 
             // Act
-            _testClass.Year = testValue;
+            _testClass.AppliedDate = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Year);
+            Assert.Equal(testValue, _testClass.AppliedDate);
+        }
+
+        [Fact]
+        public void CanSetAndGetStatus()
+        {
+            // Arrange
+            var testValue = &quot;TestValue771585967&quot;;
+
+            // Act
+            _testClass.Status = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Status);
+        }
+
+        [Fact]
+        public void CanSetAndGetFiles()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1072759273&quot;;
+
+            // Act
+            _testClass.Files = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Files);
+        }
+
+        [Fact]
+        public void CanSetAndGetLeaveTypeId()
+        {
+            // Arrange
+            var testValue = 1368760069;
+
+            // Act
+            _testClass.LeaveTypeId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.LeaveTypeId);
+        }
+
+        [Fact]
+        public void CanSetAndGetSession()
+        {
+            // Arrange
+            var testValue = &quot;TestValue844940802&quot;;
+
+            // Act
+            _testClass.Session = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Session);
+        }
+
+        [Fact]
+        public void CanSetAndGetContact()
+        {
+            // Arrange
+            var testValue = &quot;TestValue548755642&quot;;
+
+            // Act
+            _testClass.Contact = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Contact);
+        }
+
+        [Fact]
+        public void CanSetAndGetReasonForLeave()
+        {
+            // Arrange
+            var testValue = &quot;TestValue1312890905&quot;;
+
+            // Act
+            _testClass.ReasonForLeave = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ReasonForLeave);
         }
 
         [Fact]
         public void CanSetAndGetIsActive()
         {
             // Arrange
-            var testValue = (short)16244;
+            var testValue = (short)24816;
 
             // Act
             _testClass.IsActive = testValue;
@@ -114,65 +182,104 @@ namespace HRMS_Unit_Test.Models
         }
 
         [Fact]
-        public void CanSetAndGetCompany()
+        public void CanSetAndGetEmpCredential()
         {
             // Arrange
-            var testValue = new RequestedCompanyForm
+            var testValue = new EmployeeCredential
             {
-                Id = 1426709044,
-                Name = &quot;TestValue1592673460&quot;,
-                PhoneNumber = &quot;TestValue1083408069&quot;,
-                DomainName = &quot;TestValue2134697176&quot;,
-                Status = &quot;TestValue1801243891&quot;,
-                InsertedDate = DateTime.UtcNow,
-                UpdatedDate = DateTime.UtcNow,
-                Email = &quot;TestValue1281734526&quot;,
-                IsActive = (short)32604,
-                CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                Id = 31514093,
+                UserName = &quot;TestValue1545219390&quot;,
+                Password = &quot;TestValue156257960&quot;,
+                Status = (short)16223,
+                RequestedCompanyId = 613350012,
+                Email = &quot;TestValue569880057&quot;,
+                DefaultPassword = false,
+                GenerateOtp = &quot;TestValue1389115651&quot;,
+                OtpExpiration = DateTime.UtcNow,
+                IsActive = (short)23629,
+                EmployeeLoginName = &quot;TestValue1062191777&quot;,
+                RequestedCompany = new RequestedCompanyForm
+                {
+                    Id = 717037155,
+                    Name = &quot;TestValue1583088445&quot;,
+                    PhoneNumber = &quot;TestValue1613953089&quot;,
+                    DomainName = &quot;TestValue1759557856&quot;,
+                    Status = &quot;TestValue1854406220&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1793533876&quot;,
+                    IsActive = (short)29350,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
             };
 
             // Act
-            _testClass.Company = testValue;
+            _testClass.EmpCredential = testValue;
 
             // Assert
-            Assert.Same(testValue, _testClass.Company);
+            Assert.Same(testValue, _testClass.EmpCredential);
         }
 
         [Fact]
-        public void CanSetAndGetEmployeeLeaveAllocations()
+        public void CanSetAndGetLeaveType()
         {
             // Arrange
-            var testValue = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object;
+            var testValue = new LeaveType
+            {
+                Id = 1909016380,
+                Type = &quot;TestValue561542113&quot;,
+                Days = 1659130661,
+                CompanyId = 344710577,
+                Year = 42168123,
+                IsActive = (short)14384,
+                Company = new RequestedCompanyForm
+                {
+                    Id = 2140979508,
+                    Name = &quot;TestValue610778288&quot;,
+                    PhoneNumber = &quot;TestValue974601501&quot;,
+                    DomainName = &quot;TestValue396350018&quot;,
+                    Status = &quot;TestValue819011584&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue677680572&quot;,
+                    IsActive = (short)8655,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                },
+                EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object
+            };
 
             // Act
-            _testClass.EmployeeLeaveAllocations = testValue;
+            _testClass.LeaveType = testValue;
 
             // Assert
-            Assert.Same(testValue, _testClass.EmployeeLeaveAllocations);
-        }
-
-        [Fact]
-        public void CanSetAndGetLeaveTrackings()
-        {
-            // Arrange
-            var testValue = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object;
-
-            // Act
-            _testClass.LeaveTrackings = testValue;
-
-            // Assert
-            Assert.Same(testValue, _testClass.LeaveTrackings);
+            Assert.Same(testValue, _testClass.LeaveType);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[13,9,13,32,1],[14,9,14,10,1],[15,13,15,42,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,44,1],[25,13,25,38,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,38,1],[35,13,35,39,1],[38,13,38,52,1],[39,9,39,10,1],[43,9,43,10,1],[45,13,45,51,1],[48,13,48,41,1],[51,13,51,54,1],[52,9,52,10,1],[56,9,56,10,1],[58,13,58,39,1],[61,13,61,41,1],[64,13,64,54,1],[65,9,65,10,1],[69,9,69,10,1],[71,13,71,40,1],[74,13,74,46,1],[77,13,77,59,1],[78,9,78,10,1],[82,9,82,10,1],[84,13,84,40,1],[87,13,87,41,1],[90,13,90,54,1],[91,9,91,10,1],[95,9,95,10,1],[97,13,97,42,1],[100,13,100,45,1],[103,13,103,58,1],[104,9,104,10,1],[108,9,108,10,1],[110,13,127,15,1],[130,13,130,44,1],[133,13,133,56,1],[134,9,134,10,1],[138,9,138,10,1],[140,13,140,85,1],[143,13,143,61,1],[146,13,146,73,1],[147,9,147,10,1],[151,9,151,10,1],[153,13,153,75,1],[156,13,156,51,1],[159,13,159,63,1],[160,9,160,10,1]]);
+      highlightRanges([[13,9,13,36,1],[14,9,14,10,1],[15,13,15,46,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,22,39,1],[25,13,25,39,1],[28,13,28,52,1],[29,9,29,10,1],[33,9,33,10,1],[35,13,35,39,1],[38,13,38,52,1],[41,13,41,65,1],[42,9,42,10,1],[46,9,46,10,1],[48,13,48,45,1],[51,13,51,46,1],[54,13,54,59,1],[55,9,55,10,1],[59,9,59,10,1],[61,13,61,45,1],[64,13,64,44,1],[67,13,67,57,1],[68,9,68,10,1],[72,9,72,10,1],[74,13,74,45,1],[77,13,77,48,1],[80,13,80,61,1],[81,9,81,10,1],[85,9,85,10,1],[87,13,87,50,1],[90,13,90,43,1],[93,13,93,56,1],[94,9,94,10,1],[98,9,98,10,1],[100,13,100,51,1],[103,13,103,42,1],[106,13,106,55,1],[107,9,107,10,1],[111,9,111,10,1],[113,13,113,40,1],[116,13,116,48,1],[119,13,119,61,1],[120,9,120,10,1],[124,9,124,10,1],[126,13,126,50,1],[129,13,129,44,1],[132,13,132,57,1],[133,9,133,10,1],[137,9,137,10,1],[139,13,139,50,1],[142,13,142,44,1],[145,13,145,57,1],[146,9,146,10,1],[150,9,150,10,1],[152,13,152,51,1],[155,13,155,51,1],[158,13,158,64,1],[159,9,159,10,1],[163,9,163,10,1],[165,13,165,42,1],[168,13,168,45,1],[171,13,171,58,1],[172,9,172,10,1],[176,9,176,10,1],[178,13,219,15,1],[222,13,222,50,1],[225,13,225,62,1],[226,9,226,10,1],[230,9,230,10,1],[232,13,260,15,1],[263,13,263,46,1],[266,13,266,58,1],[267,9,267,10,1]]);
     </script>
   </body>
 </html>

@@ -77,5 +77,70 @@ namespace HRMS_Unit_Test.DTO
             // Assert
             Assert.Equal(testValue, _testClass.LeavePercentage);
         }
+
+        [Fact]
+        public void CanSetAndGetName()
+        {
+            // Arrange
+            var testValue = "TestValue309985374";
+
+            // Act
+            _testClass.Name = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Name);
+        }
+
+        [Fact]
+        public void CanSetAndGetEmail()
+        {
+            // Arrange
+            var testValue = "TestValue977781207";
+
+            // Act
+            _testClass.Email = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Email);
+        }
+
+        [Fact]
+        public void CanSetAndGetMonthlyPresentDays()
+        {
+            // Arrange
+            var testValue = 1214820218;
+
+            // Act
+            _testClass.MonthlyPresentDays = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.MonthlyPresentDays);
+        }
+
+        [Fact]
+        public void CanSetAndGetTotalWorkingDays()
+        {
+            // Arrange
+            var testValue = 1476483678;
+
+            // Act
+            _testClass.TotalWorkingDays = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TotalWorkingDays);
+        }
+
+        [Fact]
+        public void CanSetAndGetAttendancePercentage()
+        {
+            // Arrange
+            var testValue = 1083126105.27;
+
+            // Act
+            _testClass.AttendancePercentage = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AttendancePercentage);
+        }
     }
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\NewsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class NewsImp : INews
+    {
+        private readonly HRMSContext _context;
+        public NewsImp(HRMSContext context)
+        {
+            _context = context;
+        }
+
+
+        public List&lt;News&gt; GetAllNews()
+        {
+            var news = (from row in  _context.News
+                        select row).ToList();
+            return news;
+        }
+
+
+        public string InsertNews(News newNews)
+        {
+           var news =  _context.News.Add(newNews);
+
+            if (news != null)
+            {            
+                _context.SaveChanges();
+                return &quot;Data inserted successfully&quot;;
+            }
+
+            return &quot;Failed to insert news&quot;;
+            
+        }
+        public string UpdateNews(News newNews)
+        {
+             var news = (from row in _context.News
+                         where row.Id == newNews.Id
+                         select row).FirstOrDefault();
+
+            if(news != null)
+            {
+                _context.News.Update(news);
+                _context.SaveChanges();
+                return &quot;News Updated Successfully&quot;;
+            }
+
+            return &quot;Failed to Update News&quot;;
+        }
+        public string DeleteNews(int id)
+        {
+            var res = (from row in _context.News
+                       where row.Id == id
+                       select row).FirstOrDefault();
+
+            if(res!= null)
+            {
+                _context.News.Remove(res);
+                _context.SaveChanges();
+                return &quot;News deleted successfully&quot;;
+            }
+            return &quot;Failed to delete news&quot;;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[9,9,9,44,1],[10,9,10,10,1],[11,13,11,32,1],[12,9,12,10,1],[16,9,16,10,1],[17,13,18,46,1],[19,13,19,25,0],[20,9,20,10,0],[24,9,24,10,1],[25,12,25,51,1],[27,13,27,30,0],[28,13,28,14,0],[29,17,29,40,0],[30,17,30,53,0],[33,13,33,44,0],[35,9,35,10,0],[37,9,37,10,1],[38,14,40,55,1],[42,13,42,29,0],[43,13,43,14,0],[44,17,44,44,0],[45,17,45,40,0],[46,17,46,52,0],[49,13,49,44,0],[50,9,50,10,0],[52,9,52,10,1],[53,13,55,53,1],[57,13,57,27,0],[58,13,58,14,0],[59,17,59,43,0],[60,17,60,40,0],[61,17,61,52,0],[63,13,63,44,0],[64,9,64,10,0]]);
+    </script>
+  </body>
+</html>

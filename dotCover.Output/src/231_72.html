@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\NewsController.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace HRMS_Application.Controllers
+{
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class NewsController : ControllerBase
+    {
+        private readonly ILogger&lt;NewsController&gt; _logger;
+        private readonly INews _news;
+        public NewsController(ILogger&lt;NewsController&gt; logger, INews news)
+        {
+            _logger = logger;
+            _news = news;
+        }
+
+        [HttpGet]
+        public List&lt;News&gt; GetAllNews()
+        {
+            _logger.LogInformation(&quot;Get all news from news method started&quot;);
+            var res = _news.GetAllNews();
+            return res;
+        }
+
+        [HttpPost]
+        public string InsertNews(News newNews)
+        {
+            _logger.LogInformation(&quot;Insert news for news table method started&quot;);
+            var res = _news.InsertNews(newNews);
+            return res;
+
+        }
+
+        [HttpPut]
+        public string UpdateNews(News newNews)
+        {
+            _logger.LogInformation(&quot;update news of news table method started&quot;);
+            var res = _news.UpdateNews(newNews);
+            return res;
+
+        }
+
+        [HttpDelete]
+        public string DeleteNews(int id)
+        {
+            _logger.LogInformation(&quot;Delete news from news table method started&quot;);
+            var res = _news.DeleteNews(id);
+            return res;
+        }
+
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[14,9,14,74,1],[15,9,15,10,1],[16,13,16,30,1],[17,13,17,26,1],[18,9,18,10,1],[22,9,22,10,1],[23,13,23,77,1],[24,13,24,42,1],[25,13,25,24,1],[26,9,26,10,1],[30,9,30,10,1],[31,13,31,81,1],[32,13,32,49,1],[33,13,33,24,1],[35,9,35,10,1],[39,9,39,10,1],[40,13,40,80,1],[41,13,41,49,1],[42,13,42,24,1],[44,9,44,10,1],[48,9,48,10,1],[49,13,49,82,1],[50,13,50,44,1],[51,13,51,24,1],[52,9,52,10,1]]);
+    </script>
+  </body>
+</html>

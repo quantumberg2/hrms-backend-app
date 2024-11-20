@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\EmailPasswordImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.DTO;
+    using Xunit;
+
+    public class EmailPasswordImpTests
+    {
+        private readonly EmailPasswordImp _testClass;
+
+        public EmailPasswordImpTests()
+        {
+            _testClass = new EmailPasswordImp();
+        }
+
+        [Fact]
+        public async Task CanCallSendOtpEmailAsync()
+        {
+            // Arrange
+            var generatepassword = new Generatepassword
+            {
+                EmailAddress = &quot;TestValue699476624&quot;,
+                Password = &quot;TestValue1335216864&quot;,
+                UserName = &quot;TestValue442093805&quot;
+            };
+
+            // Act
+            await _testClass.SendOtpEmailAsync(generatepassword);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[13,9,13,39,1],[14,9,14,10,1],[15,13,15,49,1],[16,9,16,10,1],[20,9,20,10,1],[22,13,27,15,1],[30,13,30,66,1],[33,13,33,72,0]]);
+    </script>
+  </body>
+</html>

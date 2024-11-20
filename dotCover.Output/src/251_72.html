@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\DepartmentsImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class DepartmentsImp : IDepartment
+    {
+        private readonly HRMSContext _hrmsContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public DepartmentsImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        {
+            _hrmsContext = hrmsContext;
+           _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _hrmsContext.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; deleteDepartment(int id)
+        {
+            DecodeToken();
+            var result = (from row in _hrmsContext.Departments
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _hrmsContext.Departments.Remove(result);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;Department&gt; GetAllDepartment()
+        {
+            var result = (from row in _hrmsContext.Departments
+                          where  row.IsActive == 1
+                          select row).ToList();
+            return result;
+        }
+
+        public Department GetDepartmentById(int id)
+        {
+           var res = (from row in _hrmsContext.Departments
+                      where row.Id == id &amp;&amp; row.IsActive == 1
+                      select row).SingleOrDefault();
+            return res;
+        }
+
+        public async Task&lt;string&gt; InsertDepartment(Department department)
+        {
+            DecodeToken();
+            _hrmsContext.Departments.Add(department);
+            var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;new Department inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+
+        public async Task&lt;Department&gt; UpdateDepartment(int id, string? name, int? requestedcompanyId)
+        {
+            var result =  _hrmsContext.Departments.SingleOrDefault(p =&gt; p.Id == id);
+            if (result == null)
+            {
+                // Handle the case where the user with the specified id doesn&#39;t exist
+                return null;
+            }
+            result.Name = name;
+            result.RequestedCompanyId = requestedcompanyId;
+            _hrmsContext.Departments.Update(result);
+            await _hrmsContext.SaveChangesAsync(_decodedToken);
+            return result;
+        }
+
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _hrmsContext.Departments
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _hrmsContext.Departments.Update(res);
+                _hrmsContext.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+
+        public List&lt;Department&gt; GetDepartmentsByName(string name)
+        {
+           var dept = (from row in _hrmsContext.Departments
+                       where row.Name == name
+                       select row).ToList();
+            return dept;
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[16,9,16,117,1],[17,9,17,10,1],[18,13,18,40,1],[19,12,19,55,1],[20,13,20,34,1],[21,9,21,10,1],[23,9,23,10,1],[24,13,24,126,1],[25,13,25,45,1],[26,13,26,14,1],[27,17,27,31,1],[28,13,28,14,1],[30,13,30,14,0],[31,17,31,64,0],[32,17,32,37,0],[33,17,33,18,0],[34,21,34,114,0],[35,21,35,45,0],[36,21,36,22,0],[37,25,37,56,0],[38,25,38,71,0],[38,71,38,84,0],[38,84,38,95,0],[39,21,39,22,0],[41,21,41,22,0],[43,25,43,39,0],[44,21,44,22,0],[45,17,45,18,0],[46,13,46,14,0],[47,9,47,10,1],[49,9,49,10,1],[50,13,50,27,1],[51,13,53,57,1],[54,13,54,53,0],[55,13,55,64,0],[56,13,56,25,0],[57,9,57,10,0],[60,9,60,10,1],[61,13,63,48,1],[64,13,64,27,0],[65,9,65,10,0],[68,9,68,10,1],[69,12,71,53,1],[72,13,72,24,0],[73,9,73,10,0],[76,9,76,10,1],[77,13,77,27,1],[78,13,78,54,1],[79,13,79,77,0],[80,13,80,29,0],[81,13,81,14,0],[82,17,82,63,0],[86,13,86,14,0],[87,17,87,52,0],[89,9,89,10,0],[92,9,92,10,1],[93,13,93,85,1],[94,13,94,32,0],[95,13,95,14,0],[97,17,97,29,0],[99,13,99,32,0],[100,13,100,60,0],[101,13,101,53,0],[102,13,102,64,0],[103,13,103,27,0],[104,9,104,10,0],[107,9,107,10,1],[108,13,110,53,1],[111,13,111,29,0],[112,13,112,14,0],[113,17,113,41,0],[114,17,114,54,0],[115,17,115,44,0],[116,17,116,29,0],[119,13,119,26,0],[120,9,120,10,0],[123,9,123,10,1],[124,12,126,45,1],[127,13,127,25,0],[128,9,128,10,0]]);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\HolidayImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class HolidayImpTests
+    {
+        private readonly HolidayImp _testClass;
+        private HRMSContext _context;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+
+        public HolidayImpTests()
+        {
+            _context = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            _testClass = new HolidayImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new HolidayImp(_context, _httpContextAccessor.Object, _jwtUtils.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public async Task CanCalldeleteHoliday()
+        {
+            // Arrange
+            var id = 809510154;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(1885764628);
+
+            // Act
+            var result = await _testClass.deleteHoliday(id);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        /*  [Fact]
+          public void CanCallGetHoliday()
+          {
+              // Act
+              var result = _testClass.GetHoliday();
+
+              // Assert
+              throw new NotImplementedException(&quot;Create or modify test&quot;);
+          }*/
+
+        [Fact]
+        public void CanCallGetHolidayById()
+        {
+            // Arrange
+            var id = 1986397526;
+
+            // Act
+            var result = _testClass.GetHolidayById(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertHoliday()
+        {
+            // Arrange
+            var holiday = new Holiday
+            {
+                Id = 1465478278,
+                Date = DateTime.UtcNow,
+                Type = &quot;TestValue980729764&quot;,
+                CompanyId = 1782622757,
+                Occasion = &quot;TestValue1266887987&quot;,
+                IsActive = (short)1055,
+                Company = new RequestedCompanyForm
+                {
+                    Id = 62045596,
+                    Name = &quot;TestValue1991257234&quot;,
+                    PhoneNumber = &quot;TestValue688731213&quot;,
+                    DomainName = &quot;TestValue91036164&quot;,
+                    Status = &quot;TestValue156296462&quot;,
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = &quot;TestValue1028125245&quot;,
+                    IsActive = (short)15830,
+                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                }
+            };
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(488074802);
+
+            // Act
+            var result = await _testClass.InsertHoliday(holiday);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 414652977;
+            var isActive = (short)11683;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetHoliday()
+        {
+            // Arrange
+            var companyId = 1041395408;
+
+            // Act
+            var result = _testClass.GetHoliday(companyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallUpdateHolidayType()
+        {
+            // Arrange
+            var id = 1739115864;
+            var name = &quot;TestValue1766734704&quot;;
+            var date = new DateOnly?();
+            var occasion = &quot;TestValue1604113605&quot;;
+            var requestedCompanyId = 6374819;
+
+            // Act
+            var result = _testClass.UpdateHolidayType(id, name, date, occasion, requestedCompanyId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[20,9,20,33,1],[21,9,21,10,1],[22,13,22,42,1],[23,13,23,69,1],[24,13,24,47,1],[25,13,25,98,1],[26,9,26,10,1],[30,9,30,10,1],[32,13,32,100,1],[35,13,35,38,1],[36,9,36,10,1],[40,9,40,10,1],[42,13,42,32,1],[44,13,44,100,1],[47,13,47,61,1],[50,13,50,81,0],[52,13,52,72,0],[67,9,67,10,1],[69,13,69,33,1],[72,13,72,56,1],[75,13,75,72,0],[80,9,80,10,1],[82,13,108,15,1],[110,13,110,99,1],[113,13,113,66,1],[116,13,116,81,0],[118,13,118,72,0],[123,9,123,10,1],[125,13,125,32,1],[126,13,126,41,1],[129,13,129,62,1],[132,13,132,72,0],[137,9,137,10,1],[139,13,139,40,1],[142,13,142,59,1],[145,13,145,72,0],[150,9,150,10,1],[152,13,152,33,1],[153,13,153,46,1],[154,13,154,40,1],[155,13,155,50,1],[156,13,156,46,1],[159,13,159,101,1],[162,13,162,72,0]]);
+    </script>
+  </body>
+</html>

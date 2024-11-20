@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\ShiftRosterImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class ShiftRosterImp : IShiftRoster
+    {
+        private readonly HRMSContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public ShiftRosterImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        {
+            _context = context;
+            _jwtUtils = jwtUtils;
+            _httpContextAccessor = httpContextAccessor;
+
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; deleteShiftRoster(int id)
+        {
+            DecodeToken();
+            var result = (from row in _context.ShiftRosters
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _context.ShiftRosters.Remove(result);
+            await _context.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;ShiftRoster&gt; GetAllShiftRoster()
+        {
+            var result = (from row in _context.ShiftRosters
+                          select row).ToList();
+            return result;
+        }
+
+        public ShiftRoster GetShiftRosterId(int id)
+        {
+            var result = (from row in _context.ShiftRosters
+                          where row.Id == id
+                          select row).FirstOrDefault();
+
+            return result;
+        }
+
+        public async Task&lt;string&gt; InsertShiftRoster(ShiftRoster shiftRoster)
+        {
+            DecodeToken();
+
+            // Check if a shift roster entry for the same employee credential already exists
+            var existingShiftRoster = await _context.ShiftRosters
+                .FirstOrDefaultAsync(sr =&gt; sr.EmpCredentialId == shiftRoster.EmpCredentialId);
+
+            if (existingShiftRoster != null)
+            {
+                // Update the existing ShiftRoster entry
+                existingShiftRoster.ShiftRosterTypeId = shiftRoster.ShiftRosterTypeId;
+                existingShiftRoster.Startdate = shiftRoster.Startdate;
+                existingShiftRoster.Enddate = shiftRoster.Enddate;
+
+                _context.ShiftRosters.Update(existingShiftRoster);
+            }
+            else
+            {
+                // Create a new ShiftRoster entry
+                await _context.ShiftRosters.AddAsync(shiftRoster);
+            }
+
+            // Save changes to the database
+            var result = await _context.SaveChangesAsync(_decodedToken);
+
+            if (result != 0)
+            {
+                return existingShiftRoster != null
+                    ? &quot;ShiftRoster updated successfully&quot;
+                    : &quot;New ShiftRoster inserted successfully&quot;;
+            }
+            else
+            {
+                return &quot;Failed to insert or update ShiftRoster&quot;;
+            }
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,113,1],[16,9,16,10,1],[17,13,17,32,1],[18,13,18,34,1],[19,13,19,56,1],[21,9,21,10,1],[23,9,23,10,1],[24,13,24,126,1],[25,13,25,45,1],[26,13,26,14,1],[27,17,27,31,1],[28,13,28,14,1],[30,13,30,14,0],[31,17,31,64,0],[32,17,32,37,0],[33,17,33,18,0],[34,21,34,110,0],[35,21,35,45,0],[36,21,36,22,0],[37,25,37,56,0],[38,25,38,71,0],[38,71,38,84,0],[38,84,38,95,0],[39,21,39,22,0],[41,21,41,22,0],[43,25,43,39,0],[44,21,44,22,0],[45,17,45,18,0],[46,13,46,14,0],[47,9,47,10,1],[49,9,49,10,1],[50,13,50,27,1],[51,13,53,57,1],[54,13,54,50,0],[55,13,55,60,0],[56,13,56,25,0],[57,9,57,10,0],[60,9,60,10,1],[61,13,62,48,1],[63,13,63,27,0],[64,9,64,10,0],[67,9,67,10,1],[68,13,70,56,1],[72,13,72,27,0],[73,9,73,10,0],[76,9,76,10,1],[77,13,77,27,1],[80,13,81,95,1],[83,13,83,45,0],[84,13,84,14,0],[86,17,86,87,0],[87,17,87,71,0],[88,17,88,67,0],[90,17,90,67,0],[91,13,91,14,0],[93,13,93,14,0],[95,17,95,67,0],[96,13,96,14,0],[99,13,99,73,0],[101,13,101,29,0],[102,13,102,14,0],[103,17,105,63,0],[108,13,108,14,0],[109,17,109,65,0],[111,9,111,10,0]]);
+    </script>
+  </body>
+</html>

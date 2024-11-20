@@ -2,145 +2,75 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\PositionImp.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\AdminDashboardController.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.BusinessLogics.Implements;
-using HRMS_Application.BusinessLogics.Interface;
-using HRMS_Application.Middleware.Exceptions;
-using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace HRMS_Application.BusinessLogic.Implements
+namespace HRMS_Application.Controllers
 {
-    public class PositionImp : IPosition
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class AdminDashboardController : ControllerBase
     {
-        private readonly HRMSContext _hrmsContext;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IJwtUtils _jwtUtils;
-        private List&lt;string&gt;? dToken;
-        private int? _decodedToken;
-        public PositionImp(HRMSContext hrmsContext, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        private readonly IAdminDashboard _adminDashboard;
+
+        public AdminDashboardController(IAdminDashboard adminDashboard)
         {
-            _hrmsContext = hrmsContext;
-            _httpContextAccessor = httpContextAccessor;
-            _jwtUtils = jwtUtils;
-            
-        }
-         private void DecodeToken()
-         {
-            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
-             if (string.IsNullOrEmpty(token))
-             {
-                dToken = null;
-             }
-             else
-             {
-              var userId = _jwtUtils.ValidateJwtToken(token);
-              if (userId.HasValue)
-              {
-                var userDetails = _hrmsContext.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
-                if (userDetails != null)
-                {
-                    _decodedToken = userDetails.Id;
-                    dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
-                }
-                else
-                {
-                    // Handle the case where the user is not found in the database
-                    dToken = null;
-                }
-            }
-        }
-    }
-        public async Task&lt;bool&gt; deletePosition(int id)
-        {
-            DecodeToken();
-            var result = (from row in _hrmsContext.Positions
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _hrmsContext.Positions.Remove(result);
-            await _hrmsContext.SaveChangesAsync(_decodedToken);
-            return true;
+            _adminDashboard = adminDashboard;
         }
 
-      
-
-        public List&lt;Position&gt; GetPositions()
-        {
-            var result = (from row in _hrmsContext.Positions
-                          where row.IsActive == 1
-                          select row).ToList();
-            return result;
-        }
-
-        public async Task&lt;string&gt; InsertPositions(Position position)
+        [Authorize(new[] { &quot;Admin&quot; })]
+        [HttpGet]
+        public async Task&lt;IActionResult&gt; GetDashboard()
         {
             try
             {
-                DecodeToken();
-               // position.RequestedCompanyId = companyID;
-                await _hrmsContext.Positions.AddAsync(position);
-                var result = await _hrmsContext.SaveChangesAsync(_decodedToken);
-                if (result != 0)
+                var token = HttpContext.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer&quot;, &quot;&quot;).Trim();
+                if (string.IsNullOrEmpty(token))
                 {
-                    return &quot;new Position inserted successfully&quot;;
-
+                    return Unauthorized(&quot;Authorization token is missing or invalid.&quot;);
                 }
 
-                else
+                // Decode the JWT token to get the company ID
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+                var companyIdClaim = jwtToken.Claims.FirstOrDefault(claim =&gt; claim.Type == &quot;CompanyId&quot;);
+                if (companyIdClaim == null)
                 {
-                    throw new DatabaseOperationException(&quot;Failed to insert Position data&quot;);
+                    return Unauthorized(&quot;Company ID not found in token.&quot;);
                 }
+
+                // Parse the company ID from the claim
+                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                {
+                    return BadRequest(&quot;Invalid Company ID in token.&quot;);
+                }
+
+                // Call the dashboard service with the correct company ID
+                var dashboardData = await _adminDashboard.GetAdminDashboardAsync(companyId);
+                return Ok(dashboardData);
             }
-            catch(Exception) 
+            catch (Exception)
             {
-                throw new DatabaseOperationException(&quot;Failed to insert Position data&quot;);
+                return StatusCode(500, &quot;An error occurred while fetching the dashboard data.&quot;);
             }
         }
 
-        public async Task&lt;Position&gt; updateposition(int id, string? name, int? requestedcompanyId)
-        {
-            DecodeToken();
-            var result = _hrmsContext.Positions.SingleOrDefault(p =&gt; p.Id == id);
-            if (result == null)
-            {
-                // Handle the case where the user with the specified id doesn&#39;t exist
-                return null;
-            }
-            result.Name = name;
-            result.RequestedCompanyId = requestedcompanyId;
-            _hrmsContext.Positions.Update(result);
-            await _hrmsContext.SaveChangesAsync(_decodedToken);
-            return result;
-        }
-
-        public bool SoftDelete(int id, short isActive)
-        {
-            var res = (from row in _hrmsContext.Positions
-                       where row.Id == id
-                       select row).FirstOrDefault();
-            if (res != null)
-            {
-                res.IsActive = isActive;
-                _hrmsContext.Positions.Update(res);
-                _hrmsContext.SaveChanges();
-                return true;
-
-            }
-            return false;
-        }
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[18,9,18,114,1],[19,9,19,10,1],[20,13,20,40,1],[21,13,21,56,1],[22,13,22,34,1],[24,9,24,10,1],[26,10,26,11,1],[27,13,27,126,1],[28,14,28,46,1],[29,14,29,15,1],[30,17,30,31,1],[31,14,31,15,1],[33,14,33,15,0],[34,15,34,62,0],[35,15,35,35,0],[36,15,36,16,0],[37,17,37,110,0],[38,17,38,41,0],[39,17,39,18,0],[40,21,40,52,0],[41,21,41,67,0],[41,67,41,80,0],[41,80,41,91,0],[42,17,42,18,0],[44,17,44,18,0],[46,21,46,35,0],[47,17,47,18,0],[48,13,48,14,0],[49,9,49,10,0],[50,5,50,6,1],[52,9,52,10,1],[53,13,53,27,1],[54,13,56,57,1],[57,13,57,51,0],[58,13,58,64,0],[59,13,59,25,0],[60,9,60,10,0],[65,9,65,10,1],[66,13,68,48,1],[69,13,69,27,0],[70,9,70,10,0],[73,9,73,10,1],[75,13,75,14,1],[76,17,76,31,1],[78,17,78,65,1],[79,17,79,81,0],[80,17,80,33,0],[81,17,81,18,0],[82,21,82,65,0],[87,17,87,18,0],[88,21,88,92,0],[91,13,91,29,1],[92,13,92,14,1],[93,17,93,88,1],[95,9,95,10,0],[98,9,98,10,1],[99,13,99,27,1],[100,13,100,82,1],[101,13,101,32,0],[102,13,102,14,0],[104,17,104,29,0],[106,13,106,32,0],[107,13,107,60,0],[108,13,108,51,0],[109,13,109,64,0],[110,13,110,27,0],[111,9,111,10,0],[114,9,114,10,1],[115,13,117,53,1],[118,13,118,29,0],[119,13,119,14,0],[120,17,120,41,0],[121,17,121,52,0],[122,17,122,44,0],[123,17,123,29,0],[126,13,126,26,0],[127,9,127,10,0]]);
+      highlightRanges([[15,9,15,72,1],[16,9,16,10,1],[17,13,17,46,1],[18,9,18,10,1],[23,9,23,10,1],[25,13,25,14,1],[26,17,26,114,1],[27,17,27,49,0],[28,17,28,18,0],[29,21,29,87,0],[33,17,33,61,0],[34,17,34,60,0],[36,17,36,78,0],[36,78,36,103,0],[36,103,36,105,0],[37,17,37,44,0],[38,17,38,18,0],[39,21,39,75,0],[43,17,43,76,0],[44,17,44,18,0],[45,21,45,71,0],[49,17,49,93,0],[50,17,50,42,0],[52,13,52,30,1],[53,13,53,14,1],[54,17,54,96,1],[56,9,56,10,1]]);
     </script>
   </body>
 </html>

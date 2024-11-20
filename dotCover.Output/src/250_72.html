@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\CompanyRequestedformImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Middleware.Exceptions;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using UnlimitSoft.Message;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class CompanyRequestedformImp : ICompanyRequestedform
+    {
+        private readonly HRMSContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        public List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        private readonly IEmailService _emailService;
+
+        public CompanyRequestedformImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils, IEmailService emailService)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+            _emailService = emailService;
+        }
+
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList();
+                    }
+                    else
+                    {
+                       
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.RequestedCompanyForms
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.RequestedCompanyForms.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+
+        public async Task&lt;bool&gt; DeleteRequestedCompanyForm(int id)
+        {
+            DecodeToken();
+            var result = await (from row in  _context.RequestedCompanyForms
+                          where row.Id == id
+                          select row).SingleOrDefaultAsync();
+              _context.RequestedCompanyForms.Remove(result);
+            await _context.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+        public List&lt;RequestedCompanyForm&gt; GetAllRequestedCompanyForm()
+        {
+            var result = (from row in _context.RequestedCompanyForms
+                          where  row.IsActive == 1
+                          select row).ToList();
+            return result;
+        }
+
+        public RequestedCompanyForm GetById(int id)
+        {
+            var result = (from row in _context.RequestedCompanyForms
+                          where row.Id == id &amp;&amp; row.IsActive == 1
+                          select row).SingleOrDefault();
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                throw new NotFoundException($&quot;Employee Credential Id &#39;{id}&#39; is not found&quot;);
+            }
+        }
+
+        /* public string InsertRequestedCompanyForm(RequestedCompanyForm requestedcompanyform)
+         {
+             if (!IsValidPhoneNumber(requestedcompanyform.PhoneNumber))
+             {
+                 return &quot;Invalid phone number. The phone number must be exactly 10 digits.&quot;;
+             }
+
+             if (!IsValidEmail(requestedcompanyform.Email))
+             {
+                 return &quot;Invalid email format. Please provide a valid email address.&quot;;
+             }
+
+             requestedcompanyform.InsertedDate = DateTime.UtcNow;
+             requestedcompanyform.UpdatedDate = DateTime.UtcNow;
+             requestedcompanyform.Status = &quot;Requested&quot;;
+             requestedcompanyform.IsActive = 1;
+
+             DecodeToken();
+
+             using (var transaction = _context.Database.BeginTransaction())
+             {
+                 try
+                 {
+                     var existingRequestedCompanyForm = _context.RequestedCompanyForms
+                         .FirstOrDefault(c =&gt; c.Email == requestedcompanyform.Email);
+
+                     var existingEmployeeCredential = _context.EmployeeCredentials
+                         .FirstOrDefault(e =&gt; e.Email == requestedcompanyform.Email);
+
+                     var existingEmployeedetail = _context.EmployeeDetails
+                         .FirstOrDefault(e =&gt; e.Email == requestedcompanyform.Email);
+
+                     if (existingRequestedCompanyForm != null &amp;&amp; existingRequestedCompanyForm.Status == &quot;Verified&quot;
+                         &amp;&amp; existingEmployeeCredential != null &amp;&amp; existingEmployeedetail != null)
+                     {
+                         throw new EmailAlreadyExistsException(
+                             $&quot;This email {requestedcompanyform.Email} is already registered with us&quot;
+                         );
+                     }
+
+                     string generatedOtp = GenerateOtp();
+
+                     var existingCompanyForm = _context.RequestedCompanyForms
+                         .FirstOrDefault(c =&gt; c.Name == requestedcompanyform.Name);
+
+                     if (existingCompanyForm != null)
+                     {
+                         existingCompanyForm.UpdatedDate = DateTime.UtcNow;
+                         _context.RequestedCompanyForms.Update(existingCompanyForm);
+                     }
+                     else
+                     {
+                         _context.RequestedCompanyForms.Add(requestedcompanyform);
+                         _context.SaveChanges();
+                         existingCompanyForm = requestedcompanyform;
+                     }
+
+                     if (existingEmployeeCredential != null)
+                     {
+                         existingEmployeeCredential.GenerateOtp = generatedOtp;
+                         existingEmployeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10);
+                         existingEmployeeCredential.DefaultPassword = true;
+                         existingEmployeeCredential.Password = GeneratePassword();
+                         existingEmployeeCredential.RequestedCompanyId = existingCompanyForm.Id;
+
+                         _context.EmployeeCredentials.Update(existingEmployeeCredential);
+                     }
+                     else
+                     {
+                         var newEmployeeCredential = new EmployeeCredential
+                         {
+                             UserName = requestedcompanyform.Email,
+                             Password = GeneratePassword(),
+                             Email = requestedcompanyform.Email,
+                             DefaultPassword = true,
+                             GenerateOtp = generatedOtp,
+                             OtpExpiration = DateTime.UtcNow.AddMinutes(10),
+                             RequestedCompanyId = existingCompanyForm.Id,
+                             IsActive = 1,
+                         };
+
+                         _context.EmployeeCredentials.Add(newEmployeeCredential);
+                         _context.SaveChanges();
+                         existingEmployeeCredential = newEmployeeCredential;  // Assign to avoid null reference in EmployeeDetail
+                     }
+
+                     if (existingEmployeedetail != null)
+                     {
+                         existingEmployeedetail.Email = requestedcompanyform.Email;
+                         existingEmployeedetail.EmployeeCredentialId = existingEmployeeCredential.Id;
+                         existingEmployeedetail.RequestCompanyId = existingCompanyForm.Id;
+                     }
+                     else
+                     {
+                         var newEmployeeDetail = new EmployeeDetail
+                         {
+                             Email = requestedcompanyform.Email,
+                             EmployeeCredentialId = existingEmployeeCredential.Id,
+                             RequestCompanyId = existingCompanyForm.Id,
+                             IsActive = 1,
+                         };
+                         _context.EmployeeDetails.Add(newEmployeeDetail);
+                     }
+
+                     var result = _context.SaveChanges();
+                     if (result != 0)
+                     {
+                         // Sending the OTP email synchronously
+                         SendOtpEmail(requestedcompanyform.Email, generatedOtp);
+                         transaction.Commit();
+                         return &quot;OTP sent to the provided email address.&quot;;
+                     }
+                     else
+                     {
+                         throw new DatabaseOperationException(&quot;Failed to insert company request data&quot;);
+                     }
+                 }
+                 catch (Exception)
+                 {
+                     transaction.Rollback();
+                     throw;
+                 }
+             }
+         }
+ */
+
+        public async Task&lt;string&gt; InsertRequestedCompanyForm(RequestedCompanyForm requestedcompanyform)
+        {
+            try
+            {
+                // Validate phone number and email
+                if (!IsValidPhoneNumber(requestedcompanyform.PhoneNumber))
+                {
+                    return &quot;Invalid phone number. The phone number must be exactly 10 digits.&quot;;
+                }
+
+                if (!IsValidEmail(requestedcompanyform.Email))
+                {
+                    return &quot;Invalid email format. Please provide a valid email address.&quot;;
+                }
+
+                // Set initial fields for the requested company form
+                requestedcompanyform.InsertedDate = DateTime.UtcNow;
+                requestedcompanyform.UpdatedDate = DateTime.UtcNow;
+                requestedcompanyform.Status = &quot;Requested&quot;;
+
+                DecodeToken(); // Assuming this sets some token-related state
+
+                // 1. Handle RequestedCompanyForm
+                var existingCompanyForm = await _context.RequestedCompanyForms
+                    .FirstOrDefaultAsync(c =&gt; c.Email == requestedcompanyform.Email);
+
+                if (existingCompanyForm != null)
+                {
+                    if (existingCompanyForm.Status == &quot;Verified&quot;)
+                    {
+                        throw new EmailAlreadyExistsException(
+                            $&quot;This email {requestedcompanyform.Email} is already registered and verified.&quot;
+                        );
+                    }
+                    // Update existing company form
+                    existingCompanyForm.UpdatedDate = DateTime.UtcNow;
+                    _context.RequestedCompanyForms.Update(existingCompanyForm);
+                }
+                else
+                {
+                    // Insert new company form
+                    await _context.RequestedCompanyForms.AddAsync(requestedcompanyform);
+                    requestedcompanyform.IsActive = 1;
+                    await _context.SaveChangesAsync(); // Save to generate the ID
+                    existingCompanyForm = requestedcompanyform; // Get the newly created record with ID
+                }
+
+                // 2. Handle EmployeeCredential
+                var existingEmployeeCredential = await _context.EmployeeCredentials
+                    .FirstOrDefaultAsync(e =&gt; e.Email == requestedcompanyform.Email);
+
+                string generatedOtp = GenerateOtp(); // Generate OTP for credential
+
+                if (existingEmployeeCredential != null)
+                {
+                    // Update existing credentials
+                    existingEmployeeCredential.GenerateOtp = generatedOtp;
+                    existingEmployeeCredential.OtpExpiration = DateTime.UtcNow.AddMinutes(10);
+                    existingEmployeeCredential.DefaultPassword = true;
+                    existingEmployeeCredential.Password = GeneratePassword();
+                    existingEmployeeCredential.RequestedCompanyId = existingCompanyForm.Id; // Reference company form
+
+                    _context.EmployeeCredentials.Update(existingEmployeeCredential);
+                }
+                else
+                {
+                    // Create new credentials
+                    var newEmployeeCredential = new EmployeeCredential
+                    {
+                        UserName = requestedcompanyform.Email,
+                        Password = GeneratePassword(),
+                        Email = requestedcompanyform.Email,
+                        DefaultPassword = true,
+                        GenerateOtp = generatedOtp,
+                        OtpExpiration = DateTime.UtcNow.AddMinutes(10),
+                        RequestedCompanyId = existingCompanyForm.Id, // Reference company form
+                        IsActive = 1
+                    };
+
+                    await _context.EmployeeCredentials.AddAsync(newEmployeeCredential);
+                    await _context.SaveChangesAsync(); // Save to generate the ID
+
+                    existingEmployeeCredential = newEmployeeCredential; // Ensure we have the ID
+                }
+
+                // 3. Handle EmployeeDetail
+                var existingEmployeeDetail = await _context.EmployeeDetails
+                    .FirstOrDefaultAsync(e =&gt; e.Email == requestedcompanyform.Email);
+
+                // Ensure EmployeeCredentialId and RequestedCompanyId are not null/zero
+                if (existingEmployeeCredential.Id == 0 || existingCompanyForm.Id == 0)
+                {
+                    throw new Exception(&quot;Failed to retrieve required data for EmployeeDetail.&quot;);
+                }
+
+                if (existingEmployeeDetail != null)
+                {
+                    // Update the employee detail
+                    existingEmployeeDetail.Email = requestedcompanyform.Email;
+                    existingEmployeeDetail.EmployeeCredentialId = existingEmployeeCredential.Id;
+                    existingEmployeeDetail.RequestCompanyId = existingCompanyForm.Id;
+
+                    _context.EmployeeDetails.Update(existingEmployeeDetail);
+                }
+                else
+                {
+                    // Insert new employee detail
+                    var newEmployeeDetail = new EmployeeDetail
+                    {
+                        Email = requestedcompanyform.Email,
+                        EmployeeCredentialId = existingEmployeeCredential.Id,
+                        RequestCompanyId = existingCompanyForm.Id,
+                        EmployeeNumber = null,  
+
+                        IsActive = 1
+                    };
+
+                    await _context.EmployeeDetails.AddAsync(newEmployeeDetail);
+                }
+
+                var result = await _context.SaveChangesAsync();
+
+                if (result != 0)
+                {
+                    await SendOtpEmailAsync(requestedcompanyform.Email, generatedOtp);
+                    return &quot;OTP sent to the provided email address.&quot;;
+                }
+                else
+                {
+                    throw new DatabaseOperationException(&quot;Failed to insert company request data&quot;);
+                }
+            }
+            catch (DbUpdateException dbEx)
+            {
+                // Handle database errors
+                var innerException = dbEx.InnerException?.Message ?? dbEx.Message;
+                throw new DatabaseOperationException($&quot;Failed to insert data: {innerException}&quot;);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(&quot;An unexpected error occurred: &quot; + ex.Message);
+            }
+        }
+
+
+
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+
+        private async Task SendOtpEmailAsync(string email, string otp)
+        {
+            var otpEmail = new OtpEmail
+            {
+                EmailAddress = email,
+                Otp = otp
+            };
+            await _emailService.SendOtpEmailAsync(otpEmail);
+        }
+     
+        private string GenerateOtp()
+        {
+            var random = new Random();
+            return random.Next(100000, 999999).ToString(); // Generate a 6-digit OTP
+        }
+        private string GeneratePassword(int length = 12)
+        {
+            const string validChars = &quot;ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@&quot;;
+            var random = new Random();
+            return new string(Enumerable.Repeat(validChars, length)
+                .Select(s =&gt; s[random.Next(s.Length)]).ToArray());
+        }
+
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            return !string.IsNullOrEmpty(phoneNumber) &amp;&amp; phoneNumber.All(char.IsDigit) &amp;&amp; phoneNumber.Length == 10;
+        }
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[24,9,24,150,1],[25,9,25,10,1],[26,13,26,32,1],[27,13,27,56,1],[28,13,28,34,1],[29,13,29,42,1],[30,9,30,10,1],[33,9,33,10,1],[34,13,34,126,1],[35,13,35,45,1],[36,13,36,14,1],[37,17,37,31,1],[38,13,38,14,1],[40,13,40,14,0],[41,17,41,64,0],[42,17,42,37,0],[43,17,43,18,0],[44,21,44,110,0],[45,21,45,45,0],[46,21,46,22,0],[47,25,47,56,0],[48,25,48,71,0],[48,71,48,84,0],[48,84,48,95,0],[49,21,49,22,0],[51,21,51,22,0],[53,25,53,39,0],[54,21,54,22,0],[55,17,55,18,0],[56,13,56,14,0],[57,9,57,10,1],[59,9,59,10,1],[60,13,62,53,1],[63,13,63,29,0],[64,13,64,14,0],[65,17,65,41,0],[66,17,66,60,0],[67,17,67,40,0],[68,17,68,29,0],[71,13,71,26,0],[72,9,72,10,0],[75,9,75,10,1],[76,13,76,27,1],[77,13,79,62,1],[80,15,80,61,0],[81,13,81,60,0],[82,13,82,25,0],[83,9,83,10,0],[86,9,86,10,1],[87,13,89,48,1],[90,13,90,27,0],[91,9,91,10,0],[94,9,94,10,1],[95,13,97,57,1],[98,13,98,32,0],[99,13,99,14,0],[100,17,100,31,0],[103,13,103,14,0],[104,17,104,92,0],[106,9,106,10,0],[235,9,235,10,0],[237,13,237,14,0],[239,17,239,75,0],[240,17,240,18,0],[241,21,241,96,0],[244,17,244,63,0],[245,17,245,18,0],[246,21,246,90,0],[250,17,250,69,0],[251,17,251,68,0],[252,17,252,59,0],[254,17,254,31,0],[257,17,258,86,0],[260,17,260,49,0],[261,17,261,18,0],[262,21,262,66,0],[263,21,263,22,0],[264,25,266,27,0],[269,21,269,71,0],[270,21,270,80,0],[271,17,271,18,0],[273,17,273,18,0],[275,21,275,89,0],[276,21,276,55,0],[277,21,277,55,0],[278,21,278,64,0],[279,17,279,18,0],[282,17,283,86,0],[285,17,285,53,0],[287,17,287,56,0],[288,17,288,18,0],[290,21,290,75,0],[291,21,291,95,0],[292,21,292,71,0],[293,21,293,78,0],[294,21,294,92,0],[296,21,296,85,0],[297,17,297,18,0],[299,17,299,18,0],[301,21,311,23,0],[313,21,313,88,0],[314,21,314,55,0],[316,21,316,72,0],[317,17,317,18,0],[320,17,321,86,0],[324,17,324,87,0],[325,17,325,18,0],[326,21,326,97,0],[329,17,329,52,0],[330,17,330,18,0],[332,21,332,79,0],[333,21,333,97,0],[334,21,334,86,0],[336,21,336,77,0],[337,17,337,18,0],[339,17,339,18,0],[341,21,349,23,0],[351,21,351,80,0],[352,17,352,18,0],[354,17,354,64,0],[356,17,356,33,0],[357,17,357,18,0],[358,21,358,87,0],[359,21,359,70,0],[362,17,362,18,0],[363,21,363,99,0],[366,13,366,43,0],[367,13,367,14,0],[369,17,369,83,0],[370,17,370,98,0],[372,13,372,33,0],[373,13,373,14,0],[374,17,374,84,0],[376,9,376,10,0],[382,9,382,10,0],[384,13,384,14,0],[385,17,385,67,0],[386,17,386,46,0],[388,13,388,18,0],[389,13,389,14,0],[390,17,390,30,0],[392,9,392,10,0],[397,9,397,10,0],[398,13,402,15,0],[403,13,403,61,0],[404,9,404,10,0],[407,9,407,10,0],[408,13,408,39,0],[409,13,409,59,0],[410,9,410,10,0],[412,9,412,10,0],[414,13,414,39,0],[415,13,416,30,0],[416,30,416,54,0],[416,54,416,67,0],[417,9,417,10,0],[420,9,420,10,0],[421,13,421,116,0],[422,9,422,10,0]]);
+    </script>
+  </body>
+</html>

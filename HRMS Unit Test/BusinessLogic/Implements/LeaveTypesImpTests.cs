@@ -52,16 +52,16 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             throw new NotImplementedException("Create or modify test");
         }
 
-      /*  [Fact]
-        public void CanCallGetAllLeaveType()
-        {
-            // Act
-            var result = _testClass.GetAllLeaveType();
+        /*  [Fact]
+          public void CanCallGetAllLeaveType()
+          {
+              // Act
+              var result = _testClass.GetAllLeaveType();
 
-            // Assert
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
+              // Assert
+              throw new NotImplementedException("Create or modify test");
+          }
+  */
         [Fact]
         public void CanCallGetLeaveTypeById()
         {
@@ -142,7 +142,7 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             var requestedcompanyId = 933466615;
 
             // Act
-        //    var result = _testClass.UpdateLeaveType(id, name, requestedcompanyId);
+            //    var result = _testClass.UpdateLeaveType(id, name, requestedcompanyId);
 
             // Assert
             throw new NotImplementedException("Create or modify test");
@@ -157,6 +157,29 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
 
             // Act
             var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetAllLeaveType()
+        {
+            // Arrange
+            var companyId = 509343262;
+
+            // Act
+            var result = _testClass.GetAllLeaveType(companyId);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetRegularizationLeaveType()
+        {
+            // Act
+            var result = _testClass.GetRegularizationLeaveType();
 
             // Assert
             throw new NotImplementedException("Create or modify test");

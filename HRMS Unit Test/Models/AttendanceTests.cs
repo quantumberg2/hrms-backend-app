@@ -120,5 +120,44 @@ namespace HRMS_Unit_Test.Models
             // Assert
             Assert.Same(testValue, _testClass.EmpCredential);
         }
+
+        [Fact]
+        public void CanSetAndGetDate()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.Date = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Date);
+        }
+
+        [Fact]
+        public void CanSetAndGetTimeIn()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.TimeIn = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.TimeIn);
+        }
+
+        [Fact]
+        public void CanSetAndGetTimeout()
+        {
+            // Arrange
+            var testValue = DateTime.UtcNow;
+
+            // Act
+            _testClass.Timeout = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Timeout);
+        }
     }
 }

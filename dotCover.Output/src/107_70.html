@@ -2,31 +2,74 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Authorization\AllowAnonymousAttributeTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\AzureOperationsImpTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Authorization
+namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
-    using HRMS_Application.Authorization;
+    using System.Threading.Tasks;
+    using Azure.Storage.Blobs;
+    using HRMS_Application.BusinessLogic.Implements;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
     using Xunit;
 
-    public class AllowAnonymousAttributeTests
+    public class AzureOperationsImpTests
     {
-        private readonly AllowAnonymousAttribute _testClass;
+        private readonly AzureOperationsImp _testClass;
+        private BlobServiceClient _blobServiceClient;
 
-        public AllowAnonymousAttributeTests()
+        public AzureOperationsImpTests()
         {
-            _testClass = new AllowAnonymousAttribute();
+            _blobServiceClient = new BlobServiceClient(&quot;TestValue1962203869&quot;);
+            _testClass = new AzureOperationsImp(_blobServiceClient);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new AzureOperationsImp(_blobServiceClient);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallStoreFilesInAzure()
+        {
+            // Arrange
+            var fileObj = new Mock&lt;IFormFile&gt;().Object;
+            var containerName = &quot;TestValue1976160341&quot;;
+
+            // Act
+            var result = _testClass.StoreFilesInAzure(fileObj, containerName);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallFetchBulkEmployeeDetailsFile()
+        {
+            // Arrange
+            var url = &quot;TestValue808158736&quot;;
+
+            // Act
+            var result = await _testClass.FetchBulkEmployeeDetailsFile(url);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,46,0],[12,9,12,10,0],[13,13,13,56,0],[14,9,14,10,0]]);
+      highlightRanges([[16,9,16,41,1],[17,9,17,10,1],[18,13,18,79,1],[19,13,19,69,0],[20,9,20,10,0],[24,9,24,10,0],[26,13,26,71,0],[29,13,29,38,0],[30,9,30,10,0],[34,9,34,10,0],[36,13,36,56,0],[37,13,37,55,0],[40,13,40,79,0],[43,13,43,72,0],[48,9,48,10,0],[50,13,50,44,0],[53,13,53,77,0],[56,13,56,72,0]]);
     </script>
   </body>
 </html>

@@ -32,22 +32,22 @@ namespace HRMS_Unit_Test.Controllers
             // Assert
             Assert.NotNull(instance);
         }
-/*
-        [Fact]
-        public void CanCallGetAllLeavetype()
-        {
-            // Arrange
-            _leavetype.Setup(mock => mock.GetAllLeaveType()).Returns(new List<LeaveType>());
+        /*
+                [Fact]
+                public void CanCallGetAllLeavetype()
+                {
+                    // Arrange
+                    _leavetype.Setup(mock => mock.GetAllLeaveType()).Returns(new List<LeaveType>());
 
-            // Act
-            var result = _testClass.GetAllLeavetype();
+                    // Act
+                    var result = _testClass.GetAllLeavetype();
 
-            // Assert
-            _leavetype.Verify(mock => mock.GetAllLeaveType());
+                    // Assert
+                    _leavetype.Verify(mock => mock.GetAllLeaveType());
 
-            throw new NotImplementedException("Create or modify test");
-        }
-*/
+                    throw new NotImplementedException("Create or modify test");
+                }
+        */
         [Fact]
         public void CanCallGetleavetypeById()
         {
@@ -169,6 +169,73 @@ namespace HRMS_Unit_Test.Controllers
 
             // Assert
             _leavetype.Verify(mock => mock.SoftDelete(It.IsAny<int>(), It.IsAny<short>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallGetAllLeavetype()
+        {
+            // Arrange
+            _leavetype.Setup(mock => mock.GetAllLeaveType(It.IsAny<int>())).Returns(new List<LeaveType>());
+            _leavetype.Setup(mock => mock.GetRegularizationLeaveType()).Returns(new List<LeaveType>());
+
+            // Act
+            var result = _testClass.GetAllLeavetype();
+
+            // Assert
+            _leavetype.Verify(mock => mock.GetAllLeaveType(It.IsAny<int>()));
+            _leavetype.Verify(mock => mock.GetRegularizationLeaveType());
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public void CanCallUpdateLeaveType()
+        {
+            // Arrange
+            var id = 446745759;
+            var name = "TestValue468288645";
+            var days = 1318389584;
+            var year = 1339860116;
+            var requestedcompanyId = 1011435910;
+
+            _leavetype.Setup(mock => mock.UpdateLeaveType(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<int?>())).Returns(new LeaveType
+            {
+                Id = 727466783,
+                Type = "TestValue1823886529",
+                Days = 1923232911,
+                CompanyId = 1328232896,
+                Year = 1155582387,
+                IsActive = (short)15030,
+                CompanyConfiguredLeave = true,
+                Company = new RequestedCompanyForm
+                {
+                    Id = 1584978202,
+                    Name = "TestValue152714004",
+                    PhoneNumber = "TestValue1041336752",
+                    DomainName = "TestValue1704761795",
+                    Status = "TestValue1426468639",
+                    InsertedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    Email = "TestValue106370522",
+                    IsActive = (short)6024,
+                    CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                    Departments = new Mock<ICollection<Department>>().Object,
+                    EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                    Holidays = new Mock<ICollection<Holiday>>().Object,
+                    LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                    Positions = new Mock<ICollection<Position>>().Object
+                },
+                EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
+                LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object
+            });
+
+            // Act
+            var result = _testClass.UpdateLeaveType(id, name, days, year, requestedcompanyId);
+
+            // Assert
+            _leavetype.Verify(mock => mock.UpdateLeaveType(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<int?>()));
 
             throw new NotImplementedException("Create or modify test");
         }

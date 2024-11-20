@@ -169,5 +169,70 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
             // Assert
             throw new NotImplementedException("Create or modify test");
         }
+
+        [Fact]
+        public async Task CanCallUpdateAttendanceInfo()
+        {
+            // Arrange
+            var attendance = new Attendance
+            {
+                Id = 414603900,
+                EmpCredentialId = 104612594,
+                NumberOfHours = 615304986.12,
+                Status = "TestValue1957305793",
+                Date = DateTime.UtcNow,
+                TimeIn = DateTime.UtcNow,
+                Timeout = DateTime.UtcNow,
+                EmpCredential = new EmployeeCredential
+                {
+                    Id = 2072663414,
+                    UserName = "TestValue58221188",
+                    Password = "TestValue279845992",
+                    Status = (short)28641,
+                    RequestedCompanyId = 1503367574,
+                    Email = "TestValue1889396268",
+                    DefaultPassword = false,
+                    GenerateOtp = "TestValue1439968466",
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)18031,
+                    EmployeeLoginName = "TestValue96687947",
+                    ResignedDate = DateTime.UtcNow,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1352213875,
+                        Name = "TestValue480305800",
+                        PhoneNumber = "TestValue505548213",
+                        DomainName = "TestValue1849705564",
+                        Status = "TestValue185459274",
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = "TestValue1618673135",
+                        IsActive = (short)18788,
+                        CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                        Departments = new Mock<ICollection<Department>>().Object,
+                        EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                        Holidays = new Mock<ICollection<Holiday>>().Object,
+                        LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                        Positions = new Mock<ICollection<Position>>().Object
+                    },
+                    AccountDetails = new Mock<ICollection<AccountDetail>>().Object,
+                    AddressInfos = new Mock<ICollection<AddressInfo>>().Object,
+                    Attendances = new Mock<ICollection<Attendance>>().Object,
+                    EmpCredIdEmpCodeMappings = new Mock<ICollection<EmpCredIdEmpCodeMapping>>().Object,
+                    EmpPersonalInfos = new Mock<ICollection<EmpPersonalInfo>>().Object,
+                    EmpSalaries = new Mock<ICollection<EmpSalary>>().Object,
+                    EmployeeDetails = new Mock<ICollection<EmployeeDetail>>().Object,
+                    EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
+                    LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object,
+                    UserRolesJs = new Mock<ICollection<UserRolesJ>>().Object
+                }
+            };
+
+            // Act
+            var result = await _testClass.UpdateAttendanceInfo(attendance);
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
     }
 }

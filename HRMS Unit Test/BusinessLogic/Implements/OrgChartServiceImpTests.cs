@@ -1,6 +1,7 @@
 namespace HRMS_Unit_Test.BusinessLogic.Implements
 {
     using System;
+    using System.Threading.Tasks;
     using HRMS_Application.BusinessLogic.Implements;
     using HRMS_Application.Models;
     using Xunit;
@@ -30,7 +31,20 @@ namespace HRMS_Unit_Test.BusinessLogic.Implements
         public void CanCallGetManagersWithEmployees()
         {
             // Act
-         //   var result = _testClass.GetManagersWithEmployees();
+            //   var result = _testClass.GetManagersWithEmployees();
+
+            // Assert
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallGetOrganizationChartAsync()
+        {
+            // Arrange
+            var companyId = 734157330;
+
+            // Act
+            var result = await _testClass.GetOrganizationChartAsync(companyId);
 
             // Assert
             throw new NotImplementedException("Create or modify test");

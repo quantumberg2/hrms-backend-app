@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\LeaveTrackingDTOTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\EmployeeShiftAndLeaveStatsDtoTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -14,136 +14,149 @@ namespace HRMS_Unit_Test.DTO
     using HRMS_Application.DTO;
     using Xunit;
 
-    public class LeaveTrackingDTOTests
+    public class EmployeeShiftAndLeaveStatsDtoTests
     {
-        private readonly LeaveTrackingDTO _testClass;
+        private readonly EmployeeShiftAndLeaveStatsDto _testClass;
 
-        public LeaveTrackingDTOTests()
+        public EmployeeShiftAndLeaveStatsDtoTests()
         {
-            _testClass = new LeaveTrackingDTO();
+            _testClass = new EmployeeShiftAndLeaveStatsDto();
         }
 
         [Fact]
-        public void CanSetAndGetId()
+        public void CanSetAndGetShiftType()
         {
             // Arrange
-            var testValue = 88098370;
+            var testValue = &quot;TestValue1471963424&quot;;
 
             // Act
-            _testClass.Id = testValue;
+            _testClass.ShiftType = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Id);
+            Assert.Equal(testValue, _testClass.ShiftType);
         }
 
         [Fact]
-        public void CanSetAndGetStartDate()
+        public void CanSetAndGetShiftTimeRange()
         {
             // Arrange
-            var testValue = DateTime.UtcNow;
+            var testValue = &quot;TestValue1427580838&quot;;
 
             // Act
-            _testClass.StartDate = testValue;
+            _testClass.ShiftTimeRange = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.StartDate);
+            Assert.Equal(testValue, _testClass.ShiftTimeRange);
         }
 
         [Fact]
-        public void CanSetAndGetEndDate()
+        public void CanSetAndGetTotalLeaveCount()
         {
             // Arrange
-            var testValue = DateTime.UtcNow;
+            var testValue = 465696730;
 
             // Act
-            _testClass.EndDate = testValue;
+            _testClass.TotalLeaveCount = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.EndDate);
+            Assert.Equal(testValue, _testClass.TotalLeaveCount);
         }
 
         [Fact]
-        public void CanSetAndGetApplied()
+        public void CanSetAndGetRemainingLeaveCount()
         {
             // Arrange
-            var testValue = DateTime.UtcNow;
+            var testValue = 363563207;
 
             // Act
-            _testClass.Applied = testValue;
+            _testClass.RemainingLeaveCount = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Applied);
+            Assert.Equal(testValue, _testClass.RemainingLeaveCount);
         }
 
         [Fact]
-        public void CanSetAndGetFiles()
+        public void CanSetAndGetLeavePercentage()
         {
             // Arrange
-            var testValue = &quot;TestValue2046749989&quot;;
+            var testValue = 1276717740.21;
 
             // Act
-            _testClass.Files = testValue;
+            _testClass.LeavePercentage = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Files);
+            Assert.Equal(testValue, _testClass.LeavePercentage);
         }
 
         [Fact]
-        public void CanSetAndGetLeaveTypeId()
+        public void CanSetAndGetName()
         {
             // Arrange
-            var testValue = 1255138132;
+            var testValue = &quot;TestValue309985374&quot;;
 
             // Act
-            _testClass.LeaveTypeId = testValue;
+            _testClass.Name = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.LeaveTypeId);
+            Assert.Equal(testValue, _testClass.Name);
         }
 
         [Fact]
-        public void CanSetAndGetSession()
+        public void CanSetAndGetEmail()
         {
             // Arrange
-            var testValue = &quot;TestValue475977654&quot;;
+            var testValue = &quot;TestValue977781207&quot;;
 
             // Act
-            _testClass.Session = testValue;
+            _testClass.Email = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Session);
+            Assert.Equal(testValue, _testClass.Email);
         }
 
         [Fact]
-        public void CanSetAndGetContact()
+        public void CanSetAndGetMonthlyPresentDays()
         {
             // Arrange
-            var testValue = &quot;TestValue27553552&quot;;
+            var testValue = 1214820218;
 
             // Act
-            _testClass.Contact = testValue;
+            _testClass.MonthlyPresentDays = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.Contact);
+            Assert.Equal(testValue, _testClass.MonthlyPresentDays);
         }
 
         [Fact]
-        public void CanSetAndGetReasonForLeave()
+        public void CanSetAndGetTotalWorkingDays()
         {
             // Arrange
-            var testValue = &quot;TestValue816098063&quot;;
+            var testValue = 1476483678;
 
             // Act
-            _testClass.ReasonForLeave = testValue;
+            _testClass.TotalWorkingDays = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.ReasonForLeave);
+            Assert.Equal(testValue, _testClass.TotalWorkingDays);
+        }
+
+        [Fact]
+        public void CanSetAndGetAttendancePercentage()
+        {
+            // Arrange
+            var testValue = 1083126105.27;
+
+            // Act
+            _testClass.AttendancePercentage = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.AttendancePercentage);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,39,1],[12,9,12,10,1],[13,13,13,49,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,38,1],[23,13,23,39,1],[26,13,26,52,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,45,1],[36,13,36,46,1],[39,13,39,59,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,45,1],[49,13,49,44,1],[52,13,52,57,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,45,1],[62,13,62,44,1],[65,13,65,57,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,51,1],[75,13,75,42,1],[78,13,78,55,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,40,1],[88,13,88,48,1],[91,13,91,61,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,50,1],[101,13,101,44,1],[104,13,104,57,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,49,1],[114,13,114,44,1],[117,13,117,57,1],[118,9,118,10,1],[122,9,122,10,1],[124,13,124,50,1],[127,13,127,51,1],[130,13,130,64,1],[131,9,131,10,1]]);
+      highlightRanges([[11,9,11,52,1],[12,9,12,10,1],[13,13,13,62,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,51,1],[23,13,23,46,1],[26,13,26,59,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,51,1],[36,13,36,51,1],[39,13,39,64,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,39,1],[49,13,49,52,1],[52,13,52,65,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,39,1],[62,13,62,56,1],[65,13,65,69,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,43,1],[75,13,75,52,1],[78,13,78,65,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,50,1],[88,13,88,41,1],[91,13,91,54,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,50,1],[101,13,101,42,1],[104,13,104,55,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,40,1],[114,13,114,55,1],[117,13,117,68,1],[118,9,118,10,1],[122,9,122,10,1],[124,13,124,40,1],[127,13,127,53,1],[130,13,130,66,1],[131,9,131,10,1],[135,9,135,10,1],[137,13,137,43,1],[140,13,140,57,1],[143,13,143,70,1],[144,9,144,10,1]]);
     </script>
   </body>
 </html>

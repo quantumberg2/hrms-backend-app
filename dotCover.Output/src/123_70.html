@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\LeaveTrackingImpTests.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+namespace HRMS_Unit_Test.BusinessLogic.Implements
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.Authorization;
+    using HRMS_Application.BusinessLogic.Implements;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Models;
+    using Microsoft.AspNetCore.Http;
+    using Moq;
+    using Xunit;
+
+    public class LeaveTrackingImpTests
+    {
+        private readonly LeaveTrackingImp _testClass;
+        private HRMSContext _hrmscontext;
+        private readonly Mock&lt;IHttpContextAccessor&gt; _httpContextAccessor;
+        private readonly Mock&lt;IJwtUtils&gt; _jwtUtils;
+        private readonly Mock&lt;IAlertEmailOperations&gt; _alertEmail;
+        private readonly Mock&lt;IAzureOperations&gt; _azureOperations;
+
+        public LeaveTrackingImpTests()
+        {
+            _azureOperations = new Mock&lt;IAzureOperations&gt;();
+            _alertEmail = new Mock&lt;IAlertEmailOperations&gt;();
+            _hrmscontext = new HRMSContext();
+            _httpContextAccessor = new Mock&lt;IHttpContextAccessor&gt;();
+            _jwtUtils = new Mock&lt;IJwtUtils&gt;();
+            //  _testClass = new LeaveTrackingImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object);
+        }
+
+
+        [Fact]
+        public async Task CanCallGetAllAsync()
+        {
+            // Act
+            var result = await _testClass.GetAllAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom&lt;IEnumerable&lt;LeaveTracking&gt;&gt;(result);
+            Assert.True(result.Any(), &quot;Expected at least one leave record&quot;);
+        }
+
+
+        [Fact]
+        public async Task CanCallCreateAsync()
+        {
+            var leaveTracking = new LeaveTracking
+            {
+                Id = 1836190213,
+                EmpCredentialId = 1737289903,
+                Startdate = DateTime.UtcNow,
+                Enddate = DateTime.UtcNow,
+                AppliedDate = DateTime.UtcNow,
+                Status = &quot;TestValue1132680216&quot;,
+                Files = &quot;TestValue26771073&quot;,
+                LeaveTypeId = 323269955,
+                Session = &quot;TestValue1727297973&quot;,
+                Contact = &quot;TestValue239263398&quot;,
+                ReasonForLeave = &quot;TestValue1643112866&quot;,
+                IsActive = (short)20257,
+                EmpCredential = new EmployeeCredential
+                {
+                    Id = 294056385,
+                    UserName = &quot;TestValue1379062431&quot;,
+                    Password = &quot;TestValue1660546838&quot;,
+                    Status = (short)8447,
+                    RequestedCompanyId = 828215309,
+                    Email = &quot;TestValue489317242&quot;,
+                    DefaultPassword = true,
+                    GenerateOtp = &quot;TestValue1252448871&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)22902,
+                    EmployeeLoginName = &quot;TestValue1148799560&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 535227455,
+                        Name = &quot;TestValue242569720&quot;,
+                        PhoneNumber = &quot;TestValue1589921783&quot;,
+                        DomainName = &quot;TestValue1212836918&quot;,
+                        Status = &quot;TestValue1004200172&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1526884085&quot;,
+                        IsActive = (short)16695,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                LeaveType = new LeaveType
+                {
+                    Id = 1351482201,
+                    Type = &quot;TestValue1503945572&quot;,
+                    Days = 1829718348,
+                    CompanyId = 2088636985,
+                    Year = 744390965,
+                    IsActive = (short)17711,
+                    Company = new RequestedCompanyForm
+                    {
+                        Id = 297837433,
+                        Name = &quot;TestValue789530612&quot;,
+                        PhoneNumber = &quot;TestValue1209473182&quot;,
+                        DomainName = &quot;TestValue726530973&quot;,
+                        Status = &quot;TestValue595140609&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue697508477&quot;,
+                        IsActive = (short)5155,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object
+                }
+            };
+            var empCredentialId = 2078218248;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(81400069);
+
+            // Act
+            var result = await _testClass.CreateAsync(leaveTracking, empCredentialId);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateAsync()
+        {
+            // Arrange
+            var leaveTracking = new LeaveTracking
+            {
+                Id = 1327029185,
+                EmpCredentialId = 37640951,
+                Startdate = DateTime.UtcNow,
+                Enddate = DateTime.UtcNow,
+                AppliedDate = DateTime.UtcNow,
+                Status = &quot;TestValue2086003513&quot;,
+                Files = &quot;TestValue1930424720&quot;,
+                LeaveTypeId = 51822695,
+                Session = &quot;TestValue2133591983&quot;,
+                Contact = &quot;TestValue1080228280&quot;,
+                ReasonForLeave = &quot;TestValue1064533689&quot;,
+                IsActive = (short)12378,
+                EmpCredential = new EmployeeCredential
+                {
+                    Id = 349244779,
+                    UserName = &quot;TestValue809225206&quot;,
+                    Password = &quot;TestValue565847603&quot;,
+                    Status = (short)31632,
+                    RequestedCompanyId = 1986313996,
+                    Email = &quot;TestValue246268430&quot;,
+                    DefaultPassword = true,
+                    GenerateOtp = &quot;TestValue128480044&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)9877,
+                    EmployeeLoginName = &quot;TestValue1376587714&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 375815772,
+                        Name = &quot;TestValue882801473&quot;,
+                        PhoneNumber = &quot;TestValue1960878165&quot;,
+                        DomainName = &quot;TestValue1386469050&quot;,
+                        Status = &quot;TestValue1697149067&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue218317572&quot;,
+                        IsActive = (short)20792,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                LeaveType = new LeaveType
+                {
+                    Id = 1911577327,
+                    Type = &quot;TestValue1766225774&quot;,
+                    Days = 1910269916,
+                    CompanyId = 2147026481,
+                    Year = 554940394,
+                    IsActive = (short)17747,
+                    Company = new RequestedCompanyForm
+                    {
+                        Id = 1218064959,
+                        Name = &quot;TestValue381179621&quot;,
+                        PhoneNumber = &quot;TestValue1063024182&quot;,
+                        DomainName = &quot;TestValue1552280831&quot;,
+                        Status = &quot;TestValue1274317052&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1221259099&quot;,
+                        IsActive = (short)22506,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object
+                }
+            };
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(154047835);
+
+            // Act
+            var result = await _testClass.UpdateAsync(leaveTracking);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateLeaveAsync()
+        {
+            // Arrange
+            var id = 1108057552;
+            var newStatus = &quot;TestValue271253921&quot;;
+
+            // Act
+            var result = await _testClass.UpdateLeaveAsync(id, newStatus);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteAsync()
+        {
+            // Arrange
+            var id = 1018443763;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(439411883);
+
+            // Act
+            var result = await _testClass.DeleteAsync(id);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetLeavesByStatusAsync()
+        {
+            // Arrange
+            var status = &quot;TestValue1739392206&quot;;
+
+            // Act
+            //     var result = await _testClass.GetLeavesByStatusAsync(status);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        /* [Fact]
+         public async Task CanCallGetEmployeeLeaveSummaryAsync()
+         {
+             // Arrange
+             var employeeCredentialId = 2082649406;
+
+             // Act
+             var result = await _testClass.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
+
+             // Assert
+             throw new NotImplementedException(&quot;Create or modify test&quot;);
+         }
+ */
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 594897256;
+            var isActive = (short)5679;
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallApllyLeaveBehalf()
+        {
+            // Arrange
+            var leaveTracking = new LeaveTracking
+            {
+                Id = 963204752,
+                EmpCredentialId = 202077988,
+                Startdate = DateTime.UtcNow,
+                Enddate = DateTime.UtcNow,
+                AppliedDate = DateTime.UtcNow,
+                Status = &quot;TestValue466660565&quot;,
+                Files = &quot;TestValue50137842&quot;,
+                LeaveTypeId = 1108759515,
+                Session = &quot;TestValue1702402476&quot;,
+                Contact = &quot;TestValue1418730009&quot;,
+                ReasonForLeave = &quot;TestValue1513634667&quot;,
+                IsActive = (short)12186,
+                EmpCredential = new EmployeeCredential
+                {
+                    Id = 388854446,
+                    UserName = &quot;TestValue1712107148&quot;,
+                    Password = &quot;TestValue836596938&quot;,
+                    Status = (short)3387,
+                    RequestedCompanyId = 1461486153,
+                    Email = &quot;TestValue1301747420&quot;,
+                    DefaultPassword = true,
+                    GenerateOtp = &quot;TestValue1941788032&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)27366,
+                    EmployeeLoginName = &quot;TestValue1495266291&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 1691948359,
+                        Name = &quot;TestValue923289814&quot;,
+                        PhoneNumber = &quot;TestValue841471245&quot;,
+                        DomainName = &quot;TestValue1397619580&quot;,
+                        Status = &quot;TestValue1054704592&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue1319792893&quot;,
+                        IsActive = (short)4097,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                },
+                LeaveType = new LeaveType
+                {
+                    Id = 104561851,
+                    Type = &quot;TestValue443389590&quot;,
+                    Days = 942434402,
+                    CompanyId = 1794560491,
+                    Year = 1761983308,
+                    IsActive = (short)27021,
+                    Company = new RequestedCompanyForm
+                    {
+                        Id = 990516305,
+                        Name = &quot;TestValue960877064&quot;,
+                        PhoneNumber = &quot;TestValue803021022&quot;,
+                        DomainName = &quot;TestValue1708191928&quot;,
+                        Status = &quot;TestValue1680365916&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue504802552&quot;,
+                        IsActive = (short)829,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object
+                }
+            };
+            var empCredentialId = 1663146130;
+
+            _jwtUtils.Setup(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;())).Returns(950700263);
+
+            // Act
+            var result = await _testClass.ApllyLeaveBehalf(leaveTracking, empCredentialId);
+
+            // Assert
+            _jwtUtils.Verify(mock =&gt; mock.ValidateJwtToken(It.IsAny&lt;string&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetPendingLeaves()
+        {
+            // Arrange
+            var employeeCredentialId = 1109933259;
+
+            // Act
+            var result = _testClass.GetPendingLeaves(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallGetHistoryLeaves()
+        {
+            // Arrange
+            var employeeCredentialId = 1696873162;
+
+            // Act
+            var result = _testClass.GetHistoryLeaves(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallUpdateLeaveAsyncchanges()
+        {
+            // Arrange
+            var employeeCredentialId = 753625284;
+            var id = 885462606;
+            var newStatus = &quot;TestValue1656635598&quot;;
+
+            // Act
+            var result = await _testClass.UpdateLeaveAsyncchanges(employeeCredentialId, id, newStatus);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new LeaveTrackingImp(_hrmscontext, _httpContextAccessor.Object, _jwtUtils.Object, _alertEmail.Object, _azureOperations.Object);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CanCallGetByIdAsync()
+        {
+            // Arrange
+            var id = 547390339;
+
+            // Act
+            var result = _testClass.GetByIdAsync(id);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallGetEmployeeLeaveSummaryAsync()
+        {
+            // Arrange
+            var employeeCredentialId = 1383461375;
+
+            // Act
+            var result = await _testClass.GetEmployeeLeaveSummaryAsync(employeeCredentialId);
+
+            // Assert
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+    }
+}
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[23,9,23,39,1],[24,9,24,10,1],[25,13,25,61,1],[26,13,26,61,1],[27,13,27,46,1],[28,13,28,69,1],[29,13,29,47,1],[31,9,31,10,1],[36,9,36,10,1],[38,13,38,57,1],[41,13,41,36,0],[42,13,42,73,0],[43,13,43,77,0],[44,9,44,10,0],[49,9,49,10,1],[50,13,135,15,1],[136,13,136,46,1],[138,13,138,98,1],[141,13,141,87,1],[144,13,144,81,0],[146,13,146,72,0],[151,9,151,10,1],[153,13,238,15,1],[240,13,240,99,1],[243,13,243,70,1],[246,13,246,81,0],[248,13,248,72,0],[253,9,253,10,1],[255,13,255,33,1],[256,13,256,50,1],[259,13,259,75,1],[262,13,262,72,0],[267,9,267,10,1],[269,13,269,33,1],[271,13,271,99,1],[274,13,274,59,1],[277,13,277,81,0],[279,13,279,72,0],[284,9,284,10,1],[286,13,286,48,1],[292,13,292,72,1],[310,9,310,10,1],[312,13,312,32,1],[313,13,313,40,1],[316,13,316,62,1],[319,13,319,72,0],[324,9,324,10,1],[326,13,411,15,1],[412,13,412,46,1],[414,13,414,99,1],[417,13,417,92,1],[420,13,420,81,0],[422,13,422,72,0],[427,9,427,10,1],[429,13,429,51,1],[432,13,432,76,1],[435,13,435,72,0],[440,9,440,10,1],[442,13,442,51,1],[445,13,445,76,1],[448,13,448,72,0],[453,9,453,10,1],[455,13,455,50,1],[456,13,456,32,1],[457,13,457,51,1],[460,13,460,104,1],[463,13,463,72,0],[468,9,468,10,1],[470,13,470,155,1],[473,13,473,38,1],[474,9,474,10,1],[478,9,478,10,1],[480,13,480,32,1],[483,13,483,54,1],[486,13,486,72,0],[491,9,491,10,1],[493,13,493,51,1],[496,13,496,94,1],[499,13,499,72,0]]);
+    </script>
+  </body>
+</html>

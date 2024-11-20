@@ -2,86 +2,43 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\RolesController.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\DTO\CompanyDetailsDTO.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using HRMS_Application.Authorization;
-namespace HRMS_Application.Controllers
+
+namespace HRMS_Application.DTO
 {
-    [Route(&quot;api/[controller]&quot;)]
-    [ApiController]
-    public class RolesController : ControllerBase
+    public class CompanyDetailsDTO
     {
-        private readonly IRoles _roles;
-        private readonly ILogger&lt;RolesController&gt; _logger;
-
-
-        public RolesController(IRoles roles, ILogger&lt;RolesController&gt; logger)
-        {
-            _roles = roles;
-            _logger = logger;
-        }
-        [HttpGet]
-        //[Authorize(new[] { &quot;Admin&quot;, &quot;Developer&quot; })]
-        public List&lt;Role&gt; GetAllRole()
-        {
-            _logger.LogInformation(&quot;Get all department method started&quot;);
-            var dept = _roles.GetAllRoles();
-            return dept;
-        }
-
-        [HttpPost(&quot;insertEmployees&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        public async Task&lt;string&gt; InsertRoles([FromBody] Role role)
-        {
-            _logger.LogInformation(&quot;Insert department method started&quot;);
-
-            var status = await _roles.InsertRole(role);
-            return status;
-        }
-
-       /* [HttpPut(&quot;UpdateAll/{id}&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        // [Route(&quot;UpdateAll&quot;)]
-        public Department UpdateDepartment(int id, string? name, int? requestedcompanyId)
-        {
-            _logger.LogInformation(&quot;Update method started&quot;);
-            var status = _department.UpdateDepartment(id, name, requestedcompanyId);
-            return status;
-        }*/
-
-        [HttpDelete(&quot;{id}&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        public async Task&lt;bool&gt; DeleteRole(int id)
-        {
-            _logger.LogInformation(&quot;Delete method started&quot;);
-            var status = await _roles.deleteRole(id);
-            return status;
-        }
-
-        [HttpPut(&quot;SoftDelete&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-
-        public bool SoftDelete(int id, short isActive)
-        {
-            _logger.LogInformation(&quot;Soft update Roles method started&quot;);
-            var res = _roles.SoftDelete(id, isActive);
-            return res;
-
-        }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string Country { get; set; }
+        public string States { get; set; }
+        public string Industry { get; set; }
+        public string TimeZone { get; set; }
+        public string Currency { get; set; }
+        public string PfNo { get; set; }
+        public string TanNo { get; set; }
+        public string EsiNo { get; set; }
+        public string PanNo { get; set; }
+        public string GstNo { get; set; }
+        public string RegistrationNo { get; set; }
+        public string Twitter { get; set; }
+        public string Facebook { get; set; }
+        public string LinkedIn { get; set; }
+        public IFormFile? CompanyLogo { get; set; }
+      //  public int? RequestedCompanyId { get; set; }
+        public short? IsActive { get; set; }
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[16,9,16,78,1],[17,9,17,10,1],[18,13,18,28,1],[19,13,19,30,1],[20,9,20,10,1],[24,9,24,10,1],[25,13,25,73,1],[26,13,26,45,1],[27,13,27,25,1],[28,9,28,10,1],[33,9,33,10,1],[34,13,34,72,1],[36,13,36,56,1],[37,13,37,27,1],[38,9,38,10,1],[53,9,53,10,1],[54,13,54,61,1],[55,13,55,54,1],[56,13,56,27,1],[57,9,57,10,1],[63,9,63,10,1],[64,13,64,72,1],[65,13,65,55,1],[66,13,66,24,1],[68,9,68,10,1]]);
+      highlightRanges([[7,30,7,34,1],[7,35,7,39,1],[8,33,8,37,1],[8,38,8,42,1],[9,33,9,37,1],[9,38,9,42,1],[10,32,10,36,1],[10,37,10,41,1],[11,34,11,38,1],[11,39,11,43,1],[12,34,12,38,1],[12,39,12,43,1],[13,34,13,38,1],[13,39,13,43,1],[14,30,14,34,1],[14,35,14,39,1],[15,31,15,35,1],[15,36,15,40,1],[16,31,16,35,1],[16,36,16,40,1],[17,31,17,35,1],[17,36,17,40,1],[18,31,18,35,1],[18,36,18,40,1],[19,40,19,44,1],[19,45,19,49,1],[20,33,20,37,1],[20,38,20,42,1],[21,34,21,38,1],[21,39,21,43,1],[22,34,22,38,1],[22,39,22,43,1],[23,41,23,45,1],[23,46,23,50,1],[25,34,25,38,1],[25,39,25,43,1]]);
     </script>
   </body>
 </html>

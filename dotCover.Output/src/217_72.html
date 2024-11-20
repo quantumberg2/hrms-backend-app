@@ -2,123 +2,77 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\UserRoleImp.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\DeviceOpearationsController.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.Authorization;
 using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.BusinessLogics.Interface;
 using HRMS_Application.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace HRMS_Application.BusinessLogic.Implements
+namespace HRMS_Application.Controllers
 {
-    public class UserRoleImp : IUserRoles
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class DeviceOpearationsController : ControllerBase
     {
-        private readonly HRMSContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IJwtUtils _jwtUtils;
-        public List&lt;string&gt;? dToken;
-        private int? _decodedToken;
-        public UserRoleImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        private readonly ILogger&lt;DeviceOpearationsController&gt; _logger;
+        private readonly IDeviceOperations _deviceOperations;
+
+        public DeviceOpearationsController(ILogger&lt;DeviceOpearationsController&gt; logger,IDeviceOperations deviceOperations)
         {
-            _context = context;
-            _jwtUtils = jwtUtils;
-            _httpContextAccessor = httpContextAccessor;
-            
-        }
-        private void DecodeToken()
-        {
-            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
-            if (string.IsNullOrEmpty(token))
-            {
-                dToken = null;
-            }
-            else
-            {
-                var userId = _jwtUtils.ValidateJwtToken(token);
-                if (userId.HasValue)
-                {
-                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
-                    if (userDetails != null)
-                    {
-                        _decodedToken = userDetails.Id;
-                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
-                    }
-                    else
-                    {
-                        // Handle the case where the user is not found in the database
-                        dToken = null;
-                    }
-                }
-            }
-        }
-        public async Task&lt;bool&gt; deleteUserRole(int id)
-        {
-            DecodeToken();   
-            var result = (from row in _context.UserRolesJs
-                          where row.Id == id
-                          select row).SingleOrDefault();
-            _context.UserRolesJs.Remove(result);
-            await _context.SaveChangesAsync(_decodedToken);
-            return true;
+            _deviceOperations = deviceOperations;
+            _logger = logger;
         }
 
-        public List&lt;UserRolesJ&gt; GetAlluserRole()
+        [HttpGet]
+        public List&lt;DeviceTable&gt; GetAllInfo()
         {
-            var result = (from row in _context.UserRolesJs
-                          where row.IsActive == 1
-                          select row).ToList();
-            return result;
+            _logger.LogInformation(&quot;Get all login info method started&quot;);
+            var res = _deviceOperations.GetAllInfo();
+            return res;
         }
 
-        public UserRolesJ GetuserRoleById(int id)
+        [HttpGet(&quot;GetByEmpCredId&quot;)]
+        public List&lt;DeviceTable&gt; GetByEmpCreId(int empCredId)
         {
-            var result = (from row in _context.UserRolesJs
-                          where row.Id == id &amp;&amp; row.IsActive == 1
-                          select row).FirstOrDefault();
-           
-            return result;
+            _logger.LogInformation(&quot;Get info by Employee credential id&quot;);
+            var res = _deviceOperations.GetByEmpCreId(empCredId);
+            return res;
         }
 
-        public async Task&lt;string&gt; InsertuserRoles(UserRolesJ userRolesJ)
+        [HttpPost]
+        public string InsertInfo(DeviceTable deviceInfo)
         {
-            DecodeToken();
-            await _context.UserRolesJs.AddAsync(userRolesJ);
-            var result = await _context.SaveChangesAsync(_decodedToken);
-            if (result != 0)
-            {
-                return &quot;new Department inserted successfully&quot;;
-
-            }
-            else
-            {
-                return &quot;failed to insert new data&quot;;
-            }
+            _logger.LogInformation(&quot;Post login info method started&quot;);
+            var res = _deviceOperations.InsertInfo(deviceInfo);
+            return res;
         }
-        public bool SoftDelete(int id, short isActive)
-        {
-            var res = (from row in _context.UserRolesJs
-                       where row.Id == id
-                       select row).FirstOrDefault();
-            if (res != null)
-            {
-                res.IsActive = isActive;
-                _context.UserRolesJs.Update(res);
-                _context.SaveChanges();
-                return true;
 
-            }
-            return false;
+        [HttpPut]
+        public string UpdateInfo(DeviceTable deviceInfo)
+        {
+            _logger.LogInformation(&quot;Update login info method started&quot;);
+            var res = _deviceOperations.UpdateInfo(deviceInfo);
+            return res;
+        }
+
+        [HttpDelete]
+        public bool DeleteInfo(int id)
+        {
+            _logger.LogInformation(&quot;Delete login info method started&quot;);
+            var res = _deviceOperations.DeleteInfo(id);
+            return res;
         }
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[15,9,15,110,1],[16,9,16,10,1],[17,13,17,32,1],[18,13,18,34,1],[19,13,19,56,1],[21,9,21,10,1],[23,9,23,10,1],[24,13,24,126,1],[25,13,25,45,1],[26,13,26,14,1],[27,17,27,31,1],[28,13,28,14,1],[30,13,30,14,0],[31,17,31,64,0],[32,17,32,37,0],[33,17,33,18,0],[34,21,34,110,0],[35,21,35,45,0],[36,21,36,22,0],[37,25,37,56,0],[38,25,38,71,0],[38,71,38,84,0],[38,84,38,95,0],[39,21,39,22,0],[41,21,41,22,0],[43,25,43,39,0],[44,21,44,22,0],[45,17,45,18,0],[46,13,46,14,0],[47,9,47,10,1],[49,9,49,10,1],[50,13,50,27,1],[51,13,53,57,1],[54,13,54,49,0],[55,13,55,60,0],[56,13,56,25,0],[57,9,57,10,0],[60,9,60,10,1],[61,13,63,48,1],[64,13,64,27,0],[65,9,65,10,0],[68,9,68,10,1],[69,13,71,56,1],[73,13,73,27,0],[74,9,74,10,0],[77,9,77,10,1],[78,13,78,27,1],[79,13,79,61,1],[80,13,80,73,0],[81,13,81,29,0],[82,13,82,14,0],[83,17,83,63,0],[87,13,87,14,0],[88,17,88,52,0],[90,9,90,10,0],[92,9,92,10,1],[93,13,95,53,1],[96,13,96,29,0],[97,13,97,14,0],[98,17,98,41,0],[99,17,99,50,0],[100,17,100,40,0],[101,17,101,29,0],[104,13,104,26,0],[105,9,105,10,0]]);
+      highlightRanges([[15,9,15,123,1],[16,9,16,10,1],[17,13,17,50,1],[18,13,18,30,1],[19,9,19,10,1],[23,9,23,10,1],[24,13,24,73,1],[25,13,25,54,1],[26,13,26,24,1],[27,9,27,10,1],[31,9,31,10,1],[32,13,32,74,1],[33,13,33,66,1],[34,13,34,24,1],[35,9,35,10,1],[39,9,39,10,1],[40,13,40,70,1],[41,13,41,64,1],[42,13,42,24,1],[43,9,43,10,1],[47,9,47,10,1],[48,13,48,72,1],[49,13,49,64,1],[50,13,50,24,1],[51,9,51,10,1],[55,9,55,10,1],[56,13,56,72,1],[57,13,57,56,1],[58,13,58,24,1],[59,9,59,10,1]]);
     </script>
   </body>
 </html>

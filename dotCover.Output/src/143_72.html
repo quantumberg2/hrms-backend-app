@@ -2,24 +2,136 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\GlobalSearch\GlobalsearchEmp.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Program.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Application.GlobalSearch
-{
-    public class GlobalsearchEmp
-    {
-        public string FilterBy { get; set; } = &quot;&quot;;
+using Azure.Storage.Blobs;
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Implements;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.BusinessLogics.Implements;
+using HRMS_Application.Helpers;
+using HRMS_Application.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 
-    }
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+var useLocalDatabase = builder.Configuration.GetValue&lt;bool&gt;(&quot;DatabaseSettings:UseLocalDatabase&quot;);
+
+// Retrieve the connection string based on the flag
+var connectionString = useLocalDatabase
+    ? builder.Configuration.GetConnectionString(&quot;LocalDatabase&quot;)
+    : builder.Configuration.GetConnectionString(&quot;DeployedDatabase&quot;);
+
+// Ensure the connection string is not null or empty
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException(&quot;The connection string is missing or empty.&quot;);
 }
+
+// Add DbContext with the correct connection string
+builder.Services.AddDbContext&lt;HRMSContext&gt;(options =&gt;
+    options.UseSqlServer(connectionString));
+
+
+builder.Services.AddScoped&lt;IJwtUtils, JwtUtils&gt;();
+builder.Services.Configure&lt;AppSettings&gt;(builder.Configuration.GetSection(&quot;AppSettings&quot;));
+
+builder.Services.AddScoped&lt;IDepartment, DepartmentsImp&gt;();
+builder.Services.AddScoped&lt;IPosition, PositionImp&gt;();
+builder.Services.AddScoped&lt;IEmpCredential, EmpCredentialImp&gt;();
+builder.Services.AddScoped&lt;ICompanyDetails, CompanyDetailsImp&gt;();
+builder.Services.AddScoped&lt;IUserRoles,UserRoleImp&gt;();
+builder.Services.AddScoped&lt;IRoles, RolesImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeSalary, EmployeeSalaryImp&gt;();
+builder.Services.AddScoped&lt;IAccountDetails, AccountDetailsImp&gt;();
+builder.Services.AddScoped&lt;IAddressInfo,AddressImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeSalary, EmployeeSalaryImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeAttendance, EmployeeAttendanceImp&gt;();
+builder.Services.AddScoped&lt;IEmpLeaveAllocation, EmpLeaveAllocationImp&gt;();
+builder.Services.AddScoped&lt;IHoliday, HolidayImp&gt;();
+builder.Services.AddScoped&lt;ILeaveTypes, LeaveTypesImp&gt;();
+builder.Services.AddScoped&lt;IEmpDetails, EmpDetailsImp&gt;();
+builder.Services.AddScoped&lt;IUserService, UserService&gt;();
+builder.Services.AddScoped&lt;ICompanyRequestedform, CompanyRequestedformImp&gt;();
+builder.Services.AddScoped&lt;IEmailService, EmailService&gt;();
+builder.Services.AddScoped&lt;IEmailPassword, EmailPasswordImp&gt;();
+builder.Services.AddScoped&lt;IEmployeeImportService, EmployeeImportService&gt;();
+builder.Services.AddScoped&lt;IFileStorage, FileStorageImp&gt;();
+builder.Services.AddScoped&lt;IAzureOperations, AzureOperationsImp&gt;();
+builder.Services.AddScoped&lt;ILocalStorageOperations, LocalStorageOperationsImp&gt;();
+builder.Services.AddScoped&lt;IDeviceOperations, DeviceOperationsImp&gt;();
+builder.Services.AddScoped&lt;IEmpPersonalInfo , EmpPersonalInfoImp&gt;();
+builder.Services.AddScoped&lt;ILeaveTracking, LeaveTrackingImp&gt;();
+builder.Services.AddScoped&lt;IShiftRoster, ShiftRosterImp&gt;();
+builder.Services.AddScoped&lt;IShiftRostertype, ShiftRostertypeImp&gt;();
+builder.Services.AddScoped&lt;IOrgChartService, OrgChartServiceImp&gt;();
+builder.Services.AddScoped&lt;IAdminDashboard, AdmindashboardImp&gt;();
+builder.Services.AddScoped&lt;IUpdateEmployeeDetails, UpdateEmployeeDetailsImp&gt;();
+builder.Services.AddScoped&lt;INews, NewsImp&gt;();
+builder.Services.AddScoped&lt;INewsPreview, NewPreviewImp&gt;();
+builder.Services.AddScoped&lt;IRegularization, RegularizationImp&gt;();
+builder.Services.AddScoped&lt;IContactUs, ContactUsImp&gt;();
+builder.Services.AddScoped&lt;IAlertEmailOperations,AlertMailOperationsImp&gt;();
+builder.Services.AddScoped(_ =&gt;
+{
+    return new BlobServiceClient(builder.Configuration.GetConnectionString(&quot;AsureBlobStorage&quot;));
+
+});
+
+builder.Services.AddControllers()
+     .AddJsonOptions(options =&gt;
+     {
+         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+         options.JsonSerializerOptions.MaxDepth = 64; // Optional, based on needs
+
+     });
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddCors(options =&gt;
+{
+    options.AddPolicy(&quot;AllowAllOrigins&quot;,
+        builder =&gt;
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+//}
+
+app.UseHttpsRedirection();
+
+app.UseCors(&quot;AllowAllOrigins&quot;); // Use the CORS policy
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[5,34,5,38,1],[5,39,5,43,1],[5,48,5,50,1]]);
+      highlightRanges([[12,1,12,50,0],[16,1,16,98,0],[19,1,21,69,0],[24,1,24,44,0],[25,1,25,2,0],[26,5,26,87,0],[30,1,31,5,0],[31,5,31,43,0],[31,43,31,45,0],[34,1,34,51,0],[35,1,35,90,0],[37,1,37,59,0],[38,1,38,54,0],[39,1,39,64,0],[40,1,40,66,0],[41,1,41,54,0],[42,1,42,48,0],[43,1,43,66,0],[44,1,44,66,0],[45,1,45,55,0],[46,1,46,66,0],[47,1,47,74,0],[48,1,48,74,0],[49,1,49,52,0],[50,1,50,58,0],[51,1,51,58,0],[52,1,52,57,0],[53,1,53,78,0],[54,1,54,59,0],[55,1,55,64,0],[56,1,56,77,0],[57,1,57,60,0],[58,1,58,68,0],[59,1,59,82,0],[60,1,60,70,0],[61,1,61,69,0],[62,1,62,64,0],[63,1,63,60,0],[64,1,64,68,0],[65,1,65,68,0],[66,1,66,66,0],[67,1,67,80,0],[68,1,68,46,0],[69,1,69,59,0],[70,1,70,66,0],[71,1,71,56,0],[72,1,72,76,0],[73,1,74,1,0],[74,1,74,2,0],[74,2,75,5,0],[75,5,75,97,0],[75,97,77,1,0],[77,1,77,2,0],[77,2,77,4,0],[79,1,81,6,0],[81,6,81,7,0],[81,7,82,10,0],[82,10,82,120,0],[82,120,83,10,0],[83,10,83,54,0],[83,54,85,6,0],[85,6,85,7,0],[85,7,85,9,0],[87,1,87,44,0],[88,1,88,34,0],[89,1,89,43,0],[91,1,92,1,0],[92,1,92,2,0],[92,2,93,5,0],[93,5,95,9,0],[95,9,95,10,0],[95,10,96,13,0],[96,13,98,38,0],[98,38,99,9,0],[99,9,99,10,0],[99,10,99,12,0],[99,12,100,1,0],[100,1,100,2,0],[100,2,100,4,0],[103,1,103,27,0],[108,5,108,22,0],[109,5,109,24,0],[112,1,112,27,0],[114,1,114,32,0],[116,1,116,24,0],[118,1,118,22,0],[120,1,120,11,0]]);
     </script>
   </body>
 </html>

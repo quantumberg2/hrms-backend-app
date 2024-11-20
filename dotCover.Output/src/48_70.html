@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\LeaveSummaryDTOTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\EmployeeLeaveAllocationRequestTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
@@ -11,153 +11,87 @@
 namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using System.Collections.Generic;
     using HRMS_Application.DTO;
     using Xunit;
 
-    public class LeaveSummaryDTOTests
+    public class EmployeeLeaveAllocationRequestTests
     {
-        private readonly LeaveSummaryDTO _testClass;
+        private readonly EmployeeLeaveAllocationRequest _testClass;
 
-        public LeaveSummaryDTOTests()
+        public EmployeeLeaveAllocationRequestTests()
         {
-            _testClass = new LeaveSummaryDTO();
+            _testClass = new EmployeeLeaveAllocationRequest();
         }
 
         [Fact]
-        public void CanSetAndGetTotalAllocatedLeaves()
+        public void CanSetAndGetYear()
         {
             // Arrange
-            var testValue = 904605409;
+            var testValue = 1578670111;
 
             // Act
-            _testClass.TotalAllocatedLeaves = testValue;
+            _testClass.Year = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.TotalAllocatedLeaves);
+            Assert.Equal(testValue, _testClass.Year);
         }
 
         [Fact]
-        public void CanSetAndGetApprovedLeaves()
+        public void CanSetAndGetEmpCredentialId()
         {
             // Arrange
-            var testValue = 484458779;
+            var testValue = 1693482680;
 
             // Act
-            _testClass.ApprovedLeaves = testValue;
+            _testClass.EmpCredentialId = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.ApprovedLeaves);
+            Assert.Equal(testValue, _testClass.EmpCredentialId);
         }
 
         [Fact]
-        public void CanSetAndGetPendingLeaves()
+        public void CanSetAndGetNumberOfLeaves()
         {
             // Arrange
-            var testValue = 337802626;
+            var testValue = 1140625532;
 
             // Act
-            _testClass.PendingLeaves = testValue;
+            _testClass.NumberOfLeaves = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.PendingLeaves);
+            Assert.Equal(testValue, _testClass.NumberOfLeaves);
         }
 
         [Fact]
-        public void CanSetAndGetRejectedLeaves()
+        public void CanSetAndGetRemainingLeave()
         {
             // Arrange
-            var testValue = 893287016;
+            var testValue = 1801499393;
 
             // Act
-            _testClass.RejectedLeaves = testValue;
+            _testClass.RemainingLeave = testValue;
 
             // Assert
-            Assert.Equal(testValue, _testClass.RejectedLeaves);
+            Assert.Equal(testValue, _testClass.RemainingLeave);
         }
 
         [Fact]
-        public void CanSetAndGetRemainingLeaves()
-        {
-            // Arrange
-            var testValue = 485871167;
-
-            // Act
-            _testClass.RemainingLeaves = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.RemainingLeaves);
-        }
-
-        /*[Fact]
         public void CanSetAndGetLeaveType()
         {
             // Arrange
-            var testValue = &quot;TestValue962795293&quot;;
+            var testValue = 1516237006;
 
             // Act
             _testClass.LeaveType = testValue;
 
             // Assert
             Assert.Equal(testValue, _testClass.LeaveType);
-        }*/
-
-      /*  [Fact]
-        public void CanSetAndGetApprovedCount()
-        {
-            // Arrange
-            var testValue = 1324241054;
-
-            // Act
-            _testClass.ApprovedCount = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.ApprovedCount);
-        }
-*/
-       /* [Fact]
-        public void CanSetAndGetPendingCount()
-        {
-            // Arrange
-            var testValue = 247685496;
-
-            // Act
-            _testClass.PendingCount = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.PendingCount);
-        }
-*/
-      /*  [Fact]
-        public void CanSetAndGetRejectedCount()
-        {
-            // Arrange
-            var testValue = 741119222;
-
-            // Act
-            _testClass.RejectedCount = testValue;
-
-            // Assert
-            Assert.Equal(testValue, _testClass.RejectedCount);
-        }*/
-
-        [Fact]
-        public void CanSetAndGetLeaveSummaries()
-        {
-            // Arrange
-            var testValue = new List&lt;LeaveSummaryDTO&gt;();
-
-            // Act
-            _testClass.LeaveSummaries = testValue;
-
-            // Assert
-            Assert.Same(testValue, _testClass.LeaveSummaries);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[12,9,12,38,1],[13,9,13,10,1],[14,13,14,48,1],[15,9,15,10,1],[19,9,19,10,1],[21,13,21,39,1],[24,13,24,57,1],[27,13,27,70,1],[28,9,28,10,1],[32,9,32,10,1],[34,13,34,39,1],[37,13,37,51,1],[40,13,40,64,1],[41,9,41,10,1],[45,9,45,10,1],[47,13,47,39,1],[50,13,50,50,1],[53,13,53,63,1],[54,9,54,10,1],[58,9,58,10,1],[60,13,60,39,1],[63,13,63,51,1],[66,13,66,64,1],[67,9,67,10,1],[71,9,71,10,1],[73,13,73,39,1],[76,13,76,52,1],[79,13,79,65,1],[80,9,80,10,1],[136,9,136,10,1],[138,13,138,57,1],[141,13,141,51,1],[144,13,144,63,1],[145,9,145,10,1]]);
+      highlightRanges([[11,9,11,53,1],[12,9,12,10,1],[13,13,13,63,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,40,1],[23,13,23,41,1],[26,13,26,54,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,40,1],[36,13,36,52,1],[39,13,39,65,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,40,1],[49,13,49,51,1],[52,13,52,64,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,40,1],[62,13,62,51,1],[65,13,65,64,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,40,1],[75,13,75,46,1],[78,13,78,59,1],[79,9,79,10,1]]);
     </script>
   </body>
 </html>

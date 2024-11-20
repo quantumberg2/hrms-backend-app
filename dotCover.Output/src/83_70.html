@@ -2,60 +2,169 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\BusinessLogic\Implements\AzureOperationsImpTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\EmpSalaryControllerTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.BusinessLogic.Implements
+namespace HRMS_Unit_Test.Controllers
 {
     using System;
-    using Azure.Storage.Blobs;
-    using HRMS_Application.BusinessLogic.Implements;
-    using Microsoft.AspNetCore.Http;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using HRMS_Application.BusinessLogic.Interface;
+    using HRMS_Application.Controllers;
+    using HRMS_Application.Models;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
-    public class AzureOperationsImpTests
+    public class EmpSalaryControllerTests
     {
-        private readonly AzureOperationsImp _testClass;
-        private BlobServiceClient _blobServiceClient;
+        private readonly EmpSalaryController _testClass;
+        private readonly Mock&lt;IEmployeeSalary&gt; _empsalry;
+        private readonly Mock&lt;ILogger&lt;EmpSalaryController&gt;&gt; _logger;
 
-        public AzureOperationsImpTests()
+        public EmpSalaryControllerTests()
         {
-            _blobServiceClient = new BlobServiceClient(&quot;TestValue1962203869&quot;);
-            _testClass = new AzureOperationsImp(_blobServiceClient);
+            _empsalry = new Mock&lt;IEmployeeSalary&gt;();
+            _logger = new Mock&lt;ILogger&lt;EmpSalaryController&gt;&gt;();
+            _testClass = new EmpSalaryController(_empsalry.Object, _logger.Object);
         }
 
         [Fact]
         public void CanConstruct()
         {
             // Act
-            var instance = new AzureOperationsImp(_blobServiceClient);
+            var instance = new EmpSalaryController(_empsalry.Object, _logger.Object);
 
             // Assert
             Assert.NotNull(instance);
         }
 
         [Fact]
-        public void CanCallStoreFilesInAzure()
+        public void CanCallGetAllEmpsalary()
         {
             // Arrange
-            var fileObj = new Mock&lt;IFormFile&gt;().Object;
-            var containerName = &quot;TestValue1976160341&quot;;
+            _empsalry.Setup(mock =&gt; mock.GetAllEmpSalary()).Returns(new List&lt;EmpSalary&gt;());
 
             // Act
-            var result = _testClass.StoreFilesInAzure(fileObj, containerName);
+            var result = _testClass.GetAllEmpsalary();
 
             // Assert
+            _empsalry.Verify(mock =&gt; mock.GetAllEmpSalary());
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallInsertEmpsalary()
+        {
+            // Arrange
+            var empSalary = new EmpSalary
+            {
+                Id = 1464058878,
+                EmployeeCredentialId = 1820768029,
+                SalaryRange = &quot;TestValue770548162&quot;,
+                AnnualIncome = 682383529.08M,
+                Loan = 1806499950.75M,
+                Insurance = 209593667.25M,
+                IsActive = (short)11111,
+                EmployeeCredential = new EmployeeCredential
+                {
+                    Id = 402444804,
+                    UserName = &quot;TestValue1821503698&quot;,
+                    Password = &quot;TestValue1532765468&quot;,
+                    Status = (short)27702,
+                    RequestedCompanyId = 518924543,
+                    Email = &quot;TestValue1704141027&quot;,
+                    DefaultPassword = false,
+                    GenerateOtp = &quot;TestValue831663690&quot;,
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)7290,
+                    EmployeeLoginName = &quot;TestValue1345805269&quot;,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 227840373,
+                        Name = &quot;TestValue646711990&quot;,
+                        PhoneNumber = &quot;TestValue518084508&quot;,
+                        DomainName = &quot;TestValue86722438&quot;,
+                        Status = &quot;TestValue810371293&quot;,
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = &quot;TestValue177937108&quot;,
+                        IsActive = (short)1973,
+                        CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
+                        Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
+                        EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
+                        Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
+                        LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
+                        Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
+                    },
+                    AccountDetails = new Mock&lt;ICollection&lt;AccountDetail&gt;&gt;().Object,
+                    AddressInfos = new Mock&lt;ICollection&lt;AddressInfo&gt;&gt;().Object,
+                    Attendances = new Mock&lt;ICollection&lt;Attendance&gt;&gt;().Object,
+                    //DeviceTables = new Mock&lt;ICollection&lt;DeviceTable&gt;&gt;().Object,
+                    EmpPersonalInfos = new Mock&lt;ICollection&lt;EmpPersonalInfo&gt;&gt;().Object,
+                    EmpSalaries = new Mock&lt;ICollection&lt;EmpSalary&gt;&gt;().Object,
+                    EmployeeDetails = new Mock&lt;ICollection&lt;EmployeeDetail&gt;&gt;().Object,
+                    EmployeeLeaveAllocations = new Mock&lt;ICollection&lt;EmployeeLeaveAllocation&gt;&gt;().Object,
+                    LeaveTrackings = new Mock&lt;ICollection&lt;LeaveTracking&gt;&gt;().Object,
+                    UserRolesJs = new Mock&lt;ICollection&lt;UserRolesJ&gt;&gt;().Object
+                }
+            };
+
+            _empsalry.Setup(mock =&gt; mock.InsertEmpSalary(It.IsAny&lt;EmpSalary&gt;())).ReturnsAsync(&quot;TestValue2063120281&quot;);
+
+            // Act
+            var result = await _testClass.InsertEmpsalary(empSalary);
+
+            // Assert
+            _empsalry.Verify(mock =&gt; mock.InsertEmpSalary(It.IsAny&lt;EmpSalary&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public async Task CanCallDeleteEmpsalary()
+        {
+            // Arrange
+            var id = 1947112838;
+
+            _empsalry.Setup(mock =&gt; mock.deleteEmpsalary(It.IsAny&lt;int&gt;())).ReturnsAsync(true);
+
+            // Act
+            var result = await _testClass.DeleteEmpsalary(id);
+
+            // Assert
+            _empsalry.Verify(mock =&gt; mock.deleteEmpsalary(It.IsAny&lt;int&gt;()));
+
+            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        }
+
+        [Fact]
+        public void CanCallSoftDelete()
+        {
+            // Arrange
+            var id = 1716832033;
+            var isActive = (short)28788;
+
+            _empsalry.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(false);
+
+            // Act
+            var result = _testClass.SoftDelete(id, isActive);
+
+            // Assert
+            _empsalry.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
+
             throw new NotImplementedException(&quot;Create or modify test&quot;);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[15,9,15,41,1],[16,9,16,10,1],[17,13,17,79,1],[18,13,18,69,0],[19,9,19,10,0],[23,9,23,10,0],[25,13,25,71,0],[28,13,28,38,0],[29,9,29,10,0],[33,9,33,10,0],[35,13,35,56,0],[36,13,36,55,0],[39,13,39,79,0],[42,13,42,72,0]]);
+      highlightRanges([[19,9,19,42,1],[20,9,20,10,1],[21,13,21,53,1],[22,13,22,64,1],[23,13,23,84,1],[24,9,24,10,1],[28,9,28,10,1],[30,13,30,86,1],[33,13,33,38,1],[34,9,34,10,1],[38,9,38,10,1],[40,13,40,92,1],[43,13,43,55,1],[46,13,46,62,1],[48,13,48,72,1],[53,9,53,10,1],[55,13,106,15,1],[108,13,108,118,1],[111,13,111,70,1],[114,13,114,83,1],[116,13,116,72,1],[121,9,121,10,1],[123,13,123,33,1],[125,13,125,95,1],[128,13,128,63,1],[131,13,131,77,1],[133,13,133,72,1],[138,9,138,10,1],[140,13,140,33,1],[141,13,141,41,1],[143,13,143,105,1],[146,13,146,62,1],[149,13,149,91,1],[151,13,151,72,1]]);
     </script>
   </body>
 </html>

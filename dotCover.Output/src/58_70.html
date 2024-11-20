@@ -2,191 +2,148 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Controllers\CompanyDetailsControllerTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\DTO\LeaveTrackingDTOTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Controllers
+namespace HRMS_Unit_Test.DTO
 {
     using System;
-    using System.Collections.Generic;
-    using HRMS_Application.BusinessLogic.Interface;
-    using HRMS_Application.Controllers;
-    using HRMS_Application.Models;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using HRMS_Application.DTO;
     using Xunit;
 
-    public class CompanyDetailsControllerTests
+    public class LeaveTrackingDTOTests
     {
-        private readonly CompanyDetailsController _testClass;
-        private readonly Mock&lt;ICompanyDetails&gt; _companyDetails;
-        private readonly Mock&lt;ILogger&lt;CompanyDetailsController&gt;&gt; _logger;
+        private readonly LeaveTrackingDTO _testClass;
 
-        public CompanyDetailsControllerTests()
+        public LeaveTrackingDTOTests()
         {
-            _companyDetails = new Mock&lt;ICompanyDetails&gt;();
-            _logger = new Mock&lt;ILogger&lt;CompanyDetailsController&gt;&gt;();
-            _testClass = new CompanyDetailsController(_companyDetails.Object, _logger.Object);
+            _testClass = new LeaveTrackingDTO();
         }
 
         [Fact]
-        public void CanConstruct()
-        {
-            // Act
-            var instance = new CompanyDetailsController(_companyDetails.Object, _logger.Object);
-
-            // Assert
-            Assert.NotNull(instance);
-        }
-
-        [Fact]
-        public void CanCallGetAllCompanyDetails()
+        public void CanSetAndGetId()
         {
             // Arrange
-            _companyDetails.Setup(mock =&gt; mock.GetAllCompanyDetails()).Returns(new List&lt;CompanyDetail&gt;());
+            var testValue = 88098370;
 
             // Act
-            var result = _testClass.GetAllCompanyDetails();
+            _testClass.Id = testValue;
 
             // Assert
-            _companyDetails.Verify(mock =&gt; mock.GetAllCompanyDetails());
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Id);
         }
 
         [Fact]
-        public void CanCallGetCompanyDetail()
+        public void CanSetAndGetStartDate()
         {
             // Arrange
-            var id = 1219040562;
-
-            _companyDetails.Setup(mock =&gt; mock.GetCompanyDetailstById(It.IsAny&lt;int&gt;())).Returns(new List&lt;CompanyDetail&gt;());
+            var testValue = DateTime.UtcNow;
 
             // Act
-            var result = _testClass.GetCompanyDetail(id);
+            _testClass.StartDate = testValue;
 
             // Assert
-            _companyDetails.Verify(mock =&gt; mock.GetCompanyDetailstById(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.StartDate);
         }
 
         [Fact]
-        public void CanCallGetCompanyDetailstByName()
+        public void CanSetAndGetEndDate()
         {
             // Arrange
-            var companyName = &quot;TestValue1179821945&quot;;
-
-            _companyDetails.Setup(mock =&gt; mock.GetCompanyDetailstByName(It.IsAny&lt;string&gt;())).Returns(new List&lt;CompanyDetail&gt;());
+            var testValue = DateTime.UtcNow;
 
             // Act
-            var result = _testClass.GetCompanyDetailstByName(companyName);
+            _testClass.EndDate = testValue;
 
             // Assert
-            _companyDetails.Verify(mock =&gt; mock.GetCompanyDetailstByName(It.IsAny&lt;string&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.EndDate);
         }
 
         [Fact]
-        public void CanCallInsertcompanyDetails()
+        public void CanSetAndGetApplied()
         {
             // Arrange
-            var companyDetail = new CompanyDetail
-            {
-                Id = 309145918,
-                Name = &quot;TestValue1157471599&quot;,
-                Address = &quot;TestValue1851747088&quot;,
-                Country = &quot;TestValue724213383&quot;,
-                States = &quot;TestValue1870053642&quot;,
-                Industry = &quot;TestValue719330310&quot;,
-                TimeZone = &quot;TestValue858197823&quot;,
-                Currency = &quot;TestValue1544395847&quot;,
-                PfNo = &quot;TestValue1033413874&quot;,
-                TanNo = &quot;TestValue969944425&quot;,
-                EsiNo = &quot;TestValue1504819985&quot;,
-                PanNo = &quot;TestValue777929445&quot;,
-                GstNo = &quot;TestValue592965103&quot;,
-                RegistrationNo = &quot;TestValue1594314947&quot;,
-                Twitter = &quot;TestValue274469434&quot;,
-                Facebook = &quot;TestValue423335407&quot;,
-                LinkedIn = &quot;TestValue192678419&quot;,
-                CompanyLogo = &quot;TestValue1494910042&quot;,
-                RequestedCompanyId = 1469859788,
-                IsActive = (short)21918,
-                RequestedCompany = new RequestedCompanyForm
-                {
-                    Id = 2127226664,
-                    Name = &quot;TestValue1822489063&quot;,
-                    PhoneNumber = &quot;TestValue764427471&quot;,
-                    DomainName = &quot;TestValue762041962&quot;,
-                    Status = &quot;TestValue1269652813&quot;,
-                    InsertedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
-                    Email = &quot;TestValue1421668471&quot;,
-                    IsActive = (short)18744,
-                    CompanyDetails = new Mock&lt;ICollection&lt;CompanyDetail&gt;&gt;().Object,
-                    Departments = new Mock&lt;ICollection&lt;Department&gt;&gt;().Object,
-                    EmployeeCredentials = new Mock&lt;ICollection&lt;EmployeeCredential&gt;&gt;().Object,
-                    Holidays = new Mock&lt;ICollection&lt;Holiday&gt;&gt;().Object,
-                    LeaveTypes = new Mock&lt;ICollection&lt;LeaveType&gt;&gt;().Object,
-                    Positions = new Mock&lt;ICollection&lt;Position&gt;&gt;().Object
-                }
-            };
-
-            _companyDetails.Setup(mock =&gt; mock.InsertCompanyDetails(It.IsAny&lt;CompanyDetail&gt;())).Returns(1093375089);
+            var testValue = DateTime.UtcNow;
 
             // Act
-            var result = _testClass.InsertcompanyDetails(companyDetail);
+            _testClass.Applied = testValue;
 
             // Assert
-            _companyDetails.Verify(mock =&gt; mock.InsertCompanyDetails(It.IsAny&lt;CompanyDetail&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Applied);
         }
 
         [Fact]
-        public void CanCallDeletecompanyDetails()
+        public void CanSetAndGetFiles()
         {
             // Arrange
-            var id = 634467298;
-
-            _companyDetails.Setup(mock =&gt; mock.deleteCompanyDetails(It.IsAny&lt;int&gt;())).Returns(true);
+            var testValue = &quot;TestValue2046749989&quot;;
 
             // Act
-            var result = _testClass.DeletecompanyDetails(id);
+            _testClass.Files = testValue;
 
             // Assert
-            _companyDetails.Verify(mock =&gt; mock.deleteCompanyDetails(It.IsAny&lt;int&gt;()));
-
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+            Assert.Equal(testValue, _testClass.Files);
         }
 
         [Fact]
-        public void CanCallSoftDelete()
+        public void CanSetAndGetLeaveTypeId()
         {
             // Arrange
-            var id = 1969336633;
-            var isActive = (short)23769;
-
-            _companyDetails.Setup(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;())).Returns(true);
+            var testValue = 1255138132;
 
             // Act
-            var result = _testClass.SoftDelete(id, isActive);
+            _testClass.LeaveTypeId = testValue;
 
             // Assert
-            _companyDetails.Verify(mock =&gt; mock.SoftDelete(It.IsAny&lt;int&gt;(), It.IsAny&lt;short&gt;()));
+            Assert.Equal(testValue, _testClass.LeaveTypeId);
+        }
 
-            throw new NotImplementedException(&quot;Create or modify test&quot;);
+        [Fact]
+        public void CanSetAndGetSession()
+        {
+            // Arrange
+            var testValue = &quot;TestValue475977654&quot;;
+
+            // Act
+            _testClass.Session = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Session);
+        }
+
+        [Fact]
+        public void CanSetAndGetContact()
+        {
+            // Arrange
+            var testValue = &quot;TestValue27553552&quot;;
+
+            // Act
+            _testClass.Contact = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.Contact);
+        }
+
+        [Fact]
+        public void CanSetAndGetReasonForLeave()
+        {
+            // Arrange
+            var testValue = &quot;TestValue816098063&quot;;
+
+            // Act
+            _testClass.ReasonForLeave = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.ReasonForLeave);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[18,9,18,47,1],[19,9,19,10,1],[20,13,20,59,1],[21,13,21,69,1],[22,13,22,95,1],[23,9,23,10,1],[27,9,27,10,1],[29,13,29,97,1],[32,13,32,38,1],[33,9,33,10,1],[37,9,37,10,1],[39,13,39,107,1],[42,13,42,60,1],[45,13,45,73,1],[47,13,47,72,1],[52,9,52,10,1],[54,13,54,33,1],[56,13,56,124,1],[59,13,59,58,1],[62,13,62,90,1],[64,13,64,72,1],[69,9,69,10,1],[71,13,71,53,1],[73,13,73,129,1],[76,13,76,75,1],[79,13,79,95,1],[81,13,81,72,1],[86,9,86,10,1],[88,13,128,15,1],[130,13,130,117,1],[133,13,133,73,1],[136,13,136,98,1],[138,13,138,72,1],[143,9,143,10,1],[145,13,145,32,1],[147,13,147,101,1],[150,13,150,62,1],[153,13,153,88,1],[155,13,155,72,1],[160,9,160,10,1],[162,13,162,33,1],[163,13,163,41,1],[165,13,165,110,1],[168,13,168,62,1],[171,13,171,97,1],[173,13,173,72,1]]);
+      highlightRanges([[11,9,11,39,1],[12,9,12,10,1],[13,13,13,49,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,38,1],[23,13,23,39,1],[26,13,26,52,1],[27,9,27,10,1],[31,9,31,10,1],[33,13,33,45,1],[36,13,36,46,1],[39,13,39,59,1],[40,9,40,10,1],[44,9,44,10,1],[46,13,46,45,1],[49,13,49,44,1],[52,13,52,57,1],[53,9,53,10,1],[57,9,57,10,1],[59,13,59,45,1],[62,13,62,44,1],[65,13,65,57,1],[66,9,66,10,1],[70,9,70,10,1],[72,13,72,51,1],[75,13,75,42,1],[78,13,78,55,1],[79,9,79,10,1],[83,9,83,10,1],[85,13,85,40,1],[88,13,88,48,1],[91,13,91,61,1],[92,9,92,10,1],[96,9,96,10,1],[98,13,98,50,1],[101,13,101,44,1],[104,13,104,57,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,49,1],[114,13,114,44,1],[117,13,117,57,1],[118,9,118,10,1],[122,9,122,10,1],[124,13,124,50,1],[127,13,127,51,1],[130,13,130,64,1],[131,9,131,10,1]]);
     </script>
   </body>
 </html>

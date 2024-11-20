@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\HolidayImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.BusinessLogics.Interface;
+using HRMS_Application.Models;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class HolidayImp : IHoliday
+    {
+        private readonly HRMSContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtUtils _jwtUtils;
+        private List&lt;string&gt;? dToken;
+        private int? _decodedToken;
+        public HolidayImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        {
+            _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _jwtUtils = jwtUtils;
+        }
+        private void DecodeToken()
+        {
+            var token = _httpContextAccessor.HttpContext?.Request.Headers[&quot;Authorization&quot;].ToString().Replace(&quot;Bearer &quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(token))
+            {
+                dToken = null;
+            }
+            else
+            {
+                var userId = _jwtUtils.ValidateJwtToken(token);
+                if (userId.HasValue)
+                {
+                    var userDetails = _context.EmployeeCredentials.FirstOrDefault(e =&gt; e.Id == userId.Value);
+                    if (userDetails != null)
+                    {
+                        _decodedToken = userDetails.Id;
+                        dToken = userDetails.UserRolesJs.Select(ur =&gt; ur.Roles.Name).ToList(); // Assuming you want role names
+                    }
+                    else
+                    {
+                        // Handle the case where the user is not found in the database
+                        dToken = null;
+                    }
+                }
+            }
+        }
+        public async Task&lt;bool&gt; deleteHoliday(int id)
+        {
+            DecodeToken();
+            var result = (from row in _context.Holidays
+                          where row.Id == id
+                          select row).SingleOrDefault();
+            _context.Holidays.Remove(result);
+            await _context.SaveChangesAsync(_decodedToken);
+            return true;
+        }
+
+
+
+        public List&lt;Holiday&gt; GetHoliday(int companyId)
+        {
+            var result = (from row in _context.Holidays
+                          where row.IsActive == 1 &amp;&amp; row.CompanyId == companyId 
+                          select row).ToList();
+            return result;
+        }
+
+        public Holiday GetHolidayById(int id)
+        {
+            var result = (from row in _context.Holidays
+                          where row.Id == id &amp;&amp; row.IsActive == 1
+                          select row).FirstOrDefault();
+            return result;
+        }
+
+        public async Task&lt;string&gt; InsertHoliday(Holiday holiday)
+        {
+            DecodeToken();
+            _context.Holidays.Add(holiday);
+            var result = await _context.SaveChangesAsync(_decodedToken);
+            if (result != 0)
+            {
+                return &quot;new Holidays inserted successfully&quot;;
+
+            }
+            else
+            {
+                return &quot;failed to insert new data&quot;;
+            }
+        }
+        public bool SoftDelete(int id, short isActive)
+        {
+            var res = (from row in _context.Holidays
+                       where row.Id == id
+                       select row).FirstOrDefault();
+            if (res != null)
+            {
+                res.IsActive = isActive;
+                _context.Holidays.Update(res);
+                _context.SaveChanges();
+                return true;
+
+            }
+            return false;
+        }
+
+        public Holiday UpdateHolidayType(int id, string? name, DateOnly? date, string? occasion, int? requestedCompanyId)
+        {
+       
+            var holiday = _context.Holidays.SingleOrDefault(row =&gt; row.Id == id);
+
+            if (holiday == null)
+            {
+                return null; 
+            }
+
+           
+            holiday.Type = name ?? holiday.Type; 
+            holiday.CompanyId = requestedCompanyId ?? holiday.CompanyId; 
+            holiday.Date = date?.ToDateTime(TimeOnly.MinValue) ?? holiday.Date; 
+            holiday.Occasion = occasion ?? holiday.Occasion; 
+
+            _context.SaveChanges();
+
+            return holiday;
+        }
+
+
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,109,1],[16,9,16,10,1],[17,13,17,32,1],[18,13,18,56,1],[19,13,19,34,1],[20,9,20,10,1],[22,9,22,10,1],[23,13,23,126,1],[24,13,24,45,1],[25,13,25,14,1],[26,17,26,31,1],[27,13,27,14,1],[29,13,29,14,0],[30,17,30,64,0],[31,17,31,37,0],[32,17,32,18,0],[33,21,33,110,0],[34,21,34,45,0],[35,21,35,22,0],[36,25,36,56,0],[37,25,37,71,0],[37,71,37,84,0],[37,84,37,95,0],[38,21,38,22,0],[40,21,40,22,0],[42,25,42,39,0],[43,21,43,22,0],[44,17,44,18,0],[45,13,45,14,0],[46,9,46,10,1],[48,9,48,10,1],[49,13,49,27,1],[50,13,52,57,1],[53,13,53,46,0],[54,13,54,60,0],[55,13,55,25,0],[56,9,56,10,0],[61,9,61,10,1],[62,13,64,48,1],[65,13,65,27,0],[66,9,66,10,0],[69,9,69,10,1],[70,13,72,56,1],[73,13,73,27,0],[74,9,74,10,0],[77,9,77,10,1],[78,13,78,27,1],[79,13,79,44,1],[80,13,80,73,0],[81,13,81,29,0],[82,13,82,14,0],[83,17,83,61,0],[87,13,87,14,0],[88,17,88,52,0],[90,9,90,10,0],[92,9,92,10,1],[93,13,95,53,1],[96,13,96,29,0],[97,13,97,14,0],[98,17,98,41,0],[99,17,99,47,0],[100,17,100,40,0],[101,17,101,29,0],[104,13,104,26,0],[105,9,105,10,0],[108,9,108,10,1],[110,13,110,82,1],[112,13,112,33,0],[113,13,113,14,0],[114,17,114,29,0],[118,13,118,49,0],[119,13,119,73,0],[120,13,120,80,0],[121,13,121,61,0],[123,13,123,36,0],[125,13,125,28,0],[126,9,126,10,0]]);
+    </script>
+  </body>
+</html>

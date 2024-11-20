@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\AdmindashboardImp.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
+using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
+using System.Globalization;
+using HRMS_Application.Middleware.Exceptions;
+
+namespace HRMS_Application.BusinessLogic.Implements
+{
+    public class AdmindashboardImp : IAdminDashboard
+    {
+        private readonly HRMSContext _hrmsContext;
+
+        public AdmindashboardImp(HRMSContext hrmsContext)
+        {
+            _hrmsContext = hrmsContext ?? throw new ArgumentNullException(nameof(hrmsContext));
+        }
+
+        public async Task&lt;AdminDashboardDTO&gt; GetAdminDashboardAsync(int companyId)
+        {
+            try
+            {
+                var currentDate = DateTime.Now;
+                var startOfYear = new DateTime(currentDate.Year - 1, 1, 1); 
+                var endOfYear = new DateTime(currentDate.Year + 1, 12, 31); 
+
+                var totalEmployees = await _hrmsContext.EmployeeDetails
+                    .CountAsync(e =&gt; e.IsActive == 1 &amp;&amp; e.RequestCompanyId == companyId);
+
+                if (totalEmployees == 0)
+                {
+                    throw new NotFoundException(&quot;No employees found for the company.&quot;);
+                }
+
+                var newEmployees = await _hrmsContext.EmpPersonalInfos
+                    .Join(_hrmsContext.EmployeeCredentials,
+                        empInfo =&gt; empInfo.EmployeeCredentialId,
+                        cred =&gt; cred.Id,
+                        (empInfo, cred) =&gt; new { empInfo, cred }) 
+                    .Where(e =&gt; e.cred.RequestedCompanyId == companyId &amp;&amp;
+                                e.empInfo.DateOfJoining.HasValue &amp;&amp;
+                                e.empInfo.DateOfJoining.Value &gt;= startOfYear &amp;&amp;
+                                e.empInfo.DateOfJoining.Value &lt;= endOfYear)
+                    .CountAsync();
+
+                var employeesJoinedMonthWise = await _hrmsContext.EmpPersonalInfos
+                    .Join(_hrmsContext.EmployeeCredentials,
+                        empInfo =&gt; empInfo.EmployeeCredentialId,
+                        cred =&gt; cred.Id,
+                        (empInfo, cred) =&gt; new { empInfo, cred })
+                    .Where(e =&gt; e.cred.RequestedCompanyId == companyId &amp;&amp;
+                                e.empInfo.DateOfJoining.HasValue &amp;&amp;
+                                e.empInfo.DateOfJoining.Value &gt;= startOfYear &amp;&amp;
+                                e.empInfo.DateOfJoining.Value &lt;= endOfYear)
+                    .GroupBy(e =&gt; new { e.empInfo.DateOfJoining.Value.Year, e.empInfo.DateOfJoining.Value.Month })
+                    .Select(g =&gt; new MonthlyCountDTO
+                    {
+                        Year = g.Key.Year,
+                        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(g.Key.Month),
+                        JoinedCount = g.Count()
+                    })
+                    .ToListAsync();
+
+                var employeesResignedMonthWise = await _hrmsContext.EmployeeCredentials
+                    .Where(e =&gt; e.IsActive == 0 &amp;&amp; e.ResignedDate.HasValue &amp;&amp; e.ResignedDate.Value &gt;= startOfYear &amp;&amp; e.ResignedDate.Value &lt;= endOfYear &amp;&amp; e.RequestedCompanyId == companyId)
+                    .GroupBy(e =&gt; new { e.ResignedDate.Value.Year, e.ResignedDate.Value.Month })
+                    .Select(g =&gt; new MonthlyCountDTO
+                    {
+                        Year = g.Key.Year,
+                        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(g.Key.Month),
+                        ResignedCount = g.Count()
+                    })
+                    .ToListAsync();
+
+                var experienceCounts = await (from e in _hrmsContext.EmployeeDetails
+                                              join p in _hrmsContext.EmpPersonalInfos
+                                              on e.EmployeeCredentialId equals p.EmployeeCredentialId
+                                              where e.IsActive == 1 &amp;&amp; e.RequestCompanyId == companyId &amp;&amp; !string.IsNullOrEmpty(e.NumberOfYearsExperience)
+                                              select new
+                                              {
+                                                  EmployeeDetail = e,
+                                                  CurrentCompanyJoiningDate = p.DateOfJoining
+                                              })
+                               .ToListAsync();
+
+                var experienceGroups = experienceCounts.Select(e =&gt;
+                {
+                    double previousExperience = double.TryParse(e.EmployeeDetail.NumberOfYearsExperience, out double years) ? years : 0;
+
+                    DateTime joiningDate = e.CurrentCompanyJoiningDate ?? currentDate;
+
+                    double currentExperience = (currentDate - joiningDate).TotalDays / 365;
+
+                    double totalExperience = previousExperience + currentExperience;
+
+                    return Math.Round(totalExperience, 1);
+                })
+                .GroupBy(experience =&gt; experience)
+                .Select(g =&gt; new ExperienceCountDTO
+                {
+                    Years = g.Key.ToString(),
+                    Count = g.Count()
+                })
+                .ToList();
+
+                var dashboardData = new AdminDashboardDTO
+                {
+                    TotalEmployees = totalEmployees,
+                    NewEmployees = newEmployees,
+                    EmployeesJoinedMonthWise = employeesJoinedMonthWise,
+                    EmployeesResignedMonthWise = employeesResignedMonthWise,
+                    ExperienceCounts = experienceGroups
+                };
+
+                return dashboardData;
+            }
+            catch (DbUpdateException dbEx) 
+            {
+                throw new DatabaseOperationException($&quot;Database operation failed: {dbEx.Message}&quot;);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException($&quot;An error occurred while generating the dashboard: {ex.Message}&quot;);
+            }
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[15,9,15,58,1],[16,9,16,10,1],[17,13,17,96,1],[18,9,18,10,1],[21,9,21,10,1],[23,13,23,14,1],[24,17,24,48,1],[25,17,25,76,1],[26,17,26,76,1],[28,17,29,90,1],[31,17,31,41,0],[32,17,32,18,0],[33,21,33,88,0],[36,17,45,35,0],[47,17,63,36,0],[65,17,74,36,0],[76,17,85,47,0],[87,17,88,17,0],[88,17,88,18,0],[88,18,89,21,0],[89,21,89,137,0],[89,137,91,21,0],[91,21,91,87,0],[91,87,93,21,0],[93,21,93,92,0],[93,92,95,21,0],[95,21,95,85,0],[95,85,97,21,0],[97,21,97,59,0],[97,59,98,17,0],[98,17,98,18,0],[98,18,99,40,0],[99,40,99,50,0],[99,50,100,30,0],[100,30,104,18,0],[104,18,105,27,0],[107,17,114,19,0],[116,17,116,38,0],[118,13,118,43,0],[119,13,119,14,0],[120,17,120,100,0],[122,13,122,33,1],[123,13,123,14,1],[124,17,124,114,1],[126,9,126,10,0]]);
+    </script>
+  </body>
+</html>

@@ -2,44 +2,220 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Enums\AppSettingsTests.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Unit Test\Middleware\Exceptions\NotFoundExceptionTests.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-namespace HRMS_Unit_Test.Helpers
+namespace HRMS_Unit_Test.Middleware.Exceptions
 {
     using System;
-    using HRMS_Application.Helpers;
+    using HRMS_Application.Middleware.Exceptions;
     using Xunit;
 
-    public class AppSettingsTests
-    {
-        private readonly AppSettings _testClass;
 
-        public AppSettingsTests()
+    public class NotFoundExceptionTests
+    {
+        private readonly NotFoundException _testClass;
+        private string _message;
+
+        public NotFoundExceptionTests()
         {
-            _testClass = new AppSettings();
+            _message = &quot;TestValue771701337&quot;;
+            _testClass = new NotFoundException(_message);
         }
 
         [Fact]
-        public void CanSetAndGetSecret()
+        public void CanConstruct()
         {
-            // Arrange
-            var testValue = &quot;TestValue958653664&quot;;
-
             // Act
-            _testClass.Secret = testValue;
+            var instance = new NotFoundException(_message);
 
             // Assert
-            Assert.Equal(testValue, _testClass.Secret);
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class BadRequestExceptionTests
+    {
+        private readonly BadRequestException _testClass;
+        private string _message;
+
+        public BadRequestExceptionTests()
+        {
+            _message = &quot;TestValue1203128805&quot;;
+            _testClass = new BadRequestException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new BadRequestException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class ForbiddenExceptionTests
+    {
+        private readonly ForbiddenException _testClass;
+        private string _message;
+
+        public ForbiddenExceptionTests()
+        {
+            _message = &quot;TestValue1849670846&quot;;
+            _testClass = new ForbiddenException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new ForbiddenException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class MethodNotAllowedExceptionTests
+    {
+        private readonly MethodNotAllowedException _testClass;
+        private string _message;
+
+        public MethodNotAllowedExceptionTests()
+        {
+            _message = &quot;TestValue1798794892&quot;;
+            _testClass = new MethodNotAllowedException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new MethodNotAllowedException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class NotAcceptableExceptionTests
+    {
+        private readonly NotAcceptableException _testClass;
+        private string _message;
+
+        public NotAcceptableExceptionTests()
+        {
+            _message = &quot;TestValue500176205&quot;;
+            _testClass = new NotAcceptableException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new NotAcceptableException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class UnauthorizedExceptionTests
+    {
+        private readonly UnauthorizedException _testClass;
+        private string _message;
+
+        public UnauthorizedExceptionTests()
+        {
+            _message = &quot;TestValue1662278324&quot;;
+            _testClass = new UnauthorizedException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new UnauthorizedException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class NotImplementedExceptionTests
+    {
+        private readonly System.NotImplementedException _testClass;
+        private string _message;
+
+        public NotImplementedExceptionTests()
+        {
+            _message = &quot;TestValue1671936441&quot;;
+            _testClass = new System.NotImplementedException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new System.NotImplementedException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class NotFoundResultExceptionTests
+    {
+        private readonly NotFoundResultException _testClass;
+        private string _message;
+
+        public NotFoundResultExceptionTests()
+        {
+            _message = &quot;TestValue1083768300&quot;;
+            _testClass = new NotFoundResultException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new NotFoundResultException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
+        }
+    }
+
+    public class DatabaseOperationExceptionTests
+    {
+        private readonly DatabaseOperationException _testClass;
+        private string _message;
+
+        public DatabaseOperationExceptionTests()
+        {
+            _message = &quot;TestValue1714012612&quot;;
+            _testClass = new DatabaseOperationException(_message);
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            // Act
+            var instance = new DatabaseOperationException(_message);
+
+            // Assert
+            Assert.NotNull(instance);
         }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,34,1],[12,9,12,10,1],[13,13,13,44,1],[14,9,14,10,1],[18,9,18,10,1],[20,13,20,50,1],[23,13,23,43,1],[26,13,26,56,1],[27,9,27,10,1]]);
+      highlightRanges([[13,9,13,40,1],[14,9,14,10,1],[15,13,15,45,1],[16,13,16,58,1],[17,9,17,10,1],[21,9,21,10,1],[23,13,23,60,1],[26,13,26,38,1],[27,9,27,10,1],[35,9,35,42,1],[36,9,36,10,1],[37,13,37,46,1],[38,13,38,60,1],[39,9,39,10,1],[43,9,43,10,1],[45,13,45,62,1],[48,13,48,38,1],[49,9,49,10,1],[57,9,57,41,1],[58,9,58,10,1],[59,13,59,46,1],[60,13,60,59,1],[61,9,61,10,1],[65,9,65,10,1],[67,13,67,61,1],[70,13,70,38,1],[71,9,71,10,1],[79,9,79,48,1],[80,9,80,10,1],[81,13,81,46,1],[82,13,82,66,1],[83,9,83,10,1],[87,9,87,10,1],[89,13,89,68,1],[92,13,92,38,1],[93,9,93,10,1],[101,9,101,45,1],[102,9,102,10,1],[103,13,103,45,1],[104,13,104,63,1],[105,9,105,10,1],[109,9,109,10,1],[111,13,111,65,1],[114,13,114,38,1],[115,9,115,10,1],[123,9,123,44,1],[124,9,124,10,1],[125,13,125,46,1],[126,13,126,62,1],[127,9,127,10,1],[131,9,131,10,1],[133,13,133,64,1],[136,13,136,38,1],[137,9,137,10,1],[145,9,145,46,1],[146,9,146,10,1],[147,13,147,46,1],[148,13,148,71,1],[149,9,149,10,1],[153,9,153,10,1],[155,13,155,73,1],[158,13,158,38,1],[159,9,159,10,1],[167,9,167,46,1],[168,9,168,10,1],[169,13,169,46,1],[170,13,170,64,1],[171,9,171,10,1],[175,9,175,10,1],[177,13,177,66,1],[180,13,180,38,1],[181,9,181,10,1],[189,9,189,49,1],[190,9,190,10,1],[191,13,191,46,1],[192,13,192,67,1],[193,9,193,10,1],[197,9,197,10,1],[199,13,199,69,1],[202,13,202,38,1],[203,9,203,10,1]]);
     </script>
   </body>
 </html>

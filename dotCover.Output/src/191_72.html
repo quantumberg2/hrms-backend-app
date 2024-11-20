@@ -2,228 +2,35 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\BusinessLogic\Implements\UserService.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\DTO\EmployeeShiftAndLeaveStatsDto.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
 
-using HRMS_Application.Models.Users;
-using HRMS_Application.Models;
-using HRMS_Application.Authorization;
-using HRMS_Application.Helpers;
-using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
-using HRMS_Application.DTOs;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using System.Net;
-using Microsoft.AspNetCore.Http;
-using HRMS_Application.DTO;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
-
-namespace HRMS_Application.BusinessLogics.Implements
+namespace HRMS_Application.DTO
 {
-    public interface IUserService
+    public class EmployeeShiftAndLeaveStatsDto
     {
-        AuthenticateResponse Authenticate(AuthenticateRequest model);
-        IEnumerable&lt;EmployeeCredential&gt; GetAll();
-        EmployeeCredential GetById(int id);
-        AuthenticateResponse SelectCompany(SelectCompanyRequest model, int Userid);
-
-    }
-    public class UserService : IUserService
-    {
-        private readonly HRMSContext _hrmsContext;
-        private readonly IJwtUtils _jwtUtils;
-        private readonly AppSettings _appSettings;
-
-        public UserService(HRMSContext hrmsContext, IJwtUtils jwtUtils, IOptions&lt;AppSettings&gt; appSettings)
-        {
-            _hrmsContext = hrmsContext;
-            _jwtUtils = jwtUtils;
-            _appSettings = appSettings.Value;
-        }
-
-        /* public AuthenticateResponse Authenticate(AuthenticateRequest model)
-         {
-             //var user = _CollegeAppContext.Users.SingleOrDefault(x =&gt; x.Username == model.Username);
-
-             //var user = (from u in _CollegeAppContext.UserTables
-             //            join ur in _CollegeAppContext.UserRoleJs on u.Id equals ur.UserId
-             //            join r in _CollegeAppContext.Roles on ur.RoleId equals r.Id
-             //            where u.UserName == model.Username &amp;&amp; u.Password == model.Password
-             //            select new { User = u, UserRole = ur, RoleName = r.RoleName })
-             //                  .SingleOrDefault();
-
-             var objUser = (from row in _hrmsContext.EmployeeCredentials
-                            where row.UserName == model.Username &amp;&amp; row.Password == model.Password
-
-                            select new
-                            {
-
-                                row.UserName,
-                                row.Id,
-                                row.Email,
-                                row.RequestedCompanyId,
-
-                            }).FirstOrDefault();
-             if (objUser == null)
-             {
-                 // Return forbidden error
-                 //return new StatusCode(StatusCodes.Status401Unauthorized);
-                 return null;
-
-             }
-             else
-             {
-
-                 var roles = (from rowUserRolesJ in _hrmsContext.UserRolesJs
-                              join rowRoles in _hrmsContext.Roles on rowUserRolesJ.RolesId equals rowRoles.Id
-                              where rowUserRolesJ.EmployeeCredentialId == objUser.Id
-                              select rowRoles.Name).ToList();
-
-                 var user = new UserDto
-                 {
-                     *//*Name = objUser.Name,*//*
-                     UserName = objUser.UserName,
-                     UserId = objUser.Id,
-                     Email = objUser.Email,
-                     RequestedCompanyId = objUser.RequestedCompanyId,
-                     Roles = roles
-                     // Roles = new List&lt;string&gt; { &quot;Admin&quot;, &quot;Faculty&quot; }
-                 };
-                 // authentication successful so generate jwt token
-                 var jwtToken = _jwtUtils.GenerateJwtToken(user);
-                 return new AuthenticateResponse(user, jwtToken, user.Roles);
-             }
-
-         }*/
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
-        {
-            var userCompanies = (from empCred in _hrmsContext.EmployeeCredentials
-                                 join reqComp in _hrmsContext.RequestedCompanyForms
-                                 on empCred.RequestedCompanyId equals reqComp.Id
-                                 where empCred.Email == model.Username
-                                       &amp;&amp; empCred.Password == model.Password
-                                 select new
-                                 {
-                                     empCred.UserName,
-                                     empCred.Id,
-                                     empCred.Email,
-                                     empCred.RequestedCompanyId,
-                                 }).ToList();
-
-            if (!userCompanies.Any())
-            {
-                // Return forbidden error
-                return null;
-            }
-            else if (userCompanies.Count &gt; 1)
-            {
-                var objUser = userCompanies.First();
-
-                // Get roles and token for the first user
-                var roles = (from rowUserRolesJ in _hrmsContext.UserRolesJs
-                             join rowRoles in _hrmsContext.Roles on rowUserRolesJ.RolesId equals rowRoles.Id
-                             where rowUserRolesJ.EmployeeCredentialId == objUser.Id
-                             select rowRoles.Name).ToList();
-
-                var user = new UserDto
-                {
-                    UserName = objUser.UserName,
-                    UserId = objUser.Id,
-                    Email = objUser.Email,
-                    RequestedCompanyId = objUser.RequestedCompanyId,
-                    Roles = roles,
-                };
-                
-
-                // authentication successful so generate jwt token
-                var jwtToken = _jwtUtils.GenerateJwtToken(user);
-
-                // Return the response with both roles and company IDs
-                var companyIds = userCompanies.Select(u =&gt; u.RequestedCompanyId).Where(id =&gt; id.HasValue).Select(id =&gt; id.Value).ToList();
-                return new AuthenticateResponse(user, jwtToken, roles, companyIds);
-            }
-            else
-            {
-                var objUser = userCompanies.First();
-
-                var roles = (from rowUserRolesJ in _hrmsContext.UserRolesJs
-                             join rowRoles in _hrmsContext.Roles on rowUserRolesJ.RolesId equals rowRoles.Id
-                             where rowUserRolesJ.EmployeeCredentialId == objUser.Id
-                             select rowRoles.Name).ToList();
-
-                var user = new UserDto
-                {
-                    UserName = objUser.UserName,
-                    UserId = objUser.Id,
-                    Email = objUser.Email,
-                    RequestedCompanyId = objUser.RequestedCompanyId,
-                    Roles = roles
-                };
-
-                // authentication successful so generate jwt token
-                var jwtToken = _jwtUtils.GenerateJwtToken(user);
-                return new AuthenticateResponse(user, jwtToken, user.Roles, new List&lt;int&gt; { objUser.RequestedCompanyId.Value });
-            }
-        }
-        public AuthenticateResponse SelectCompany(SelectCompanyRequest model, int Userid)
-        {
-
-            var empCred = _hrmsContext.EmployeeCredentials
-                           .FirstOrDefault(ec =&gt; ec.RequestedCompanyId == model.CompanyId);
-
-            if (empCred == null)
-            {
-                return null;
-            }
-
-            var roles = (from rowUserRolesJ in _hrmsContext.UserRolesJs
-                         join rowRoles in _hrmsContext.Roles on rowUserRolesJ.RolesId equals rowRoles.Id
-                         where rowUserRolesJ.EmployeeCredentialId == empCred.Id
-                         select rowRoles.Name).ToList();
-
-            var user = new UserDto
-            {
-                UserName = empCred.UserName,
-                UserId = empCred.Id,
-                Email = empCred.Email,
-                RequestedCompanyId = empCred.RequestedCompanyId,
-                Roles = roles
-            };
-
-            // authentication successful so generate jwt token
-            var jwtToken = _jwtUtils.GenerateJwtToken(user);
-            return new AuthenticateResponse(user, jwtToken, user.Roles, new List&lt;int&gt; { empCred.RequestedCompanyId.Value });
-        }
-
-
-        public IEnumerable&lt;EmployeeCredential&gt; GetAll()
-        {
-            var result = (from row in _hrmsContext.EmployeeDetails
-                          select row).ToList();
-            return (IEnumerable&lt;EmployeeCredential&gt;)result;
-        }
-
-        public EmployeeCredential GetById(int id)
-        {
-            var user = (from row in _hrmsContext.EmployeeCredentials
-                        where row.Id == id
-                        select row).SingleOrDefault();
-
-            if (user == null) throw new KeyNotFoundException(&quot;User not found&quot;);
-            return user;
-        }
-
+        public string? ShiftType { get; set; }
+        public string? ShiftTimeRange { get; set; }
+        public int? TotalLeaveCount { get; set; }
+        public int? RemainingLeaveCount { get; set; }
+        public double? LeavePercentage { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public int? MonthlyPresentDays { get;  set; }
+        public int? TotalWorkingDays { get;  set; }
+        public double? AttendancePercentage { get; set; }  // New property added for attendance percentage
+        /* public List&lt;AttendanceDTO&gt; AttendanceDetails { get; set; } */
 
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[31,9,31,107,1],[32,9,32,10,1],[33,13,33,40,1],[34,13,34,34,1],[35,13,35,46,1],[36,9,36,10,1],[93,9,93,10,1],[94,13,105,46,1],[107,13,107,38,0],[108,13,108,14,0],[110,17,110,29,0],[112,18,112,46,0],[113,13,113,14,0],[114,17,114,53,0],[117,17,120,61,0],[122,17,129,19,0],[133,17,133,65,0],[136,17,136,60,0],[136,60,136,80,0],[136,80,136,94,0],[136,94,136,105,0],[136,105,136,120,0],[136,120,136,128,0],[136,128,136,139,0],[137,17,137,84,0],[140,13,140,14,0],[141,17,141,53,0],[143,17,146,61,0],[148,17,155,19,0],[158,17,158,65,0],[159,17,159,129,0],[161,9,161,10,0],[163,9,163,10,1],[165,13,166,92,1],[168,13,168,33,0],[169,13,169,14,0],[170,17,170,29,0],[173,13,176,57,0],[178,13,185,15,0],[188,13,188,61,0],[189,13,189,125,0],[190,9,190,10,0],[194,9,194,10,1],[195,13,196,48,1],[197,13,197,60,0],[198,9,198,10,0],[201,9,201,10,1],[202,13,204,55,1],[206,13,206,30,0],[206,31,206,80,0],[207,13,207,25,0],[208,9,208,10,0]]);
+      highlightRanges([[6,36,6,40,1],[6,41,6,45,1],[7,41,7,45,1],[7,46,7,50,1],[8,39,8,43,1],[8,44,8,48,1],[9,43,9,47,1],[9,48,9,52,1],[10,42,10,46,1],[10,47,10,51,1],[11,31,11,35,1],[11,36,11,40,1],[12,32,12,36,1],[12,37,12,41,1],[13,42,13,46,1],[13,48,13,52,1],[14,40,14,44,1],[14,46,14,50,1],[15,47,15,51,1],[15,52,15,56,1]]);
     </script>
   </body>
 </html>

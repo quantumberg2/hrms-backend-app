@@ -308,107 +308,107 @@ namespace HRMS_Unit_Test.Controllers
             throw new NotImplementedException("Create or modify test");
         }
 
-       /* [Fact]
-        public async Task CanCallGetById()
-        {
-            // Arrange
-            var id = 1333971629;
+        /* [Fact]
+         public async Task CanCallGetById()
+         {
+             // Arrange
+             var id = 1333971629;
 
-            _leaveTracking.Setup(mock => mock.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new LeaveTracking
-            {
-                Id = 368307025,
-                EmpCredentialId = 638443894,
-                Startdate = DateTime.UtcNow,
-                Enddate = DateTime.UtcNow,
-                AppliedDate = DateTime.UtcNow,
-                Status = "TestValue103752968",
-                Files = "TestValue1691585850",
-                LeaveTypeId = 465629725,
-                Session = "TestValue314926630",
-                Contact = "TestValue1948023618",
-                ReasonForLeave = "TestValue1755347549",
-                IsActive = (short)16967,
-                EmpCredential = new EmployeeCredential
-                {
-                    Id = 63522461,
-                    UserName = "TestValue1473587275",
-                    Password = "TestValue1198508467",
-                    Status = (short)21982,
-                    RequestedCompanyId = 1642943870,
-                    Email = "TestValue939703210",
-                    DefaultPassword = true,
-                    GenerateOtp = "TestValue204478592",
-                    OtpExpiration = DateTime.UtcNow,
-                    IsActive = (short)28269,
-                    EmployeeLoginName = "TestValue1131699816",
-                    RequestedCompany = new RequestedCompanyForm
-                    {
-                        Id = 1283342518,
-                        Name = "TestValue1894613144",
-                        PhoneNumber = "TestValue2045856304",
-                        DomainName = "TestValue536991547",
-                        Status = "TestValue962206050",
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = "TestValue1418707364",
-                        IsActive = (short)18139,
-                        CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
-                        Departments = new Mock<ICollection<Department>>().Object,
-                        EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
-                        Holidays = new Mock<ICollection<Holiday>>().Object,
-                        LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
-                        Positions = new Mock<ICollection<Position>>().Object
-                    },
-                    AccountDetails = new Mock<ICollection<AccountDetail>>().Object,
-                    AddressInfos = new Mock<ICollection<AddressInfo>>().Object,
-                    Attendances = new Mock<ICollection<Attendance>>().Object,
-                    //DeviceTables = new Mock<ICollection<DeviceTable>>().Object,
-                    EmpPersonalInfos = new Mock<ICollection<EmpPersonalInfo>>().Object,
-                    EmpSalaries = new Mock<ICollection<EmpSalary>>().Object,
-                    EmployeeDetails = new Mock<ICollection<EmployeeDetail>>().Object,
-                    EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
-                    LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object,
-                    UserRolesJs = new Mock<ICollection<UserRolesJ>>().Object
-                },
-                LeaveType = new LeaveType
-                {
-                    Id = 768679907,
-                    Type = "TestValue1489497347",
-                    Days = 670060657,
-                    CompanyId = 2111428821,
-                    Year = 363542969,
-                    IsActive = (short)24911,
-                    Company = new RequestedCompanyForm
-                    {
-                        Id = 1288440275,
-                        Name = "TestValue477759397",
-                        PhoneNumber = "TestValue45811083",
-                        DomainName = "TestValue328156406",
-                        Status = "TestValue1625792811",
-                        InsertedDate = DateTime.UtcNow,
-                        UpdatedDate = DateTime.UtcNow,
-                        Email = "TestValue342678047",
-                        IsActive = (short)24421,
-                        CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
-                        Departments = new Mock<ICollection<Department>>().Object,
-                        EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
-                        Holidays = new Mock<ICollection<Holiday>>().Object,
-                        LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
-                        Positions = new Mock<ICollection<Position>>().Object
-                    },
-                    EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
-                    LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object
-                }
-            });
+             _leaveTracking.Setup(mock => mock.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new LeaveTracking
+             {
+                 Id = 368307025,
+                 EmpCredentialId = 638443894,
+                 Startdate = DateTime.UtcNow,
+                 Enddate = DateTime.UtcNow,
+                 AppliedDate = DateTime.UtcNow,
+                 Status = "TestValue103752968",
+                 Files = "TestValue1691585850",
+                 LeaveTypeId = 465629725,
+                 Session = "TestValue314926630",
+                 Contact = "TestValue1948023618",
+                 ReasonForLeave = "TestValue1755347549",
+                 IsActive = (short)16967,
+                 EmpCredential = new EmployeeCredential
+                 {
+                     Id = 63522461,
+                     UserName = "TestValue1473587275",
+                     Password = "TestValue1198508467",
+                     Status = (short)21982,
+                     RequestedCompanyId = 1642943870,
+                     Email = "TestValue939703210",
+                     DefaultPassword = true,
+                     GenerateOtp = "TestValue204478592",
+                     OtpExpiration = DateTime.UtcNow,
+                     IsActive = (short)28269,
+                     EmployeeLoginName = "TestValue1131699816",
+                     RequestedCompany = new RequestedCompanyForm
+                     {
+                         Id = 1283342518,
+                         Name = "TestValue1894613144",
+                         PhoneNumber = "TestValue2045856304",
+                         DomainName = "TestValue536991547",
+                         Status = "TestValue962206050",
+                         InsertedDate = DateTime.UtcNow,
+                         UpdatedDate = DateTime.UtcNow,
+                         Email = "TestValue1418707364",
+                         IsActive = (short)18139,
+                         CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                         Departments = new Mock<ICollection<Department>>().Object,
+                         EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                         Holidays = new Mock<ICollection<Holiday>>().Object,
+                         LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                         Positions = new Mock<ICollection<Position>>().Object
+                     },
+                     AccountDetails = new Mock<ICollection<AccountDetail>>().Object,
+                     AddressInfos = new Mock<ICollection<AddressInfo>>().Object,
+                     Attendances = new Mock<ICollection<Attendance>>().Object,
+                     //DeviceTables = new Mock<ICollection<DeviceTable>>().Object,
+                     EmpPersonalInfos = new Mock<ICollection<EmpPersonalInfo>>().Object,
+                     EmpSalaries = new Mock<ICollection<EmpSalary>>().Object,
+                     EmployeeDetails = new Mock<ICollection<EmployeeDetail>>().Object,
+                     EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
+                     LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object,
+                     UserRolesJs = new Mock<ICollection<UserRolesJ>>().Object
+                 },
+                 LeaveType = new LeaveType
+                 {
+                     Id = 768679907,
+                     Type = "TestValue1489497347",
+                     Days = 670060657,
+                     CompanyId = 2111428821,
+                     Year = 363542969,
+                     IsActive = (short)24911,
+                     Company = new RequestedCompanyForm
+                     {
+                         Id = 1288440275,
+                         Name = "TestValue477759397",
+                         PhoneNumber = "TestValue45811083",
+                         DomainName = "TestValue328156406",
+                         Status = "TestValue1625792811",
+                         InsertedDate = DateTime.UtcNow,
+                         UpdatedDate = DateTime.UtcNow,
+                         Email = "TestValue342678047",
+                         IsActive = (short)24421,
+                         CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                         Departments = new Mock<ICollection<Department>>().Object,
+                         EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                         Holidays = new Mock<ICollection<Holiday>>().Object,
+                         LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                         Positions = new Mock<ICollection<Position>>().Object
+                     },
+                     EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
+                     LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object
+                 }
+             });
 
-            // Act
-            var result = await _testClass.GetById(id);
+             // Act
+             var result = await _testClass.GetById(id);
 
-            // Assert
-            _leaveTracking.Verify(mock => mock.GetByIdAsync(It.IsAny<int>()));
+             // Assert
+             _leaveTracking.Verify(mock => mock.GetByIdAsync(It.IsAny<int>()));
 
-            throw new NotImplementedException("Create or modify test");
-        }*/
+             throw new NotImplementedException("Create or modify test");
+         }*/
 
         [Fact]
         public async Task CanCallCreateLeaveTracking()
@@ -951,43 +951,43 @@ namespace HRMS_Unit_Test.Controllers
             // Arrange
             var status = "TestValue1980049593";
 
-      //      _leaveTracking.Setup(mock => mock.GetLeavesByStatusAsync(It.IsAny<string>())).ReturnsAsync(new List<LeaveApprovalDTO>());
+            //      _leaveTracking.Setup(mock => mock.GetLeavesByStatusAsync(It.IsAny<string>())).ReturnsAsync(new List<LeaveApprovalDTO>());
 
             // Act
             var result = await _testClass.GetLeavesByStatus(status);
 
             // Assert
-     //       _leaveTracking.Verify(mock => mock.GetLeavesByStatusAsync(It.IsAny<string>()));
+            //       _leaveTracking.Verify(mock => mock.GetLeavesByStatusAsync(It.IsAny<string>()));
 
             throw new NotImplementedException("Create or modify test");
         }
 
-       /* [Fact]
-        public async Task CanCallGetLeaveSummary()
-        {
-            // Arrange
-            _leaveTracking.Setup(mock => mock.GetEmployeeLeaveSummaryAsync(It.IsAny<int>())).ReturnsAsync(new LeaveSummaryDTO
-            {
-                TotalAllocatedLeaves = 1797928571,
-                ApprovedLeaves = 342826574,
-                PendingLeaves = 1903730648,
-                RejectedLeaves = 610234087,
-                RemainingLeaves = 1825906541,
-                LeaveType = "TestValue71164122",
-                ApprovedCount = 1380988633,
-                PendingCount = 1280179793,
-                RejectedCount = 887701773,
-                LeaveSummaries = new List<LeaveSummaryDTO>()
-            });
+        /* [Fact]
+         public async Task CanCallGetLeaveSummary()
+         {
+             // Arrange
+             _leaveTracking.Setup(mock => mock.GetEmployeeLeaveSummaryAsync(It.IsAny<int>())).ReturnsAsync(new LeaveSummaryDTO
+             {
+                 TotalAllocatedLeaves = 1797928571,
+                 ApprovedLeaves = 342826574,
+                 PendingLeaves = 1903730648,
+                 RejectedLeaves = 610234087,
+                 RemainingLeaves = 1825906541,
+                 LeaveType = "TestValue71164122",
+                 ApprovedCount = 1380988633,
+                 PendingCount = 1280179793,
+                 RejectedCount = 887701773,
+                 LeaveSummaries = new List<LeaveSummaryDTO>()
+             });
 
-            // Act
-            var result = await _testClass.GetLeaveSummary();
+             // Act
+             var result = await _testClass.GetLeaveSummary();
 
-            // Assert
-            _leaveTracking.Verify(mock => mock.GetEmployeeLeaveSummaryAsync(It.IsAny<int>()));
+             // Assert
+             _leaveTracking.Verify(mock => mock.GetEmployeeLeaveSummaryAsync(It.IsAny<int>()));
 
-            throw new NotImplementedException("Create or modify test");
-        }*/
+             throw new NotImplementedException("Create or modify test");
+         }*/
 
         [Fact]
         public void CanCallSoftDelete()
@@ -1136,6 +1136,137 @@ namespace HRMS_Unit_Test.Controllers
 
             // Assert
             _leaveTracking.Verify(mock => mock.UpdateLeaveAsyncchanges(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallGetById()
+        {
+            // Arrange
+            var id = 1726463772;
+
+            _leaveTracking.Setup(mock => mock.GetByIdAsync(It.IsAny<int>())).Returns(new LeaveTracking
+            {
+                Id = 764906737,
+                EmpCredentialId = 1374804233,
+                Startdate = DateTime.UtcNow,
+                Enddate = DateTime.UtcNow,
+                AppliedDate = DateTime.UtcNow,
+                Status = "TestValue2030496380",
+                Files = "TestValue243395249",
+                LeaveTypeId = 9733184,
+                Session = "TestValue1007923697",
+                Contact = "TestValue272818944",
+                ReasonForLeave = "TestValue1015852974",
+                IsActive = (short)64,
+                EmpCredential = new EmployeeCredential
+                {
+                    Id = 1582579567,
+                    UserName = "TestValue1851840595",
+                    Password = "TestValue244627316",
+                    Status = (short)4434,
+                    RequestedCompanyId = 169720434,
+                    Email = "TestValue1251092534",
+                    DefaultPassword = true,
+                    GenerateOtp = "TestValue1498463333",
+                    OtpExpiration = DateTime.UtcNow,
+                    IsActive = (short)11331,
+                    EmployeeLoginName = "TestValue1100451527",
+                    ResignedDate = DateTime.UtcNow,
+                    RequestedCompany = new RequestedCompanyForm
+                    {
+                        Id = 361725985,
+                        Name = "TestValue826174984",
+                        PhoneNumber = "TestValue753121363",
+                        DomainName = "TestValue1391596719",
+                        Status = "TestValue568614325",
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = "TestValue1098320934",
+                        IsActive = (short)10247,
+                        CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                        Departments = new Mock<ICollection<Department>>().Object,
+                        EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                        Holidays = new Mock<ICollection<Holiday>>().Object,
+                        LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                        Positions = new Mock<ICollection<Position>>().Object
+                    },
+                    AccountDetails = new Mock<ICollection<AccountDetail>>().Object,
+                    AddressInfos = new Mock<ICollection<AddressInfo>>().Object,
+                    Attendances = new Mock<ICollection<Attendance>>().Object,
+                    EmpCredIdEmpCodeMappings = new Mock<ICollection<EmpCredIdEmpCodeMapping>>().Object,
+                    EmpPersonalInfos = new Mock<ICollection<EmpPersonalInfo>>().Object,
+                    EmpSalaries = new Mock<ICollection<EmpSalary>>().Object,
+                    EmployeeDetails = new Mock<ICollection<EmployeeDetail>>().Object,
+                    EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
+                    LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object,
+                    UserRolesJs = new Mock<ICollection<UserRolesJ>>().Object
+                },
+                LeaveType = new LeaveType
+                {
+                    Id = 1008715635,
+                    Type = "TestValue112716494",
+                    Days = 7078344,
+                    CompanyId = 1737424060,
+                    Year = 1814307947,
+                    IsActive = (short)13356,
+                    CompanyConfiguredLeave = true,
+                    Company = new RequestedCompanyForm
+                    {
+                        Id = 1973155031,
+                        Name = "TestValue1864195769",
+                        PhoneNumber = "TestValue1753066187",
+                        DomainName = "TestValue733821314",
+                        Status = "TestValue104711229",
+                        InsertedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        Email = "TestValue953971034",
+                        IsActive = (short)3026,
+                        CompanyDetails = new Mock<ICollection<CompanyDetail>>().Object,
+                        Departments = new Mock<ICollection<Department>>().Object,
+                        EmployeeCredentials = new Mock<ICollection<EmployeeCredential>>().Object,
+                        Holidays = new Mock<ICollection<Holiday>>().Object,
+                        LeaveTypes = new Mock<ICollection<LeaveType>>().Object,
+                        Positions = new Mock<ICollection<Position>>().Object
+                    },
+                    EmployeeLeaveAllocations = new Mock<ICollection<EmployeeLeaveAllocation>>().Object,
+                    LeaveTrackings = new Mock<ICollection<LeaveTracking>>().Object
+                }
+            });
+
+            // Act
+            var result = await _testClass.GetById(id);
+
+            // Assert
+            _leaveTracking.Verify(mock => mock.GetByIdAsync(It.IsAny<int>()));
+
+            throw new NotImplementedException("Create or modify test");
+        }
+
+        [Fact]
+        public async Task CanCallGetLeaveSummary()
+        {
+            // Arrange
+            _leaveTracking.Setup(mock => mock.GetEmployeeLeaveSummaryAsync(It.IsAny<int>())).ReturnsAsync(new LeaveSummaryDTO
+            {
+                TotalAllocatedLeaves = 495827921,
+                ApprovedLeaves = 366503792,
+                PendingLeaves = 2057998536,
+                RejectedLeaves = 497554721,
+                RemainingLeaves = 1013464648,
+                LeaveType = "TestValue1578434538",
+                ApprovedCount = 1527099147,
+                PendingCount = 2034733126,
+                RejectedCount = 1362049479,
+                LeaveSummaries = new List<LeaveSummaryDTO>()
+            });
+
+            // Act
+            var result = await _testClass.GetLeaveSummary();
+
+            // Assert
+            _leaveTracking.Verify(mock => mock.GetEmployeeLeaveSummaryAsync(It.IsAny<int>()));
 
             throw new NotImplementedException("Create or modify test");
         }

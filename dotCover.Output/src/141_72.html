@@ -2,107 +2,189 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Middleware\ExceptionMiddleware.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\CompanyrequestedController.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-
-using HRMS_Application.Middleware.Exceptions;
+using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
-using System.Net;
-
-namespace HRMS_Application.Middleware
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using HRMS_Application.Authorization;
+using Microsoft.EntityFrameworkCore;
+using HRMS_Application.DTO;
+using HRMS_Application.Middleware.Exceptions;
+namespace HRMS_Application.Controllers
 {
-    public class ExceptionMiddleware : IMiddleware
+    [Route(&quot;api/[controller]&quot;)]
+    [ApiController]
+    public class CompanyrequestedController : ControllerBase
     {
-        private readonly ILogger&lt;ExceptionMiddleware&gt; _log;
-        public ExceptionMiddleware(ILogger&lt;ExceptionMiddleware&gt; log)
+        private readonly ICompanyRequestedform _companyRequested;
+        private readonly ILogger&lt;CompanyrequestedController&gt; _logger;
+        private readonly HRMSContext _context;
+
+
+        public CompanyrequestedController(ICompanyRequestedform companyRequested, ILogger&lt;CompanyrequestedController&gt; logger, HRMSContext context)
         {
-            _log = log;
+            _companyRequested = companyRequested;
+            _logger = logger;
+            _context = context;
+        }
+        [HttpGet]
+        // [Authorize(new[] { &quot;Admin&quot; })]
+        public List&lt;RequestedCompanyForm&gt; GetEmpCredential()
+        {
+            _logger.LogInformation(&quot;Get All Employee Credential started&quot;);
+            var result = _companyRequested.GetAllRequestedCompanyForm();
+            return result;
+
+        }
+        [HttpGet(&quot;GetById&quot;)]
+        public RequestedCompanyForm GetEmployeeCredentialsById(int id)
+        {
+            _logger.LogInformation(&quot;Getby ID for Employee Credential method started&quot;);
+            var result = _companyRequested.GetById(id);
+            return result;
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        [HttpDelete]
+        //[Authorize(new[] { &quot;Admin&quot; })]
+        public async Task&lt;bool&gt; DeleteRequestedCompanyForm(int id)
         {
+            _logger.LogInformation(&quot;Delete Employee Credential method was started&quot;);
+            var result = await _companyRequested.DeleteRequestedCompanyForm(id);
+            return result;
+        }
+        [HttpPost]
+        public async Task&lt;IActionResult&gt; PostRequestedCompanyForm([FromBody] RequestedCompanyForm requestedCompanyForm)
+        {
+            if (requestedCompanyForm == null)
+            {
+                return BadRequest(&quot;Requested company form cannot be null.&quot;);
+            }
+
             try
             {
-                await next(context);
+                // Call the service to handle the business logic
+                string result = await _companyRequested.InsertRequestedCompanyForm(requestedCompanyForm);
+
+                if (result == &quot;OTP sent to the provided email address.&quot;)
+                {
+                    return Ok(new { Message = result });
+                }
+
+                return BadRequest(new { Message = result });
+            }
+            catch (DatabaseOperationException ex)
+            {
+                // Return an internal server error with a specific error message
+                return StatusCode(500, new { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                _log.LogError(&quot;Exception&quot;, ex.Message + ex.StackTrace + ex.InnerException);
-                await HandleException(context, ex);
+                // Catch any other exceptions and return a generic error message
+                return StatusCode(500, new { Message = &quot;An unexpected error occurred.&quot;, Details = ex.Message });
             }
         }
-        private static Task HandleException(HttpContext context, Exception ex)
+
+
+        [HttpPut(&quot;SoftDelete&quot;)]
+        [Authorize(new[] { &quot;Admin&quot; })]
+
+        public bool SoftDelete(int id, short isActive)
         {
-            int statusCode = StatusCodes.Status500InternalServerError;
-            switch (ex)
+            _logger.LogInformation(&quot;Soft update company request method started&quot;);
+            var res = _companyRequested.SoftDelete(id, isActive);
+            return res;
+
+        }
+
+        [HttpPost]
+        [Route(&quot;verify-otp&quot;)]
+        public async Task&lt;IActionResult&gt; VerifyOtp([FromBody] OtpEmail request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.EmailAddress) || string.IsNullOrWhiteSpace(request.Otp))
             {
-                case NotFoundException:
-                    statusCode = StatusCodes.Status404NotFound;
-                    break;
-
-                case BadRequestException:
-                    statusCode = StatusCodes.Status400BadRequest;
-                    break;
-
-                case ForbiddenException:
-                    statusCode = StatusCodes.Status403Forbidden;
-                    break;
-
-                case MethodNotAllowedException:
-                    statusCode = StatusCodes.Status405MethodNotAllowed;
-                    break;
-                case NotAcceptableException:
-                    statusCode = StatusCodes.Status406NotAcceptable;
-                    break;
-
-                case UnauthorizedException:
-                    statusCode = StatusCodes.Status401Unauthorized;
-                    break;
-
-                case Exceptions.NotImplementedException:
-                    statusCode = StatusCodes.Status501NotImplemented;
-                    break;
-
-                case NotFoundResultException:
-                    statusCode = StatusCodes.Status404NotFound;
-                    break;
-
-                case ArgumentException:
-                    statusCode = StatusCodes.Status500InternalServerError;
-                    break;
-
-                case DatabaseOperationException:
-                    statusCode = StatusCodes.Status501NotImplemented;
-                    break;
+                return BadRequest(&quot;Invalid request data.&quot;);
             }
-            var errorResponse = new ErrorResponse
+
+            var companyForm = await _context.RequestedCompanyForms
+                .FirstOrDefaultAsync(c =&gt; c.Email == request.EmailAddress);
+
+            var employeeCredential = await _context.EmployeeCredentials
+                .FirstOrDefaultAsync(e =&gt; e.Email == request.EmailAddress);
+
+            if (companyForm == null)
             {
-                StatusCode = statusCode,
-                Message = ex.Message
+                return NotFound(new { Status = &quot;Error&quot;, Message = &quot;Company form not found.&quot; });
+            }
+
+            if (employeeCredential == null)
+            {
+                return NotFound(new { Status = &quot;Error&quot;, Message = &quot;Employee credential not found.&quot; });
+            }
+
+            var storedOtp = employeeCredential.GenerateOtp.Trim().ToLower();
+            var providedOtp = request.Otp.Trim().ToLower();
+
+            // Log the OTP values using ILogger
+            _logger.LogInformation($&quot;Stored OTP: {storedOtp}&quot;);
+            _logger.LogInformation($&quot;Provided OTP: {providedOtp}&quot;);
+
+            if (storedOtp != providedOtp)
+            {
+                await UpdateCompanyFormStatus(companyForm, &quot;Rejected&quot;);
+                return BadRequest(new { Status = &quot;Error&quot;, Message = &quot;Invalid OTP.&quot; });
+            }
+
+            if (employeeCredential.OtpExpiration &lt; DateTime.UtcNow)
+            {
+                await UpdateCompanyFormStatus(companyForm, &quot;Expired&quot;);
+                return BadRequest(new { Status = &quot;Error&quot;, Message = &quot;OTP has expired.&quot; });
+            }
+
+            await UpdateCompanyFormStatus(companyForm, &quot;Verified&quot;);
+
+            // Optionally send a confirmation email or message here
+            var userRole = new UserRolesJ
+            {
+                EmployeeCredentialId = employeeCredential.Id,
+                RolesId = 1,
+                IsActive = 1 
             };
-            context.Response.ContentType = &quot;application/json&quot;;
-            context.Response.StatusCode = statusCode;
-            return context.Response.WriteAsync(errorResponse.ToString());
+
+            _context.UserRolesJs.Add(userRole);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Status = &quot;Success&quot;, Message = &quot;Received your request. Admin will get back to you shortly.&quot; });
         }
+
+        private async Task UpdateCompanyFormStatus(RequestedCompanyForm companyForm, string status)
+        {
+            companyForm.Status = status;
+            _context.RequestedCompanyForms.Update(companyForm);
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 
-    //Extension Method For this Middleware
-    public static class ExceptionMiddlewareExtension
-    {
-        public static void ConfigureExceptionMiddleware(this IApplicationBuilder app)
-        {
-            app.UseMiddleware&lt;ExceptionMiddleware&gt;();
-        }
-    }
 }
+public class OtpRequest
+{
+    public string? Email { get; set; }
+}
+
+
+
+
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[11,9,11,69,1],[12,9,12,10,1],[13,13,13,24,1],[14,9,14,10,1],[17,9,17,10,1],[19,13,19,14,1],[20,17,20,37,1],[21,13,21,14,1],[22,13,22,33,0],[23,13,23,14,0],[24,17,24,92,0],[25,17,25,52,0],[26,13,26,14,0],[27,9,27,10,1],[29,9,29,10,0],[30,13,30,71,0],[31,13,31,24,0],[34,21,34,64,0],[35,21,35,27,0],[38,21,38,66,0],[39,21,39,27,0],[42,21,42,65,0],[43,21,43,27,0],[46,21,46,72,0],[47,21,47,27,0],[49,21,49,69,0],[50,21,50,27,0],[53,21,53,68,0],[54,21,54,27,0],[57,21,57,70,0],[58,21,58,27,0],[61,21,61,64,0],[62,21,62,27,0],[65,21,65,75,0],[66,21,66,27,0],[69,21,69,70,0],[70,21,70,27,0],[72,13,76,15,0],[77,13,77,63,0],[78,13,78,54,0],[79,13,79,74,0],[80,9,80,10,0],[87,9,87,10,1],[88,13,88,54,1],[89,9,89,10,1]]);
+      highlightRanges([[20,9,20,147,1],[21,9,21,10,1],[22,13,22,50,1],[23,13,23,30,1],[24,13,24,32,1],[25,9,25,10,1],[29,9,29,10,1],[30,13,30,75,1],[31,13,31,73,1],[32,13,32,27,1],[34,9,34,10,1],[37,9,37,10,1],[38,13,38,87,1],[39,13,39,56,1],[40,13,40,27,1],[41,9,41,10,1],[46,9,46,10,1],[47,13,47,85,1],[48,13,48,81,1],[49,13,49,27,1],[50,9,50,10,1],[53,9,53,10,1],[54,13,54,46,1],[55,13,55,14,0],[56,17,56,77,0],[60,13,60,14,1],[62,17,62,106,1],[64,17,64,73,1],[65,17,65,18,0],[66,21,66,57,0],[69,17,69,61,1],[71,13,71,50,0],[72,13,72,14,0],[74,17,74,70,0],[76,13,76,33,0],[77,13,77,14,0],[79,17,79,113,0],[81,9,81,10,1],[88,9,88,10,1],[89,13,89,82,1],[90,13,90,66,1],[91,13,91,24,1],[93,9,93,10,1],[98,9,98,10,1],[99,13,99,126,1],[100,13,100,14,0],[101,17,101,60,0],[104,13,105,76,1],[107,13,108,76,0],[110,13,110,37,0],[111,13,111,14,0],[112,17,112,96,0],[115,13,115,44,0],[116,13,116,14,0],[117,17,117,103,0],[120,13,120,77,0],[121,13,121,60,0],[124,13,124,64,0],[125,13,125,68,0],[127,13,127,42,0],[128,13,128,14,0],[129,17,129,72,0],[130,17,130,87,0],[133,13,133,68,0],[134,13,134,14,0],[135,17,135,71,0],[136,17,136,91,0],[139,13,139,68,0],[142,13,147,15,0],[149,13,149,48,0],[150,13,150,47,0],[152,13,152,123,0],[153,9,153,10,0],[156,9,156,10,0],[157,13,157,41,0],[158,13,158,64,0],[159,13,159,47,0],[160,9,160,10,0],[168,28,168,32,1],[168,33,168,37,1]]);
     </script>
   </body>
 </html>

@@ -2,183 +2,22 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\EmployeeLeaveController.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Enums\AppSettings.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using HRMS_Application.Authorization;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using HRMS_Application.DTO;
-
-namespace HRMS_Application.Controllers
+namespace HRMS_Application.Helpers
 {
-    [Route(&quot;api/[controller]&quot;)]
-    [ApiController]
-    public class EmpLeaveAllocationController : ControllerBase
+    public class AppSettings
     {
-        private readonly IEmpLeaveAllocation _employeeLeaveService;
-        private readonly ILogger&lt;EmpLeaveAllocationController&gt; _logger;
-        private readonly HRMSContext _context;
-
-        public EmpLeaveAllocationController(IEmpLeaveAllocation employeeLeaveService, ILogger&lt;EmpLeaveAllocationController&gt; logger, HRMSContext context)
-        {
-            _employeeLeaveService = employeeLeaveService;
-            _logger = logger;
-            _context = context;
-        }
-
-        [HttpGet]
-        [Authorize(new[] { &quot;Admin&quot;, &quot;Developer&quot; })]
-        public IActionResult GetAllEmpleaves()
-        {
-            _logger.LogInformation(&quot;Get all employee leave method started&quot;);
-            var dept = _employeeLeaveService.GetAllEmpLeave();
-            return Ok(dept);
-        }
-
-        [HttpGet(&quot;CalculateLeaves/{empCredentialId}&quot;)]
-        public IActionResult CalculateLeaves(int empCredentialId)
-        {
-            var leaveAllocations = _context.EmployeeLeaveAllocations
-                .Where(e =&gt; e.EmpCredentialId == empCredentialId)
-                .ToList();
-
-            if (leaveAllocations == null || !leaveAllocations.Any())
-            {
-                return NotFound(&quot;Leave allocation not found for the specified employee and year.&quot;);
-            }
-
-            var leaveTypes = _context.LeaveTypes.ToList();
-            var leaveTrackings = _context.LeaveTrackings
-                .Where(l =&gt; l.EmpCredentialId == empCredentialId )
-                .ToList();
-
-            var result = leaveAllocations.Select(leaveAllocation =&gt;
-            {
-                var totalLeaves = leaveTypes.FirstOrDefault(lt =&gt; lt.Id == leaveAllocation.LeaveType)?.Days ?? 0;
-                var usedLeaves = leaveTrackings
-                    .Where(lt =&gt; lt.LeaveTypeId == leaveAllocation.LeaveType)
-                    .Sum(lt =&gt; EF.Functions.DateDiffDay(lt.Startdate.Value, lt.Enddate.Value) + 1);
-
-                leaveAllocation.NumberOfLeaves = totalLeaves;
-                leaveAllocation.RemainingLeave = totalLeaves - usedLeaves;
-
-                return new
-                {
-                    LeaveType = leaveAllocation.LeaveTypeNavigation.Type,  // Corrected to use &#39;Type&#39;
-                    TotalLeaves = totalLeaves,
-                    UsedLeaves = usedLeaves,
-                    RemainingLeaves = leaveAllocation.RemainingLeave
-                };
-            }).ToList();
-
-            return Ok(result);
-        }
-
-        [HttpGet(&quot;GetById/{id}&quot;)]
-        [AllowAnonymous]
-        public IActionResult GetById(int id)
-        {
-            _logger.LogInformation(&quot;Get employee leave by ID method started&quot;);
-            var status = _employeeLeaveService.GetByEmpLeavebyId(id);
-            if (status == null)
-            {
-                return NotFound(&quot;Employee leave not found&quot;);
-            }
-            return Ok(status);
-        }
-
-        [HttpPost(&quot;InsertEmployeeLeave&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        public async Task&lt;IActionResult&gt; InsertEmpLeaves([FromBody] EmployeeLeaveAllocation employeeLeave)
-        {
-            _logger.LogInformation(&quot;Insert employee leave method started&quot;);
-
-            var status = await _employeeLeaveService.InsertEmployeeLeave(employeeLeave);
-            if (status == &quot;new Employeeleave inserted successfully&quot;)
-            {
-                return CreatedAtAction(nameof(GetById), new { id = employeeLeave.Id }, employeeLeave);
-            }
-            return BadRequest(status);
-        }
-
-        [HttpDelete(&quot;{id}&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        public async Task&lt;IActionResult&gt; DeleteEmpDetails(int id)
-        {
-            _logger.LogInformation(&quot;Delete method started&quot;);
-            var result = await _employeeLeaveService.DeleteEmployeeLeave(id);
-            if (!result)
-            {
-                return NotFound(&quot;Employee leave not found&quot;);
-            }
-            return NoContent();
-        }
-
-        [HttpPut(&quot;SoftDelete&quot;)]
-        [Authorize(new[] { &quot;Admin&quot; })]
-        public bool SoftDelete(int id, short isActive)
-        {
-            _logger.LogInformation(&quot;Soft update Employee leave method started&quot;);
-            var res = _employeeLeaveService.SoftDelete(id, isActive);
-            return res;
-
-        }
-        [HttpPost(&quot;GrantLeave&quot;)]
-        public IActionResult SaveEmployeeLeaveAllocation([FromBody] EmployeeLeaveAllocationRequest request)
-        {
-            if (request == null || (request.EmpCredentialId == null))
-            {
-                return BadRequest(&quot;Invalid input data.&quot;);
-            }
-
-            try
-            {
-                // Check if it&#39;s a single credential ID request
-                if (request.EmpCredentialId.HasValue)
-                {
-                    SaveLeaveAllocation(request.EmpCredentialId.Value, request);
-                }
-              
-
-                return Ok(&quot;Leave allocation saved successfully.&quot;);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $&quot;Internal server error: {ex.Message}&quot;);
-            }
-        }
-
-        private void SaveLeaveAllocation(int empCredentialId, EmployeeLeaveAllocationRequest request)
-        {
-            var leaveAllocation = new EmployeeLeaveAllocation
-            {
-                Year = request.Year,
-                EmpCredentialId = empCredentialId,
-                NumberOfLeaves = request.NumberOfLeaves,
-                RemainingLeave = request.NumberOfLeaves, // Default to NumberOfLeaves if not specified
-                LeaveType = request.LeaveType, // Default to 1 or any default LeaveType ID you have
-                IsActive = 1 // Default to 1
-            };
-
-            _context.EmployeeLeaveAllocations.Add(leaveAllocation);
-            _context.SaveChanges();
-        }
-
+        public string Secret { get; set; }
     }
 }
     </pre>
     <script type="text/javascript">
-      highlightRanges([[22,9,22,153,1],[23,9,23,10,1],[24,13,24,58,1],[25,13,25,30,1],[26,13,26,32,1],[27,9,27,10,1],[32,9,32,10,1],[33,13,33,77,1],[34,13,34,63,1],[35,13,35,29,1],[36,9,36,10,1],[40,9,40,10,1],[41,13,43,27,1],[45,13,45,69,0],[46,13,46,14,0],[47,17,47,100,0],[50,13,50,59,0],[51,13,53,27,0],[55,13,56,13,0],[56,13,56,14,0],[56,14,57,17,0],[57,17,57,67,0],[57,67,57,101,0],[57,101,57,114,0],[57,114,58,17,0],[58,17,59,34,0],[59,34,59,77,0],[59,77,60,32,0],[60,32,60,98,0],[60,98,60,100,0],[60,100,62,17,0],[62,17,62,62,0],[62,62,63,17,0],[63,17,63,75,0],[63,75,65,17,0],[65,17,71,19,0],[71,19,72,13,0],[72,13,72,14,0],[72,14,72,25,0],[74,13,74,31,0],[75,9,75,10,0],[80,9,80,10,1],[81,13,81,79,1],[82,13,82,70,1],[83,13,83,32,1],[84,13,84,14,0],[85,17,85,61,0],[87,13,87,31,1],[88,9,88,10,1],[93,9,93,10,1],[94,13,94,76,1],[96,13,96,89,1],[97,13,97,69,1],[98,13,98,14,0],[99,17,99,103,0],[101,13,101,39,1],[102,9,102,10,1],[107,9,107,10,1],[108,13,108,61,1],[109,13,109,78,1],[110,13,110,25,1],[111,13,111,14,0],[112,17,112,61,0],[114,13,114,32,1],[115,9,115,10,1],[120,9,120,10,1],[121,13,121,81,1],[122,13,122,70,1],[123,13,123,24,1],[125,9,125,10,1],[128,9,128,10,1],[129,13,129,70,1],[130,13,130,14,0],[131,17,131,58,0],[135,13,135,14,1],[137,17,137,54,1],[138,17,138,18,1],[139,21,139,81,1],[140,17,140,18,0],[143,17,143,67,0],[145,13,145,33,1],[146,13,146,14,1],[147,17,147,80,1],[149,9,149,10,1],[152,9,152,10,1],[153,13,161,15,1],[163,13,163,68,1],[164,13,164,36,0],[165,9,165,10,0]]);
+      highlightRanges([[5,32,5,36,1],[5,37,5,41,1]]);
     </script>
   </body>
 </html>

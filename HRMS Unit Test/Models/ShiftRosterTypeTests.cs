@@ -76,5 +76,18 @@ namespace HRMS_Unit_Test.Models
             // Assert
             Assert.Same(testValue, _testClass.ShiftRosters);
         }
+
+        [Fact]
+        public void CanSetAndGetCompanyRequestedId()
+        {
+            // Arrange
+            var testValue = 2013218399;
+
+            // Act
+            _testClass.CompanyRequestedId = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.CompanyRequestedId);
+        }
     }
 }

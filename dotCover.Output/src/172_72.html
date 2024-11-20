@@ -2,77 +2,31 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Controllers\DeviceOpearationsController.cs</title>
+    <title>C:\Users\USER\source\HRMS\hrms-backend-app\HRMS Application\Models\Users\AuthenticateRequest.cs</title>
     <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
   </head>
   <body>
     <pre id="content" class="source-code">
-using HRMS_Application.BusinessLogic.Interface;
-using HRMS_Application.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
-namespace HRMS_Application.Controllers
+namespace HRMS_Application.Models.Users
 {
-    [Route(&quot;api/[controller]&quot;)]
-    [ApiController]
-    public class DeviceOpearationsController : ControllerBase
+    public class AuthenticateRequest
     {
-        private readonly ILogger&lt;DeviceOpearationsController&gt; _logger;
-        private readonly IDeviceOperations _deviceOperations;
+        [Required]
+        public string Username { get; set; }
 
-        public DeviceOpearationsController(ILogger&lt;DeviceOpearationsController&gt; logger,IDeviceOperations deviceOperations)
-        {
-            _deviceOperations = deviceOperations;
-            _logger = logger;
-        }
+        [Required]
+        public string Password { get; set; }
 
-        [HttpGet]
-        public List&lt;DeviceTable&gt; GetAllInfo()
-        {
-            _logger.LogInformation(&quot;Get all login info method started&quot;);
-            var res = _deviceOperations.GetAllInfo();
-            return res;
-        }
-
-        [HttpGet(&quot;GetByEmpCredId&quot;)]
-        public List&lt;DeviceTable&gt; GetByEmpCreId(int empCredId)
-        {
-            _logger.LogInformation(&quot;Get info by Employee credential id&quot;);
-            var res = _deviceOperations.GetByEmpCreId(empCredId);
-            return res;
-        }
-
-        [HttpPost]
-        public string InsertInfo(DeviceTable deviceInfo)
-        {
-            _logger.LogInformation(&quot;Post login info method started&quot;);
-            var res = _deviceOperations.InsertInfo(deviceInfo);
-            return res;
-        }
-
-        [HttpPut]
-        public string UpdateInfo(DeviceTable deviceInfo)
-        {
-            _logger.LogInformation(&quot;Update login info method started&quot;);
-            var res = _deviceOperations.UpdateInfo(deviceInfo);
-            return res;
-        }
-
-        [HttpDelete]
-        public bool DeleteInfo(int id)
-        {
-            _logger.LogInformation(&quot;Delete login info method started&quot;);
-            var res = _deviceOperations.DeleteInfo(id);
-            return res;
-        }
+        
     }
 }
 
     </pre>
     <script type="text/javascript">
-      highlightRanges([[15,9,15,123,1],[16,9,16,10,1],[17,13,17,50,1],[18,13,18,30,1],[19,9,19,10,1],[23,9,23,10,1],[24,13,24,73,1],[25,13,25,54,1],[26,13,26,24,1],[27,9,27,10,1],[31,9,31,10,1],[32,13,32,74,1],[33,13,33,66,1],[34,13,34,24,1],[35,9,35,10,1],[39,9,39,10,1],[40,13,40,70,1],[41,13,41,64,1],[42,13,42,24,1],[43,9,43,10,1],[47,9,47,10,1],[48,13,48,72,1],[49,13,49,64,1],[50,13,50,24,1],[51,9,51,10,1],[55,9,55,10,1],[56,13,56,72,1],[57,13,57,56,1],[58,13,58,24,1],[59,9,59,10,1]]);
+      highlightRanges([[8,34,8,38,1],[8,39,8,43,1],[11,34,11,38,1],[11,39,11,43,1]]);
     </script>
   </body>
 </html>

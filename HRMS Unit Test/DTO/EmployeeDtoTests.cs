@@ -116,5 +116,31 @@ namespace HRMS_Unit_Test.DTO
             // Assert
             Assert.Equal(testValue, _testClass.PositionId);
         }
+
+        [Fact]
+        public void CanSetAndGetYearsExperience()
+        {
+            // Arrange
+            var testValue = "TestValue2068281599";
+
+            // Act
+            _testClass.YearsExperience = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.YearsExperience);
+        }
+
+        [Fact]
+        public void CanSetAndGetisActive()
+        {
+            // Arrange
+            var testValue = 506393358;
+
+            // Act
+            _testClass.isActive = testValue;
+
+            // Assert
+            Assert.Equal(testValue, _testClass.isActive);
+        }
     }
 }
