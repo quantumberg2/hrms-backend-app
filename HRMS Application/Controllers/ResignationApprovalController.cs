@@ -1,7 +1,10 @@
-﻿using HRMS_Application.BusinessLogic.Interface;
+﻿using HRMS_Application.Authorization;
+using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace HRMS_Application.Controllers
 {
@@ -50,5 +53,80 @@ namespace HRMS_Application.Controllers
             return res;
         }
 
+        [HttpPut("AdminApproval")]
+        [Authorize(new[] { "Admin" })]
+        public async Task<IActionResult> UpdateAdminApprovalStatus(int id, string adminApprovalStatus)
+        {
+            _logger.LogInformation("Admin approval for resignation method initiated");
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Authorization header is missing or token is empty.");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token))
+            {
+                return Unauthorized("Invalid token format.");
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+            var roleClaims = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Roles")?.Value;
+
+            if (string.IsNullOrEmpty(roleClaims))
+            {
+                return Unauthorized("Roles claim not found in the token.");
+            }
+
+            if (roleClaims == "Admin")
+            {
+                var res = _resignationApproval.UpdateAdminApprovalStatus(id, adminApprovalStatus);
+                return Ok(res);
+            }
+
+            else
+            {
+                return Unauthorized("Unauthorized");
+            }
+        }
+
+        [HttpPut("ManagerApproval")]
+        [Authorize(new[] { "Admin" })]
+        public async Task<IActionResult> UpdateManagerApprovalStatus(int id, string managerApprovalstatus)
+        {
+            _logger.LogInformation("Admin approval for resignation method initiated");
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Authorization header is missing or token is empty.");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token))
+            {
+                return Unauthorized("Invalid token format.");
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+            var roleClaims = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Roles")?.Value;
+
+            if (string.IsNullOrEmpty(roleClaims))
+            {
+                return Unauthorized("Roles claim not found in the token.");
+            }  
+
+            if (roleClaims == "Manager")
+            {
+                var res = _resignationApproval.UpdateAdminApprovalStatus(id, managerApprovalstatus);
+                return Ok(res);
+            }
+
+            else
+            {
+                return Unauthorized("Unauthorized");
+            }
+        }
     }
 }

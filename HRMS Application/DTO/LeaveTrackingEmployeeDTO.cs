@@ -1,4 +1,4 @@
-﻿namespace HRMS_Application.Controllers
+﻿namespace HRMS_Application.DTO
 {
     internal class LeaveTrackingEmployeeDTO
     {

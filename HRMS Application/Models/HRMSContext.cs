@@ -864,6 +864,8 @@ namespace HRMS_Application.Models
             {
                 entity.ToTable("Resignation");
 
+                entity.Property(e => e.Comments).IsUnicode(false);
+
                 entity.Property(e => e.CreatedDate)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");

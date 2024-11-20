@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.DTO;
 using HRMS_Application.Models;
 using System.Diagnostics.Eventing.Reader;
 
@@ -20,29 +21,40 @@ namespace HRMS_Application.BusinessLogic.Implements
             return data;
         }
 
-        public string InsertResignation(Resignation resignation)
+        public string InsertResignation(int empCredId, ResignationDTO resignation)
         {
 
-            if(resignation.StartDate.HasValue)
+            var employeeExists = _context.EmployeeCredentials.Any(e => e.Id == empCredId);
+            if (!employeeExists)
             {
-                resignation.ExitDate = resignation.StartDate.Value.AddDays(30);
+                return "Employee does not exist.";
             }
 
-            resignation.CreatedDate = DateTime.Now;
+           
 
-            resignation.IsActive = 1;
-            resignation.Status = "Pending";
+            var existingResignation = _context.Resignations.FirstOrDefault(r => r.EmpCredentialId == empCredId && r.IsActive == 1);
+            if (existingResignation != null)
+            {
+                return "Resignation already exists for this employee.";
+            }
 
-            var res = _context.Resignations.Add(resignation);
-            if(res!=null)
+            var newResignation = new Resignation
             {
-                _context.SaveChanges();
-                return "Resignation applied successfully";
-            }
-            else
-            {
-                return "Failed to apply resignation";
-            }
+                EmpCredentialId = empCredId,
+                Reason = resignation.Reason,
+                StartDate = resignation.StartDate,
+                ExitDate = resignation.StartDate?.AddDays(30), 
+                CreatedDate = DateTime.Now,
+                IsActive = 1,
+                Status = "Pending",
+                FinalSettlementDate = null,
+                Comments = resignation.Comments
+            };
+
+            _context.Resignations.Add(newResignation);
+
+            int result = _context.SaveChanges();
+            return result > 0 ? "Resignation applied successfully." : "Failed to apply resignation.";
         }
 
         public bool SoftDeleteResignation(int id, short isActive)
