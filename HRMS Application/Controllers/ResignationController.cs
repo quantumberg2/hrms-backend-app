@@ -215,12 +215,12 @@ namespace HRMS_Application.Controllers
             var jwtToken = handler.ReadJwtToken(token);
             var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
 
-            if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var managerId))
+            if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var empCredId))
             {
                 return Unauthorized("Employee credential ID not found or invalid in the token.");
             }
 
-            var resignations = _resignation.GetResignationInfoByStatus(status, managerId);
+            var resignations = _resignation.GetResignationInfoByStatus(status, empCredId);
 
             if (resignations == null || !resignations.Any())
             {
