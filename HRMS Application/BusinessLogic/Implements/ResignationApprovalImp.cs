@@ -84,19 +84,31 @@ namespace HRMS_Application.BusinessLogic.Implements
             
         }
 
-        public string UpdateManagerApprovalStatus(int id, string managerApprovalstatus)
+        public string UpdateManagerApprovalStatus(int empCredId, int id, string managerApprovalStatus)
         {
-            var admin = (from row in _context.Resignations
-                         where row.Id == id
-                         select row).FirstOrDefault();
-            if (admin != null)
-            {
-                admin.Status = managerApprovalstatus;
-                return "manager approval status updated";
-            }
-            else
-                return "failed to update manager approval";
+            var resignation = _context.ResignationApprovalStatuses.FirstOrDefault(r => r.Id == id);
+            if (resignation == null)
+                return "Failed: Resignation record not found.";
+
+            var employee = _context.EmployeeDetails.FirstOrDefault(e => e.EmployeeCredentialId == empCredId);
+            if (employee == null)
+                return "Failed: Employee not found.";
+
+            var position = employee.PositionId.HasValue
+                ? _context.Positions.FirstOrDefault(p => p.Id == employee.PositionId)
+                : null;
+
+            if (position == null || position.Name != "Manager")
+                return "Unauthorized: Only Managers can approve.";
+
+            // Update manager approval status
+            resignation.ManagerApprovalStatus = managerApprovalStatus;
+            _context.SaveChanges();
+
+            return "Manager approval status updated successfully.";
         }
+
+
 
         public string UpdateResignation(ResignationApprovalStatus resignation)
         {

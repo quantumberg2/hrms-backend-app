@@ -79,20 +79,12 @@ namespace HRMS_Application.Controllers
                 return Unauthorized("Roles claim not found in the token.");
             }
 
-            if (roleClaims == "Admin")
-            {
                 var res = _resignationApproval.UpdateAdminApprovalStatus(id, adminApprovalStatus);
                 return Ok(res);
-            }
-
-            else
-            {
-                return Unauthorized("Unauthorized");
-            }
         }
 
         [HttpPut("ManagerApproval")]
-        [Authorize(new[] { "Admin" })]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateManagerApprovalStatus(int id, string managerApprovalstatus)
         {
             _logger.LogInformation("Admin approval for resignation method initiated");
@@ -110,23 +102,15 @@ namespace HRMS_Application.Controllers
             }
 
             var jwtToken = handler.ReadJwtToken(token);
-            var roleClaims = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Roles")?.Value;
+            var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
 
-            if (string.IsNullOrEmpty(roleClaims))
+            if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var empCredId))
             {
-                return Unauthorized("Roles claim not found in the token.");
-            }  
-
-            if (roleClaims == "Manager")
-            {
-                var res = _resignationApproval.UpdateAdminApprovalStatus(id, managerApprovalstatus);
+                return Unauthorized("Employee credential ID not found or invalid in the token.");
+            }
+     
+                var res = _resignationApproval.UpdateManagerApprovalStatus(empCredId, id, managerApprovalstatus);
                 return Ok(res);
-            }
-
-            else
-            {
-                return Unauthorized("Unauthorized");
-            }
         }
     }
 }

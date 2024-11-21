@@ -874,9 +874,17 @@ namespace HRMS_Application.Models
 
                 entity.Property(e => e.ExitDate).HasColumnType("datetime");
 
+                entity.Property(e => e.FinalSettelmentType)
+                    .HasMaxLength(75)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.FinalSettlementDate).HasColumnType("datetime");
 
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
+
+                entity.Property(e => e.PersonalEmailAddress)
+                    .HasMaxLength(55)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Reason).IsUnicode(false);
 

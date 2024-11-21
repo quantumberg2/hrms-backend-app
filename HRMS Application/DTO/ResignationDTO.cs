@@ -11,7 +11,6 @@ namespace HRMS_Application.DTO
         public DateTime? CreatedDate { get; set; }
         public DateTime? ExitDate { get; set; }
         public string? Comments { get; set; }
-
-
+        public string PersonalEmailAddress { get; set; }
     }
 }

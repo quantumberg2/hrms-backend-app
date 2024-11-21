@@ -23,6 +23,8 @@ namespace HRMS_Application.Models
         public DateTime? FinalSettlementDate { get; set; }
         public short? IsActive { get; set; }
         public string Comments { get; set; }
+        public string PersonalEmailAddress { get; set; }
+        public string FinalSettelmentType { get; set; }
 
         public virtual ICollection<ResignationApprovalStatus> ResignationApprovalStatuses { get; set; }
     }
