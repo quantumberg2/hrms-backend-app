@@ -213,21 +213,21 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public List<ResignationGridDTO> GetResignationInfoByStatus(string status, int empCredId)
         {
-                
 
-                var resignations = (from resignation in _context.Resignations
-                                    join empDetail in _context.EmployeeDetails on resignation.EmpCredentialId equals empDetail.EmployeeCredentialId
-                                    join empCred in _context.EmployeeCredentials on empDetail.ManagerId equals empCredId
-                                    join pos in _context.Positions on empDetail.ManagerId equals pos.Id 
-                                    where resignation.Status == status          
-                                          && resignation.IsActive == 1
-                                    select new ResignationGridDTO
-                                    {
-                                        EmployeeName = empDetail.FirstName + " " + empDetail.LastName,
-                                        EmployeeNumber = empDetail.EmployeeNumber,
-                                        Reason = resignation.Reason,
-                                        SeparationDate = resignation.CreatedDate,
-                                        LastWorkingDay = resignation.ExitDate
+            var resignations = (from resig in _context.Resignations
+                               join emp in _context.EmployeeDetails on resig.EmpCredentialId equals emp.EmployeeCredentialId
+                               where resig.Status == status
+                                     && emp.ManagerId == empCredId
+                                     && emp.IsActive == 1
+                                     && resig.IsActive == 1
+                               select new ResignationGridDTO
+                               {
+                                        EmployeeName = emp.FirstName + " " + emp.LastName,
+                                        EmployeeNumber = emp.EmployeeNumber,
+                                        Reason = resig.Reason,
+                                        SeparationDate = resig.CreatedDate,
+                                        LastWorkingDay = resig.ExitDate,
+                                        Status = status
                                     }).ToList();
 
                 return resignations;
