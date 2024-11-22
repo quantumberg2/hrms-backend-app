@@ -53,35 +53,35 @@ namespace HRMS_Application.Controllers
             return res;
         }
 
-        [HttpPut("AdminApproval")]
-        [Authorize(new[] { "Admin" })]
-        public async Task<IActionResult> UpdateAdminApprovalStatus(int id, string adminApprovalStatus)
-        {
-            _logger.LogInformation("Admin approval for resignation method initiated");
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+        //[HttpPut("AdminApproval")]
+        //[Authorize(new[] { "Admin" })]
+        //public async Task<IActionResult> UpdateAdminApprovalStatus(int id, string adminApprovalStatus)
+        //{
+        //    _logger.LogInformation("Admin approval for resignation method initiated");
+        //    var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
 
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized("Authorization header is missing or token is empty.");
-            }
+        //    if (string.IsNullOrEmpty(token))
+        //    {
+        //        return Unauthorized("Authorization header is missing or token is empty.");
+        //    }
 
-            var handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(token))
-            {
-                return Unauthorized("Invalid token format.");
-            }
+        //    var handler = new JwtSecurityTokenHandler();
+        //    if (!handler.CanReadToken(token))
+        //    {
+        //        return Unauthorized("Invalid token format.");
+        //    }
 
-            var jwtToken = handler.ReadJwtToken(token);
-            var roleClaims = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Roles")?.Value;
+        //    var jwtToken = handler.ReadJwtToken(token);
+        //    var roleClaims = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Roles")?.Value;
 
-            if (string.IsNullOrEmpty(roleClaims))
-            {
-                return Unauthorized("Roles claim not found in the token.");
-            }
+        //    if (string.IsNullOrEmpty(roleClaims))
+        //    {
+        //        return Unauthorized("Roles claim not found in the token.");
+        //    }
 
-                var res = _resignationApproval.UpdateAdminApprovalStatus(id, adminApprovalStatus);
-                return Ok(res);
-        }
+        //        var res = _resignationApproval.UpdateAdminApprovalStatus(id, adminApprovalStatus);
+        //        return Ok(res);
+        //}
 
         [HttpPut("ManagerApproval")]
         [AllowAnonymous]

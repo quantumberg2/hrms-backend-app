@@ -52,37 +52,35 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
-        public string UpdateAdminApprovalStatus(int id, string adminApprovalStatus)
-        {
-            var res = (from row in _context.Resignations
-                         where row.Id == id
-                         select row).FirstOrDefault();
-            if (res != null)
-            {
-                res.Status = adminApprovalStatus;
+        //public string UpdateAdminApprovalStatus(int id, string adminApprovalStatus)
+        //{
+        //    var res = (from row in _context.Resignations
+        //                 where row.Id == id
+        //                 select row).FirstOrDefault();
+        //    if (res != null)
+        //    {
+        //        res.Status = adminApprovalStatus;
 
-                var ResigApptable = (from row in _context.ResignationApprovalStatuses
-                                     where row.Id == id
-                                     select row).FirstOrDefault();
-                if (ResigApptable != null)
-                {
-                    if(ResigApptable.AdminApprovalStatus=="Approved" && ResigApptable.ManagerApprovalStatus=="Approved")
-                    {
-                        res.Status = "Approved";
-                        res.UpdatedDate = DateTime.Now;
-                        _context.Resignations.Update(res);
-                        _context.SaveChanges();
-                    }
-                }
-                return "Admin approval status updated";
+        //        var ResigApptable = (from row in _context.ResignationApprovalStatuses
+        //                             where row.Id == id
+        //                             select row).FirstOrDefault();
+        //        if (ResigApptable != null)
+        //        {
+        //            if(ResigApptable.AdminApprovalStatus=="Approved" && ResigApptable.ManagerApprovalStatus=="Approved")
+        //            {
+        //                res.Status = "Approved";
+        //                res.UpdatedDate = DateTime.Now;
+        //                _context.Resignations.Update(res);
+        //                _context.SaveChanges();
+        //            }
+        //        }
+        //        return "Admin approval status updated";
 
 
-            }
-            else
-                return "failed to update admin approval";
-
-            
-        }
+        //    }
+        //    else
+        //        return "failed to update admin approval";        
+        //}
 
         public string UpdateManagerApprovalStatus(int empCredId, int id, string managerApprovalStatus)
         {
@@ -94,12 +92,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (employee == null)
                 return "Failed: Employee not found.";
 
-            var position = employee.PositionId.HasValue
+           /* var position = employee.PositionId.HasValue
                 ? _context.Positions.FirstOrDefault(p => p.Id == employee.PositionId)
                 : null;
 
             if (position == null || position.Name != "Manager")
-                return "Unauthorized: Only Managers can approve.";
+                return "Unauthorized: Only Managers can approve.";*/
 
             // Update manager approval status
             resignation.ManagerApprovalStatus = managerApprovalStatus;

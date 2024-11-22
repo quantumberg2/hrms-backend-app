@@ -51,7 +51,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                  EmployeeName = empDetail.FirstName +"" + empDetail.LastName,
                                  EmployeeNumber = empDetail.EmployeeNumber,
                                  Reason = row.Reason,
-                                 LastWorkingDay = row.FinalSettlementDate,
+                                 LastWorkingDay = row.ExitDate,
                                  SeparationDate = row.StartDate,
 
                              }).ToList();
@@ -152,9 +152,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         }
 
-        public string ResignationUpdateByAdmin(int id, AdminResignationApprovalDTO resignation)
+        public string ResignationUpdateByAdmin(int empCredId, int id, AdminResignationApprovalDTO resignation)
         {
-            var existingResignation = _context.Resignations.FirstOrDefault(e => e.Id == id);
+            var existingResignation = _context.Resignations.FirstOrDefault(e => e.Id == id && e.EmpCredentialId==empCredId);
             if (existingResignation == null)
             {
                 return "Resignation record not found.";
@@ -172,7 +172,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "Resignation approval info not found.";
             }
 
-            if (resigApprovalInfo.ManagerApprovalStatus != "Approved")
+            if (!string.Equals(resigApprovalInfo.ManagerApprovalStatus, "Approved", StringComparison.OrdinalIgnoreCase))
             {
                 return "Resignation not approved by the manager. Please get manager's approval first.";
             }
@@ -197,19 +197,26 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         }
 
-        public string UpdateResignationStatus(int id, string newStatus)
+        public string UpdateResignationStatus(int empCredId,int id, string newStatus)
         {
-            var res = _context.Resignations.FirstOrDefault(e=>e.Id == id);
-            if(res!=null)
+            var resignation = _context.Resignations.FirstOrDefault(e => e.Id == id && e.EmpCredentialId == empCredId);
+            if (resignation == null)
             {
-                res.Status = newStatus;
-                res.IsActive = 0;
-                _context.Resignations.Update(res);
-                _context.SaveChanges();
-                return "Status updated successfully";
+                return "Employee not found";
             }
-            return "employee not found";
+
+            if (string.Equals(newStatus, "Withdraw", StringComparison.OrdinalIgnoreCase))
+            {
+                resignation.IsActive = 0;
+            }
+
+            resignation.Status = newStatus;
+            _context.Resignations.Update(resignation);
+            _context.SaveChanges();
+
+            return "Status updated successfully";
         }
+
 
         public List<ResignationGridDTO> GetResignationInfoByStatus(string status, int empCredId)
         {
@@ -225,7 +232,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                         EmployeeName = emp.FirstName + " " + emp.LastName,
                                         EmployeeNumber = emp.EmployeeNumber,
                                         Reason = resig.Reason,
-                                        SeparationDate = resig.CreatedDate,
+                                        SeparationDate = resig.StartDate,
                                         LastWorkingDay = resig.ExitDate,
                                         Status = status
                                     }).ToList();
@@ -234,5 +241,6 @@ namespace HRMS_Application.BusinessLogic.Implements
 
 
         }
+        
     }
 }
