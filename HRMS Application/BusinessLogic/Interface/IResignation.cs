@@ -13,8 +13,9 @@ namespace HRMS_Application.BusinessLogic.Interface
         public string InsertResignation(int empCredId, ResignationDTO resignation);
         public string ResignationUpdateByAdmin(int empCredId,int id, AdminResignationApprovalDTO resignation);
         public string UpdateResignation(Resignation resignation);
-        public string UpdateResignationStatus(int empCredId, int id, string newStatus);
+        public string UpdateResignationStatus(int id, string newStatus);
         public bool SoftDeleteResignation(int id,short isActive );
+        public Resignation UpdateResigStatusUserId(int empCredId, int id, string newStatus);
 
 
     }

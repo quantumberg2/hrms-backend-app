@@ -187,8 +187,8 @@ namespace HRMS_Application.Controllers
      
         }
 
-        [HttpPut("StatusUpdate")]
-        [Authorize(new[] { "Admin", "User" })]
+        [HttpPut("StatusUpdate(Withdraw)")]
+        [AllowAnonymous]
         public async Task<IActionResult> UpdateResignationStatus(int id, string newStatus)
         {
             _logger.LogInformation("Update new resignation status method started");
@@ -216,7 +216,7 @@ namespace HRMS_Application.Controllers
                     return Unauthorized("Employee credential ID not found or invalid in the token.");
                 }
 
-                var resignation =  _resignation.UpdateResignationStatus(empCredId, id, newStatus);
+                var resignation =  _resignation.UpdateResigStatusUserId(empCredId, id, newStatus);
 
                 if (resignation == null)
                 {

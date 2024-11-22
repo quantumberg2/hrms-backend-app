@@ -152,14 +152,14 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         }
 
-        public string ResignationUpdateByAdmin(int empCredId, int id, AdminResignationApprovalDTO resignation)
+        public string ResignationUpdateByAdmin(int empCredId,int id, AdminResignationApprovalDTO resignation)
         {
             var existingResignation = _context.Resignations.FirstOrDefault(e => e.Id == id && e.EmpCredentialId==empCredId);
             if (existingResignation == null)
             {
                 return "Resignation record not found.";
             }
-
+           
             var empCredInfo = _context.EmployeeCredentials.FirstOrDefault(e => e.Id == existingResignation.EmpCredentialId);
             if (empCredInfo == null)
             {
@@ -197,9 +197,10 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         }
 
-        public string UpdateResignationStatus(int empCredId,int id, string newStatus)
+        public string UpdateResignationStatus(int id, string newStatus)
         {
-            var resignation = _context.Resignations.FirstOrDefault(e => e.Id == id && e.EmpCredentialId == empCredId);
+            var resignation = _context.Resignations.FirstOrDefault(e => e.Id == id);
+            var resigApprovalInfo = _context.ResignationApprovalStatuses.FirstOrDefault(e=>e.Id==resignation.Id);
             if (resignation == null)
             {
                 return "Employee not found";
@@ -208,6 +209,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (string.Equals(newStatus, "Withdraw", StringComparison.OrdinalIgnoreCase))
             {
                 resignation.IsActive = 0;
+                resigApprovalInfo.IsActive = 0;
             }
 
             resignation.Status = newStatus;
@@ -238,9 +240,21 @@ namespace HRMS_Application.BusinessLogic.Implements
                                     }).ToList();
 
                 return resignations;
-
-
         }
-        
+        public Resignation UpdateResigStatusUserId(int empCredId, int id, string newStatus)
+        {
+            var resignation = (from row in _context.Resignations
+                               where row.EmpCredentialId == empCredId && row.Id == id
+                               select row).FirstOrDefault();
+            if(resignation!= null)
+            {
+                resignation.Status = newStatus;
+                _context.SaveChanges();
+            }
+
+            return resignation;
+        }
+
+       
     }
 }
