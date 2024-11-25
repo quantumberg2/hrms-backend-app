@@ -90,7 +90,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                                  (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
                                  (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
                                  (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||
-                                 (leaveTracking.Startdate <= lt.Enddate && leaveTracking.Enddate > lt.Enddate)
+                                 (leaveTracking.Startdate <= lt.Enddate && leaveTracking.Enddate > lt.Enddate) ||
+                                  (leaveTracking.Startdate == lt.Enddate || leaveTracking.Enddate == lt.Startdate)
                              )).FirstOrDefaultAsync();
 
             if (overlappingLeave != null)
@@ -466,7 +467,8 @@ namespace HRMS_Application.BusinessLogic.Implements
         .Where(lt => lt.EmpCredentialId == empCredentialId &&
                      ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
                       (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
-                      (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate)))
+                      (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||
+                      (leaveTracking.Startdate == lt.Enddate || leaveTracking.Enddate == lt.Startdate)))
         .Select(lt => new { lt.Status, lt.Startdate, lt.Enddate })
         .FirstOrDefaultAsync();
 
