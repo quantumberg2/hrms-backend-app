@@ -119,27 +119,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 throw new Exception("Employee information not found.");
             }
 
-            // Fetch Manager Information
-            var managerInfo = await (from ed in _hrmsContext.EmployeeDetails
-                                     join ec in _hrmsContext.EmployeeCredentials
-                                     on ed.ManagerId equals ec.Id
-                                     where ed.EmployeeCredentialId == empCredentialId
-                                     select new
-                                     {
-                                         ManagerEmail = ec.Email,
-                                         ManagerName = ec.UserName
-                                     }).FirstOrDefaultAsync();
-
-            if (managerInfo == null)
-            {
-                throw new Exception("Manager information not found.");
-            }
-
-            // Email Parameters and Body Messages
             string employeeBodyMessage = "Your leave request has been successfully submitted and is pending approval.";
-            string managerBodyMessage = $"{empInfo.UserName} has submitted a leave request for {leaveTracking.Startdate?.ToString("yyyy-MM-dd")} to {leaveTracking.Enddate?.ToString("yyyy-MM-dd")} and is awaiting your approval.";
-
-            // Employee Email Parameters
             var employeeParameters = new Dictionary<string, string>
             {
                 { "To", empInfo.Email },
@@ -150,33 +130,44 @@ namespace HRMS_Application.BusinessLogic.Implements
                 { "BodyMessage", employeeBodyMessage }
             };
 
-            // Manager Email Parameters
-            var managerParameters = new Dictionary<string, string>
-        {
-            { "To", managerInfo.ManagerEmail },
-            { "Subject", "Leave Request Pending Approval" },
-            { "Name", managerInfo.ManagerName },
-            { "StartDate", leaveTracking.Startdate?.ToString("yyyy-MM-dd") ?? string.Empty },
-            { "EndDate", leaveTracking.Enddate?.ToString("yyyy-MM-dd") ?? string.Empty },
-            { "BodyMessage", managerBodyMessage }
-        };
-
-            // Send emails to both employee and manager
             string employeeEmailTemplate = constants.LeaveNotificationTemplate;
-            string managerEmailTemplate = constants.LeaveNotificationTemplate;
-
             foreach (var param in employeeParameters)
             {
                 employeeEmailTemplate = employeeEmailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
             }
 
-            foreach (var param in managerParameters)
-            {
-                managerEmailTemplate = managerEmailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
-            }
-
             await _alertEmail.SendEmailAsync(employeeEmailTemplate, employeeParameters);
-            await _alertEmail.SendEmailAsync(managerEmailTemplate, managerParameters);
+
+            var managerInfo = await (from ed in _hrmsContext.EmployeeDetails
+                                     join ec in _hrmsContext.EmployeeCredentials
+                                     on ed.ManagerId equals ec.Id
+                                     where ed.EmployeeCredentialId == empCredentialId
+                                     select new
+                                     {
+                                         ManagerEmail = ec.Email,
+                                         ManagerName = ec.UserName
+                                     }).FirstOrDefaultAsync();
+
+            if (managerInfo != null)
+            {
+                string managerBodyMessage = $"{empInfo.UserName} has submitted a leave request for {leaveTracking.Startdate?.ToString("yyyy-MM-dd")} to {leaveTracking.Enddate?.ToString("yyyy-MM-dd")} and is awaiting your approval.";
+                var managerParameters = new Dictionary<string, string>
+                {
+                    { "To", managerInfo.ManagerEmail },
+                    { "Subject", "Leave Request Pending Approval" },
+                    { "Name", managerInfo.ManagerName },
+                    { "StartDate", leaveTracking.Startdate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                    { "EndDate", leaveTracking.Enddate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                    { "BodyMessage", managerBodyMessage }
+                };
+
+                string managerEmailTemplate = constants.LeaveNotificationTemplate;
+                foreach (var param in managerParameters)
+                {
+                    managerEmailTemplate = managerEmailTemplate.Replace($"{{{{{param.Key}}}}}", param.Value);
+                }
+                await _alertEmail.SendEmailAsync(managerEmailTemplate, managerParameters);
+            }
 
             return leaveTracking;
         }
