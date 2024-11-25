@@ -2,6 +2,7 @@
 {
     public class ResignationStatusDTO
     {
+        public int id { get; set; }
         public string Reason { get; set; }
         public DateTime? ExitDate { get; set; }
         public DateTime? CreatedDate { get; set; }

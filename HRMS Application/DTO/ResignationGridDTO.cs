@@ -4,6 +4,7 @@ namespace HRMS_Application.DTO
 {
     public class ResignationGridDTO
     {
+        public int id { get; set; }
      public string  EmployeeName { get; set; }
      public string EmployeeNumber { get; set; }
      public string Reason { get; set; }

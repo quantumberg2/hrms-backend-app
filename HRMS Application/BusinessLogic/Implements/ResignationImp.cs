@@ -30,6 +30,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                       join mgr in _context.EmployeeDetails on empDetail.ManagerId equals mgr.Id 
                                       select new ResignationStatusDTO
                                       {
+                                          id = row.Id,
                                           Status = row.Status,
                                           CreatedDate = row.CreatedDate,
                                           ExitDate = row.ExitDate,
@@ -48,6 +49,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                              join empDetail in _context.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
                              select new ResignationGridDTO
                              {
+                                 id = row.Id,
                                  EmployeeName = empDetail.FirstName +"" + empDetail.LastName,
                                  EmployeeNumber = empDetail.EmployeeNumber,
                                  Reason = row.Reason,
@@ -231,6 +233,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                      && resig.IsActive == 1
                                select new ResignationGridDTO
                                {
+                                   id = resig.Id,
                                         EmployeeName = emp.FirstName + " " + emp.LastName,
                                         EmployeeNumber = emp.EmployeeNumber,
                                         Reason = resig.Reason,

@@ -220,7 +220,7 @@ namespace HRMS_Application.Controllers
 
                 if (resignation == null)
                 {
-                    return NotFound("Leave record not found.");
+                    return NotFound("Resignation record not found.");
                 }
 
                 return Ok(resignation);

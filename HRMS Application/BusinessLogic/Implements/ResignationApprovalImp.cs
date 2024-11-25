@@ -92,14 +92,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (employee == null)
                 return "Failed: Employee not found.";
 
-           /* var position = employee.PositionId.HasValue
-                ? _context.Positions.FirstOrDefault(p => p.Id == employee.PositionId)
-                : null;
-
-            if (position == null || position.Name != "Manager")
-                return "Unauthorized: Only Managers can approve.";*/
-
-            // Update manager approval status
+         
             resignation.ManagerApprovalStatus = managerApprovalStatus;
             _context.SaveChanges();
 
