@@ -102,6 +102,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     : $"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.";
                 throw new Exception(overlapStatusMessage);
             }
+            leaveTracking.Startdate = leaveTracking.Startdate?.Date; // Truncate time for Startdate
+            leaveTracking.Enddate = leaveTracking.Enddate?.Date;
 
             // Add new leave request
             await _hrmsContext.LeaveTrackings.AddAsync(leaveTracking);
