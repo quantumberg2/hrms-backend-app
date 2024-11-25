@@ -87,11 +87,12 @@ namespace HRMS_Application.BusinessLogic.Implements
                 .Where(lt => lt.EmpCredentialId == empCredentialId &&
                              (lt.Status == "Pending" || lt.Status == "Approved") &&
                              (
-                                 (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
-                                 (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
-                                 (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) ||
-                                 (leaveTracking.Startdate <= lt.Enddate && leaveTracking.Enddate > lt.Enddate) ||
-                                  (leaveTracking.Startdate == lt.Enddate || leaveTracking.Enddate == lt.Startdate)
+                                  (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within existing leave
+                     (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within existing leave
+                     (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) || // New leave encompasses existing leave
+                     (leaveTracking.Startdate == lt.Enddate) ||                                          // New leave starts on existing leave's end date
+                     (leaveTracking.Enddate == lt.Startdate) ||                                          // New leave ends on existing leave's start date
+                     (leaveTracking.Startdate == lt.Startdate || leaveTracking.Enddate == lt.Enddate)    // Exact match of Start or End
                              )).FirstOrDefaultAsync();
 
             if (overlappingLeave != null)
@@ -463,7 +464,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         .Where(lt => lt.Id == leaveTracking.LeaveTypeId && lt.IsActive == 1)
         .FirstOrDefaultAsync();
 
-    var overlappingLeave = await _hrmsContext.LeaveTrackings
+        var overlappingLeave = await _hrmsContext.LeaveTrackings
         .Where(lt => lt.EmpCredentialId == empCredentialId &&
                      ((leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) ||
                       (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||
