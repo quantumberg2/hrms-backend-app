@@ -11,7 +11,7 @@ namespace HRMS_Application.BusinessLogic.Interface
         public List<ResignationGridDTO> GetResignationDetailsforGrid();
         public List<ResignationGridDTO> GetResignationInfoByStatus(string status, int empCredId);
         public string InsertResignation(int empCredId, ResignationDTO resignation);
-        public string ResignationUpdateByAdmin(int empCredId,int id, AdminResignationApprovalDTO resignation);
+        public string ResignationUpdateByAdmin(int id, AdminResignationApprovalDTO resignation);
         public string UpdateResignation(Resignation resignation);
         public string UpdateResignationStatus(int id, string newStatus);
         public bool SoftDeleteResignation(int id,short isActive );

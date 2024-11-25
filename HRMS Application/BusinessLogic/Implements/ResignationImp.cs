@@ -154,9 +154,9 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         }
 
-        public string ResignationUpdateByAdmin(int empCredId,int id, AdminResignationApprovalDTO resignation)
+        public string ResignationUpdateByAdmin(int id, AdminResignationApprovalDTO resignation)
         {
-            var existingResignation = _context.Resignations.FirstOrDefault(e => e.Id == id && e.EmpCredentialId==empCredId);
+            var existingResignation = _context.Resignations.FirstOrDefault(e => e.Id == id);
             if (existingResignation == null)
             {
                 return "Resignation record not found.";
@@ -253,6 +253,12 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 resignation.Status = newStatus;
                 _context.SaveChanges();
+
+                if(resignation.Status == "Withdraw")
+                {
+                    resignation.IsActive = 0;
+                    _context.SaveChanges();
+                }
             }
 
             return resignation;

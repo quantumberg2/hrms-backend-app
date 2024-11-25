@@ -1,5 +1,6 @@
 ﻿using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -84,16 +85,18 @@ namespace HRMS_Application.BusinessLogic.Implements
 
         public string UpdateManagerApprovalStatus(int empCredId, int id, string managerApprovalStatus)
         {
-            var resignation = _context.ResignationApprovalStatuses.FirstOrDefault(r => r.Id == id);
+            var resignation = _context.Resignations.FirstOrDefault(r => r.Id == id);
             if (resignation == null)
                 return "Failed: Resignation record not found.";
+
+            var resigApprovInfo = _context.ResignationApprovalStatuses.FirstOrDefault();
 
             var employee = _context.EmployeeDetails.FirstOrDefault(e => e.EmployeeCredentialId == empCredId);
             if (employee == null)
                 return "Failed: Employee not found.";
 
-         
-            resignation.ManagerApprovalStatus = managerApprovalStatus;
+
+            resigApprovInfo.ManagerApprovalStatus = managerApprovalStatus;
             _context.SaveChanges();
 
             return "Manager approval status updated successfully.";
