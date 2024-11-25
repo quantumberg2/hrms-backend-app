@@ -71,27 +71,7 @@ namespace HRMS_Application.Controllers
         public async Task<IActionResult> GetResignationDetailsforGrid()
         {
             _logger.LogInformation("Resignation initiate and approve method initiated");
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized("Authorization header is missing or token is empty.");
-            }
-
-            var handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(token))
-            {
-                return Unauthorized("Invalid token format.");
-            }
-
-            var jwtToken = handler.ReadJwtToken(token);
-            var roleClaims = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Roles")?.Value;
-
-            if (string.IsNullOrEmpty(roleClaims))
-            {
-                return Unauthorized("Roles claim not found in the token.");
-            }
-
+           
             var res = _resignation.GetResignationDetailsforGrid();
             return Ok(res);
 
@@ -159,39 +139,55 @@ namespace HRMS_Application.Controllers
         public async Task<IActionResult> ResignationUpdateByAdmin(int id,AdminResignationApprovalDTO resignation)
         {
             _logger.LogInformation("Resignation initiate and approve method initiated");
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized("Authorization header is missing or token is empty.");
-            }
-
-            var handler = new JwtSecurityTokenHandler();
-            if (!handler.CanReadToken(token))
-            {
-                return Unauthorized("Invalid token format.");
-            }
-
-            var jwtToken = handler.ReadJwtToken(token);
-            var roleClaims = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Roles")?.Value;
-
-            if (string.IsNullOrEmpty(roleClaims))
-            {
-                return Unauthorized("Roles claim not found in the token.");
-            }
-
-                var res = _resignation.ResignationUpdateByAdmin(id, resignation);
+           
+            var res = _resignation.ResignationUpdateByAdmin(id, resignation);
                 return Ok(res);
      
         }
 
-        [HttpPut("StatusUpdate")]
-        [Authorize(new[] { "Admin", "User" })]
-        public string UpdateResignationStatus(int id, string newStatus)
+        [HttpPut("StatusUpdate(Withdraw)")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateResignationStatus(int id, string newStatus)
         {
-            _logger.LogInformation("Resignation Status Update method started");
-            var res = _resignation.UpdateResignationStatus(id, newStatus);
-            return res;
+            _logger.LogInformation("Update new resignation status method started");
+
+            try
+            {
+                var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Authorization header is missing or token is empty.");
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                if (!handler.CanReadToken(token))
+                {
+                    return Unauthorized("Invalid token format.");
+                }
+
+                var jwtToken = handler.ReadJwtToken(token);
+                var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
+
+                if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var empCredId))
+                {
+                    return Unauthorized("Employee credential ID not found or invalid in the token.");
+                }
+
+                var resignation =  _resignation.UpdateResigStatusUserId(empCredId, id, newStatus);
+
+                if (resignation == null)
+                {
+                    return NotFound("Resignation record not found.");
+                }
+
+                return Ok(resignation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
         }
 
         [HttpGet("GetResignationbyStatus/{status}")]

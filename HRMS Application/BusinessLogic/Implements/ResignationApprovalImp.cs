@@ -1,5 +1,6 @@
 ﻿using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -52,60 +53,54 @@ namespace HRMS_Application.BusinessLogic.Implements
             }
         }
 
-        public string UpdateAdminApprovalStatus(int id, string adminApprovalStatus)
-        {
-            var res = (from row in _context.Resignations
-                         where row.Id == id
-                         select row).FirstOrDefault();
-            if (res != null)
-            {
-                res.Status = adminApprovalStatus;
+        //public string UpdateAdminApprovalStatus(int id, string adminApprovalStatus)
+        //{
+        //    var res = (from row in _context.Resignations
+        //                 where row.Id == id
+        //                 select row).FirstOrDefault();
+        //    if (res != null)
+        //    {
+        //        res.Status = adminApprovalStatus;
 
-                var ResigApptable = (from row in _context.ResignationApprovalStatuses
-                                     where row.Id == id
-                                     select row).FirstOrDefault();
-                if (ResigApptable != null)
-                {
-                    if(ResigApptable.AdminApprovalStatus=="Approved" && ResigApptable.ManagerApprovalStatus=="Approved")
-                    {
-                        res.Status = "Approved";
-                        res.UpdatedDate = DateTime.Now;
-                        _context.Resignations.Update(res);
-                        _context.SaveChanges();
-                    }
-                }
-                return "Admin approval status updated";
+        //        var ResigApptable = (from row in _context.ResignationApprovalStatuses
+        //                             where row.Id == id
+        //                             select row).FirstOrDefault();
+        //        if (ResigApptable != null)
+        //        {
+        //            if(ResigApptable.AdminApprovalStatus=="Approved" && ResigApptable.ManagerApprovalStatus=="Approved")
+        //            {
+        //                res.Status = "Approved";
+        //                res.UpdatedDate = DateTime.Now;
+        //                _context.Resignations.Update(res);
+        //                _context.SaveChanges();
+        //            }
+        //        }
+        //        return "Admin approval status updated";
 
 
-            }
-            else
-                return "failed to update admin approval";
-
-            
-        }
+        //    }
+        //    else
+        //        return "failed to update admin approval";        
+        //}
 
         public string UpdateManagerApprovalStatus(int empCredId, int id, string managerApprovalStatus)
         {
-            var resignation = _context.ResignationApprovalStatuses.FirstOrDefault(r => r.Id == id);
+            var resignation = _context.Resignations.FirstOrDefault(r => r.Id == id);
             if (resignation == null)
                 return "Failed: Resignation record not found.";
+
+            var resigApprovInfo = _context.ResignationApprovalStatuses.FirstOrDefault(r => r.ResignationId == id);
 
             var employee = _context.EmployeeDetails.FirstOrDefault(e => e.EmployeeCredentialId == empCredId);
             if (employee == null)
                 return "Failed: Employee not found.";
 
-            var position = employee.PositionId.HasValue
-                ? _context.Positions.FirstOrDefault(p => p.Id == employee.PositionId)
-                : null;
 
-            if (position == null || position.Name != "Manager")
-                return "Unauthorized: Only Managers can approve.";
-
-            // Update manager approval status
-            resignation.ManagerApprovalStatus = managerApprovalStatus;
+            resigApprovInfo.ManagerApprovalStatus = managerApprovalStatus;
             _context.SaveChanges();
 
             return "Manager approval status updated successfully.";
+
         }
 
 
