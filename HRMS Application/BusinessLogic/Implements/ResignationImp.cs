@@ -189,7 +189,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             existingResignation.PersonalEmailAddress = resignation?.PersonalEmailAddress;
             existingResignation.UpdatedDate = DateTime.Now; 
 
-            empCredInfo.ResignedDate = DateTime.Now;
+            empCredInfo.ResignedDate = existingResignation.ExitDate;
 
             resigApprovalInfo.AdminApprovalStatus = "Approved";
 
@@ -199,7 +199,7 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             int result = _context.SaveChanges();
 
-            return result > 0 ? "Resignation updated and approved successfully." : "Failed to update resignation.";
+            return result > 0 ? "Resignation Approved by the Admin successfully." : "Failed to initiate resignation.";
 
         }
 
