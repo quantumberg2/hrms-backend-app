@@ -570,7 +570,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                                         : 0
                                  }).ToList();
 
-                                   return pendingLeaves;
+              return pendingLeaves;
         }
         
             public List<LeavePendingDTO> GetHistoryLeaves(int employeeCredentialId)
