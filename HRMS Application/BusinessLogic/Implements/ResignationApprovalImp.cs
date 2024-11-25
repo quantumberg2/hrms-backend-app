@@ -89,7 +89,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             if (resignation == null)
                 return "Failed: Resignation record not found.";
 
-            var resigApprovInfo = _context.ResignationApprovalStatuses.FirstOrDefault();
+            var resigApprovInfo = _context.ResignationApprovalStatuses.FirstOrDefault(r => r.ResignationId == id);
 
             var employee = _context.EmployeeDetails.FirstOrDefault(e => e.EmployeeCredentialId == empCredId);
             if (employee == null)
@@ -100,6 +100,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             _context.SaveChanges();
 
             return "Manager approval status updated successfully.";
+
         }
 
 

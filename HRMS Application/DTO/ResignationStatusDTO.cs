@@ -9,6 +9,8 @@
         public DateTime? StartDate { get; set; }
         public string Status { get; set; }
         public string managerName { get; set; }
+        public string managerApprovalStatus { get; set; }
+        public string adminApprovalStatus { get; set; }
 
     }
 }

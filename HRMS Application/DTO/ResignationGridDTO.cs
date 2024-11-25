@@ -11,5 +11,7 @@ namespace HRMS_Application.DTO
      public string Status { get; set; }
      public DateTime? SeparationDate { get; set; }
      public DateTime? LastWorkingDay { get; set; }
+     public string managerApprovalStatus { get; set; }
+     public string adminApprovalStatus { get; set; }
     }
 }

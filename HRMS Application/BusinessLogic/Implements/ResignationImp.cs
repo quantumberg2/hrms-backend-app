@@ -25,6 +25,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
             var resignationDetails = (from row in _context.Resignations
                                       where row.EmpCredentialId == empCredId && row.IsActive == 1
+                                      join resigApproval in _context.ResignationApprovalStatuses on row.Id equals resigApproval.ResignationId
                                       join empCred in _context.EmployeeCredentials on row.EmpCredentialId equals empCred.Id
                                       join empDetail in _context.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
                                       join mgr in _context.EmployeeDetails on empDetail.ManagerId equals mgr.Id 
@@ -33,9 +34,12 @@ namespace HRMS_Application.BusinessLogic.Implements
                                           id = row.Id,
                                           Status = row.Status,
                                           CreatedDate = row.CreatedDate,
+                                          StartDate = row.StartDate,
                                           ExitDate = row.ExitDate,
                                           Reason = row.Reason,
-                                          managerName = mgr.FirstName + " " + mgr.LastName
+                                          managerName = mgr.FirstName + " " + mgr.LastName,
+                                          adminApprovalStatus = resigApproval.AdminApprovalStatus,
+                                          managerApprovalStatus = resigApproval.ManagerApprovalStatus
                                       }).ToList();
 
             return resignationDetails;
@@ -226,6 +230,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         {
 
             var resignations = (from resig in _context.Resignations
+                                join resigApproval in _context.ResignationApprovalStatuses on resig.Id equals resigApproval.ResignationId
                                join emp in _context.EmployeeDetails on resig.EmpCredentialId equals emp.EmployeeCredentialId
                                where resig.Status == status
                                      && emp.ManagerId == empCredId
@@ -239,8 +244,11 @@ namespace HRMS_Application.BusinessLogic.Implements
                                         Reason = resig.Reason,
                                         SeparationDate = resig.StartDate,
                                         LastWorkingDay = resig.ExitDate,
-                                        Status = status
-                                    }).ToList();
+                                        Status = status,
+                                        managerApprovalStatus = resigApproval.ManagerApprovalStatus,
+                                        adminApprovalStatus = resigApproval.AdminApprovalStatus
+
+                               }).ToList();
 
                 return resignations;
         }
