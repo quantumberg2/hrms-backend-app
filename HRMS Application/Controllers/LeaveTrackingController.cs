@@ -118,7 +118,6 @@ namespace HRMS_Application.Controllers
 
             try
             {
-               
 
                 // Map the DTO to the entity model
                 var leaveTracking = new LeaveTracking
