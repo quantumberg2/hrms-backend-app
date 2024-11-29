@@ -76,6 +76,7 @@ namespace HRMS_Application.Models
             }
         }
         public virtual DbSet<CompanyDetail> CompanyDetails { get; set; }
+        public virtual DbSet<CompanyNoticePeriod> CompanyNoticePeriods { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<DeviceTable> DeviceTables { get; set; }
         public virtual DbSet<EmpCredIdEmpCodeMapping> EmpCredIdEmpCodeMappings { get; set; }
@@ -90,6 +91,7 @@ namespace HRMS_Application.Models
         public virtual DbSet<LeaveType> LeaveTypes { get; set; }
         public virtual DbSet<News> News { get; set; }
         public virtual DbSet<NewsPreview> NewsPreviews { get; set; }
+        public virtual DbSet<OrganizationWorkingDay> OrganizationWorkingDays { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<RequestedCompanyForm> RequestedCompanyForms { get; set; }
         public virtual DbSet<Resignation> Resignations { get; set; }
@@ -356,6 +358,19 @@ namespace HRMS_Application.Models
                     .WithMany(p => p.CompanyDetails)
                     .HasForeignKey(d => d.RequestedCompanyId)
                     .HasConstraintName("FK__Company_D__Reque__40F9A68C");
+            });
+
+            modelBuilder.Entity<CompanyNoticePeriod>(entity =>
+            {
+                entity.ToTable("Company_NoticePeriod");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.CompanyNoticePeriods)
+                    .HasForeignKey(d => d.CompanyId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Company_NoticePeriod_Company");
             });
 
             modelBuilder.Entity<Department>(entity =>
@@ -802,6 +817,17 @@ namespace HRMS_Application.Models
                 entity.Property(e => e.InsertedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.IsActive).HasColumnName("isActive");
+            });
+
+            modelBuilder.Entity<OrganizationWorkingDay>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.OrganizationWorkingDays)
+                    .HasForeignKey(d => d.CompanyId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrganizationWorkingDays_Company");
             });
 
             modelBuilder.Entity<Position>(entity =>

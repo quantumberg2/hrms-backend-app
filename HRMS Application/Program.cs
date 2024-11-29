@@ -69,7 +69,7 @@ builder.Services.AddScoped<INews, NewsImp>();
 builder.Services.AddScoped<INewsPreview, NewPreviewImp>();
 builder.Services.AddScoped<IRegularization, RegularizationImp>();
 builder.Services.AddScoped<IContactUs, ContactUsImp>();
-
+builder.Services.AddScoped<ICompanyNoticeperiod, CompanyNoticeperiodImp>();
 builder.Services.AddScoped<IResignation, ResignationImp>();
 builder.Services.AddScoped<IResignationApproval, ResignationApprovalImp>();
 
