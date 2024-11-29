@@ -1,8 +1,10 @@
 ﻿using Azure.Core;
 using HRMS_Application.BusinessLogic.Interface;
+using HRMS_Application.Controllers;
 using HRMS_Application.DTO;
 using HRMS_Application.Middleware.Exceptions;
 using HRMS_Application.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Eventing.Reader;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -272,6 +274,36 @@ namespace HRMS_Application.BusinessLogic.Implements
             return resignation;
         }
 
-       
+        public async Task<string> UpdateResignationLastDate(int empCredId, int id, ExitDateRequestDTO request)
+        {
+            var employee = await _context.EmployeeDetails
+                                         .FirstOrDefaultAsync(e => e.EmployeeCredentialId == empCredId);
+
+            if (employee == null)
+            {
+                return $"Employee with ID {empCredId} not found.";
+            }
+
+            var resignation = await _context.Resignations
+                                             .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (resignation == null)
+            {
+                return $"Resignation with ID {id} not found.";
+            }
+
+            if (request == null || !request.ExitDate.HasValue)
+            {
+                return "ExitDate is required.";
+            }
+
+            resignation.ExitDate = request.ExitDate;
+            resignation.UpdatedDate = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return "Last date updated successfully.";
+        }
+
     }
 }
