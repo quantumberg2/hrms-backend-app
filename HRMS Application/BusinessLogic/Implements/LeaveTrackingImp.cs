@@ -229,8 +229,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 {
                     { "To", empInfo.Email },
                     { "Name", empInfo.UserName },
-                    { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
-                    { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+                    { "StartDate", empInfo.StartDate?.ToString("dd-MM-yyyy") ?? string.Empty },
+                    { "EndDate", empInfo.EndDate?.ToString("dd-MM-yyyy") ?? string.Empty }
                 };
                 string employeeBodyMessage = string.Empty;
 
@@ -304,8 +304,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                         { "To", managerInfo.ManagerEmail },
                         { "Subject", employeeParameters["Subject"] },
                         { "Name", empInfo.UserName },
-                        { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
-                        { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                        { "StartDate", empInfo.StartDate?.ToString("dd-MM-yyyy") ?? string.Empty },
+                        { "EndDate", empInfo.EndDate?.ToString("dd-MM-yyyy") ?? string.Empty },
                         { "BodyMessage", managerBodyMessage }
                     };
 
@@ -527,8 +527,8 @@ namespace HRMS_Application.BusinessLogic.Implements
             {
                 { "To", empInfo.Email },
                 { "EmployeeName", empInfo.UserName },
-                { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
-                { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
+                { "StartDate", empInfo.StartDate?.ToString("dd-MM-yyyy") ?? string.Empty },
+                { "EndDate", empInfo.EndDate?.ToString("dd-MM-yyyy") ?? string.Empty }
             };
 
             string emailTemplate = constants.LeaveNotificationTemplate;
