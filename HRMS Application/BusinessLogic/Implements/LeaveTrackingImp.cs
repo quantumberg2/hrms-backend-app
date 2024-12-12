@@ -130,8 +130,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                 { "To", empInfo.Email },
                 { "Subject", "Leave Request Received" },
                 { "Name", empInfo.UserName },
-                { "StartDate", leaveTracking.Startdate?.ToString("yyyy-MM-dd") ?? string.Empty },
-                { "EndDate", leaveTracking.Enddate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                { "StartDate", leaveTracking.Startdate?.ToString("dd-MM-yyyy") ?? string.Empty },
+                { "EndDate", leaveTracking.Enddate?.ToString("dd-MM-yyyy") ?? string.Empty },
                 { "BodyMessage", employeeBodyMessage }
             };
 
@@ -161,8 +161,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     { "To", managerInfo.ManagerEmail },
                     { "Subject", "Leave Request Pending Approval" },
                     { "Name", managerInfo.ManagerName },
-                    { "StartDate", leaveTracking.Startdate?.ToString("yyyy-MM-dd") ?? string.Empty },
-                    { "EndDate", leaveTracking.Enddate?.ToString("yyyy-MM-dd") ?? string.Empty },
+                    { "StartDate", leaveTracking.Startdate?.ToString("dd-MM-yyyy") ?? string.Empty },
+                    { "EndDate", leaveTracking.Enddate?.ToString("dd-MM-yyyy") ?? string.Empty },
                     { "BodyMessage", managerBodyMessage }
                 };
 
@@ -228,7 +228,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var employeeParameters = new Dictionary<string, string>
                 {
                     { "To", empInfo.Email },
-                    { "EmployeeName", empInfo.UserName },
+                    { "Name", empInfo.UserName },
                     { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
                     { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty }
                 };
@@ -303,7 +303,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     {
                         { "To", managerInfo.ManagerEmail },
                         { "Subject", employeeParameters["Subject"] },
-                        { "EmployeeName", empInfo.UserName },
+                        { "Name", empInfo.UserName },
                         { "StartDate", empInfo.StartDate?.ToString("yyyy-MM-dd") ?? string.Empty },
                         { "EndDate", empInfo.EndDate?.ToString("yyyy-MM-dd") ?? string.Empty },
                         { "BodyMessage", managerBodyMessage }

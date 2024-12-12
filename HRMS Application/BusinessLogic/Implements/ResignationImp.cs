@@ -4,7 +4,9 @@ using HRMS_Application.Controllers;
 using HRMS_Application.DTO;
 using HRMS_Application.Middleware.Exceptions;
 using HRMS_Application.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Ocsp;
 using System.Diagnostics.Eventing.Reader;
 
 namespace HRMS_Application.BusinessLogic.Implements
@@ -50,9 +52,11 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<ResignationGridDTO> GetResignationDetailsforGrid()
         {
             var resigInfo = (from row in _context.Resignations
-                             where row.IsActive == 1
+                             where row.IsActive == 1 
+                             join resigApprovalStatus in _context.ResignationApprovalStatuses on row.Id equals resigApprovalStatus.ResignationId
                              join empCred in _context.EmployeeCredentials on row.EmpCredentialId equals empCred.Id
                              join empDetail in _context.EmployeeDetails on empCred.Id equals empDetail.EmployeeCredentialId
+                             where resigApprovalStatus.ManagerApprovalStatus == "Approved"
                              select new ResignationGridDTO
                              {
                                  id = row.Id,
@@ -214,11 +218,19 @@ namespace HRMS_Application.BusinessLogic.Implements
                 return "Employee not found";
             }
 
-            if (string.Equals(newStatus, "Withdraw", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(newStatus, "Withdraw", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(newStatus, "Rejected", StringComparison.OrdinalIgnoreCase))
             {
                 resignation.IsActive = 0;
-                resigApprovalInfo.IsActive = 0;
+
+                if (resigApprovalInfo != null)
+                {
+                    resigApprovalInfo.IsActive = 0;
+                    _context.ResignationApprovalStatuses.Update(resigApprovalInfo);
+                    _context.SaveChanges();
+                }
             }
+
 
             resignation.Status = newStatus;
             _context.Resignations.Update(resignation);
@@ -233,27 +245,57 @@ namespace HRMS_Application.BusinessLogic.Implements
 
             var resignations = (from resig in _context.Resignations
                                 join resigApproval in _context.ResignationApprovalStatuses on resig.Id equals resigApproval.ResignationId
-                               join emp in _context.EmployeeDetails on resig.EmpCredentialId equals emp.EmployeeCredentialId
-                               where resig.Status == status
-                                     && emp.ManagerId == empCredId
-                                     && emp.IsActive == 1
-                                     && resig.IsActive == 1
-                               select new ResignationGridDTO
-                               {
-                                   id = resig.Id,
-                                        EmployeeName = emp.FirstName + " " + emp.LastName,
-                                        EmployeeNumber = emp.EmployeeNumber,
-                                        Reason = resig.Reason,
-                                        SeparationDate = resig.StartDate,
-                                        LastWorkingDay = resig.ExitDate,
-                                        Status = status,
-                                        managerApprovalStatus = resigApproval.ManagerApprovalStatus,
-                                        adminApprovalStatus = resigApproval.AdminApprovalStatus
+                                join emp in _context.EmployeeDetails on resig.EmpCredentialId equals emp.EmployeeCredentialId
+                                where resig.Status == status
+                                      && emp.ManagerId == empCredId
+                                      && emp.IsActive == 1
+                                      && resig.IsActive == 1
+                                select new ResignationGridDTO
+                                {
+                                    id = resig.Id,
+                                    EmployeeName = emp.FirstName + " " + emp.LastName,
+                                    EmployeeNumber = emp.EmployeeNumber,
+                                    Reason = resig.Reason,
+                                    SeparationDate = resig.StartDate,
+                                    LastWorkingDay = resig.ExitDate,
+                                    Status = status,
+                                    managerApprovalStatus = resigApproval.ManagerApprovalStatus,
+                                    adminApprovalStatus = resigApproval.AdminApprovalStatus
 
-                               }).ToList();
+                                }).ToList();
 
-                return resignations;
+            return resignations;
         }
+        public string ResignationRejectStatusUpdate(int empCredId, int id, string newStatus)
+        {
+            var resignation = _context.Resignations.FirstOrDefault(r => r.Id == id);
+            if (resignation == null)
+                return "Resignation Not found";
+
+            var employee = _context.EmployeeDetails.FirstOrDefault(e => e.EmployeeCredentialId == empCredId);
+            if (employee == null)
+                return "Employee details not found";
+
+            if (resignation != null)
+            {
+                resignation.Status = newStatus;
+
+                if (string.Equals(newStatus, "Rejected", StringComparison.OrdinalIgnoreCase))
+                {
+                    resignation.IsActive = 0;
+
+                    _context.Resignations.Update(resignation);
+                    _context.SaveChanges();
+                }
+                _context.Resignations.Update(resignation);
+                _context.SaveChanges();
+
+                return "Resignations Rejected";
+            }
+            return "Failed to reject the resignation";
+
+        }
+
         public Resignation UpdateResigStatusUserId(int empCredId, int id, string newStatus)
         {
             var resignation = (from row in _context.Resignations
