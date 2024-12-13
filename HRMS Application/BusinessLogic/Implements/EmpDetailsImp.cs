@@ -245,6 +245,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return new UpdateEmployeeInfoDTO
             {
                 EmployeeCredentialId = employeeCredentialId,
+                EmpployeeNumber = employeeDetail.EmployeeNumber,
                 EmployeeName = employeeDetail.FirstName,
                 NickName = employeeDetail.NickName,
                 EmailAddress = employeeDetail.Email,
