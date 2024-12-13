@@ -4,7 +4,9 @@ using HRMS_Application.DTO;
 using HRMS_Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
+using static HRMS_Application.BusinessLogic.Implements.ResignationImp;
 
 namespace HRMS_Application.Controllers
 {
@@ -19,6 +21,7 @@ namespace HRMS_Application.Controllers
         {
             _logger = logger;
             _resignation = resignation;
+          
         }
 
         [HttpGet]
@@ -225,5 +228,70 @@ namespace HRMS_Application.Controllers
 
             return Ok(resignations);
         }
+
+        [HttpPut("StatusUpdate(Rejected)")]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> ResignationRejectStatusUpdate(int id, string newStatus)
+        {
+            _logger.LogInformation("Resignation Reject Status Update method started");
+
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Authorization header is missing or token is empty.");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token))
+            {
+                return Unauthorized("Invalid token format.");
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+            var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
+
+            if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var empCredId))
+            {
+                return Unauthorized("Employee credential ID not found or invalid in the token.");
+            }
+
+            var  res  = _resignation.ResignationRejectStatusUpdate(empCredId, id, newStatus);
+            return Ok(res);
+        }
+
+        [HttpPut("UpdateLastDate")]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> UpdateResignationLastDate(int id, ExitDateRequestDTO request)
+        {
+            _logger.LogInformation("Update the resignation last date method started");
+
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "").Trim();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized("Authorization header is missing or token is empty.");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token))
+            {
+                return Unauthorized("Invalid token format.");
+            }
+
+            var jwtToken = handler.ReadJwtToken(token);
+            var employeeCredentialIdClaim = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "UserId")?.Value;
+
+            if (string.IsNullOrEmpty(employeeCredentialIdClaim) || !int.TryParse(employeeCredentialIdClaim, out var empCredId))
+            {
+                return Unauthorized("Employee credential ID not found or invalid in the token.");
+            }
+
+            var result = await _resignation.UpdateResignationLastDate(empCredId, id, request);
+
+            return Ok(result);
+        }
+
     }
+
 }

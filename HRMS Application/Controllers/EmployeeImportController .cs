@@ -27,7 +27,7 @@ namespace HRMS_Application.Controllers
         [Route("download-employee-file")]
         public async Task<IActionResult> DownloadEmployeeFile()
         {
-            string fileUrl = "https://quantumbergtest.blob.core.windows.net/hrms-files/Add_Bulk_Employee_Template.xlsx";
+            string fileUrl = "https://hrmsstoragecontainer.blob.core.windows.net/hrms-files/Add_Bulk_Employee_Templete.csv";
 
             try
             {
@@ -38,7 +38,7 @@ namespace HRMS_Application.Controllers
                     return NotFound("File could not be found.");
                 }
 
-                return File(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Add_Bulk_Employee_Template.xlsx");
+                return File(fileStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Add_Bulk_Employee_Templete.csv");
             }
             catch (Exception ex)
             {

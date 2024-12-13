@@ -35,10 +35,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Company_NoticePeriod]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Department]",
          "ObjectType": 0
       },
@@ -95,23 +91,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[OrganizationWorkingDays]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Position]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Requested_company_form]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Resignation]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ResignationApprovalStatus]",
          "ObjectType": 0
       },
       {
