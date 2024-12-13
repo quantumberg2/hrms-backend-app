@@ -82,27 +82,70 @@ namespace HRMS_Application.BusinessLogic.Implements
             DecodeToken();
             leaveTracking.EmpCredentialId = empCredentialId;
 
-            
-            // Check for overlapping leave
-            var overlappingLeave = await _hrmsContext.LeaveTrackings
-                .Where(lt => lt.EmpCredentialId == empCredentialId &&
-                             (lt.Status == "Pending" || lt.Status == "Approved") &&
-                             (
-                                  (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within existing leave
-                     (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within existing leave
-                     (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) || // New leave encompasses existing leave
-                     (leaveTracking.Startdate == lt.Enddate) ||                                          // New leave starts on existing leave's end date
-                     (leaveTracking.Enddate == lt.Startdate) ||                                          // New leave ends on existing leave's start date
-                     (leaveTracking.Startdate == lt.Startdate || leaveTracking.Enddate == lt.Enddate)    // Exact match of Start or End
-                             )).FirstOrDefaultAsync();
 
-            if (overlappingLeave != null)
+            // Check for overlapping leave
+            /*  var overlappingLeave = await _hrmsContext.LeaveTrackings
+                  .Where(lt => lt.EmpCredentialId == empCredentialId &&
+                               (lt.Status == "Pending" || lt.Status == "Approved") &&
+                               (
+                                    (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within existing leave
+                       (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within existing leave
+                       (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) || // New leave encompasses existing leave
+                       (leaveTracking.Startdate == lt.Enddate) ||                                          // New leave starts on existing leave's end date
+                       (leaveTracking.Enddate == lt.Startdate) ||                                          // New leave ends on existing leave's start date
+                       (leaveTracking.Startdate == lt.Startdate || leaveTracking.Enddate == lt.Enddate)    // Exact match of Start or End
+                               )).FirstOrDefaultAsync();
+
+              if (overlappingLeave != null)
+              {
+                  string overlapStatusMessage = overlappingLeave.Status == "Pending"
+                      ? $"There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}."
+                      : $"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.";
+                  throw new Exception(overlapStatusMessage);
+              }*/
+            var overlappingLeaves = await _hrmsContext.LeaveTrackings
+      .Where(lt => lt.EmpCredentialId == empCredentialId &&
+                   (lt.Status == "Pending" || lt.Status == "Approved") &&
+                   (
+                        (leaveTracking.Startdate >= lt.Startdate && leaveTracking.Startdate <= lt.Enddate) || // Start is within existing leave
+                        (leaveTracking.Enddate >= lt.Startdate && leaveTracking.Enddate <= lt.Enddate) ||     // End is within existing leave
+                        (leaveTracking.Startdate <= lt.Startdate && leaveTracking.Enddate >= lt.Enddate) || // New leave encompasses existing leave
+                        (leaveTracking.Startdate == lt.Enddate) ||                                          // New leave starts on existing leave's end date
+                        (leaveTracking.Enddate == lt.Startdate) ||                                          // New leave ends on existing leave's start date
+                        (leaveTracking.Startdate == lt.Startdate || leaveTracking.Enddate == lt.Enddate) || // Exact match of Start or End
+                        (leaveTracking.Startdate <= lt.Enddate && leaveTracking.Enddate >= lt.Startdate)    // Overlap regardless of range
+                   ))
+      .ToListAsync();
+
+            if (overlappingLeaves.Any())
             {
-                string overlapStatusMessage = overlappingLeave.Status == "Pending"
-                    ? $"There is already a pending leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}."
-                    : $"There is already an approved leave request for the dates {overlappingLeave.Startdate?.ToString("yyyy-MM-dd")} to {overlappingLeave.Enddate?.ToString("yyyy-MM-dd")}.";
-                throw new Exception(overlapStatusMessage);
+                string pendingLeaveMessage = null;
+                string approvedLeaveMessage = null;
+
+                foreach (var leave in overlappingLeaves)
+                {
+                    if (leave.Status == "Pending" && pendingLeaveMessage == null)
+                    {
+                        pendingLeaveMessage = $"There is already a pending leave request for the dates {leave.Startdate:yyyy-MM-dd} to {leave.Enddate:yyyy-MM-dd}.";
+                    }
+
+                    if (leave.Status == "Approved" && approvedLeaveMessage == null)
+                    {
+                        approvedLeaveMessage = $"There is already an approved leave request for the dates {leave.Startdate:yyyy-MM-dd} to {leave.Enddate:yyyy-MM-dd}.";
+                    }
+
+                    // Exit loop early if both messages are set
+                    if (pendingLeaveMessage != null && approvedLeaveMessage != null)
+                    {
+                        break;
+                    }
+                }
+
+                // Combine both messages into a single exception if applicable
+                string errorMessage = $"{pendingLeaveMessage ?? ""}\n{approvedLeaveMessage ?? ""}".Trim();
+                throw new Exception(errorMessage);
             }
+
             leaveTracking.Startdate = leaveTracking.Startdate?.Date; 
             leaveTracking.Enddate = leaveTracking.Enddate?.Date;
 

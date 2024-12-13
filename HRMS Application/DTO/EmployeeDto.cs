@@ -11,6 +11,7 @@
         public int? DeptId { get; set; }
         public int? PositionId { get; set; }
         public string? YearsExperience { get; set; }
+        public int? MangerId { get; set; }
         public int? isActive { get; set; }
 
 

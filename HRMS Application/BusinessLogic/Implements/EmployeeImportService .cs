@@ -54,6 +54,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 var designation = worksheet.Cells[row, 5].Text;
                 var email = worksheet.Cells[row, 6].Text;
                 var yearofexperience = worksheet.Cells[row, 7].Text;
+                var managerId = worksheet.Cells[row, 8].Text;
                 var missingFields = new List<string>();
                 if (string.IsNullOrWhiteSpace(employeeNumber))
                     missingFields.Add("Employee Number");
@@ -67,6 +68,8 @@ namespace HRMS_Application.BusinessLogic.Implements
                     missingFields.Add("Designation");
                 if (string.IsNullOrWhiteSpace(yearofexperience))
                     missingFields.Add("Years of Experience");
+                if (string.IsNullOrWhiteSpace(yearofexperience))
+                    missingFields.Add("Manager ID");
                 if (missingFields.Count > 0)
                 {
                     errors.Add($"Row {row}: Missing or invalid data for fields: {string.Join(", ", missingFields)}.");
@@ -74,8 +77,14 @@ namespace HRMS_Application.BusinessLogic.Implements
                     continue;
                 }
                 int? deptId = null;
-                int positionId = Convert.ToInt32(designation);
+              //  int positionId = Convert.ToInt32(designation);
                 var yearofexperiences = yearofexperience;
+
+                var position = await _context.Positions
+                 .FirstOrDefaultAsync(p => p.Name == designation && p.RequestedCompanyId == companyId && p.IsActive == 1);
+
+                var Manager = await _context.EmployeeDetails
+                    .FirstOrDefaultAsync(m => m.EmployeeNumber == managerId && m.RequestCompanyId == companyId && m.IsActive == 1);
 
                 var employee = new EmployeeDto
                 {
@@ -85,8 +94,9 @@ namespace HRMS_Application.BusinessLogic.Implements
                     LastName = lastName,
                     Email = email,
                     DeptId = deptId,
-                    PositionId = positionId,
+                    PositionId = position.Id,
                     YearsExperience = yearofexperiences,
+                    MangerId = Manager.EmployeeCredentialId,
                     isActive = 1,
                 };
                 employees.Add(employee);
@@ -140,6 +150,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                     PositionId = employeeDto.PositionId,
                     RequestCompanyId = companyId ,
                     NumberOfYearsExperience = employeeDto.YearsExperience,
+                    ManagerId = employeeDto.MangerId,
                     IsActive = 1,
                 };
 
