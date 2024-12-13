@@ -3,7 +3,6 @@
     public class UpdateEmployeeInfoDTO
     {
         public int? EmployeeCredentialId { get; set; }
-        public string EmpployeeNumber { get; set; } 
         public string? EmployeeName { get; set; }
         public string? NickName { get; set; }
         public string? EmailAddress { get; set; }

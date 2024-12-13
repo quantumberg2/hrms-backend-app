@@ -220,6 +220,7 @@ namespace HRMS_Application.BusinessLogic.Implements
             return employees.Select(employee => new EmployeeView
             {
                 EmployeeId = employee.Id,
+                EmpNumber = employee.EmployeeNumber,
                 EmployeeName = $"{employee.FirstName} {employee.MiddleName} {employee.LastName}",
                 Address = employee.EmployeeCredential.AddressInfos.FirstOrDefault()?.AddressLine1,
                 Gender = employee.EmployeeCredential.EmpPersonalInfos.FirstOrDefault()?.Gender,
@@ -245,7 +246,6 @@ namespace HRMS_Application.BusinessLogic.Implements
             return new UpdateEmployeeInfoDTO
             {
                 EmployeeCredentialId = employeeCredentialId,
-                EmpployeeNumber = employeeDetail.EmployeeNumber,
                 EmployeeName = employeeDetail.FirstName,
                 NickName = employeeDetail.NickName,
                 EmailAddress = employeeDetail.Email,
