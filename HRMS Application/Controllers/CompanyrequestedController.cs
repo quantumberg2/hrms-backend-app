@@ -75,7 +75,6 @@ namespace HRMS_Application.Controllers
             }
             catch (Exception ex)
             {
-                // Catch any other exceptions and return a generic error message
                 return StatusCode(500, new { Message = "An unexpected error occurred.", Details = ex.Message });
             }
         }
