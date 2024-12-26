@@ -2,18 +2,17 @@
 using HRMS_Application.BusinessLogic.Interface;
 using HRMS_Application.Models;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
 
 namespace HRMS_Application.BusinessLogic.Implements
 {
-    public class CompanyNoticeperiodImp : ICompanyNoticeperiod
+    public class OrganizationWorkingDaysImp : IOrganizationWorkingDays
     {
         private readonly HRMSContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtUtils _jwtUtils;
         private List<string>? dToken;
         private int? _decodedToken;
-        public CompanyNoticeperiodImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
+        public OrganizationWorkingDaysImp(HRMSContext context, IHttpContextAccessor httpContextAccessor, IJwtUtils jwtUtils)
         {
             _context = context;
             _jwtUtils = jwtUtils;
@@ -45,7 +44,7 @@ namespace HRMS_Application.BusinessLogic.Implements
                 }
             }
         }
-        public async Task<bool> deleteCompanynoticeperiod(int id)
+        public async Task<bool> deleteOrganizationWorkingDay(int id)
         {
             DecodeToken();
             var result = (from row in _context.CompanyNoticePeriods
@@ -56,32 +55,32 @@ namespace HRMS_Application.BusinessLogic.Implements
             return true;
         }
 
-        public List<CompanyNoticePeriod> GetCompanyNoticeperiod(int CompanyId)
+        public List<OrganizationWorkingDay> GetOrganizationWorkingDay(int CompanyId)
         {
-            var result = (from row in _context.CompanyNoticePeriods
+            var result = (from row in _context.OrganizationWorkingDays
                           where row.CompanyId == CompanyId
                           select row).ToList();
             return result;
         }
 
-        public CompanyNoticePeriod GetcompanynoticeperiodbyId(int id)
+        public OrganizationWorkingDay GetOrganizationWorkingDayId(int id)
         {
-            var result = (from row in _context.CompanyNoticePeriods
+            var result = (from row in _context.OrganizationWorkingDays
                           where row.Id == id
                           select row).FirstOrDefault();
 
             return result;
         }
 
-        public async Task<string> InsertCompanyNoticeperiod(CompanyNoticePeriod companyNotice, int CompanyId)
+        public async Task<string> InsertOrganizationWorkingDay(OrganizationWorkingDay organizationWorking, int CompanyId)
         {
-            companyNotice.CompanyId = CompanyId;
+            organizationWorking.CompanyId = CompanyId;
 
-            await _context.CompanyNoticePeriods.AddAsync(companyNotice);
+            await _context.OrganizationWorkingDays.AddAsync(organizationWorking);
 
             var result = await _context.SaveChangesAsync();
 
-            return result != 0 ? "New companyNotice period inserted successfully" : "Failed to insert new data";
+            return result != 0 ? "New OrganizationWorkingDay inserted successfully" : "Failed to insert new data";
         }
     }
 }

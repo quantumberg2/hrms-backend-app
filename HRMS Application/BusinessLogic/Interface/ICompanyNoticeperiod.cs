@@ -5,7 +5,7 @@ namespace HRMS_Application.BusinessLogic.Interface
     public interface ICompanyNoticeperiod
     {
         public List<CompanyNoticePeriod> GetCompanyNoticeperiod(int CompanyId);
-        public CompanyNoticePeriod GetcoompanynoticeperiodbyId(int id);
+        public CompanyNoticePeriod GetcompanynoticeperiodbyId(int id);
         public Task<string> InsertCompanyNoticeperiod(CompanyNoticePeriod companyNotice, int CompanyId);
         //  public Task<ShiftRosterType> updateShiftRosterType(int id, string? Type, string? TimeRange);
 

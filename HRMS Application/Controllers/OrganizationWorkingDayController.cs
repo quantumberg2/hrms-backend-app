@@ -10,25 +10,25 @@ namespace HRMS_Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyNoticeperiodController : ControllerBase
+    public class OrganizationWorkingDayController : ControllerBase
     {
-        private readonly ICompanyNoticeperiod _companynotice;
-        private readonly ILogger<CompanyNoticeperiodController> _logger;
+        private readonly IOrganizationWorkingDays _organizationworking;
+        private readonly ILogger<OrganizationWorkingDayController> _logger;
 
 
-        public CompanyNoticeperiodController(ICompanyNoticeperiod companynotice, ILogger<CompanyNoticeperiodController> logger)
+        public OrganizationWorkingDayController(IOrganizationWorkingDays organizationworking, ILogger<OrganizationWorkingDayController> logger)
         {
-            _companynotice = companynotice;
+            _organizationworking = organizationworking;
             _logger = logger;
         }
 
         [HttpGet]
         [Authorize(new[] { "Admin", "User", "HR" })]
-        public ActionResult<CompanyNoticePeriod> Getcompanynoticeperiod()
+        public ActionResult<OrganizationWorkingDay> GetOrganizationWorkingDay()
         {
             try
             {
-                _logger.LogInformation("Get companynoticeperiod method started");
+                _logger.LogInformation("Get OrganizationWorkingDay method started");
 
                 // Extract the JWT token from the Authorization header
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
@@ -48,11 +48,11 @@ namespace HRMS_Application.Controllers
                 }
 
                 // Parse the company ID from the claim
-                if (!int.TryParse(companyIdClaim.Value, out int companyId))
+                if (!int.TryParse(companyIdClaim.Value, out int CompanyId))
                 {
                     return BadRequest("Invalid Company ID in token.");
                 }
-                var dept = _companynotice.GetCompanyNoticeperiod(companyId);
+                var dept = _organizationworking.GetOrganizationWorkingDay(CompanyId);
                 return Ok(dept);
             }
             catch (Exception ex)
@@ -65,11 +65,11 @@ namespace HRMS_Application.Controllers
 
         [HttpPost]
         [Authorize(new[] { "Admin" })]
-        public async Task<IActionResult> InsertCompanyNoticePeriod([FromBody] CompanyNoticePeriod companyNotice)
+        public async Task<IActionResult> InsertOrganizationWorkingDay([FromBody] OrganizationWorkingDay organizationWorking)
         {
             try
             {
-                _logger.LogInformation("Insert CompanyNoticePeriod method started");
+                _logger.LogInformation("Insert OrganizationWorkingDay method started");
 
                 var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer", "").Trim();
                 if (string.IsNullOrEmpty(token))
@@ -91,7 +91,7 @@ namespace HRMS_Application.Controllers
                     return BadRequest("Invalid Company ID in token.");
                 }
 
-                var status = await _companynotice.InsertCompanyNoticeperiod(companyNotice, CompanyId);
+                var status = await _organizationworking.InsertOrganizationWorkingDay(organizationWorking, CompanyId);
 
                 return Ok(status);
             }
@@ -102,23 +102,25 @@ namespace HRMS_Application.Controllers
             }
         }
 
-      /*  [HttpPut("UpdateAll/{id}")]
-        [Authorize(new[] { "Admin" })]
-        // [Route("UpdateAll")]
-        public async Task<com> UpdatePosition(int id, string? Type, string? TimeRange)
-        {
-            _logger.LogInformation("Update Positions method started");
-            var status = await _shiftRostertype.updateShiftRosterType(id, Type, TimeRange);
-            return status;
-        }*/
+        /*  [HttpPut("UpdateAll/{id}")]
+          [Authorize(new[] { "Admin" })]
+          // [Route("UpdateAll")]
+          public async Task<com> UpdatePosition(int id, string? Type, string? TimeRange)
+          {
+              _logger.LogInformation("Update Positions method started");
+              var status = await _shiftRostertype.updateShiftRosterType(id, Type, TimeRange);
+              return status;
+          }*/
 
         [HttpDelete("{id}")]
         [Authorize(new[] { "Admin" })]
         public async Task<bool> DeletePosition(int id)
         {
             _logger.LogInformation("Delete method started");
-            var status = await _companynotice.deleteCompanynoticeperiod(id);
+            var status = await _organizationworking.deleteOrganizationWorkingDay(id);
             return status;
         }
     }
+
 }
+

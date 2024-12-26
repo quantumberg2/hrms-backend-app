@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "N2cxeB6oyJY=",
+  "dgSpecHash": "zmysHBfD9sw=",
   "success": true,
   "projectFilePath": "C:\\Users\\USER\\source\\HRMS\\hrms-backend-app\\HRMS Application\\HRMS Application.csproj",
   "expectedPackageFiles": [
@@ -103,7 +103,11 @@
     "C:\\Users\\USER\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.windows.extensions\\4.7.0\\system.windows.extensions.4.7.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\unlimitsoft\\3.4.1.9\\unlimitsoft.3.4.1.9.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\unlimitsoft.newtonsoft\\3.4.1.9\\unlimitsoft.newtonsoft.3.4.1.9.nupkg.sha512"
+    "C:\\Users\\USER\\.nuget\\packages\\unlimitsoft.newtonsoft\\3.4.1.9\\unlimitsoft.newtonsoft.3.4.1.9.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.36\\microsoft.windowsdesktop.app.ref.6.0.36.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.36\\microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.36\\microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.36\\microsoft.netcore.app.host.win-x64.6.0.36.nupkg.sha512"
   ],
   "logs": []
 }
