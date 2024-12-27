@@ -19,6 +19,7 @@ namespace HRMS_Application.BusinessLogic.Implements
         public List<NewsPreview> GetAllNews()
         {
              var newsInfo = (from row in _hRMSContext.NewsPreviews
+                             where row.IsActive ==1
                              select row).ToList();
             return newsInfo;
         }
